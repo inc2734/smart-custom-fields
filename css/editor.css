@@ -1,0 +1,141 @@
+/**
+ * editor.css
+ * Version    : 1.0.0
+ * Author     : Takashi Kitajima
+ * Created    : September 23, 2014
+ * Modified   :
+ * License    : GPLv2
+ * License URI: http://www.gnu.org/licenses/gpl-2.0.html
+ */
+
+/** ==================================================
+ * #normal-sortables
+ */
+.smart-cf-meta-box {
+	margin: 0 -12px;
+}
+
+/** ==================================================
+ * .smart-cf-meta-box-table
+ */
+.smart-cf-meta-box-table {
+	background: #fff;
+	border-bottom: #eee solid 1px;
+	padding: 10px 12px;
+}
+.smart-cf-meta-box-table table {
+	width: 100%;
+}
+.smart-cf-meta-box-table th,
+.smart-cf-meta-box-table td {
+	font-weight: normal;
+	text-align: left;
+	padding: 7px 5px;
+	vertical-align: top;
+}
+.smart-cf-meta-box-table th {
+	width: 25%;
+}
+.smart-cf-meta-box-table td label {
+	margin-right: 10px;
+}
+.smart-cf-meta-box-table .wp-editor-container {
+	clear: both;
+}
+
+/** ==================================================
+ * relation
+ */
+.smart-cf-meta-box-table .smart-cf-relation-left,
+.smart-cf-meta-box-table .smart-cf-relation-right {
+	border: #ddd solid 1px;
+	border-radius: 3px;
+	height: 160px;
+	overflow: auto;
+}
+.smart-cf-meta-box-table .smart-cf-relation-left ul,
+.smart-cf-meta-box-table .smart-cf-relation-right ul {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+.smart-cf-meta-box-table .smart-cf-relation-left ul li,
+.smart-cf-meta-box-table .smart-cf-relation-right ul li {
+	border-bottom: #eee solid 1px;
+	color: #0074a2;
+	cursor: pointer;
+	margin: 0;
+	padding: 5px 10px;
+	position: relative;
+}
+.smart-cf-meta-box-table .smart-cf-relation-left ul li:hover,
+.smart-cf-meta-box-table .smart-cf-relation-right ul li:hover {
+	background: #e4f6fd;
+}
+.smart-cf-meta-box-table .smart-cf-relation-left {
+	float: left;
+	width: 47%;
+}
+.smart-cf-meta-box-table .smart-cf-relation-left .load-relation-posts {
+	background: #e4f6fd;
+	cursor: pointer;
+	margin: 0;
+	padding: 6px 10px;
+	text-align: center;
+}
+.smart-cf-meta-box-table .smart-cf-relation-left .load-relation-posts:hover {
+	background: #c1ebfc;
+}
+.smart-cf-meta-box-table .smart-cf-relation-right {
+	float: right;
+	width: 50%;
+}
+.smart-cf-meta-box-table .smart-cf-relation-right ul li .relation-remove {
+	display: block;
+	padding: 2px 8px;
+	position: absolute;
+	top: 2px;
+	right: 6px;
+}
+.smart-cf-meta-box-table .smart-cf-relation-right ul li {
+	padding-right: 15px;
+}
+
+/** ==================================================
+ * .smart-cf-upload-image, .smart-cf-upload-file
+ */
+.smart-cf-upload-image,
+.smart-cf-upload-file {
+	display: inline-block;
+	position: relative;
+}
+.smart-cf-upload-image img,
+.smart-cf-upload-file img {
+	margin-top: 5px;
+	max-width: 100%;
+	vertical-align: top;
+}
+.smart-cf-upload-image .btn-remove-image,
+.smart-cf-upload-file .btn-remove-file {
+	background: red;
+	border-radius: 3px;
+	color: #fff;
+	cursor: pointer;
+	display: block;
+	font-size: 10px;
+	padding: 2px 6px;
+	position: absolute;
+	left: 5px;
+	bottom: 5px;
+}
+
+/** ==================================================
+ * .hide
+ */
+.smart-cf-upload-image.hide,
+.smart-cf-upload-file.hide,
+.smart-cf-upload-image .btn-remove-image.hide,
+.smart-cf-upload-file .btn-remove-file.hide,
+.load-relation-posts.hide {
+	display: none;
+}

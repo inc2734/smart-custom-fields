@@ -1,0 +1,58 @@
+=== Smart Custom Fields ===
+Contributors: inc2734
+Donate link: http://www.amazon.co.jp/registry/wishlist/39ANKRNSTNW40
+Tags: plugin, custom field, custom, field, meta, meta field, repeat, repeatable
+Requires at least: 3.9
+Tested up to: 4.0
+Stable tag: 1.0.0
+License: GPLv2
+License URI: http://www.gnu.org/licenses/gpl-2.0.html
+
+Smart Custom Fields is a simple plugin that management custom fields.
+
+== Description ==
+
+Smart Custom Fields is a simple plugin that management custom fields.
+This plugin has loop field function.
+
+https://www.youtube.com/watch?v=WxPZurn0yvI
+
+= Field Types =
+
+* Text
+* Textarea
+* Radio
+* Select
+* Checkbox
+* Wysiwyg editor
+* Image
+* File
+* Relation
+
+= How to get meta data ? =
+
+* SCF::get( 'field-name' )  
+This method can get any meta data.
+
+* SCF::get( 'group-name' )  
+This method can get meta data of any group.
+
+* SCF::gets()  
+This method can get all meta data.
+
+= GitHub =
+
+https://github.com/inc2734/smart-custom-fields/
+
+== Installation ==
+
+1. Upload `Smart Custom Fields` to the `/wp-content/plugins/` directory
+1. Activate the plugin through the 'Plugins' menu in WordPress
+1. You can setting custom fields in 'Smart Custom Fields' page.
+
+== Screenshots ==
+
+== Changelog ==
+
+= 1.0.0 =
+* Initial release.

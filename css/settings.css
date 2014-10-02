@@ -1,0 +1,144 @@
+/**
+ * settings.css
+ * Version    : 1.0.0
+ * Author     : Takashi Kitajima
+ * Created    : September 23, 2014
+ * Modified   :
+ * License    : GPLv2
+ * License URI: http://www.gnu.org/licenses/gpl-2.0.html
+ */
+
+/** ==================================================
+ * #normal-sortables
+ */
+#normal-sortables {
+	display: none;
+}
+
+/** ==================================================
+ * .btn-add-group
+ */
+.smart-cf-fields-wrapper .btn-add-group {
+	margin-top: 10px;
+}
+
+/** ==================================================
+ * .smart-cf-group
+ */
+.smart-cf-group {
+	background: #f5f5f5;
+	border: #ddd solid 1px;
+	margin: 10px 0 0;
+	padding: 10px;
+	position: relative;
+}
+.smart-cf-group .smart-cf-require {
+	color: #f60;
+	font-size: 90%;
+	margin-left: 3px;
+}
+
+/**
+ * .btn-remove-group
+ */
+.smart-cf-group .btn-remove-group {
+	cursor: pointer;
+	position: absolute;
+	top: 12px;
+	right: 10px;
+}
+
+/**
+ * .btn-add-field
+ */
+.smart-cf-group .btn-add-field {
+	margin-top: 5px;
+}
+
+/**
+ * .smart-cf-group-repeat
+ */
+.smart-cf-group .smart-cf-group-repeat {
+	cursor: move;
+	margin: 0 0 5px;
+}
+
+/**
+ * .smart-cf-group-names
+ */
+.smart-cf-group .smart-cf-group-names {
+	width: 100%;
+}
+.smart-cf-group .smart-cf-group-names th {
+	text-align: left;
+	width: 20%;
+}
+
+/**
+ * .smart-cf-alert
+ */
+.smart-cf-alert {
+	color: #f60;
+	display: block;
+	font-size: 90%;
+	margin-top: 2px 0;
+}
+
+/** ==================================================
+ * .smart-cf-field
+ */
+.smart-cf-group .smart-cf-field {
+	background: #fff;
+	border: #ddd solid 1px;
+	margin: 5px 0 0;
+	padding: 10px;
+}
+.smart-cf-group .smart-cf-field:first-child {
+	margin-top: 0;
+}
+.smart-cf-group .smart-cf-field table {
+	width: 100%;
+}
+.smart-cf-group .smart-cf-field table th {
+	font-weight: normal;
+	text-align: left;
+	vertical-align: top;
+	width: 15%;
+}
+
+/**
+ * .btn-remove-field
+ */
+.smart-cf-group .smart-cf-field .btn-remove-field {
+	cursor: move;
+	position: relative;
+	overflow: hidden;
+	*zoom: 1;
+}
+.smart-cf-group .smart-cf-field .btn-remove-field b {
+	float: right;
+}
+
+/** ==================================================
+ * #smart-cf-meta-box-condition
+ */
+#smart-cf-meta-box-condition label {
+	display: block;
+	margin: 0 0 5px;
+}
+
+/** ==================================================
+ * .hide
+ */
+.smart-cf-group .smart-cf-field table .smart-cf-choices.hide,
+.smart-cf-group .smart-cf-field table .smart-cf-choices-default.hide,
+.smart-cf-group .smart-cf-field table .smart-cf-single-default.hide,
+.smart-cf-group .smart-cf-field table .smart-cf-textarea-default.hide,
+.smart-cf-group .smart-cf-field table .smart-cf-post-type.hide,
+.smart-cf-group.hide,
+.smart-cf-group .btn-add-field.hide,
+.smart-cf-group .smart-cf-group-names.hide,
+.smart-cf-group .smart-cf-field.hide,
+.smart-cf-group .smart-cf-field table.hide {
+	display: none;
+}
