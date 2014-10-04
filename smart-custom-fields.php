@@ -474,7 +474,8 @@ class Smart_Custom_Fields {
 	protected function display_tr( $post_id, $is_repeat, $fields, $index = null ) {
 		$btn_repeat = '';
 		if ( $is_repeat ) {
-			$btn_repeat = '<span class="button btn-add-repeat-group">+</span>';
+			$btn_repeat  = sprintf( '<span class="%s"></span>', esc_attr( SCF_Config::PREFIX . 'icon-handle' ) );
+			$btn_repeat .= '<span class="button btn-add-repeat-group">+</span>';
 			if ( $index > 0 || $index === null ) {
 				$btn_repeat .= ' <span class="button btn-remove-repeat-group">-</span>';
 			}

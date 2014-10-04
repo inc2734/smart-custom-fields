@@ -177,7 +177,7 @@ jQuery( function( $ ) {
 		 * sortable
 		 */
 		wrapper.find( '.smart-cf-meta-box-repeat-tables' ).sortable( {
-			cursor: 'move',
+			handle: '.smart-cf-icon-handle',
 			items : '> .smart-cf-meta-box-table:not( :first-child )',
 			start : function( e, ui ) {
 				$( this ).trigger( 'smart-cf-repeat-table-sortable-start', ui.item );

@@ -107,7 +107,10 @@ class SCF {
 				// グループ名と一致しない場合は一致するフィールドを返す
 				else {
 					foreach ( $group['fields'] as $field ) {
-						$post_meta = self::get_field( $post_id, $field, $is_repeat, $name );
+						if ( $field['name'] !== $name ) {
+							continue;
+						}
+						$post_meta = self::get_field( $post_id, $field, $is_repeat );
 						if ( !is_null( $post_meta ) ) {
 							return $post_meta;
 						}
@@ -185,6 +188,9 @@ class SCF {
 				foreach ( $_post_meta as $_post_meta_key => $value ) {
 					if ( in_array( $field['type'], array( 'textarea', 'wysiwyg' ) ) ) {
 						$value = apply_filters( 'the_content', $value );
+					} elseif ( $field['type'] === 'relation' ) {
+						if ( get_post_status( $value ) !== 'publish' )
+							continue;
 					}
 					$post_meta[$_post_meta_key][$field['name']] = $value;
 				}
@@ -199,16 +205,9 @@ class SCF {
 	 * @param int $post_id
 	 * @param array $field
 	 * @param bool $is_repeat
-	 * @param string $name
 	 * @return mixed $post_meta
 	 */
 	protected static function get_field( $post_id, $field, $is_repeat, $name = null ) {
-		if ( !is_null( $name ) ) {
-			if ( $field['name'] !== $name ) {
-				return;
-			}
-		}
-
 		if ( in_array( $field['type'], array( 'check', 'relation' ) ) || $is_repeat ) {
 			$post_meta = get_post_meta( $post_id, $field['name'] );
 		} else {
@@ -224,6 +223,14 @@ class SCF {
 			} else {
 				$post_meta = apply_filters( 'the_content', $post_meta );
 			}
+		} elseif ( $field['type'] === 'relation' ) {
+			$_post_meta = array();
+			foreach ( $post_meta as $post_id ) {
+				if ( get_post_status( $post_id ) !== 'publish' )
+					continue;
+				$_post_meta[] = $post_id;
+			}
+			$post_meta = $_post_meta;
 		}
 		self::save_cache( $post_id, $field['name'], $post_meta );
 		return $post_meta;

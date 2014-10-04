@@ -279,28 +279,29 @@ class Smart_Custom_Fields_Fields {
 		// 選択済
 		$selected_posts = array();
 		if ( !empty( $options['value'] ) ) {
-			$selected_posts = get_posts( array(
-				'post_type'      => $options['post_type'],
-				'post__in'       => $options['value'],
-				'posts_per_page' => -1,
-			) );
+			foreach ( $options['value'] as $post_id ) {
+				if ( get_post_status( $post_id ) !== 'publish' )
+					continue;
+				$post_title = get_the_title( $post_id );
+				if ( empty( $post_title ) ) {
+					$post_title = '&nbsp;';
+				}
+				$selected_posts[$post_id] = $post_title;
+			}
 		}
 		$selected_li = array();
 		$hidden = array();
-		foreach ( $selected_posts as $_post ) {
-			$post_title = get_the_title( $_post->ID );
-			if ( empty( $post_title ) ) {
-				$post_title = '&nbsp;';
-			}
+		foreach ( $selected_posts as $post_id => $post_title ) {
 			$selected_li[] = sprintf(
-				'<li data-id="%d">%s<span class="relation-remove">-</li></li>',
-				$_post->ID,
+				'<li data-id="%d"><span class="%s"></span>%s<span class="relation-remove">-</li></li>',
+				$post_id,
+				esc_attr( SCF_Config::PREFIX . 'icon-handle' ),
 				$post_title
 			);
 			$hidden[] = sprintf(
 				'<input type="hidden" name="%s" value="%d" />',
 				esc_attr( $name . '[]' ),
-				$_post->ID
+				$post_id
 			);
 		}
 

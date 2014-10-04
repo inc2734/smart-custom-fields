@@ -50,41 +50,42 @@ jQuery( function( $ ) {
 	/**
 	 * 選択肢
 	 */
-	var choices_li = '.smart-cf-meta-box .smart-cf-relation-children-select li';
-	$( document ).on( 'click', choices_li, function() {
+	var choices_li = '.smart-cf-relation-children-select li';
+	$( '.smart-cf-meta-box' ).on( 'click', choices_li, function() {
 		var id = $( this ).data( 'id' );
 		var parent = $( this ).parents( table_class );
 		if ( parent.find( '.smart-cf-relation-right li[data-id="' + id + '"]' ).length === 0 ) {
 			var clone = $( this ).clone();
-			clone.append( $( '<span class="relation-remove">-</span>' ) );
+			clone
+				.prepend( $( '<span class="smart-cf-icon-handle"></span>' ) )
+				.append(  $( '<span class="relation-remove">-</span>' ) );
 			parent.find( '.smart-cf-relation-right ul' ).append( clone );
-			update_relation_value( parent );
+			update_relation_value( $( this ).parents( 'tr' ) );
 		}
 	} );
 
 	/**
 	 * 選択済み項目の削除
 	 */
-	var relation_remove = '.smart-cf-meta-box .smart-cf-relation-right li .relation-remove';
-	$( document ).on( 'click', relation_remove, function() {
-		var li = $( this ).parent();
-		var parent = li.parents( table_class );
-		li.remove();
-		update_relation_value( parent );
+	var relation_remove = '.smart-cf-relation-right li .relation-remove';
+	$( '.smart-cf-meta-box' ).on( 'click', relation_remove, function() {
+		var tr = $( this ).parents( 'tr' );
+		$( this ).parent().remove();
+		update_relation_value( tr );
 	} );
 
 	/**
 	 * update_relation_value
-	 * @param dom table
+	 * @param dom tr
 	 */
-	function update_relation_value( table ) {
-		var hidden = table.find( 'input[type="hidden"]' );
+	function update_relation_value( tr ) {
+		var hidden = tr.find( 'input[type="hidden"]' );
 		hidden.each( function( i, e ) {
 			if ( i !== 0 ) {
 				$( this ).remove();
 			}
 		} );
-		table.find( '.smart-cf-relation-right li' ).each( function( i, e ) {
+		tr.find( '.smart-cf-relation-right li' ).each( function( i, e ) {
 			var hidden_box = $( this ).parents( table_class ).find( '.smart-cf-relation-children-select' );
 			var id = $( this ).data( 'id' );
 			var clone = hidden.first().clone();
@@ -94,4 +95,11 @@ jQuery( function( $ ) {
 			hidden_box.append( clone );
 		} );
 	}
+
+	/**
+	 * sortable
+	 */
+	$( '.smart-cf-meta-box .smart-cf-relation-right ul' ).sortable( {
+		handle: '.smart-cf-icon-handle',
+	} );
 } );
