@@ -101,5 +101,8 @@ jQuery( function( $ ) {
 	 */
 	$( '.smart-cf-meta-box .smart-cf-relation-right ul' ).sortable( {
 		handle: '.smart-cf-icon-handle',
+		update: function() {
+			update_relation_value( $( this ).parents( 'tr' ) );
+		}
 	} );
 } );
