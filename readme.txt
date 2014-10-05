@@ -13,7 +13,10 @@ Smart Custom Fields is a simple plugin that management custom fields.
 == Description ==
 
 Smart Custom Fields is a simple plugin that management custom fields.
-This plugin has loop field function.
+
+* This plugin has loop field function.
+* Supported metadata revision.
+* Supported metadata preview.
 
 https://www.youtube.com/watch?v=WxPZurn0yvI
 
