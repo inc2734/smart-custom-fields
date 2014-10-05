@@ -32,7 +32,7 @@ class SCF {
 	 * データ取得処理は重いので、一度取得した設定データは cache に保存する。
 	 * キーに post_id を設定すること。
 	 */
-	protected static $repeat_checkboxes_cache = array();
+	protected static $repeat_multiple_data_cache = array();
 
 	/**
 	 * gets
@@ -46,7 +46,7 @@ class SCF {
 		}
 		$post_id = self::get_real_post_id( $post_id );
 
-		$repeat_checkboxes = self::get_repeat_checkboxes( $post_id );
+		$repeat_multiple_data = self::get_repeat_multiple_data( $post_id );
 
 		// 設定画面で未設定のメタデータは投稿が保持していても出力しないようにしないといけないので
 		// 設定データを取得して出力して良いか判別する
@@ -90,7 +90,7 @@ class SCF {
 			return self::get_cache( $post_id, $name );
 		}
 
-		$repeat_checkboxes = self::get_repeat_checkboxes( $post_id );
+		$repeat_multiple_data = self::get_repeat_multiple_data( $post_id );
 
 		// 設定画面で未設定のメタデータは投稿が保持していても出力しないようにしないといけないので
 		// 設定データを取得して出力して良いか判別する
@@ -170,10 +170,10 @@ class SCF {
 		foreach ( $fields as $field ) {
 			$_post_meta = get_post_meta( $post_id, $field['name'] );
 			// チェックボックスの場合
-			$repeat_checkboxes = self::get_repeat_checkboxes( $post_id );
-			if ( is_array( $repeat_checkboxes ) && array_key_exists( $field['name'], $repeat_checkboxes ) ) {
+			$repeat_multiple_data = self::get_repeat_multiple_data( $post_id );
+			if ( is_array( $repeat_multiple_data ) && array_key_exists( $field['name'], $repeat_multiple_data ) ) {
 				$start = 0;
-				foreach ( $repeat_checkboxes[$field['name']] as $repeat_checkbox_key => $repeat_checkbox_value ) {
+				foreach ( $repeat_multiple_data[$field['name']] as $repeat_checkbox_key => $repeat_checkbox_value ) {
 					if ( $repeat_checkbox_value === 0 ) {
 						$value = array();
 					} else {
@@ -305,31 +305,31 @@ class SCF {
 	}
 
 	/**
-	 * save_repeat_checkboxes_cache
+	 * save_repeat_multiple_data_cache
 	 * @param int $post_id
-	 * @param mixed $repeat_checkboxes
+	 * @param mixed $repeat_multiple_data
 	 */
-	protected static function save_repeat_checkboxes_cache( $post_id, $repeat_checkboxes ) {
-		self::$repeat_checkboxes_cache[$post_id] = $repeat_checkboxes;
+	protected static function save_repeat_multiple_data_cache( $post_id, $repeat_multiple_data ) {
+		self::$repeat_multiple_data_cache[$post_id] = $repeat_multiple_data;
 	}
 
 	/**
-	 * get_repeat_checkboxes
+	 * get_repeat_multiple_data
 	 * @param int $post_id
 	 * @return mixed
 	 */
-	public static function get_repeat_checkboxes( $post_id ) {
-		$repeat_checkboxes = array();
-		if ( isset( self::$repeat_checkboxes_cache[$post_id] ) ) {
-			return self::$repeat_checkboxes_cache[$post_id];
+	public static function get_repeat_multiple_data( $post_id ) {
+		$repeat_multiple_data = array();
+		if ( isset( self::$repeat_multiple_data_cache[$post_id] ) ) {
+			return self::$repeat_multiple_data_cache[$post_id];
 		}
-		if ( empty( $repeat_checkboxes ) ) {
-			$_repeat_checkboxes = get_post_meta( $post_id, SCF_Config::PREFIX . 'repeat-checkboxes', true );
-			if ( $_repeat_checkboxes ) {
-				$repeat_checkboxes = $_repeat_checkboxes;
+		if ( empty( $repeat_multiple_data ) ) {
+			$_repeat_multiple_data = get_post_meta( $post_id, SCF_Config::PREFIX . 'repeat-multiple-data', true );
+			if ( $_repeat_multiple_data ) {
+				$repeat_multiple_data = $_repeat_multiple_data;
 			}
 		}
-		self::save_repeat_checkboxes_cache( $post_id, $repeat_checkboxes );
-		return $repeat_checkboxes;
+		self::save_repeat_multiple_data_cache( $post_id, $repeat_multiple_data );
+		return $repeat_multiple_data;
 	}
 }

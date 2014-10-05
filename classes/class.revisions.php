@@ -57,10 +57,10 @@ class Smart_Custom_Fields_Revisions {
 			}
 		}
 
-		$repeat_checkboxed_name = SCF_Config::PREFIX . 'repeat-checkboxes';
+		$repeat_checkboxed_name = SCF_Config::PREFIX . 'repeat-multiple-data';
 		delete_post_meta( $post->ID, $repeat_checkboxed_name );
-		$repeat_checkboxes = get_post_meta( $revision->ID, $repeat_checkboxed_name, true );
-		add_post_meta( $post->ID, $repeat_checkboxed_name, $repeat_checkboxes );
+		$repeat_multiple_data = get_post_meta( $revision->ID, $repeat_checkboxed_name, true );
+		add_post_meta( $post->ID, $repeat_checkboxed_name, $repeat_multiple_data );
 	}
 
 	/**
@@ -80,7 +80,7 @@ class Smart_Custom_Fields_Revisions {
 		if ( wp_is_post_revision( $post_id ) ) {
 			// 繰り返しフィールドのチェックボックスは、普通のチェックボックスと混ざって
 			// 判別できなくなるのでわかるように保存しておく
-			$repeat_checkboxes = array();
+			$repeat_multiple_data = array();
 
 			$post_type = get_post_type();
 			$settings = SCF::get_settings( $post_type );
@@ -94,9 +94,9 @@ class Smart_Custom_Fields_Revisions {
 							$repeat_checkbox_fields = $_POST[SCF_Config::NAME][$field['name']];
 							foreach ( $repeat_checkbox_fields as $values ) {
 								if ( is_array( $values ) ) {
-									$repeat_checkboxes[$field['name']][] = count( $values );
+									$repeat_multiple_data[$field['name']][] = count( $values );
 								} else {
-									$repeat_checkboxes[$field['name']][] = 0;
+									$repeat_multiple_data[$field['name']][] = 0;
 								}
 							}
 						}
@@ -104,9 +104,9 @@ class Smart_Custom_Fields_Revisions {
 				}
 			}
 
-			delete_metadata( 'post', $post_id, SCF_Config::PREFIX . 'repeat-checkboxes' );
-			if ( $repeat_checkboxes ) {
-				update_metadata( 'post', $post_id, SCF_Config::PREFIX . 'repeat-checkboxes', $repeat_checkboxes );
+			delete_metadata( 'post', $post_id, SCF_Config::PREFIX . 'repeat-multiple-data' );
+			if ( $repeat_multiple_data ) {
+				update_metadata( 'post', $post_id, SCF_Config::PREFIX . 'repeat-multiple-data', $repeat_multiple_data );
 			}
 
 			foreach ( $_POST[SCF_Config::NAME] as $name => $values ) {

@@ -22,10 +22,10 @@ class Smart_Custom_Fields {
 	protected $post_custom = array();
 
 	/**
-	 * repeat_checkboxes
+	 * repeat_multiple_data
 	 * 何度も関数呼び出ししなくて良いように保存
 	 */
-	protected $repeat_checkboxes = array();
+	protected $repeat_multiple_data = array();
 
 	/**
 	 * Fields
@@ -73,7 +73,7 @@ class Smart_Custom_Fields {
 		foreach ( $cf_posts as $post ) {
 			wp_delete_post( $post->ID, true );
 		}
-		delete_post_meta_by_key( SCF_Config::PREFIX . 'repeat-checkboxes' );
+		delete_post_meta_by_key( SCF_Config::PREFIX . 'repeat-multiple-data' );
 	}
 
 	/**
@@ -280,7 +280,7 @@ class Smart_Custom_Fields {
 
 		// 繰り返しフィールドのチェックボックスは、普通のチェックボックスと混ざって
 		// 判別できなくなるのでわかるように保存しておく
-		$repeat_checkboxes = array();
+		$repeat_multiple_data = array();
 
 		// チェックボックスが未入力のときは "" がくるので、それは保存しないように判別
 		$checkbox_fields = array();
@@ -301,18 +301,18 @@ class Smart_Custom_Fields {
 						$repeat_checkbox_fields = $_POST[SCF_Config::NAME][$field['name']];
 						foreach ( $repeat_checkbox_fields as $values ) {
 							if ( is_array( $values ) ) {
-								$repeat_checkboxes[$field['name']][] = count( $values );
+								$repeat_multiple_data[$field['name']][] = count( $values );
 							} else {
-								$repeat_checkboxes[$field['name']][] = 0;
+								$repeat_multiple_data[$field['name']][] = 0;
 							}
 						}
 					}
 				}
 			}
 		}
-		delete_post_meta( $post_id, SCF_Config::PREFIX . 'repeat-checkboxes' );
-		if ( $repeat_checkboxes ) {
-			update_post_meta( $post_id, SCF_Config::PREFIX . 'repeat-checkboxes', $repeat_checkboxes );
+		delete_post_meta( $post_id, SCF_Config::PREFIX . 'repeat-multiple-data' );
+		if ( $repeat_multiple_data ) {
+			update_post_meta( $post_id, SCF_Config::PREFIX . 'repeat-multiple-data', $repeat_multiple_data );
 		}
 
 		foreach ( $_POST[SCF_Config::NAME] as $name => $values ) {
@@ -348,23 +348,23 @@ class Smart_Custom_Fields {
 	}
 
 	/**
-	 * get_repeat_checkboxes
+	 * get_repeat_multiple_data
 	 * @param int $post_id
-	 * @return array $this->repeat_checkboxes
+	 * @return array $this->repeat_multiple_data
 	 */
-	protected function get_repeat_checkboxes( $post_id ) {
-		$repeat_checkboxes = $this->repeat_checkboxes;
-		if ( empty( $repeat_checkboxes ) ) {
-			$repeat_checkboxes = get_post_meta( $post_id, SCF_Config::PREFIX . 'repeat-checkboxes', true );
-			if ( empty( $repeat_checkboxes ) ) {
+	protected function get_repeat_multiple_data( $post_id ) {
+		$repeat_multiple_data = $this->repeat_multiple_data;
+		if ( empty( $repeat_multiple_data ) ) {
+			$repeat_multiple_data = get_post_meta( $post_id, SCF_Config::PREFIX . 'repeat-multiple-data', true );
+			if ( empty( $repeat_multiple_data ) ) {
 				return array();
 			}
-			if ( is_serialized( $repeat_checkboxes ) ) {
-				$repeat_checkboxes = maybe_unserialize( $repeat_checkboxes );
+			if ( is_serialized( $repeat_multiple_data ) ) {
+				$repeat_multiple_data = maybe_unserialize( $repeat_multiple_data );
 			}
-			$this->repeat_checkboxes = $repeat_checkboxes;
+			$this->repeat_multiple_data = $repeat_multiple_data;
 		}
-		return $this->repeat_checkboxes;
+		return $this->repeat_multiple_data;
 	}
 
 	/**
@@ -375,7 +375,7 @@ class Smart_Custom_Fields {
 	 */
 	protected function get_tables( $post_id, $groups ) {
 		$post_custom = $this->get_post_custom( $post_id );
-		$repeat_checkboxes = $this->get_repeat_checkboxes( $post_id );
+		$repeat_multiple_data = $this->get_repeat_multiple_data( $post_id );
 		$tables = array();
 		foreach ( $groups as $group ) {
 			// ループのときは、ループの分だけグループを追加する
@@ -389,8 +389,8 @@ class Smart_Custom_Fields {
 						// 同名のカスタムフィールドが複数のとき（チェックボックス or ループ）
 						if ( $post_meta_count > 1 ) {
 							// チェックボックスの場合
-							if ( is_array( $repeat_checkboxes ) && array_key_exists( $field['name'], $repeat_checkboxes ) ) {
-								$checkbox_post_meta_count = count( $repeat_checkboxes[$field['name']] );
+							if ( is_array( $repeat_multiple_data ) && array_key_exists( $field['name'], $repeat_multiple_data ) ) {
+								$checkbox_post_meta_count = count( $repeat_multiple_data[$field['name']] );
 								if ( $loop_count < $checkbox_post_meta_count )
 									$loop_count = $checkbox_post_meta_count;
 							}
@@ -423,19 +423,19 @@ class Smart_Custom_Fields {
 	 */
 	protected function get_checkbox_value( $post_id, $field_name, $index ) {
 		$post_custom = $this->get_post_custom( $post_id );
-		$repeat_checkboxes = $this->get_repeat_checkboxes( $post_id );
+		$repeat_multiple_data = $this->get_repeat_multiple_data( $post_id );
 		$value = null;
 		if ( isset( $post_custom[$field_name] ) && is_array( $post_custom[$field_name] ) ) {
 			$value = $post_custom[$field_name];
 			// ループのとき
-			if ( is_array( $repeat_checkboxes ) && array_key_exists( $field_name, $repeat_checkboxes ) ) {
+			if ( is_array( $repeat_multiple_data ) && array_key_exists( $field_name, $repeat_multiple_data ) ) {
 				$now_num = 0;
-				if ( isset( $repeat_checkboxes[$field_name][$index] ) ) {
-					$now_num = $repeat_checkboxes[$field_name][$index];
+				if ( isset( $repeat_multiple_data[$field_name][$index] ) ) {
+					$now_num = $repeat_multiple_data[$field_name][$index];
 				}
 
 				// 自分（$index）より前の個数の合計が指す index が start
-				$_temp = array_slice( $repeat_checkboxes[$field_name], 0, $index );
+				$_temp = array_slice( $repeat_multiple_data[$field_name], 0, $index );
 				$sum = array_sum( $_temp );
 				$start = $sum;
 
