@@ -37,6 +37,7 @@ class Smart_Custom_Fields {
 	 * __construct
 	 */
 	public function __construct() {
+		require_once plugin_dir_path( __FILE__ ) . 'classes/class.config.php';
 		add_action( 'plugins_loaded', array( $this, 'plugins_loaded' ) );
 		register_uninstall_hook( __FILE__, array( __CLASS__, 'uninstall' ) );
 	}
@@ -45,7 +46,6 @@ class Smart_Custom_Fields {
 	 * plugins_loaded
 	 */
 	public function plugins_loaded() {
-		require_once plugin_dir_path( __FILE__ ) . 'classes/class.config.php';
 		require_once plugin_dir_path( __FILE__ ) . 'classes/class.settings.php';
 		require_once plugin_dir_path( __FILE__ ) . 'classes/class.fields.php';
 		require_once plugin_dir_path( __FILE__ ) . 'classes/class.revisions.php';
