@@ -283,7 +283,7 @@ class Smart_Custom_Fields {
 		$repeat_multiple_data = array();
 
 		// チェックボックスが未入力のときは "" がくるので、それは保存しないように判別
-		$checkbox_fields = array();
+		$multiple_data_fields = array();
 
 		$post_type = get_post_type();
 		$settings = SCF::get_settings( $post_type );
@@ -294,12 +294,12 @@ class Smart_Custom_Fields {
 					delete_post_meta( $post_id, $field['name'] );
 
 					if ( in_array( $field['type'], array( 'check', 'relation' ) ) ) {
-						$checkbox_fields[] = $field['name'];
+						$multiple_data_fields[] = $field['name'];
 					}
 
 					if ( $is_repeat && in_array( $field['type'], array( 'check', 'relation' ) ) ) {
-						$repeat_checkbox_fields = $_POST[SCF_Config::NAME][$field['name']];
-						foreach ( $repeat_checkbox_fields as $values ) {
+						$repeat_multiple_data_fields = $_POST[SCF_Config::NAME][$field['name']];
+						foreach ( $repeat_multiple_data_fields as $values ) {
 							if ( is_array( $values ) ) {
 								$repeat_multiple_data[$field['name']][] = count( $values );
 							} else {
@@ -317,7 +317,7 @@ class Smart_Custom_Fields {
 
 		foreach ( $_POST[SCF_Config::NAME] as $name => $values ) {
 			foreach ( $values as $value ) {
-				if ( in_array( $name, $checkbox_fields ) && $value === '' )
+				if ( in_array( $name, $multiple_data_fields ) && $value === '' )
 					continue;
 				if ( !is_array( $value ) ) {
 					add_post_meta( $post_id, $name, $value );
@@ -390,9 +390,9 @@ class Smart_Custom_Fields {
 						if ( $post_meta_count > 1 ) {
 							// チェックボックスの場合
 							if ( is_array( $repeat_multiple_data ) && array_key_exists( $field['name'], $repeat_multiple_data ) ) {
-								$checkbox_post_meta_count = count( $repeat_multiple_data[$field['name']] );
-								if ( $loop_count < $checkbox_post_meta_count )
-									$loop_count = $checkbox_post_meta_count;
+								$repeat_multiple_data_count = count( $repeat_multiple_data[$field['name']] );
+								if ( $loop_count < $repeat_multiple_data_count )
+									$loop_count = $repeat_multiple_data_count;
 							}
 							// チェックボックス以外
 							else {
@@ -415,13 +415,13 @@ class Smart_Custom_Fields {
 	}
 
 	/**
-	 * get_checkbox_value
+	 * get_multiple_data_field_value
 	 * @param int $post_id
 	 * @param string $field_name
 	 * @param int $index
 	 * @return array or null
 	 */
-	protected function get_checkbox_value( $post_id, $field_name, $index ) {
+	protected function get_multiple_data_field_value( $post_id, $field_name, $index ) {
 		$post_custom = $this->get_post_custom( $post_id );
 		$repeat_multiple_data = $this->get_repeat_multiple_data( $post_id );
 		$value = null;
@@ -449,13 +449,13 @@ class Smart_Custom_Fields {
 	}
 
 	/**
-	 * get_non_checkbox_value
+	 * get_single_data_field_value
 	 * @param int $post_id
 	 * @param string $field_name
 	 * @param int $index
 	 * @return string or null
 	 */
-	protected function get_non_checkbox_value( $post_id, $field_name, $index ) {
+	protected function get_single_data_field_value( $post_id, $field_name, $index ) {
 		$post_custom = $this->get_post_custom( $post_id );
 		$value = null;
 		if ( isset( $post_custom[$field_name][$index] ) ) {
@@ -499,16 +499,16 @@ class Smart_Custom_Fields {
 				$field_label = $field['name'];
 			}
 
-			// チェックボックスのとき
+			// 複数値許可フィールドのとき
 			$post_status = get_post_status( $post_id );
 			if ( in_array( $field['type'], array( 'check', 'relation' ) ) ) {
 				$value = array();
 				if ( !empty( $field['choices-default'] ) && ( $post_status === 'auto-draft' || is_null( $index ) ) ) {
 					$value = $this->Fields->get_choices( $field['choices-default'] );
 				}
-				$_value = $this->get_checkbox_value( $post_id, $field['name'], $index );
+				$_value = $this->get_multiple_data_field_value( $post_id, $field['name'], $index );
 			}
-			// チェックボックス以外のとき
+			// 複数不値許可フィールドのとき
 			else {
 				$value = '';
 				if ( $post_status === 'auto-draft' || is_null( $index ) ) {
@@ -518,7 +518,7 @@ class Smart_Custom_Fields {
 						$value = $field['single-default'];
 					}
 				}
-				$_value = $this->get_non_checkbox_value( $post_id, $field['name'], $index );
+				$_value = $this->get_single_data_field_value( $post_id, $field['name'], $index );
 			}
 			if ( !is_null( $_value ) ) {
 				$value = $_value;

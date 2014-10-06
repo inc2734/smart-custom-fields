@@ -57,10 +57,10 @@ class Smart_Custom_Fields_Revisions {
 			}
 		}
 
-		$repeat_checkboxed_name = SCF_Config::PREFIX . 'repeat-multiple-data';
-		delete_post_meta( $post->ID, $repeat_checkboxed_name );
-		$repeat_multiple_data = get_post_meta( $revision->ID, $repeat_checkboxed_name, true );
-		add_post_meta( $post->ID, $repeat_checkboxed_name, $repeat_multiple_data );
+		$repeat_multiple_data_name = SCF_Config::PREFIX . 'repeat-multiple-data';
+		delete_post_meta( $post->ID, $repeat_multiple_data_name );
+		$repeat_multiple_data = get_post_meta( $revision->ID, $repeat_multiple_data_name, true );
+		add_post_meta( $post->ID, $repeat_multiple_data_name, $repeat_multiple_data );
 	}
 
 	/**
@@ -91,8 +91,8 @@ class Smart_Custom_Fields_Revisions {
 						delete_metadata( 'post', $post_id, $field['name'] );
 
 						if ( $is_repeat && in_array( $field['type'], array( 'check', 'relation' ) ) ) {
-							$repeat_checkbox_fields = $_POST[SCF_Config::NAME][$field['name']];
-							foreach ( $repeat_checkbox_fields as $values ) {
+							$repeat_multiple_data_fields = $_POST[SCF_Config::NAME][$field['name']];
+							foreach ( $repeat_multiple_data_fields as $values ) {
 								if ( is_array( $values ) ) {
 									$repeat_multiple_data[$field['name']][] = count( $values );
 								} else {

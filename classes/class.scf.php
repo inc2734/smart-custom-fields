@@ -173,14 +173,14 @@ class SCF {
 			$repeat_multiple_data = self::get_repeat_multiple_data( $post_id );
 			if ( is_array( $repeat_multiple_data ) && array_key_exists( $field['name'], $repeat_multiple_data ) ) {
 				$start = 0;
-				foreach ( $repeat_multiple_data[$field['name']] as $repeat_checkbox_key => $repeat_checkbox_value ) {
-					if ( $repeat_checkbox_value === 0 ) {
+				foreach ( $repeat_multiple_data[$field['name']] as $repeat_multiple_key => $repeat_multiple_value ) {
+					if ( $repeat_multiple_value === 0 ) {
 						$value = array();
 					} else {
-						$value = array_slice( $_post_meta, $start, $repeat_checkbox_value );
-						$start = $repeat_checkbox_value;
+						$value = array_slice( $_post_meta, $start, $repeat_multiple_value );
+						$start += $repeat_multiple_value;
 					}
-					$post_meta[$repeat_checkbox_key][$field['name']] = $value;
+					$post_meta[$repeat_multiple_key][$field['name']] = $value;
 				}
 			}
 			// チェックボックス以外
