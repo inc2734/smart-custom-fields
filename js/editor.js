@@ -40,10 +40,11 @@ jQuery( function( $ ) {
 			clone.find( 'input, select, textarea' ).each( function( i, e ) {
 				$( this ).attr( 'name',
 					$( this ).attr( 'name' ).replace(
-						/^(smart-custom-fields\[.+\])\[\d+\]/,
-						'$1[' + cnt + ']'
+						/^(smart-custom-fields\[.+\])\[_\]/,
+						'$1[_' + cnt + ']'
 					)
 				);
+				$( this ).removeAttr( 'disabled' );
 			} );
 
 			clone.find( '.smart-cf-wp-editor' ).each( function( i, e ) {

@@ -17,12 +17,14 @@ class Smart_Custom_Fields_Fields {
 	 */
 	public function text( $name, array $options = array() ) {
 		$options = shortcode_atts( array(
-			'value' => '',
+			'value'    => '',
+			'disabled' => false,
 		), $options );
 		return sprintf(
-			'<input type="text" name="%s" value="%s" class="widefat" />',
+			'<input type="text" name="%s" value="%s" class="widefat" %s />',
 			esc_attr( $name ),
-			esc_attr( $options['value'] )
+			esc_attr( $options['value'] ),
+			disabled( true, $options['disabled'], false )
 		);
 	}
 
@@ -35,20 +37,23 @@ class Smart_Custom_Fields_Fields {
 	 */
 	public function checkbox( $name, array $choices, array $options = array() ) {
 		$options = shortcode_atts( array(
-			'value' => '',
+			'value'    => '',
+			'disabled' => false,
 		), $options );
 		$form_field = sprintf(
-			'<input type="hidden" name="%s" value="" />',
-			esc_attr( $name )
+			'<input type="hidden" name="%s" value="" %s />',
+			esc_attr( $name ),
+			disabled( true, $options['disabled'], false )
 		);
 		foreach ( $choices as $choice ) {
 			$choice = trim( $choice );
 			$checked = ( is_array( $options['value'] ) && in_array( $choice, $options['value'] ) ) ? 'checked="checked"' : '' ;
 			$form_field .= sprintf(
-				'<label><input type="checkbox" name="%s" value="%s" %s /> %s</label>',
+				'<label><input type="checkbox" name="%s" value="%s" %s %s /> %s</label>',
 				esc_attr( $name . '[]' ),
 				esc_attr( $choice ),
 				$checked,
+				disabled( true, $options['disabled'], false ),
 				esc_html( $choice )
 			);
 		}
@@ -64,11 +69,13 @@ class Smart_Custom_Fields_Fields {
 	 */
 	public function radio( $name, array $choices, array $options = array() ) {
 		$options = shortcode_atts( array(
-			'value' => '',
+			'value'    => '',
+			'disabled' => false,
 		), $options );
 		$form_field = sprintf(
-			'<input type="hidden" name="%s" value="" />',
-			esc_attr( $name )
+			'<input type="hidden" name="%s" value="" %s />',
+			esc_attr( $name ),
+			disabled( true, $options['disabled'], false )
 		);
 		foreach ( $choices as $choice ) {
 			$choice = trim( $choice );
@@ -92,7 +99,8 @@ class Smart_Custom_Fields_Fields {
 	 */
 	public function select( $name, array $choices, array $options = array() ) {
 		$options = shortcode_atts( array(
-			'value' => '',
+			'value'    => '',
+			'disabled' => false,
 		), $options );
 		$form_field = '';
 		foreach ( $choices as $choice ) {
@@ -103,8 +111,9 @@ class Smart_Custom_Fields_Fields {
 			);
 		}
 		$form_field = sprintf(
-			'<select name="%s">%s</select>',
+			'<select name="%s" %s>%s</select>',
 			esc_attr( $name ),
+			disabled( true, $options['disabled'], false ),
 			$form_field
 		);
 		return $form_field;
@@ -118,11 +127,13 @@ class Smart_Custom_Fields_Fields {
 	 */
 	public function textarea( $name, array $options = array() ) {
 		$options = shortcode_atts( array(
-			'value' => '',
+			'value'    => '',
+			'disabled' => false,
 		), $options );
 		return sprintf(
-			'<textarea name="%s" rows="5" class="widefat">%s</textarea>',
+			'<textarea name="%s" rows="5" class="widefat" %s>%s</textarea>',
 			esc_attr( $name ),
+			disabled( true, $options['disabled'], false ),
 			$options['value']
 		);
 	}
@@ -135,17 +146,19 @@ class Smart_Custom_Fields_Fields {
 	 */
 	public function wysiwyg( $name, array $options = array() ) {
 		$options = shortcode_atts( array(
-			'value' => '',
+			'value'    => '',
+			'disabled' => false,
 		), $options );
 		return sprintf(
 			'<div class="wp-editor-wrap">
 				<div class="wp-media-buttons">%s</div>
 				<div class="wp-editor-container">
-					<textarea name="%s" rows="8" class="widefat smart-cf-wp-editor">%s</textarea>
+					<textarea name="%s" rows="8" class="widefat smart-cf-wp-editor" %s>%s</textarea>
 				</div>
 			</div>',
 			$this->media_buttons(),
 			esc_attr( $name ),
+			disabled( true, $options['disabled'], false ),
 			wp_richedit_pre( $options['value'] )
 		);
 	}
@@ -166,7 +179,8 @@ class Smart_Custom_Fields_Fields {
 	 */
 	public function image( $name, array $options = array() ) {
 		$options = shortcode_atts( array(
-			'value' => '',
+			'value'    => '',
+			'disabled' => false,
 		), $options );
 
 		$btn_remove = sprintf(
@@ -192,13 +206,14 @@ class Smart_Custom_Fields_Fields {
 		return sprintf(
 			'<span class="button btn-add-image">%s</span><br />
 			<span class="%s %s">%s</span>
-			<input type="hidden" name="%s" value="%s" />',
+			<input type="hidden" name="%s" value="%s" %s />',
 			esc_html__( 'Image Select', 'smart-custom-fields' ),
 			esc_attr( SCF_Config::PREFIX . 'upload-image' ),
 			esc_attr( $hide_class ),
 			$image,
 			esc_attr( $name ),
-			esc_attr( $options['value'] )
+			esc_attr( $options['value'] ),
+			disabled( true, $options['disabled'], false )
 		);
 	}
 
@@ -210,7 +225,8 @@ class Smart_Custom_Fields_Fields {
 	 */
 	public function file( $name, array $options = array() ) {
 		$options = shortcode_atts( array(
-			'value' => '',
+			'value'    => '',
+			'disabled' => false,
 		), $options );
 
 		$btn_remove = sprintf(
@@ -237,13 +253,14 @@ class Smart_Custom_Fields_Fields {
 		return sprintf(
 			'<span class="button btn-add-file">%s</span><br />
 			<span class="%s %s">%s</span>
-			<input type="hidden" name="%s" value="%s" />',
+			<input type="hidden" name="%s" value="%s" %s />',
 			esc_html__( 'File Select', 'smart-custom-fields' ),
 			esc_attr( SCF_Config::PREFIX . 'upload-file' ),
 			esc_attr( $hide_class ),
 			$image,
 			esc_attr( $name ),
-			esc_attr( $options['value'] )
+			esc_attr( $options['value'] ),
+			disabled( true, $options['disabled'], false )
 		);
 	}
 
@@ -257,6 +274,7 @@ class Smart_Custom_Fields_Fields {
 		$options = shortcode_atts( array(
 			'value'     => array(),
 			'post_type' => array( 'post' ),
+			'disabled'  => false,
 		), $options );
 		$posts_per_page = get_option( 'posts_per_page' );
 
@@ -299,9 +317,10 @@ class Smart_Custom_Fields_Fields {
 				$post_title
 			);
 			$hidden[] = sprintf(
-				'<input type="hidden" name="%s" value="%d" />',
+				'<input type="hidden" name="%s" value="%d" %s />',
 				esc_attr( $name . '[]' ),
-				$post_id
+				$post_id,
+				disabled( true, $options['disabled'], false )
 			);
 		}
 
@@ -315,7 +334,7 @@ class Smart_Custom_Fields_Fields {
 				<div class="%s">
 					<ul>%s</ul>
 					<p class="load-relation-posts %s" data-post-types="%s">%s</p>
-					<input type="hidden" name="%s" />
+					<input type="hidden" name="%s" %s />
 					%s
 				</div>
 			</div>
@@ -327,6 +346,7 @@ class Smart_Custom_Fields_Fields {
 			implode( ',', $options['post_type'] ),
 			esc_html__( 'load more', 'smart-custom-fields' ),
 			esc_attr( $name ),
+			disabled( true, $options['disabled'], false ),
 			implode( '', $hidden ),
 			SCF_Config::PREFIX . 'relation-right',
 			implode( '', $selected_li )

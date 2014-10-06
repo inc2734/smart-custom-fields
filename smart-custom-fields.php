@@ -203,54 +203,67 @@ class Smart_Custom_Fields {
 	 */
 	private function get_field( $field, $index, $value ) {
 		$form_field = '';
-		$name = SCF_Config::NAME . '[' . $field['name'] . '][' . $index . ']';
+		$name = SCF_Config::NAME . '[' . $field['name'] . '][_' . $index . ']';
+		$disabled = false;
+		if ( is_null( $index ) ) {
+			$disabled = true;
+		}
 		switch ( $field['type'] ) {
 			case 'text' :
 				$form_field = $this->Fields->text( $name, array(
-					'value' => $value,
+					'value'    => $value,
+					'disabled' => $disabled,
 				) );
 				break;
 			case 'check' :
 				$choices = $this->Fields->get_choices( $field['choices'] );
 				$form_field = $this->Fields->checkbox( $name, $choices, array(
-					'value' => $value,
+					'value'    => $value,
+					'disabled' => $disabled,
 				) );
 				break;
 			case 'radio' :
 				$choices = $this->Fields->get_choices( $field['choices'] );
 				$form_field = $this->Fields->radio( $name, $choices, array(
-					'value' => $value,
+					'value'    => $value,
+					'disabled' => $disabled,
 				) );
 				break;
 			case 'select' :
 				$choices = $this->Fields->get_choices( $field['choices'] );
 				$form_field = $this->Fields->select( $name, $choices, array(
-					'value' => $value,
+					'value'    => $value,
+					'disabled' => $disabled,
 				) );
 				break;
 			case 'textarea' :
 				$form_field = $this->Fields->textarea( $name, array(
-					'value' => $value,
+					'value'    => $value,
+					'disabled' => $disabled,
 				) );
 				break;
 			case 'wysiwyg' :
 				$form_field = $this->Fields->wysiwyg( $name, array(
-					'value' => $value,
+					'value'    => $value,
+					'disabled' => $disabled,
 				) );
 				break;
 			case 'image' :
 				$form_field = $this->Fields->image( $name, array(
-					'value' => $value,
+					'value'    => $value,
+					'disabled' => $disabled,
 				) );
 				break;
 			case 'file' :
 				$form_field = $this->Fields->file( $name, array(
-					'value' => $value,
+					'value'    => $value,
+					'disabled' => $disabled,
 				) );
 				break;
 			case 'relation' :
 				$form_field = $this->Fields->relation( $name, array(
 					'value'     => $value,
+					'disabled'  => $disabled,
 					'post_type' => $field['post-type'],
 				) );
 		}
@@ -532,11 +545,7 @@ class Smart_Custom_Fields {
 				);
 			}
 			
-			$form_field_index = $index;
-			if ( is_null( $form_field_index ) ) {
-				$form_field_index = 0;
-			}
-			$form_field = $this->get_field( $field, $form_field_index, $value );
+			$form_field = $this->get_field( $field, $index, $value );
 			printf(
 				'<tr><th>%s</th><td>%s%s</td></tr>',
 				esc_html( $field_label ),
