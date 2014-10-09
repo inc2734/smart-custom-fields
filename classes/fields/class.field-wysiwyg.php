@@ -1,0 +1,85 @@
+<?php
+/**
+ * Smart_Custom_Fields_Field_Wysiwyg
+ * Version    : 1.0.0
+ * Author     : Takashi Kitajima
+ * Created    : October 7, 2014
+ * Modified   :
+ * License    : GPLv2
+ * License URI: http://www.gnu.org/licenses/gpl-2.0.html
+ */
+class Smart_Custom_Fields_Field_Wysiwyg extends Smart_Custom_Fields_Field_Base {
+
+	/**
+	 * init
+	 * @return array ( name, label, optgroup )
+	 */
+	protected function init() {
+		return array(
+			'name'     => 'wysiwyg',
+			'label'    => __( 'Wysiwyg', 'smart-custom-fields' ),
+			'optgroup' => 'content-fields',
+		);
+	}
+
+	/**
+	 * get_field
+	 * @param array $field フィールドの情報
+	 * @param int $index インデックス番号
+	 * @param mixed $value 保存されている値（check のときだけ配列）
+	 */
+	public function get_field( $field, $index, $value ) {
+		$name = $this->get_name_attribute( $field['name'], $index );
+		$disabled = $this->get_disable_attribute( $index );
+		return sprintf(
+			'<div class="wp-editor-wrap">
+				<div class="wp-media-buttons">%s</div>
+				<div class="wp-editor-container">
+					<textarea name="%s" rows="8" class="widefat smart-cf-wp-editor" %s>%s</textarea>
+				</div>
+			</div>',
+			$this->media_buttons(),
+			esc_attr( $name ),
+			disabled( true, $disabled, false ),
+			wp_richedit_pre( $value )
+		);
+	}
+
+	/**
+	 * display_field_options
+	 * @param int $group_key
+	 * @param int $field_key
+	 */
+	public function display_field_options( $group_key, $field_key ) {
+		?>
+		<tr>
+			<th><?php esc_html_e( 'Default', 'smart-custom-fields' ); ?></th>
+			<td>
+				<textarea
+					name="<?php echo esc_attr( $this->get_field_name( $group_key, $field_key, 'default' ) ); ?>"
+					class="widefat"
+					rows="5"><?php echo esc_textarea( "\n" . $this->get_field_value( 'default' ) ); ?></textarea>
+			</td>
+		</tr>
+		<tr>
+			<th><?php esc_html_e( 'Notes', 'smart-custom-fields' ); ?></th>
+			<td>
+				<input type="text"
+					name="<?php echo esc_attr( $this->get_field_name( $group_key, $field_key, 'notes' ) ); ?>"
+					class="widefat"
+					value="<?php echo esc_attr( $this->get_field_value( 'notes' ) ); ?>"
+				/>
+			</td>
+		</tr>
+		<?php
+	}
+	
+	protected function media_buttons( $editor_id = 'content' ) {
+		$img = '<span class="wp-media-buttons-icon"></span> ';
+		return sprintf( '<a href="#" class="button insert-media add_media" data-editor="%s" title="%s">%s</a>',
+			esc_attr( $editor_id ),
+			esc_attr__( 'Add Media' ),
+			$img . __( 'Add Media' )
+		);
+	}
+}

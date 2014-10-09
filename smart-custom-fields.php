@@ -6,7 +6,7 @@
  * Version: 1.0.0
  * Author: Takashi Kitajima
  * Author URI: http://2inc.org
- * Created: September 23, 2014
+ * Created: October 9, 2014
  * Modified:
  * Text Domain: smart-custom-fields
  * Domain Path: /languages/
@@ -28,10 +28,10 @@ class Smart_Custom_Fields {
 	protected $repeat_multiple_data = array();
 
 	/**
-	 * Fields
-	 * Smart_Custom_Fields_Fields のインスタンス
+	 * fields
+	 * 各フォーム部品のオブジェクトを格納する配列
 	 */
-	protected $Fields;
+	protected $fields = array();
 
 	/**
 	 * __construct
@@ -46,12 +46,23 @@ class Smart_Custom_Fields {
 	 * plugins_loaded
 	 */
 	public function plugins_loaded() {
+		do_action( SCF_Config::PREFIX . 'load' );
+		require_once plugin_dir_path( __FILE__ ) . 'classes/class.field-base.php';
+		require_once plugin_dir_path( __FILE__ ) . 'classes/fields/class.field-text.php';
+		foreach ( glob( plugin_dir_path( __FILE__ ) . 'classes/fields/*.php' ) as $form_item ) {
+			include_once $form_item;
+			$basename = basename( $form_item, '.php' );
+			$classname = preg_replace( '/^class\.field\-(.+)$/', 'Smart_Custom_Fields_Field_$1', $basename );
+			if ( class_exists( $classname ) ) {
+				new $classname();
+			}
+		}
+		$this->fields = apply_filters( SCF_Config::PREFIX . 'add-fields', $this->fields );
+
 		require_once plugin_dir_path( __FILE__ ) . 'classes/class.settings.php';
-		require_once plugin_dir_path( __FILE__ ) . 'classes/class.fields.php';
 		require_once plugin_dir_path( __FILE__ ) . 'classes/class.revisions.php';
 		require_once plugin_dir_path( __FILE__ ) . 'classes/class.scf.php';
 		new Smart_Custom_Fields_Settings();
-		$this->Fields = new Smart_Custom_Fields_Fields();
 		new Smart_Custom_Fields_Revisions();
 		new SCF();
 
@@ -193,81 +204,6 @@ class Smart_Custom_Fields {
 		}
 		printf( '</div>' );
 		wp_nonce_field( SCF_Config::NAME . '-fields', SCF_Config::PREFIX . 'fields-nonce' );
-	}
-
-	/**
-	 * get_field
-	 * @param array $field フィールドの情報
-	 * @param int $index インデックス番号
-	 * @param mixed $value 保存されている値（check のときだけ配列）
-	 */
-	private function get_field( $field, $index, $value ) {
-		$form_field = '';
-		$name = SCF_Config::NAME . '[' . $field['name'] . '][_' . $index . ']';
-		$disabled = false;
-		if ( is_null( $index ) ) {
-			$disabled = true;
-		}
-		switch ( $field['type'] ) {
-			case 'text' :
-				$form_field = $this->Fields->text( $name, array(
-					'value'    => $value,
-					'disabled' => $disabled,
-				) );
-				break;
-			case 'check' :
-				$choices = $this->Fields->get_choices( $field['choices'] );
-				$form_field = $this->Fields->checkbox( $name, $choices, array(
-					'value'    => $value,
-					'disabled' => $disabled,
-				) );
-				break;
-			case 'radio' :
-				$choices = $this->Fields->get_choices( $field['choices'] );
-				$form_field = $this->Fields->radio( $name, $choices, array(
-					'value'    => $value,
-					'disabled' => $disabled,
-				) );
-				break;
-			case 'select' :
-				$choices = $this->Fields->get_choices( $field['choices'] );
-				$form_field = $this->Fields->select( $name, $choices, array(
-					'value'    => $value,
-					'disabled' => $disabled,
-				) );
-				break;
-			case 'textarea' :
-				$form_field = $this->Fields->textarea( $name, array(
-					'value'    => $value,
-					'disabled' => $disabled,
-				) );
-				break;
-			case 'wysiwyg' :
-				$form_field = $this->Fields->wysiwyg( $name, array(
-					'value'    => $value,
-					'disabled' => $disabled,
-				) );
-				break;
-			case 'image' :
-				$form_field = $this->Fields->image( $name, array(
-					'value'    => $value,
-					'disabled' => $disabled,
-				) );
-				break;
-			case 'file' :
-				$form_field = $this->Fields->file( $name, array(
-					'value'    => $value,
-					'disabled' => $disabled,
-				) );
-				break;
-			case 'relation' :
-				$form_field = $this->Fields->relation( $name, array(
-					'value'     => $value,
-					'disabled'  => $disabled,
-					'post_type' => $field['post-type'],
-				) );
-		}
-		return $form_field;
 	}
 
 	/**
@@ -489,9 +425,7 @@ class Smart_Custom_Fields {
 		if ( $is_repeat ) {
 			$btn_repeat  = sprintf( '<span class="%s"></span>', esc_attr( SCF_Config::PREFIX . 'icon-handle' ) );
 			$btn_repeat .= '<span class="button btn-add-repeat-group">+</span>';
-			if ( $index > 0 || $index === null ) {
-				$btn_repeat .= ' <span class="button btn-remove-repeat-group">-</span>';
-			}
+			$btn_repeat .= ' <span class="button btn-remove-repeat-group">-</span>';
 		}
 
 		$style = '';
@@ -516,8 +450,8 @@ class Smart_Custom_Fields {
 			$post_status = get_post_status( $post_id );
 			if ( in_array( $field['type'], array( 'check', 'relation' ) ) ) {
 				$value = array();
-				if ( !empty( $field['choices-default'] ) && ( $post_status === 'auto-draft' || is_null( $index ) ) ) {
-					$value = $this->Fields->get_choices( $field['choices-default'] );
+				if ( !SCF::is_empty( $field['default'] ) && ( $post_status === 'auto-draft' || is_null( $index ) ) ) {
+					$value = $this->fields[$field['type']]->get_choices( $field['default'] );
 				}
 				$_value = $this->get_multiple_data_field_value( $post_id, $field['name'], $index );
 			}
@@ -525,10 +459,8 @@ class Smart_Custom_Fields {
 			else {
 				$value = '';
 				if ( $post_status === 'auto-draft' || is_null( $index ) ) {
-					if ( in_array( $field['type'], array( 'textarea', 'wysiwyg' ) ) && !empty( $field['textarea-default'] ) ) {
-						$value = $field['textarea-default'];
-					} elseif ( !empty( $field['single-default'] ) ) {
-						$value = $field['single-default'];
+					if ( !SCF::is_empty( $field['default'] ) ) {
+						$value = $field['default'];
 					}
 				}
 				$_value = $this->get_single_data_field_value( $post_id, $field['name'], $index );
@@ -544,8 +476,8 @@ class Smart_Custom_Fields {
 					esc_html( $field['notes'] )
 				);
 			}
-			
-			$form_field = $this->get_field( $field, $index, $value );
+
+			$form_field = $this->fields[$field['type']]->get_field( $field, $index, $value );
 			printf(
 				'<tr><th>%s</th><td>%s%s</td></tr>',
 				esc_html( $field_label ),

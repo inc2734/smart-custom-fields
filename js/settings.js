@@ -17,6 +17,7 @@ jQuery( function( $ ) {
 		var group_class      = '.smart-cf-group';
 		var field_class      = '.smart-cf-field';
 		var duplicate_alert_class = '.smart-cf-duplicate-alert';
+		var options          = wrapper.find( '.smart-cf-field-options' );
 		var cnt = wrapper.find( field_class ).length;
 
 		/**
@@ -160,46 +161,27 @@ jQuery( function( $ ) {
 		} );
 
 		/**
-		 * 選択項目テキストエリア
+		 * 選択項目オプション
 		 */
+		options.find( 'input, textarea, select' ).attr( 'disabled', 'disabled' );
+		wrapper.find( '.smart-cf-field-select' ).each( function( i, e ) {
+			var selected_type = $( this ).val();
+			$( this ).parents( field_class ).find( '.smart-cf-field-options-' + selected_type )
+				.removeClass( 'hide' )
+				.find( 'input, textarea, select' ).removeAttr( 'disabled' );
+		} );
+
 		wrapper.find( '.smart-cf-field-select' ).change( function() {
-			var field            = $( this ).parents( field_class );
-			var option           = $( this ).val();
-			var choices          = field.find( '.smart-cf-choices' );
-			var choices_default  = field.find( '.smart-cf-choices-default' );
-			var single_default   = field.find( '.smart-cf-single-default' );
-			var textarea_default = field.find( '.smart-cf-textarea-default' );
-			var post_type        = field.find( '.smart-cf-post-type' );
+			var field  = $( this ).parents( field_class );
+			var val = $( this ).val();
 
-			if ( option === 'check' || option === 'select' || option === 'radio' ) {
-				choices.removeClass( 'hide' );
-			} else {
-				choices.addClass( 'hide' );
-			}
+			var hide_options = field.find( '.smart-cf-field-options' );
+			hide_options.addClass( 'hide' );
+			hide_options.find( 'input, textarea, select' ).attr( 'disabled', 'disabled' );
 
-			if ( option === 'check' ) {
-				choices_default.removeClass( 'hide' );
-			} else {
-				choices_default.addClass( 'hide' );
-			}
-
-			if ( option === 'text' || option === 'select' || option === 'radio' ) {
-				single_default.removeClass( 'hide' );
-			} else {
-				single_default.addClass( 'hide' );
-			}
-
-			if ( option === 'textarea' || option === 'wysiwyg' ) {
-				textarea_default.removeClass( 'hide' );
-			} else {
-				textarea_default.addClass( 'hide' );
-			}
-
-			if ( option === 'relation' ) {
-				post_type.removeClass( 'hide' );
-			} else {
-				post_type.addClass( 'hide' );
-			}
+			var show_options = field.find( '.smart-cf-field-options-' + val );
+			show_options.find( 'input, textarea, select' ).removeAttr( 'disabled' );
+			show_options.removeClass( 'hide' );
 		} );
 
 		/**

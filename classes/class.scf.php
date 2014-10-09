@@ -332,4 +332,20 @@ class SCF {
 		self::save_repeat_multiple_data_cache( $post_id, $repeat_multiple_data );
 		return $repeat_multiple_data;
 	}
+
+	/**
+	 * is_empty
+	 * null もしくは空値の場合は true
+	 * @param mixed $value
+	 * @return bool
+	 */
+	public static function is_empty( &$value ) {
+		if ( isset( $value ) ) {
+			if ( is_null( $value ) || $value === '' ) {
+				return true;
+			}
+			return false;
+		}
+		return true;
+	}
 }

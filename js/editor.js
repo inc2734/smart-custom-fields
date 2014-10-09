@@ -34,8 +34,28 @@ jQuery( function( $ ) {
 		btn_add_repeat_group.click( function( e ) {
 			cnt ++;
 			var parent = $( this ).parents( '.smart-cf-meta-box-repeat-tables' );
-			var table = parent.find( table_class ).first();
-			var clone = table.clone( true, true ).hide();
+			add_repeat_group( $( this ) );
+		} );
+
+		/**
+		 * グループ削除ボタン
+		 */
+		btn_remove_repeat_group.click( function() {
+			var table = $( this ).parents( table_class );
+			table.fadeOut( 'fast', function() {
+				$( this ).remove();
+			} );
+			var tables = $( this ).parents( '.smart-cf-meta-box-repeat-tables' );
+			if ( tables.find( table_class ).length === 2 ) {
+				cnt ++;
+				add_repeat_group( $( this ) );
+			}
+		} );
+
+		function add_repeat_group( button ) {
+			var tables = button.parents( '.smart-cf-meta-box-repeat-tables' );
+			var table  = tables.find( table_class ).first();
+			var clone  = table.clone( true, true ).hide();
 
 			clone.find( 'input, select, textarea' ).each( function( i, e ) {
 				$( this ).attr( 'name',
@@ -51,19 +71,9 @@ jQuery( function( $ ) {
 				$( this ).attr( 'id', 'smart-cf-wysiwyg-' + cnt + i );
 			} );
 
-			$( this ).parent().after( clone.fadeIn( 'fast' ) );
-			$( this ).trigger( 'smart-cf-after-add-group' );
-		} );
-
-		/**
-		 * グループ削除ボタン
-		 */
-		btn_remove_repeat_group.click( function() {
-			var table = $( this ).parents( table_class );
-			table.fadeOut( 'fast', function() {
-				$( this ).remove();
-			} );
-		} );
+			button.parent().after( clone.fadeIn( 'fast' ) );
+			button.trigger( 'smart-cf-after-add-group', button );
+		}
 
 		/**
 		 * 画像アップローダー

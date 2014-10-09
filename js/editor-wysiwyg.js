@@ -13,8 +13,8 @@ jQuery( function( $ ) {
 	 * グループ追加ボタンを押したときに発火。
 	 * wysiwyg エディター用のテキストエリアがあったら wysiwyg 化する。
 	 */
-	$( document ).on( 'smart-cf-after-add-group', '.btn-add-repeat-group', function() {
-		var parent = $( this ).parents( '.smart-cf-meta-box-repeat-tables' );
+	$( document ).on( 'smart-cf-after-add-group', function( e, button ) {
+		var parent = $( button ).parents( '.smart-cf-meta-box-repeat-tables' );
 		parent.find( '.smart-cf-wp-editor' ).each( function( i, e ) {
 			if ( $( this ).css( 'display' ) !== 'none' ) {
 				var editor_id = $( this ).attr( 'id' );

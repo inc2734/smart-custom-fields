@@ -196,32 +196,19 @@ class Smart_Custom_Fields_Settings {
 											$optgroups = array(
 												'basic-fields' => array(
 													'label'   => esc_attr__( 'Basic fields', 'smart-custom-fields' ),
-													'options' => array(
-														'text'     => esc_html__( 'Text', 'smart-custom-fields' ),
-														'textarea' => esc_html__( 'Textarea', 'smart-custom-fields' ),
-													),
+													'options' => array(),
 												),
 												'select-fields' => array(
 													'label'   => esc_attr__( 'Select fields', 'smart-custom-fields' ),
-													'options' => array(
-														'select'   => esc_html__( 'Select', 'smart-custom-fields' ),
-														'check'    => esc_html__( 'Check', 'smart-custom-fields' ),
-														'radio'    => esc_html__( 'Radio', 'smart-custom-fields' ),
-													),
+													'options' => array(),
 												),
 												'content-fields' => array(
 													'label'   => esc_attr__( 'Content fields', 'smart-custom-fields' ),
-													'options' => array(
-														'wysiwyg'  => esc_html__( 'Wysiwyg', 'smart-custom-fields' ),
-														'image'    => esc_html__( 'Image', 'smart-custom-fields' ),
-														'file'     => esc_html__( 'File', 'smart-custom-fields' ),
-													),
+													'options' => array(),
 												),
 												'other-fields' => array(
 													'label'   => esc_attr__( 'Other fields', 'smart-custom-fields' ),
-													'options' => array(
-														'relation' => esc_html__( 'Relation', 'smart-custom-fields' ),
-													),
+													'options' => array(),
 												),
 											);
 											foreach ( $optgroups as $optgroup_name => $optgroup_values ) {
@@ -235,7 +222,7 @@ class Smart_Custom_Fields_Settings {
 														'<option value="%s" %s>%s</option>',
 														esc_attr( $option_key ),
 														selected( $this->get( 'type', $field ), $option_key, false ),
-														$option
+														esc_html( $option )
 													);
 												}
 												printf(
@@ -248,79 +235,7 @@ class Smart_Custom_Fields_Settings {
 										</select>
 									</td>
 								</tr>
-								<tr class="<?php echo esc_attr( SCF_Config::PREFIX . 'choices' ); ?> <?php $this->add_hide_class( in_array( $this->get( 'type', $field ), array( 'select', 'check', 'radio' ) ) ); ?>">
-									<th><?php esc_html_e( 'Choices', 'smart-custom-fields' ); ?></th>
-									<td>
-										<textarea
-											name="<?php echo esc_attr( SCF_Config::NAME . '[' . $group_key . '][fields][' . $field_key . '][choices]' ); ?>"
-											class="widefat"
-											rows="5" /><?php echo esc_textarea( "\n" . $this->get( 'choices', $field ) ); ?></textarea>
-									</td>
-								</tr>
-
-								<tr class="<?php echo esc_attr( SCF_Config::PREFIX . 'choices-default' ); ?> <?php $this->add_hide_class( in_array( $this->get( 'type', $field ), array( 'check' ) ) ); ?>">
-									<th><?php esc_html_e( 'Default', 'smart-custom-fields' ); ?></th>
-									<td>
-										<textarea
-											name="<?php echo esc_attr( SCF_Config::NAME . '[' . $group_key . '][fields][' . $field_key . '][choices-default]' ); ?>"
-											class="widefat"
-											rows="5" /><?php echo esc_textarea( "\n" . $this->get( 'choices-default', $field ) ); ?></textarea>
-									</td>
-								</tr>
-
-								<tr class="<?php echo esc_attr( SCF_Config::PREFIX . 'single-default' ); ?> <?php $this->add_hide_class( in_array( $this->get( 'type', $field ), array( '', 'text', 'radio', 'select' ) ) ); ?>">
-									<th><?php esc_html_e( 'Default', 'smart-custom-fields' ); ?></th>
-									<td>
-										<input type="text"
-											name="<?php echo esc_attr( SCF_Config::NAME . '[' . $group_key . '][fields][' . $field_key . '][single-default]' ); ?>"
-											class="widefat"
-											value="<?php echo esc_attr( $this->get( 'single-default', $field ) ); ?>" />
-									</td>
-								</tr>
-
-								<tr class="<?php echo esc_attr( SCF_Config::PREFIX . 'textarea-default' ); ?> <?php $this->add_hide_class( in_array( $this->get( 'type', $field ), array( 'textarea', 'wysiwyg' ) ) ); ?>">
-									<th><?php esc_html_e( 'Default', 'smart-custom-fields' ); ?></th>
-									<td>
-										<textarea
-											name="<?php echo esc_attr( SCF_Config::NAME . '[' . $group_key . '][fields][' . $field_key . '][textarea-default]' ); ?>"
-											class="widefat"
-											rows="5" /><?php echo "\n" . $this->get( 'textarea-default', $field ); ?></textarea>
-									</td>
-								</tr>
-
-								<tr class="<?php echo esc_attr( SCF_Config::PREFIX . 'post-type' ); ?> <?php $this->add_hide_class( in_array( $this->get( 'type', $field ), array( 'relation' ) ) ); ?>">
-									<th><?php esc_html_e( 'Post Types', 'smart-custom-fields' ); ?></th>
-									<td>
-										<?php
-										$post_types = get_post_types( array(
-											'show_ui'  => true,
-										), 'objects' );
-										unset( $post_types['attachment'] );
-										unset( $post_types[SCF_Config::NAME] );
-										?>
-										<?php foreach ( $post_types as $post_type => $post_type_object ) : ?>
-										<?php
-										$save_post_type = $this->get( 'post-type', $field );
-										$checked = ( is_array( $save_post_type ) && in_array( $post_type, $save_post_type ) ) ? 'checked="checked"' : ''; ?>
-										<input type="checkbox"
-											name="<?php echo esc_attr( SCF_Config::NAME . '[' . $group_key . '][fields][' . $field_key . '][post-type][]' ); ?>"
-											value="<?php echo esc_attr( $post_type ); ?>"
-											 <?php echo $checked; ?> /><?php echo esc_html( $post_type_object->labels->singular_name ); ?>
-										<?php endforeach; ?>
-									</td>
-								</tr>
-
-								<tr>
-									<th><?php esc_html_e( 'Notes', 'smart-custom-fields' ); ?></th>
-									<td>
-										<input type="text"
-											name="<?php echo esc_attr( SCF_Config::NAME . '[' . $group_key . '][fields][' . $field_key . '][notes]' ); ?>"
-											size="30"
-											class="widefat"
-											value="<?php echo esc_attr( $this->get( 'notes', $field ) ); ?>"
-										/>
-									</td>
-								</tr>
+								<?php do_action( SCF_Config::PREFIX . 'field-options', $group_key, $field_key, $field ); ?>
 							</table>
 						</div>
 						<?php endforeach; ?>
@@ -385,26 +300,6 @@ class Smart_Custom_Fields_Settings {
 				$fields = array();
 				foreach ( $group_value['fields'] as $field_value ) {
 					if ( !empty( $field_value['name'] ) ) {
-						// type が select, radio, check でないときは choices を空に
-						// type が check でないときは choices-default 
-						// type が text, select, radio でないときは single-default を空に
-						// type が textarea, wysiwyg でないときは textarea-default を空に
-						// type が relation でないときは post-type を空に
-						if ( !in_array( $field_value['type'], array( 'select', 'radio', 'check' ) ) ) {
-							$field_value['choices'] = '';
-						}
-						if ( $field_value['type'] !== 'check' ) {
-							$field_value['choices-default'] = '';
-						}
-						if ( !in_array( $field_value['type'], array( 'text', 'radio', 'select' ) ) ) {
-							$field_value['single-default'] = '';
-						}
-						if ( !in_array( $field_value['type'], array( 'textarea', 'wysiwyg' ) ) ) {
-							$field_value['textarea-default'] = '';
-						}
-						if ( $field_value['type'] !== 'relation' ) {
-							$field_value['post-type'] = array();
-						}
 						$fields[] = $field_value;
 					}
 				}

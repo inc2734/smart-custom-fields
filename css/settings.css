@@ -97,13 +97,22 @@
 	margin-top: 0;
 }
 .smart-cf-group .smart-cf-field table {
+	border-collapse: collapse;
 	width: 100%;
+}
+.smart-cf-group .smart-cf-field table th,
+.smart-cf-group .smart-cf-field table td {
+	padding: 5px 0;
 }
 .smart-cf-group .smart-cf-field table th {
 	font-weight: normal;
+	padding-right: 15px;
 	text-align: left;
 	vertical-align: top;
 	width: 15%;
+}
+.smart-cf-group .smart-cf-field table table {
+	margin: -5px 0;
 }
 
 /**
@@ -130,11 +139,7 @@
 /** ==================================================
  * .hide
  */
-.smart-cf-group .smart-cf-field table .smart-cf-choices.hide,
-.smart-cf-group .smart-cf-field table .smart-cf-choices-default.hide,
-.smart-cf-group .smart-cf-field table .smart-cf-single-default.hide,
-.smart-cf-group .smart-cf-field table .smart-cf-textarea-default.hide,
-.smart-cf-group .smart-cf-field table .smart-cf-post-type.hide,
+.smart-cf-group .smart-cf-field table tr.hide,
 .smart-cf-group.hide,
 .smart-cf-group .btn-add-field.hide,
 .smart-cf-group .smart-cf-group-names.hide,

@@ -23,7 +23,8 @@ jQuery( function( $ ) {
 			var btn_load = $( this );
 			click_count ++;
 			btn_load.data( 'click_count', click_count );
-			btn_load.addClass( 'hide' );
+			var btn_load_text = btn_load.text();
+			btn_load.text( 'Now loading...' );
 
 			$.post( smart_cf_relation.endpoint, {
 					action     : smart_cf_relation.action,
@@ -32,6 +33,7 @@ jQuery( function( $ ) {
 					post_types : post_types
 				},
 				function( response ) {
+					btn_load.addClass( 'hide' );
 					$( response ).each( function( i, e ) {
 						parent.find( '.smart-cf-relation-children-select ul' ).append(
 							$( '<li />' )
@@ -40,6 +42,7 @@ jQuery( function( $ ) {
 						);
 					} );
 					if ( response ) {
+						btn_load.text( btn_load_text );
 						btn_load.removeClass( 'hide' );
 					}
 				}

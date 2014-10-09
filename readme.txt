@@ -55,6 +55,9 @@ https://github.com/inc2734/smart-custom-fields/
 
 == Screenshots ==
 
+1. Smart Custom Fields settings page.
+2. Post edit page.
+
 == Changelog ==
 
 = 1.0.0 =
