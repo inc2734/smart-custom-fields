@@ -60,5 +60,8 @@ https://github.com/inc2734/smart-custom-fields/
 
 == Changelog ==
 
+= 1.0.1 =
+* Fix bug that is not displayed wysiwyg editor when there are not content editor.
+
 = 1.0.0 =
 * Initial release.

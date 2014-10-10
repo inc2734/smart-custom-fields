@@ -1,9 +1,9 @@
 <?php
 /**
  * Smart_Custom_Fields_Field_Base
- * Version    : 1.0.0
+ * Version    : 1.0.1
  * Author     : Takashi Kitajima
- * Created    : October 7, 2014
+ * Created    : October 10, 2014
  * Modified   :
  * License    : GPLv2
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -46,6 +46,7 @@ abstract class Smart_Custom_Fields_Field_Base {
 		add_filter( SCF_Config::PREFIX . 'add-fields', array( $this, 'add_fields' ) );
 		add_filter( SCF_Config::PREFIX . 'field-select-' . $settings['optgroup'], array( $this, 'field_select' ) );
 		add_action( SCF_Config::PREFIX . 'field-options', array( $this, '_display_field_options' ), 10, 3 );
+		$this->after_loaded();
 	}
 
 	/**
@@ -53,6 +54,12 @@ abstract class Smart_Custom_Fields_Field_Base {
 	 * @return array ( name, label, optgroup )
 	 */
 	abstract protected function init();
+
+	/**
+	 * after_loaded
+	 */
+	protected function after_loaded() {
+	}
 
 	/**
 	 * get_field

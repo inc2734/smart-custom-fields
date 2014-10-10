@@ -1,9 +1,9 @@
 <?php
 /**
  * Smart_Custom_Fields_Field_Wysiwyg
- * Version    : 1.0.0
+ * Version    : 1.0.1
  * Author     : Takashi Kitajima
- * Created    : October 7, 2014
+ * Created    : October 10, 2014
  * Modified   :
  * License    : GPLv2
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -20,6 +20,20 @@ class Smart_Custom_Fields_Field_Wysiwyg extends Smart_Custom_Fields_Field_Base {
 			'label'    => __( 'Wysiwyg', 'smart-custom-fields' ),
 			'optgroup' => 'content-fields',
 		);
+	}
+
+	/**
+	 * after_loaded
+	 */
+	protected function after_loaded() {
+		add_action( 'admin_footer', array( $this, 'admin_footer' ) );
+	}
+	public function admin_footer() {
+		?>
+		<div style="display:none;">
+			<?php wp_editor( '', SCF_Config::PREFIX . 'wysiwyg-base' ); ?>
+		</div>
+		<?php
 	}
 
 	/**
