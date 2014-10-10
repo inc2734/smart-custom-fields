@@ -61,6 +61,7 @@ https://github.com/inc2734/smart-custom-fields/
 == Changelog ==
 
 = 1.0.1 =
+* Add display condition by post id.
 * Fix bug that is not displayed wysiwyg editor when there are not content editor.
 * Textarea does not filter the_content filter in SCF::get() and SCF::gets().
 

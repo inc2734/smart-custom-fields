@@ -131,6 +131,10 @@
 /** ==================================================
  * #smart-cf-meta-box-condition
  */
+#smart-cf-meta-box-condition b {
+	display: block;
+	margin: 0 0 5px;
+}
 #smart-cf-meta-box-condition label {
 	display: block;
 	margin: 0 0 5px;

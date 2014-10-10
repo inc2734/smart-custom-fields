@@ -256,11 +256,12 @@ class SCF {
 	 * @param array $settings
 	 */
 	public static function get_settings_posts( $post_type ) {
+		global $post;
 		$posts = array();
 		if ( isset( self::$settings_posts_cache[$post_type] ) ) {
 			return self::$settings_posts_cache[$post_type];
 		}
-		$posts = get_posts( array(
+		$_posts = get_posts( array(
 			'post_type'      => SCF_Config::NAME,
 			'posts_per_page' => -1,
 			'meta_query'     => array(
@@ -271,6 +272,24 @@ class SCF {
 				),
 			),
 		) );
+
+		// Post ID による表示条件設定がある場合はフィルタリングする
+		if ( isset( $post->ID ) ) {
+			foreach ( $_posts as $_post ) {
+				$condition_post_ids = array();
+				$_condition_post_ids = get_post_meta( $_post->ID, SCF_Config::PREFIX . 'condition-post-ids', true );
+				if ( $_condition_post_ids ) {
+					$_condition_post_ids = explode( ',', $_condition_post_ids );
+					foreach ( $_condition_post_ids as $condition_post_id ) {
+						$condition_post_ids[] = trim( $condition_post_id );
+					}
+					if ( $condition_post_ids && !in_array( $post->ID, $condition_post_ids ) ) {
+						continue;
+					}
+				}
+				$posts[] = $_post;
+			}
+		}
 		self::save_settings_posts_cache( $post_type, $posts );
 		return $posts;
 	}

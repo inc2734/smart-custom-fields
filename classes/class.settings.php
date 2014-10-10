@@ -262,9 +262,10 @@ class Smart_Custom_Fields_Settings {
 		unset( $post_types[SCF_Config::NAME] );
 
 		$conditions = get_post_meta( get_the_ID(), SCF_Config::PREFIX . 'condition', true );
+		$post_type_field = '';
 		foreach ( $post_types as $post_type => $post_type_object ) {
 			$current = ( is_array( $conditions ) && in_array( $post_type, $conditions ) ) ? $post_type : false;
-			printf(
+			$post_type_field .= sprintf(
 				'<label><input type="checkbox" name="%s" value="%s" %s /> %s</label>',
 				esc_attr( SCF_Config::PREFIX . 'condition[]' ),
 				esc_attr( $post_type ),
@@ -272,6 +273,19 @@ class Smart_Custom_Fields_Settings {
 				esc_attr( $post_type_object->labels->singular_name )
 			);
 		}
+		printf(
+			'<p><b>%s</b>%s</p>',
+			esc_html__( 'Post Types', 'smart-custom-fields' ),
+			$post_type_field
+		);
+
+		$condition_post_ids = get_post_meta( get_the_ID(), SCF_Config::PREFIX . 'condition-post-ids', true );
+		printf(
+			'<p><b>%s</b><input type="text" name="%s" value="%s" class="widefat" /></p>',
+			esc_html__( 'Post Ids ( Comma separated )', 'smart-custom-fields' ),
+			esc_attr( SCF_Config::PREFIX . 'condition-post-ids' ),
+			$condition_post_ids
+		);
 	}
 
 	/**
@@ -326,6 +340,12 @@ class Smart_Custom_Fields_Settings {
 			delete_post_meta( $post_id, SCF_Config::PREFIX . 'condition' );
 		} else {
 			update_post_meta( $post_id, SCF_Config::PREFIX . 'condition', $_POST[SCF_Config::PREFIX . 'condition'] );
+		}
+
+		if ( !isset( $_POST[SCF_Config::PREFIX . 'condition-post-ids'] ) ) {
+			delete_post_meta( $post_id, SCF_Config::PREFIX . 'condition-post-ids' );
+		} else {
+			update_post_meta( $post_id, SCF_Config::PREFIX . 'condition-post-ids', $_POST[SCF_Config::PREFIX . 'condition-post-ids'] );
 		}
 	}
 }
