@@ -7,7 +7,7 @@
  * Author: Takashi Kitajima
  * Author URI: http://2inc.org
  * Created: October 9, 2014
- * Modified:
+ * Modified: October 10, 2014
  * Text Domain: smart-custom-fields
  * Domain Path: /languages/
  * License: GPLv2

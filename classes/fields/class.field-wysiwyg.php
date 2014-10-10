@@ -3,8 +3,8 @@
  * Smart_Custom_Fields_Field_Wysiwyg
  * Version    : 1.0.1
  * Author     : Takashi Kitajima
- * Created    : October 10, 2014
- * Modified   :
+ * Created    : October 7, 2014
+ * Modified   : October 10, 2014
  * License    : GPLv2
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
  */
