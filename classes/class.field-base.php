@@ -21,6 +21,11 @@ abstract class Smart_Custom_Fields_Field_Base {
 	protected $label;
 
 	/**
+	 * $allow_multiple_data
+	 */
+	protected $allow_multiple_data = false;
+
+	/**
 	 * $field
 	 */
 	protected $field = array();
@@ -43,15 +48,19 @@ abstract class Smart_Custom_Fields_Field_Base {
 		if ( empty( $settings['optgroup'] ) ) {
 			$settings['optgroup'] = 'basic-fields';
 		}
-		add_filter( SCF_Config::PREFIX . 'add-fields', array( $this, 'add_fields' ) );
+		if ( isset( $settings['allow-multiple-data'] ) && $settings['allow-multiple-data'] === true ) {
+			$this->allow_multiple_data = true;
+		}
 		add_filter( SCF_Config::PREFIX . 'field-select-' . $settings['optgroup'], array( $this, 'field_select' ) );
 		add_action( SCF_Config::PREFIX . 'field-options', array( $this, '_display_field_options' ), 10, 3 );
 		$this->after_loaded();
+
+		SCF::add_field_instance( $this );
 	}
 
 	/**
 	 * init
-	 * @return array ( name, label, optgroup )
+	 * @return array ( name, label, optgroup, allow-multiple-data )
 	 */
 	abstract protected function init();
 
@@ -69,16 +78,6 @@ abstract class Smart_Custom_Fields_Field_Base {
 	 * @return string html
 	 */
 	abstract public function get_field( $field, $index, $value );
-
-	/**
-	 * add_fields
-	 * @param array $fields
-	 * @return array $fields
-	 */
-	public function add_fields( $fields ) {
-		$fields[$this->name] = $this;
-		return $fields;
-	}
 
 	/**
 	 * field_select
@@ -166,6 +165,26 @@ abstract class Smart_Custom_Fields_Field_Base {
 		}
 	}
 	
+	/**
+	 * get_name
+	 * @return string
+	 */
+	public function get_name() {
+		return $this->name;
+	}
+
+	/**
+	 * get_allow_multiple_data
+	 */
+	public function allow_multiple_data() {
+		return $this->allow_multiple_data;
+	}
+	
+	/**
+	 * get_choices
+	 * @param string $choices
+	 * @return array
+	 */
 	public function get_choices( $choices ) {
 		return explode( "\n", $choices );
 	}

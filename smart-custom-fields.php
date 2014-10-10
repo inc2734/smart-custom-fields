@@ -3,7 +3,7 @@
  * Plugin name: Smart Custom Fields
  * Plugin URI: https://github.com/inc2734/smart-custom-fields/
  * Description: Smart Custom Fields is a simple plugin that management custom fields.
- * Version: 1.0.0
+ * Version: 1.0.1
  * Author: Takashi Kitajima
  * Author URI: http://2inc.org
  * Created: October 9, 2014
@@ -48,7 +48,13 @@ class Smart_Custom_Fields {
 	public function plugins_loaded() {
 		do_action( SCF_Config::PREFIX . 'load' );
 		require_once plugin_dir_path( __FILE__ ) . 'classes/class.field-base.php';
-		require_once plugin_dir_path( __FILE__ ) . 'classes/fields/class.field-text.php';
+		require_once plugin_dir_path( __FILE__ ) . 'classes/class.settings.php';
+		require_once plugin_dir_path( __FILE__ ) . 'classes/class.revisions.php';
+		require_once plugin_dir_path( __FILE__ ) . 'classes/class.scf.php';
+		new Smart_Custom_Fields_Settings();
+		new Smart_Custom_Fields_Revisions();
+		new SCF();
+
 		foreach ( glob( plugin_dir_path( __FILE__ ) . 'classes/fields/*.php' ) as $form_item ) {
 			include_once $form_item;
 			$basename = basename( $form_item, '.php' );
@@ -57,14 +63,6 @@ class Smart_Custom_Fields {
 				new $classname();
 			}
 		}
-		$this->fields = apply_filters( SCF_Config::PREFIX . 'add-fields', $this->fields );
-
-		require_once plugin_dir_path( __FILE__ ) . 'classes/class.settings.php';
-		require_once plugin_dir_path( __FILE__ ) . 'classes/class.revisions.php';
-		require_once plugin_dir_path( __FILE__ ) . 'classes/class.scf.php';
-		new Smart_Custom_Fields_Settings();
-		new Smart_Custom_Fields_Revisions();
-		new SCF();
 
 		add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts' ) );
 		add_action( 'add_meta_boxes', array( $this, 'add_meta_boxes' ), 10, 2 );
@@ -169,7 +167,8 @@ class Smart_Custom_Fields {
 	 * @param array $setings カスタムフィールドの設定情報
 	 */
 	public function display_meta_box( $post, $settings ) {
-		$groups = $settings['args'];
+		$_settings = SCF::get_settings( get_post_type() );
+		$groups = $_settings[$settings['id']];
 		$tables = $this->get_tables( $post->ID, $groups );
 
 		printf( '<div class="%s">', esc_attr( SCF_Config::PREFIX . 'meta-box' ) );
@@ -242,11 +241,11 @@ class Smart_Custom_Fields {
 				foreach ( $group['fields'] as $field ) {
 					delete_post_meta( $post_id, $field['name'] );
 
-					if ( in_array( $field['type'], array( 'check', 'relation' ) ) ) {
+					if ( $field['allow-multiple-data'] ) {
 						$multiple_data_fields[] = $field['name'];
 					}
 
-					if ( $is_repeat && in_array( $field['type'], array( 'check', 'relation' ) ) ) {
+					if ( $is_repeat && $field['allow-multiple-data'] ) {
 						$repeat_multiple_data_fields = $_POST[SCF_Config::NAME][$field['name']];
 						foreach ( $repeat_multiple_data_fields as $values ) {
 							if ( is_array( $values ) ) {
@@ -448,10 +447,10 @@ class Smart_Custom_Fields {
 
 			// 複数値許可フィールドのとき
 			$post_status = get_post_status( $post_id );
-			if ( in_array( $field['type'], array( 'check', 'relation' ) ) ) {
+			if ( $field['allow-multiple-data'] ) {
 				$value = array();
 				if ( !SCF::is_empty( $field['default'] ) && ( $post_status === 'auto-draft' || is_null( $index ) ) ) {
-					$value = $this->fields[$field['type']]->get_choices( $field['default'] );
+					$value = SCF::get_field_instance( $field['type'] )->get_choices( $field['default'] );
 				}
 				$_value = $this->get_multiple_data_field_value( $post_id, $field['name'], $index );
 			}
@@ -477,7 +476,7 @@ class Smart_Custom_Fields {
 				);
 			}
 
-			$form_field = $this->fields[$field['type']]->get_field( $field, $index, $value );
+			$form_field = SCF::get_field_instance( $field['type'] )->get_field( $field, $index, $value );
 			printf(
 				'<tr><th>%s</th><td>%s%s</td></tr>',
 				esc_html( $field_label ),

@@ -12,13 +12,14 @@ class Smart_Custom_Fields_Field_Relation extends Smart_Custom_Fields_Field_Base 
 
 	/**
 	 * init
-	 * @return array ( name, label, optgroup )
+	 * @return array ( name, label, optgroup, allow-multiple-data )
 	 */
 	protected function init() {
 		return array(
 			'name'     => 'relation',
 			'label'    => __( 'Relation', 'smart-custom-fields' ),
 			'optgroup' => 'other-fields',
+			'allow-multiple-data' => true,
 		);
 	}
 

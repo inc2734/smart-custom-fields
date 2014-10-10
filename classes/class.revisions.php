@@ -90,7 +90,7 @@ class Smart_Custom_Fields_Revisions {
 					foreach ( $group['fields'] as $field ) {
 						delete_metadata( 'post', $post_id, $field['name'] );
 
-						if ( $is_repeat && in_array( $field['type'], array( 'check', 'relation' ) ) ) {
+						if ( $is_repeat && $field['allow-multiple-data'] ) {
 							$repeat_multiple_data_fields = $_POST[SCF_Config::NAME][$field['name']];
 							foreach ( $repeat_multiple_data_fields as $values ) {
 								if ( is_array( $values ) ) {
