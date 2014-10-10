@@ -62,6 +62,7 @@ https://github.com/inc2734/smart-custom-fields/
 
 = 1.0.1 =
 * Fix bug that is not displayed wysiwyg editor when there are not content editor.
+* Textarea does not filter the_content filter in SCF::get() and SCF::gets().
 
 = 1.0.0 =
 * Initial release.

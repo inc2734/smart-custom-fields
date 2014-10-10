@@ -191,7 +191,7 @@ class SCF {
 			// チェックボックス以外
 			else {
 				foreach ( $_post_meta as $_post_meta_key => $value ) {
-					if ( in_array( $field['type'], array( 'textarea', 'wysiwyg' ) ) ) {
+					if ( in_array( $field['type'], array( 'wysiwyg' ) ) ) {
 						$value = apply_filters( 'the_content', $value );
 					} elseif ( $field['type'] === 'relation' ) {
 						if ( get_post_status( $value ) !== 'publish' )
@@ -218,7 +218,7 @@ class SCF {
 		} else {
 			$post_meta = get_post_meta( $post_id, $field['name'], true );
 		}
-		if ( in_array( $field['type'], array( 'textarea', 'wysiwyg' ) ) ) {
+		if ( in_array( $field['type'], array( 'wysiwyg' ) ) ) {
 			if ( is_array( $post_meta ) ) {
 				$_post_meta = array();
 				foreach ( $post_meta as $key => $value ) {
