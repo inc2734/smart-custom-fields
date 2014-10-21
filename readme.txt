@@ -63,6 +63,10 @@ https://github.com/inc2734/smart-custom-fields/
 
 = 1.0.2 =
 * Add color picker field.
+* Add smart-cf-before-save-post action hook.
+* Add smart-cf-after-save-post action hook.
+* Add smart-cf-validate-save-post filter hook.
+
 = 1.0.1 =
 * Add display condition by post id.
 * Fix bug that is not displayed wysiwyg editor when there are not content editor.

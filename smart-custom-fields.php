@@ -248,14 +248,29 @@ class Smart_Custom_Fields {
 				if ( in_array( $name, $multiple_data_fields ) && $value === '' )
 					continue;
 				if ( !is_array( $value ) ) {
-					add_post_meta( $post_id, $name, $value );
+					$this->add_post_meta( $post_id, $name, $value );
 				} else {
 					foreach ( $value as $val ) {
-						add_post_meta( $post_id, $name, $val );
+						$this->add_post_meta( $post_id, $name, $val );
 					}
 				}
 			}
 		}
+	}
+
+	/**
+	 * add_post_meta
+	 * @param int $post_id
+	 * @param string $name
+	 * @param mixed $value
+	 */
+	protected function add_post_meta( $post_id, $name, $value ) {
+		do_action( SCF_Config::PREFIX . '-before-save-post', $post_id, $name, $value );
+		$is_valid = apply_filters( SCF_Config::PREFIX . '-validate-save-post', true, $post_id, $name, $value );
+		if ( $is_valid ) {
+			add_post_meta( $post_id, $name, $value );
+		}
+		do_action( SCF_Config::PREFIX . '-after-save-post', $post_id, $name, $value );
 	}
 
 	/**
