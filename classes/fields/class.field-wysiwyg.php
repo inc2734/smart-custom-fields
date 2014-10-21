@@ -15,10 +15,28 @@ class Smart_Custom_Fields_Field_Wysiwyg extends Smart_Custom_Fields_Field_Base {
 	 * @return array ( name, label, optgroup )
 	 */
 	protected function init() {
+		add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts' ) );
 		return array(
 			'name'     => 'wysiwyg',
 			'label'    => __( 'Wysiwyg', 'smart-custom-fields' ),
 			'optgroup' => 'content-fields',
+		);
+	}
+
+	/**
+	 * admin_enqueue_scripts
+	 * @param string $hook
+	 */
+	public function admin_enqueue_scripts( $hook ) {
+		if ( in_array( $hook, array( 'post-new.php', 'post.php' ) ) ) {
+			add_action( 'after_wp_tiny_mce', array( $this, 'after_wp_tiny_mce' ) );
+		}
+	}
+
+	public function after_wp_tiny_mce() {
+		printf(
+			'<script type="text/javascript" src="%s"></script>',
+			plugin_dir_url( __FILE__ ) . '../../js/editor-wysiwyg.js'
 		);
 	}
 

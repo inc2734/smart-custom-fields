@@ -113,26 +113,7 @@ class Smart_Custom_Fields {
 				'image_uploader_title' => esc_html__( 'Image setting', 'smart-custom-fields' ),
 				'file_uploader_title'  => esc_html__( 'File setting', 'smart-custom-fields' ),
 			) );
-			add_action( 'after_wp_tiny_mce', array( $this, 'after_wp_tiny_mce' ) );
-
-			// relation field
-			wp_enqueue_script(
-				SCF_Config::PREFIX . 'editor-relation',
-				plugin_dir_url( __FILE__ ) . 'js/editor-relation.js',
-				array( 'jquery' ),
-				null,
-				true
-			);
-			wp_localize_script( SCF_Config::PREFIX . 'editor-relation', 'smart_cf_relation', array(
-				'endpoint' => admin_url( 'admin-ajax.php' ),
-				'action'   => SCF_Config::PREFIX . 'relational-posts-search',
-				'nonce'    => wp_create_nonce( SCF_Config::NAME . '-relation' )
-			) );
 		}
-	}
-
-	public function after_wp_tiny_mce() {
-		printf( '<script type="text/javascript" src="%s"></script>', plugin_dir_url( __FILE__ ) . 'js/editor-wysiwyg.js' );
 	}
 
 	/**
