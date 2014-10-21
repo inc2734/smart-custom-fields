@@ -67,7 +67,6 @@ class Smart_Custom_Fields {
 		add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts' ) );
 		add_action( 'add_meta_boxes', array( $this, 'add_meta_boxes' ), 10, 2 );
 		add_action( 'save_post', array( $this, 'save_post' ) );
-		add_action( 'wp_ajax_smart-cf-relational-posts-search', array( $this, 'relational_posts_search' ) );
 	}
 
 	/**
@@ -466,29 +465,6 @@ class Smart_Custom_Fields {
 			);
 		}
 		echo '</table></div>';
-	}
-
-	/**
-	 * relational_posts_search
-	 */
-	public function relational_posts_search() {
-		check_ajax_referer( SCF_Config::NAME . '-relation', 'nonce' );
-		$_posts = array();
-		if ( isset( $_POST['post_types'], $_POST['click_count' ] ) ) {
-			$post_type = explode( ',', $_POST['post_types'] );
-			$posts_per_page = get_option( 'posts_per_page' );
-			$offset = $_POST['click_count'] * $posts_per_page;
-			$_posts = get_posts( array(
-				'post_type'      => $post_type,
-				'offset'         => $offset,
-				'order'          => 'ASC',
-				'orderby'        => 'ID',
-				'posts_per_page' => $posts_per_page,
-			) );
-		}
-		header( 'Content-Type: application/json; charset=utf-8' );
-		echo json_encode( $_posts );
-		die();
 	}
 }
 new Smart_Custom_Fields();

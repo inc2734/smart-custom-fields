@@ -1,10 +1,10 @@
 <?php
 /**
  * Smart_Custom_Fields_Field_Relation
- * Version    : 1.0.1
+ * Version    : 1.0.2
  * Author     : Takashi Kitajima
  * Created    : October 7, 2014
- * Modified   : October 10, 2014
+ * Modified   : October 21, 2014
  * License    : GPLv2
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
  */
@@ -15,12 +15,58 @@ class Smart_Custom_Fields_Field_Relation extends Smart_Custom_Fields_Field_Base 
 	 * @return array ( name, label, optgroup, allow-multiple-data )
 	 */
 	protected function init() {
+		add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts' ) );
+		add_action( 'wp_ajax_smart-cf-relational-posts-search', array( $this, 'relational_posts_search' ) );
 		return array(
 			'name'     => 'relation',
 			'label'    => __( 'Relation', 'smart-custom-fields' ),
 			'optgroup' => 'other-fields',
 			'allow-multiple-data' => true,
 		);
+	}
+
+	/**
+	 * admin_enqueue_scripts
+	 * @param string $hook
+	 */
+	public function admin_enqueue_scripts( $hook ) {
+		if ( in_array( $hook, array( 'post-new.php', 'post.php' ) ) ) {
+			wp_enqueue_script(
+				SCF_Config::PREFIX . 'editor-relation',
+				plugin_dir_url( __FILE__ ) . '../../js/editor-relation.js',
+				array( 'jquery' ),
+				null,
+				true
+			);
+			wp_localize_script( SCF_Config::PREFIX . 'editor-relation', 'smart_cf_relation', array(
+				'endpoint' => admin_url( 'admin-ajax.php' ),
+				'action'   => SCF_Config::PREFIX . 'relational-posts-search',
+				'nonce'    => wp_create_nonce( SCF_Config::NAME . '-relation' )
+			) );
+		}
+	}
+
+	/**
+	 * relational_posts_search
+	 */
+	public function relational_posts_search() {
+		check_ajax_referer( SCF_Config::NAME . '-relation', 'nonce' );
+		$_posts = array();
+		if ( isset( $_POST['post_types'], $_POST['click_count' ] ) ) {
+			$post_type = explode( ',', $_POST['post_types'] );
+			$posts_per_page = get_option( 'posts_per_page' );
+			$offset = $_POST['click_count'] * $posts_per_page;
+			$_posts = get_posts( array(
+				'post_type'      => $post_type,
+				'offset'         => $offset,
+				'order'          => 'ASC',
+				'orderby'        => 'ID',
+				'posts_per_page' => $posts_per_page,
+			) );
+		}
+		header( 'Content-Type: application/json; charset=utf-8' );
+		echo json_encode( $_posts );
+		die();
 	}
 
 	/**
