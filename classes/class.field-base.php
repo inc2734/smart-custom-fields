@@ -1,10 +1,10 @@
 <?php
 /**
  * Smart_Custom_Fields_Field_Base
- * Version    : 1.0.1
+ * Version    : 1.0.2
  * Author     : Takashi Kitajima
  * Created    : October 7, 2014
- * Modified   : October 10, 2014
+ * Modified   : October 21, 2014
  * License    : GPLv2
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
  */
@@ -32,7 +32,6 @@ abstract class Smart_Custom_Fields_Field_Base {
 
 	/**
 	 * __construct
-	 * @param array $options
 	 */
 	public function __construct() {
 		$settings = $this->init();
