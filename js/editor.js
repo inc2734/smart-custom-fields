@@ -58,13 +58,16 @@ jQuery( function( $ ) {
 			var clone  = table.clone( true, true ).hide();
 
 			clone.find( 'input, select, textarea' ).each( function( i, e ) {
-				$( this ).attr( 'name',
-					$( this ).attr( 'name' ).replace(
-						/^(smart-custom-fields\[.+\])\[_\]/,
-						'$1[_' + cnt + ']'
-					)
-				);
-				$( this ).removeAttr( 'disabled' );
+				var name = $( this ).attr( 'name' );
+				if ( name ) {
+					$( this ).attr( 'name',
+						name.replace(
+							/^(smart-custom-fields\[.+\])\[_\]/,
+							'$1[_' + cnt + ']'
+						)
+					);
+					$( this ).removeAttr( 'disabled' );
+				}
 			} );
 
 			clone.find( '.smart-cf-wp-editor' ).each( function( i, e ) {
