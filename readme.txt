@@ -4,7 +4,7 @@ Donate link: http://www.amazon.co.jp/registry/wishlist/39ANKRNSTNW40
 Tags: plugin, custom field, custom, field, meta, meta field, repeat, repeatable
 Requires at least: 3.9
 Tested up to: 4.0
-Stable tag: 1.0.2
+Stable tag: 1.0.3
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -61,6 +61,9 @@ https://github.com/inc2734/smart-custom-fields/
 
 == Changelog ==
 
+= 1.0.3 =
+* Fixed a bug that can't be get the correct data when specify a $post_id attribute to SCF::get(). For example SCF::get( 'key', $post_id )
+
 = 1.0.2 =
 * Add color picker field.
 * Add smart-cf-before-save-post action hook.
@@ -69,7 +72,7 @@ https://github.com/inc2734/smart-custom-fields/
 
 = 1.0.1 =
 * Add display condition by post id.
-* Fix bug that is not displayed wysiwyg editor when there are not content editor.
+* Fixed bug that is not displayed wysiwyg editor when there are not content editor.
 * Textarea does not filter the_content filter in SCF::get() and SCF::gets().
 
 = 1.0.0 =

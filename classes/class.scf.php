@@ -1,10 +1,10 @@
 <?php
 /**
  * SCF
- * Version    : 1.0.1
+ * Version    : 1.0.2
  * Author     : Takashi Kitajima
  * Created    : September 23, 2014
- * Modified   : October 10, 2014
+ * Modified   : January 6, 2015
  * License    : GPLv2
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
  */
@@ -55,7 +55,7 @@ class SCF {
 
 		// 設定画面で未設定のメタデータは投稿が保持していても出力しないようにしないといけないので
 		// 設定データを取得して出力して良いか判別する
-		$post_type = get_post_type();
+		$post_type = get_post_type( $post_id );
 		$settings = self::get_settings( $post_type );
 
 		$return_post_meta = array();
@@ -99,7 +99,7 @@ class SCF {
 
 		// 設定画面で未設定のメタデータは投稿が保持していても出力しないようにしないといけないので
 		// 設定データを取得して出力して良いか判別する
-		$post_type = get_post_type();
+		$post_type = get_post_type( $post_id );
 		$settings = self::get_settings( $post_type );
 
 		foreach ( $settings as $setting ) {
