@@ -3,8 +3,8 @@ Contributors: inc2734
 Donate link: http://www.amazon.co.jp/registry/wishlist/39ANKRNSTNW40
 Tags: plugin, custom field, custom, field, meta, meta field, repeat, repeatable
 Requires at least: 3.9
-Tested up to: 4.0
-Stable tag: 1.0.3
+Tested up to: 4.1
+Stable tag: 1.1.0
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -32,6 +32,7 @@ https://www.youtube.com/watch?v=WxPZurn0yvI
 * File
 * Relation
 * Color picker
+* Date picker
 
 = How to get meta data ? =
 
@@ -60,6 +61,9 @@ https://github.com/inc2734/smart-custom-fields/
 2. Post edit page.
 
 == Changelog ==
+
+= 1.1.0 =
+* Add date picker field.
 
 = 1.0.3 =
 * Fixed a bug that can't be get the correct data when specify a $post_id attribute to SCF::get(). For example SCF::get( 'key', $post_id )
