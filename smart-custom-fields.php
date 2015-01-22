@@ -3,11 +3,11 @@
  * Plugin name: Smart Custom Fields
  * Plugin URI: https://github.com/inc2734/smart-custom-fields/
  * Description: Smart Custom Fields is a simple plugin that management custom fields.
- * Version: 1.1.0
+ * Version: 1.1.1
  * Author: Takashi Kitajima
  * Author URI: http://2inc.org
  * Created: October 9, 2014
- * Modified: January 18, 2015
+ * Modified: January 22, 2015
  * Text Domain: smart-custom-fields
  * Domain Path: /languages/
  * License: GPLv2
