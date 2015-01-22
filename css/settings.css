@@ -48,7 +48,7 @@
 .smart-cf-group .btn-remove-group {
 	cursor: pointer;
 	position: absolute;
-	top: 12px;
+	top: 10px;
 	right: 10px;
 }
 
@@ -63,8 +63,11 @@
  * .smart-cf-group-repeat
  */
 .smart-cf-group .smart-cf-group-repeat {
-	cursor: move;
 	margin: 0 0 5px;
+}
+.smart-cf-group .smart-cf-group-repeat label {
+	position: relative;
+	top: -2px;
 }
 
 /**
@@ -86,6 +89,13 @@
 	display: block;
 	font-size: 90%;
 	margin-top: 2px 0;
+}
+
+/** ==================================================
+ * .smart-cf-fields
+ */
+.smart-cf-group .smart-cf-fields {
+	margin-top: 7px;
 }
 
 /** ==================================================

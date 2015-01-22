@@ -130,6 +130,7 @@ class Smart_Custom_Fields_Settings {
 				<div class="<?php echo esc_attr( SCF_Config::PREFIX . 'group' ); ?> <?php $this->add_hide_class( $group_key ); ?>">
 					<div class="btn-remove-group"><b>x</b></div>
 					<div class="<?php echo esc_attr( SCF_Config::PREFIX . 'group-repeat' ); ?>">
+						<div class="<?php echo esc_attr( SCF_Config::PREFIX . 'icon-handle' ); ?>"></div>
 						<label>
 							<input type="checkbox"
 								name="<?php echo esc_attr( SCF_Config::NAME . '[' . $group_key . '][repeat]' ); ?>"

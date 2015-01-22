@@ -56,7 +56,7 @@ jQuery( function( $ ) {
 		 */
 		$( '.smart-cf-groups' ).sortable( {
 			cursor: 'move',
-			handle: '.smart-cf-group-repeat'
+			handle: '.smart-cf-icon-handle'
 		} );
 		$( '.smart-cf-fields' ).sortable( {
 			cursor: 'move',
