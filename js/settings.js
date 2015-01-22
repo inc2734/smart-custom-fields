@@ -1,9 +1,9 @@
 /**
  * settings.js
- * Version    : 1.0.0
+ * Version    : 1.0.1
  * Author     : Takashi Kitajima
  * Created    : September 23, 2014
- * Modified   :
+ * Modified   : January 22, 2015
  * License    : GPLv2
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
  */
@@ -13,7 +13,7 @@ jQuery( function( $ ) {
 		var btn_add_group    = wrapper.find( '.btn-add-group' );
 		var btn_remove_group = wrapper.find( '.btn-remove-group b' );
 		var btn_add_field    = wrapper.find( '.btn-add-field' );
-		var btn_remove_field = wrapper.find( '.btn-remove-field b' );
+		var btn_remove_field = wrapper.find( '.btn-remove-field' );
 		var group_class      = '.smart-cf-group';
 		var field_class      = '.smart-cf-field';
 		var duplicate_alert_class = '.smart-cf-duplicate-alert';
@@ -60,17 +60,17 @@ jQuery( function( $ ) {
 		} );
 		$( '.smart-cf-fields' ).sortable( {
 			cursor: 'move',
-			handle: '.btn-remove-field'
+			handle: '.smart-cf-icon-handle'
 		} );
 
 		/**
 		 * フィールドの開閉
 		 */
-		$( '.btn-remove-field' ).click( function() {
-			var btn_remove_field_slide = $( this );
+		$( '.field-label' ).click( function() {
+			var field_label = $( this );
 			var table = $( this ).parents( field_class ).find( 'table' );
 			if ( table.hasClass( 'hide' ) ) {
-				btn_remove_field_slide.find( 'span' ).text( '' );
+				field_label.html( "&nbsp;" );
 				table.fadeIn( 'fast', function() {
 					$( this ).removeClass( 'hide' );
 				} );
@@ -81,7 +81,11 @@ jQuery( function( $ ) {
 				}
 				table.fadeOut( 'fast', function() {
 					$( this ).addClass( 'hide' );
-					btn_remove_field_slide.find( 'span' ).text( label );
+					if ( label ) {
+						field_label.text( label );
+					} else {
+						field_label.html( "&nbsp;" );
+					}
 				} );
 			}
 		} );

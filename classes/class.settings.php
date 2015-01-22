@@ -1,10 +1,10 @@
 <?php
 /**
  * Smart_Custom_Fields_Settings
- * Version    : 1.0.1
+ * Version    : 1.0.2
  * Author     : Takashi Kitajima
  * Created    : September 23, 2014
- * Modified   : October 10, 2014
+ * Modified   : January 22, 2015
  * License    : GPLv2
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
  */
@@ -160,9 +160,14 @@ class Smart_Custom_Fields_Settings {
 							$field_label = $this->get( 'label', $field );
 							if ( !$field_label ) {
 								$field_label = $this->get( 'name', $field );
+								if ( !$field_label ) {
+									$field_label = "&nbsp;";
+								}
 							}
 							?>
-							<div class="btn-remove-field"><span><?php echo esc_html( $field_label ); ?></span><b>x</b></div>
+							<div class="<?php echo esc_attr( SCF_Config::PREFIX . 'icon-handle' ); ?>"></div>
+							<b class="btn-remove-field">x</b>
+							<div class="field-label"><?php echo esc_html( $field_label ); ?></div>
 							<table class="<?php $this->add_hide_class( !$this->get( 'name', $field ) ); ?>">
 								<tr>
 									<th><?php esc_html_e( 'Name', 'smart-custom-fields' ); ?><span class="<?php echo esc_attr( SCF_Config::PREFIX . 'require' ); ?>">*</span></th>
