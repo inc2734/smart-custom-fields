@@ -63,7 +63,9 @@ class Smart_Custom_Fields {
 				new $classname();
 			}
 		}
-
+		
+		do_action( SCF_Config::PREFIX . 'fields_loaded' );
+		
 		add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts' ) );
 		add_action( 'add_meta_boxes', array( $this, 'add_meta_boxes' ), 10, 2 );
 		add_action( 'save_post', array( $this, 'save_post' ) );
