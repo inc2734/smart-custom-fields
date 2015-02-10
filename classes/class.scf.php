@@ -1,17 +1,17 @@
 <?php
 /**
  * SCF
- * Version    : 1.0.2
+ * Version    : 1.0.3
  * Author     : Takashi Kitajima
  * Created    : September 23, 2014
- * Modified   : January 6, 2015
+ * Modified   : February 10, 2015
  * License    : GPLv2
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
  */
 class SCF {
 
 	/**
-	 * Smart Custom Fields に登録されているフォームアイテム（field）のインスタンスの配列
+	 * Smart Custom Fields に登録されているフォームフィールド（field）のインスタンスの配列
 	 */
 	protected static $fields = array();
 
@@ -64,12 +64,12 @@ class SCF {
 				// グループ名と一致する場合はそのグループ内のフィールドを配列で返す
 				$is_repeat = ( isset( $group['repeat'] ) && $group['repeat'] === true ) ? true : false;
 				if ( $is_repeat && !empty( $group['group-name'] ) ) {
-					$return_post_meta[$group['group-name']] = self::get_sub_field( $post_id, $group['group-name'], $group['fields'] );
+					$return_post_meta[$group['group-name']] = self::get_values_by_group( $post_id, $group['group-name'], $group['fields'] );
 				}
 				// グループ名と一致しない場合は一致するフィールドを返す
 				else {
-					foreach ( $group['fields'] as $field ) {
-						$return_post_meta[$field['name']] = $post_meta = self::get_field( $post_id, $field, $is_repeat );
+					foreach ( $group['fields'] as $field_name => $field ) {
+						$return_post_meta[$field_name] = self::get_value_by_field( $post_id, $field, $is_repeat );
 					}
 				}
 			}
@@ -107,15 +107,12 @@ class SCF {
 				// グループ名と一致する場合はそのグループ内のフィールドを配列で返す
 				$is_repeat = ( isset( $group['repeat'] ) && $group['repeat'] === true ) ? true : false;
 				if ( $is_repeat && !empty( $group['group-name'] ) && $group['group-name'] === $name ) {
-					return self::get_sub_field( $post_id, $name, $group['fields'] );
+					return self::get_values_by_group( $post_id, $name, $group['fields'] );
 				}
 				// グループ名と一致しない場合は一致するフィールドを返す
 				else {
-					foreach ( $group['fields'] as $field ) {
-						if ( $field['name'] !== $name ) {
-							continue;
-						}
-						$post_meta = self::get_field( $post_id, $field, $is_repeat );
+					if ( isset( $group['fields'][$name] ) ) {
+						$post_meta = self::get_value_by_field( $post_id, $group['fields'][$name], $is_repeat );
 						if ( !is_null( $post_meta ) ) {
 							return $post_meta;
 						}
@@ -164,28 +161,28 @@ class SCF {
 	}
 
 	/**
-	 * get_sub_field
+	 * get_values_by_group
 	 * @param int $post_id
 	 * @param string $group_name
 	 * @param array $fields
 	 * @return mixed $post_meta
 	 */
-	protected static function get_sub_field( $post_id, $group_name, $fields ) {
+	protected static function get_values_by_group( $post_id, $group_name, $fields ) {
 		$post_meta = array();
-		foreach ( $fields as $field ) {
-			$_post_meta = get_post_meta( $post_id, $field['name'] );
+		foreach ( $fields as $field_name => $field ) {
+			$_post_meta = get_post_meta( $post_id, $field_name );
 			// チェックボックスの場合
 			$repeat_multiple_data = self::get_repeat_multiple_data( $post_id );
-			if ( is_array( $repeat_multiple_data ) && array_key_exists( $field['name'], $repeat_multiple_data ) ) {
+			if ( is_array( $repeat_multiple_data ) && array_key_exists( $field_name, $repeat_multiple_data ) ) {
 				$start = 0;
-				foreach ( $repeat_multiple_data[$field['name']] as $repeat_multiple_key => $repeat_multiple_value ) {
+				foreach ( $repeat_multiple_data[$field_name] as $repeat_multiple_key => $repeat_multiple_value ) {
 					if ( $repeat_multiple_value === 0 ) {
 						$value = array();
 					} else {
 						$value = array_slice( $_post_meta, $start, $repeat_multiple_value );
 						$start += $repeat_multiple_value;
 					}
-					$post_meta[$repeat_multiple_key][$field['name']] = $value;
+					$post_meta[$repeat_multiple_key][$field_name] = $value;
 				}
 			}
 			// チェックボックス以外
@@ -197,7 +194,7 @@ class SCF {
 						if ( get_post_status( $value ) !== 'publish' )
 							continue;
 					}
-					$post_meta[$_post_meta_key][$field['name']] = $value;
+					$post_meta[$_post_meta_key][$field_name] = $value;
 				}
 			}
 		}
@@ -206,13 +203,13 @@ class SCF {
 	}
 
 	/**
-	 * get_field
+	 * get_value_by_field
 	 * @param int $post_id
 	 * @param array $field
-	 * @param bool $is_repeat
+	 * @param bool $is_repeat このフィールドが所属するグループが repeat かどうか
 	 * @return mixed $post_meta
 	 */
-	protected static function get_field( $post_id, $field, $is_repeat, $name = null ) {
+	protected static function get_value_by_field( $post_id, $field, $is_repeat ) {
 		if ( $field['allow-multiple-data'] || $is_repeat ) {
 			$post_meta = get_post_meta( $post_id, $field['name'] );
 		} else {
@@ -252,6 +249,7 @@ class SCF {
 
 	/**
 	 * get_settings_posts
+	 * その投稿タイプで有効になっている SCF を取得
 	 * @param int $post_type
 	 * @param array $settings
 	 */
@@ -326,7 +324,9 @@ class SCF {
 			foreach ( $settings as $setting_key => $setting ) {
 				foreach ( $setting as $group_key => $group ) {
 					foreach ( $group['fields'] as $field_key => $field ) {
-						$settings[$setting_key][$group_key]['fields'][$field_key]['allow-multiple-data'] = self::$fields[$field['type']]->allow_multiple_data();
+						unset( $settings[$setting_key][$group_key]['fields'][$field_key] );
+						$field['allow-multiple-data'] = self::$fields[$field['type']]->allow_multiple_data();
+						$settings[$setting_key][$group_key]['fields'][$field['name']] = $field;
 					}
 				}
 			}
@@ -381,10 +381,11 @@ class SCF {
 	}
 
 	/**
-	 * add_field_instance
+	 * add_form_field_instance
+	 * フォームフィールドを追加
 	 * @param Smart_Custom_Fields_Field_Base $instance
 	 */
-	public static function add_field_instance( Smart_Custom_Fields_Field_Base $instance ) {
+	public static function add_form_field_instance( Smart_Custom_Fields_Field_Base $instance ) {
 		$instance_name = $instance->get_name();
 		if ( !empty( $instance_name ) ) {
 			self::$fields[$instance_name] = $instance;
@@ -392,13 +393,51 @@ class SCF {
 	}
 
 	/**
-	 * get_field_instance
-	 * @param string $field_name フォームアイテムの name
+	 * get_form_field_instance
+	 * フォームフィールドの情報を取得
+	 * @param string $field_name フォームフィールドの name
 	 * @param Smart_Custom_Fields_Field_Base
 	 */
-	public static function get_field_instance( $field_name ) {
+	public static function get_form_field_instance( $field_name ) {
 		if ( !empty( self::$fields[$field_name] ) ) {
 			return self::$fields[$field_name];
 		}
+	}
+
+	/**
+	 * get_field
+	 * カスタムフィールドの設定情報を取得
+	 * @param int $post_id
+	 * @param string $field_name カスタムフィールドの名前
+	 * @return array
+	 */
+	public static function get_field( $post_type, $field_name ) {
+		$settings = self::get_settings( $post_type );
+		foreach ( $settings as $setting ) {
+			foreach ( $setting as $group ) {
+				if ( isset( $group['fields'][$field_name] ) ) {
+					$field = $group['fields'][$field_name];
+					if ( isset( $field['choices'] ) ) {
+						$field['choices'] = self::choices_eol_to_array( $field['choices'] );
+					}
+					return $field;
+				}
+			}
+		}
+		return array();
+	}
+	
+	/**
+	 * choices_eol_to_array
+	 * 改行区切りの $choices を配列に変換
+	 * @param string $choices
+	 * @return array
+	 */
+	public static function choices_eol_to_array( $choices ) {
+		if ( !is_array( $choices ) ) {
+			$choices = str_replace( array( "\r\n", "\r", "\n" ), "\n", $choices );
+			return explode( "\n", $choices );
+		}
+		return $choices;
 	}
 }

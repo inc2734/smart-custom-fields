@@ -1,10 +1,10 @@
 <?php
 /**
  * Smart_Custom_Fields_Revisions
- * Version    : 1.0.1
+ * Version    : 1.0.2
  * Author     : Takashi Kitajima
  * Created    : September 23, 2014
- * Modified   : October 10, 2014
+ * Modified   : February 10, 2015
  * License    : GPLv2
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
  */
@@ -43,15 +43,15 @@ class Smart_Custom_Fields_Revisions {
 		$settings = SCF::get_settings( $post_type );
 		foreach ( $settings as $setting ) {
 			foreach ( $setting as $group ) {
-				foreach ( $group['fields'] as $field ) {
-					delete_post_meta( $post->ID, $field['name'] );
-					$value = SCF::get( $field['name'], $revision->ID );
+				foreach ( $group['fields'] as $field_name => $field ) {
+					delete_post_meta( $post->ID, $field_name );
+					$value = SCF::get( $field_name, $revision->ID );
 					if ( is_array( $value ) ) {
 						foreach ( $value as $val ) {
-							add_post_meta( $post->ID, $field['name'], $val );
+							add_post_meta( $post->ID, $field_name, $val );
 						}
 					} else {
-						add_post_meta( $post->ID, $field['name'], $value );
+						add_post_meta( $post->ID, $field_name, $value );
 					}
 				}
 			}
@@ -87,16 +87,16 @@ class Smart_Custom_Fields_Revisions {
 			foreach ( $settings as $setting ) {
 				foreach ( $setting as $group ) {
 					$is_repeat = ( isset( $group['repeat'] ) && $group['repeat'] === true ) ? true : false;
-					foreach ( $group['fields'] as $field ) {
-						delete_metadata( 'post', $post_id, $field['name'] );
+					foreach ( $group['fields'] as $field_name => $field ) {
+						delete_metadata( 'post', $post_id, $field_name );
 
 						if ( $is_repeat && $field['allow-multiple-data'] ) {
-							$repeat_multiple_data_fields = $_POST[SCF_Config::NAME][$field['name']];
+							$repeat_multiple_data_fields = $_POST[SCF_Config::NAME][$field_name];
 							foreach ( $repeat_multiple_data_fields as $values ) {
 								if ( is_array( $values ) ) {
-									$repeat_multiple_data[$field['name']][] = count( $values );
+									$repeat_multiple_data[$field_name][] = count( $values );
 								} else {
-									$repeat_multiple_data[$field['name']][] = 0;
+									$repeat_multiple_data[$field_name][] = 0;
 								}
 							}
 						}

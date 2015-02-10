@@ -1,10 +1,10 @@
 <?php
 /**
  * Smart_Custom_Fields_Field_Base
- * Version    : 1.0.2
+ * Version    : 1.0.3
  * Author     : Takashi Kitajima
  * Created    : October 7, 2014
- * Modified   : October 21, 2014
+ * Modified   : February 10, 2015
  * License    : GPLv2
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
  */
@@ -54,7 +54,7 @@ abstract class Smart_Custom_Fields_Field_Base {
 		add_action( SCF_Config::PREFIX . 'field-options', array( $this, '_display_field_options' ), 10, 3 );
 		$this->after_loaded();
 
-		SCF::add_field_instance( $this );
+		SCF::add_form_field_instance( $this );
 	}
 
 	/**
@@ -177,14 +177,5 @@ abstract class Smart_Custom_Fields_Field_Base {
 	 */
 	public function allow_multiple_data() {
 		return $this->allow_multiple_data;
-	}
-	
-	/**
-	 * get_choices
-	 * @param string $choices
-	 * @return array
-	 */
-	public function get_choices( $choices ) {
-		return explode( "\n", $choices );
 	}
 }

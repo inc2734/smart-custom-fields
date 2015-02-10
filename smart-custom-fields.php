@@ -3,11 +3,11 @@
  * Plugin name: Smart Custom Fields
  * Plugin URI: https://github.com/inc2734/smart-custom-fields/
  * Description: Smart Custom Fields is a simple plugin that management custom fields.
- * Version: 1.1.2
+ * Version: 1.1.3
  * Author: Takashi Kitajima
  * Author URI: http://2inc.org
  * Created: October 9, 2014
- * Modified: February 7, 2015
+ * Modified: February 10, 2015
  * Text Domain: smart-custom-fields
  * Domain Path: /languages/
  * License: GPLv2
@@ -220,20 +220,20 @@ class Smart_Custom_Fields {
 		foreach ( $settings as $setting ) {
 			foreach ( $setting as $group ) {
 				$is_repeat = ( isset( $group['repeat'] ) && $group['repeat'] === true ) ? true : false;
-				foreach ( $group['fields'] as $field ) {
-					delete_post_meta( $post_id, $field['name'] );
+				foreach ( $group['fields'] as $field_name => $field ) {
+					delete_post_meta( $post_id, $field_name );
 
 					if ( $field['allow-multiple-data'] ) {
-						$multiple_data_fields[] = $field['name'];
+						$multiple_data_fields[] = $field_name;
 					}
 
 					if ( $is_repeat && $field['allow-multiple-data'] ) {
-						$repeat_multiple_data_fields = $_POST[SCF_Config::NAME][$field['name']];
+						$repeat_multiple_data_fields = $_POST[SCF_Config::NAME][$field_name];
 						foreach ( $repeat_multiple_data_fields as $values ) {
 							if ( is_array( $values ) ) {
-								$repeat_multiple_data[$field['name']][] = count( $values );
+								$repeat_multiple_data[$field_name][] = count( $values );
 							} else {
-								$repeat_multiple_data[$field['name']][] = 0;
+								$repeat_multiple_data[$field_name][] = 0;
 							}
 						}
 					}
@@ -327,15 +327,15 @@ class Smart_Custom_Fields {
 			// ループだけどループがないとき（新規登録時とか）は1つだけ入れる
 			if ( isset( $group['repeat'] ) && $group['repeat'] === true ) {
 				$loop_count = 1;
-				foreach ( $group['fields'] as $field ) {
-					if ( isset( $post_custom[$field['name']] ) && is_array( $post_custom[$field['name']] ) ) {
-						$post_meta       = $post_custom[$field['name']];
+				foreach ( $group['fields'] as $field_name => $field ) {
+					if ( isset( $post_custom[$field_name] ) && is_array( $post_custom[$field_name] ) ) {
+						$post_meta       = $post_custom[$field_name];
 						$post_meta_count = count( $post_meta );
 						// 同名のカスタムフィールドが複数のとき（チェックボックス or ループ）
 						if ( $post_meta_count > 1 ) {
 							// チェックボックスの場合
-							if ( is_array( $repeat_multiple_data ) && array_key_exists( $field['name'], $repeat_multiple_data ) ) {
-								$repeat_multiple_data_count = count( $repeat_multiple_data[$field['name']] );
+							if ( is_array( $repeat_multiple_data ) && array_key_exists( $field_name, $repeat_multiple_data ) ) {
+								$repeat_multiple_data_count = count( $repeat_multiple_data[$field_name] );
 								if ( $loop_count < $repeat_multiple_data_count )
 									$loop_count = $repeat_multiple_data_count;
 							}
@@ -436,10 +436,10 @@ class Smart_Custom_Fields {
 			$btn_repeat
 		);
 
-		foreach ( $fields as $field ) {
+		foreach ( $fields as $field_name => $field ) {
 			$field_label = $field['label'];
 			if ( !$field_label ) {
-				$field_label = $field['name'];
+				$field_label = $field_name;
 			}
 
 			// 複数値許可フィールドのとき
@@ -447,9 +447,9 @@ class Smart_Custom_Fields {
 			if ( $field['allow-multiple-data'] ) {
 				$value = array();
 				if ( !SCF::is_empty( $field['default'] ) && ( $post_status === 'auto-draft' || is_null( $index ) ) ) {
-					$value = SCF::get_field_instance( $field['type'] )->get_choices( $field['default'] );
+					$value = SCF::choices_eol_to_array( $field['default'] );
 				}
-				$_value = $this->get_multiple_data_field_value( $post_id, $field['name'], $index );
+				$_value = $this->get_multiple_data_field_value( $post_id, $field_name, $index );
 			}
 			// 複数不値許可フィールドのとき
 			else {
@@ -459,7 +459,7 @@ class Smart_Custom_Fields {
 						$value = $field['default'];
 					}
 				}
-				$_value = $this->get_single_data_field_value( $post_id, $field['name'], $index );
+				$_value = $this->get_single_data_field_value( $post_id, $field_name, $index );
 			}
 			if ( !is_null( $_value ) ) {
 				$value = $_value;
@@ -473,7 +473,7 @@ class Smart_Custom_Fields {
 				);
 			}
 
-			$form_field = SCF::get_field_instance( $field['type'] )->get_field( $field, $index, $value );
+			$form_field = SCF::get_form_field_instance( $field['type'] )->get_field( $field, $index, $value );
 			printf(
 				'<tr><th>%s</th><td>%s%s</td></tr>',
 				esc_html( $field_label ),

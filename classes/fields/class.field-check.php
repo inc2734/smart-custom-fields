@@ -1,10 +1,10 @@
 <?php
 /**
  * Smart_Custom_Fields_Field_Check
- * Version    : 1.0.1
+ * Version    : 1.0.2
  * Author     : Takashi Kitajima
  * Created    : October 7, 2014
- * Modified   : October 10, 2014
+ * Modified   : February 10, 2015
  * License    : GPLv2
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
  */
@@ -32,7 +32,7 @@ class Smart_Custom_Fields_Field_Check extends Smart_Custom_Fields_Field_Base {
 	public function get_field( $field, $index, $value ) {
 		$name = $this->get_name_attribute( $field['name'], $index );
 		$disabled = $this->get_disable_attribute( $index );
-		$choices = $this->get_choices( $field['choices'] );
+		$choices = SCF::choices_eol_to_array( $field['choices'] );
 
 		$form_field = sprintf(
 			'<input type="hidden" name="%s" value="" %s />',
