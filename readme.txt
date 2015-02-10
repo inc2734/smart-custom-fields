@@ -4,7 +4,7 @@ Donate link: http://www.amazon.co.jp/registry/wishlist/39ANKRNSTNW40
 Tags: plugin, custom field, custom, field, meta, meta field, repeat, repeatable
 Requires at least: 3.9
 Tested up to: 4.1
-Stable tag: 1.1.2
+Stable tag: 1.1.3
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -61,6 +61,13 @@ https://github.com/inc2734/smart-custom-fields/
 2. Post edit page.
 
 == Changelog ==
+
+= 1.1.3 =
+* Change method SCF::get_field to SCF::get_value_by_field
+* Change method SCF::get_sub_field to SCF::get_values_by_group
+* Add method SCF::get_field
+* Add method SCF::choices_eol_to_array
+* remove method Smart_Custom_Fields_Field_Base::get_choices
 
 = 1.1.2 =
 * Add action hook smart-cf-fields-loaded
