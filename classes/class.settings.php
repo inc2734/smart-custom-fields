@@ -128,7 +128,7 @@ class Smart_Custom_Fields_Settings {
 				array_unshift( $group['fields'], array() );
 				?>
 				<div class="<?php echo esc_attr( SCF_Config::PREFIX . 'group' ); ?> <?php $this->add_hide_class( $group_key ); ?>">
-					<div class="btn-remove-group"><b>x</b></div>
+					<div class="btn-remove-group"><span class="dashicons dashicons-no-alt"></span></div>
 					<div class="<?php echo esc_attr( SCF_Config::PREFIX . 'group-repeat' ); ?>">
 						<div class="<?php echo esc_attr( SCF_Config::PREFIX . 'icon-handle' ); ?>"></div>
 						<label>
@@ -167,7 +167,7 @@ class Smart_Custom_Fields_Settings {
 							}
 							?>
 							<div class="<?php echo esc_attr( SCF_Config::PREFIX . 'icon-handle' ); ?>"></div>
-							<b class="btn-remove-field">x</b>
+							<b class="btn-remove-field"><span class="dashicons dashicons-no-alt"></span></b>
 							<div class="field-label"><?php echo esc_html( $field_label ); ?></div>
 							<table class="<?php $this->add_hide_class( !$this->get( 'name', $field ) ); ?>">
 								<tr>
