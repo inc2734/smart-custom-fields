@@ -51,6 +51,12 @@
 	top: 10px;
 	right: 10px;
 }
+.smart-cf-group .btn-remove-group .dashicons,
+.smart-cf-group .btn-remove-group .dashicons:before {
+	font-size: 14px;
+	height: 14px;
+	width: 14px;
+}
 
 /**
  * .btn-add-field
@@ -156,6 +162,12 @@
 .smart-cf-group .smart-cf-field .btn-remove-field {
 	cursor: pointer;
 	float: right;
+}
+.smart-cf-group .smart-cf-field .btn-remove-field .dashicons,
+.smart-cf-group .smart-cf-field .btn-remove-field .dashicons:before {
+	font-size: 14px;
+	height: 14px;
+	width: 14px;
 }
 
 /** ==================================================
