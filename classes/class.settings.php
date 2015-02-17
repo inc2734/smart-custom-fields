@@ -47,12 +47,26 @@ class Smart_Custom_Fields_Settings {
 	 * register_post_type
 	 */
 	public function register_post_type() {
+		$labels = array(
+			'name'               => __( 'Smart Custom Fields', 'smart-custom-fields' ),
+			'menu_name'          => __( 'Smart Custom Fields', 'smart-custom-fields' ),
+			'name_admin_bar'     => __( 'Smart Custom Fields', 'smart-custom-fields' ),
+			'add_new'            => __( 'Add New', 'smart-custom-fields' ),
+			'add_new_item'       => __( 'Add New', 'smart-custom-fields' ),
+			'new_item'           => __( 'New Field', 'smart-custom-fields' ),
+			'edit_item'          => __( 'Edit Field', 'smart-custom-fields' ),
+			'view_item'          => __( 'View Field', 'smart-custom-fields' ),
+			'all_items'          => __( 'All Fields', 'smart-custom-fields' ),
+			'search_items'       => __( 'Search Fields', 'smart-custom-fields' ),
+			'parent_item_colon'  => __( 'Parent Fields:', 'smart-custom-fields' ),
+			'not_found'          => __( 'No Fields found.', 'smart-custom-fields' ),
+			'not_found_in_trash' => __( 'No Fields found in Trash.', 'smart-custom-fields' )
+		);
 		register_post_type(
 			SCF_Config::NAME,
 			array(
 				'label'                => 'Smart Custom Fields',
-				'labels'               => array(
-				),
+				'labels'               => $labels,
 				'public'               => false,
 				'show_ui'              => true,
 				'capability_type'      => 'page',

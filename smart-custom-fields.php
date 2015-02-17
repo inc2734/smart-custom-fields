@@ -9,7 +9,7 @@
  * Created: October 9, 2014
  * Modified: February 10, 2015
  * Text Domain: smart-custom-fields
- * Domain Path: /languages/
+ * Domain Path: /languages
  * License: GPLv2
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
  */
@@ -63,6 +63,12 @@ class Smart_Custom_Fields {
 				new $classname();
 			}
 		}
+		
+		load_plugin_textdomain (
+				'smart-custom-fields',
+				false,
+				dirname( plugin_basename( __FILE__ ) ) . '/languages'
+		);
 		
 		do_action( SCF_Config::PREFIX . 'fields-loaded' );
 		
