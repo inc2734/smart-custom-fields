@@ -49,6 +49,12 @@ This method can get all meta data.
 
 https://github.com/inc2734/smart-custom-fields/
 
+= Translators =
+
+* Japanese(ja) - [JOTAKI Taisuke ](https://profiles.wordpress.org/tai/)
+
+You can send your own language pack to me.
+
 == Installation ==
 
 1. Upload `Smart Custom Fields` to the `/wp-content/plugins/` directory
