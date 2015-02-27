@@ -70,7 +70,7 @@ class Smart_Custom_Fields_Settings {
 				'public'               => false,
 				'show_ui'              => true,
 				'capability_type'      => 'page',
-				'supports'             => array( 'title' ),
+				'supports'             => array( 'title', 'page-attributes'  ),
 				'menu_position'        => 80,
 			)
 		);

@@ -126,7 +126,7 @@ class Smart_Custom_Fields {
 	/**
 	 * add_meta_boxes
 	 * 投稿画面にカスタムフィールドを表示
-	 * @param stirng $post_type
+	 * @param string $post_type
 	 * @param object $post
 	 */
 	public function add_meta_boxes( $post_type, $post ) {
@@ -152,7 +152,7 @@ class Smart_Custom_Fields {
 	/**
 	 * display_meta_box
 	 * @param object $post
-	 * @param array $setings カスタムフィールドの設定情報
+	 * @param array $settings カスタムフィールドの設定情報
 	 */
 	public function display_meta_box( $post, $settings ) {
 		$_settings = SCF::get_settings( get_post_type() );
