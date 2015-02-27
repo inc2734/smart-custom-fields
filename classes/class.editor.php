@@ -18,7 +18,7 @@ class Smart_Custom_Fields_Editor {
 	 */
 	public function __construct() {
 		$settings = SCF::get_settings( get_post_type() );
-		if ( empty( $settings ) ) {
+		if ( !empty( $settings ) ) {
 			add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts' ) );
 			add_action( 'add_meta_boxes', array( $this, 'add_meta_boxes' ), 10, 2 );
 			add_action( 'save_post', array( $this, 'save_post' ) );
