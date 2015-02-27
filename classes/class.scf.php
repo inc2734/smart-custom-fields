@@ -284,7 +284,8 @@ class SCF {
 	}
 
 	/**
-	 * save_settings_posts_cache
+	 * その投稿タイプで有効になっている SCF をキャッシュに保存
+	 *
 	 * @param int $post_type
 	 * @param array $posts
 	 */
@@ -293,8 +294,8 @@ class SCF {
 	}
 
 	/**
-	 * get_settings_posts
 	 * その投稿タイプで有効になっている SCF を取得
+	 * 
 	 * @param int $post_type
 	 * @param array $settings
 	 */
@@ -342,7 +343,8 @@ class SCF {
 	}
 
 	/**
-	 * save_settings_cache
+	 * Setting オブジェクト をキャッシュに保存
+	 *
 	 * @param int $post_type
 	 * @param array $settings
 	 */
@@ -351,7 +353,8 @@ class SCF {
 	}
 
 	/**
-	 * get_settings
+	 * Setting オブジェクトの配列を取得
+	 *
 	 * @param int $post_type
 	 * @param array $settings
 	 */
@@ -370,7 +373,8 @@ class SCF {
 	}
 
 	/**
-	 * save_repeat_multiple_data_cache
+	 * 繰り返しに設定された複数許可フィールドデータの区切り識別用データをキャッシュに保存
+	 *
 	 * @param int $post_id
 	 * @param mixed $repeat_multiple_data
 	 */
@@ -379,7 +383,8 @@ class SCF {
 	}
 
 	/**
-	 * get_repeat_multiple_data
+	 * 繰り返しに設定された複数許可フィールドデータの区切り識別用データを取得
+	 * 
 	 * @param int $post_id
 	 * @return mixed
 	 */
@@ -399,8 +404,8 @@ class SCF {
 	}
 
 	/**
-	 * is_empty
 	 * null もしくは空値の場合は true
+	 * 
 	 * @param mixed $value
 	 * @return bool
 	 */
@@ -415,8 +420,8 @@ class SCF {
 	}
 
 	/**
-	 * add_form_field_instance
-	 * フォームフィールドを追加
+	 * 使用可能なフォームフィールドオブジェクトを追加
+	 * 
 	 * @param Smart_Custom_Fields_Field_Base $instance
 	 */
 	public static function add_form_field_instance( Smart_Custom_Fields_Field_Base $instance ) {
@@ -427,8 +432,8 @@ class SCF {
 	}
 
 	/**
-	 * get_form_field_instance
-	 * フォームフィールドの情報を取得
+	 * 使用可能なフォームフィールドオブジェクトを取得
+	 * 
 	 * @param string $type フォームフィールドの type
 	 * @param Smart_Custom_Fields_Field_Base
 	 */
@@ -438,6 +443,11 @@ class SCF {
 		}
 	}
 
+	/**
+	 * 全ての使用可能なフォームフィールドオブジェクトを取得
+	 *
+	 * @return array
+	 */
 	public static function get_form_field_instances() {
 		$fields = array();
 		foreach ( self::$fields as $type => $instance ) {
@@ -447,8 +457,8 @@ class SCF {
 	}
 	
 	/**
-	 * choices_eol_to_array
 	 * 改行区切りの $choices を配列に変換
+	 * 
 	 * @param string $choices
 	 * @return array
 	 */
@@ -462,6 +472,7 @@ class SCF {
 
 	/**
 	 * Setting を生成して返す
+	 *
 	 * @param string $id
 	 * @param string $title
 	 */
