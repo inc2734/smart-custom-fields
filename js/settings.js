@@ -11,7 +11,7 @@ jQuery( function( $ ) {
 	$( '.smart-cf-fields-wrapper' ).each( function( i, e ) {
 		var wrapper = $( e );
 		var btn_add_group    = wrapper.find( '.btn-add-group' );
-		var btn_remove_group = wrapper.find( '.btn-remove-group b' );
+		var btn_remove_group = wrapper.find( '.btn-remove-group' );
 		var btn_add_field    = wrapper.find( '.btn-add-field' );
 		var btn_remove_field = wrapper.find( '.btn-remove-field' );
 		var group_class      = '.smart-cf-group';

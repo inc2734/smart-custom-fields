@@ -1,9 +1,9 @@
 /**
  * editor.js
- * Version    : 1.0.0
+ * Version    : 1.0.1
  * Author     : Takashi Kitajima
  * Created    : September 23, 2014
- * Modified   :
+ * Modified   : February 27, 2015
  * License    : GPLv2
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
  */
@@ -62,8 +62,8 @@ jQuery( function( $ ) {
 				if ( name ) {
 					$( this ).attr( 'name',
 						name.replace(
-							/^(smart-custom-fields\[.+\])\[_\]/,
-							'$1[_' + cnt + ']'
+							/^(smart-custom-fields\[.+?\])\[\]/,
+							'$1[' + cnt + ']'
 						)
 					);
 					$( this ).removeAttr( 'disabled' );

@@ -1,30 +1,47 @@
 <?php
 /**
  * Smart_Custom_Fields_Field_Datepicker
- * Version    : 1.0.0
+ * Version    : 1.1.0
  * Author     : Takashi Kitajima
  * Created    : January 17, 2015
- * Modified   :
+ * Modified   : February 27, 2015
  * License    : GPLv2
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
  */
 class Smart_Custom_Fields_Field_Datepicker extends Smart_Custom_Fields_Field_Base {
 
 	/**
-	 * init
-	 * @return array ( name, label, optgroup )
+	 * 必須項目の設定
+	 *
+	 * @return array
 	 */
 	protected function init() {
 		add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts' ) );
 		return array(
-			'name'     => 'datepicker',
-			'label'    => __( 'Date picker', 'smart-custom-fields' ),
-			'optgroup' => 'other-fields',
+			'type'         => 'datepicker',
+			'display-name' => __( 'Date picker', 'smart-custom-fields' ),
+			'optgroup'     => 'other-fields',
 		);
 	}
 
 	/**
-	 * admin_enqueue_scripts
+	 * 設定項目の設定
+	 *
+	 * @return array
+	 */
+	protected function options() {
+		return array(
+			'date_format' => '',
+			'max_date'    => '',
+			'min_date'    => '',
+			'default'     => '',
+			'notes'       => '',
+		);
+	}
+
+	/**
+	 * CSS、JSの読み込み
+	 *
 	 * @param string $hook
 	 */
 	public function admin_enqueue_scripts( $hook ) {
@@ -49,13 +66,14 @@ class Smart_Custom_Fields_Field_Datepicker extends Smart_Custom_Fields_Field_Bas
 	}
 
 	/**
-	 * get_field
-	 * @param array $field フィールドの情報
+	 * 投稿画面にフィールドを表示
+	 *
 	 * @param int $index インデックス番号
 	 * @param mixed $value 保存されている値（check のときだけ配列）
+	 * @return string html
 	 */
-	public function get_field( $field, $index, $value ) {
-		$name = $this->get_name_attribute( $field['name'], $index );
+	public function get_field( $index, $value ) {
+		$name     = $this->get_field_name_in_editor( $index );
 		$disabled = $this->get_disable_attribute( $index );
 
 		$js = array(
@@ -85,14 +103,14 @@ class Smart_Custom_Fields_Field_Datepicker extends Smart_Custom_Fields_Field_Bas
 				)
 			) );
 		}
-		if ( !empty( $field['date_format'] ) ) {
-			$js['dateFormat'] = $field['date_format'];
+		if ( !$this->get( 'date_format' ) ) {
+			$js['dateFormat'] = $this->get( 'date_format' );
 		}
-		if ( !empty( $field['max_date'] ) ) {
-			$js['maxDate'] = $field['max_date'];
+		if ( !$this->get( 'max_date' ) ) {
+			$js['maxDate'] = $this->get( 'max_date' );
 		}
-		if ( !empty( $field['min_date'] ) ) {
-			$js['minDate'] = $field['min_date'];
+		if ( !$this->get( 'min_date' ) ) {
+			$js['minDate'] = $this->get( 'min_date' );
 		}
 		$data_js = json_encode( $js );
 
@@ -107,7 +125,8 @@ class Smart_Custom_Fields_Field_Datepicker extends Smart_Custom_Fields_Field_Bas
 	}
 
 	/**
-	 * display_field_options
+	 * 設定画面にフィールドを表示（オリジナル項目）
+	 *
 	 * @param int $group_key
 	 * @param int $field_key
 	 */
@@ -117,18 +136,18 @@ class Smart_Custom_Fields_Field_Datepicker extends Smart_Custom_Fields_Field_Bas
 			<th><?php esc_html_e( 'Default', 'smart-custom-fields' ); ?></th>
 			<td>
 				<input type="text"
-					name="<?php echo esc_attr( $this->get_field_name( $group_key, $field_key, 'default' ) ); ?>"
+					name="<?php echo esc_attr( $this->get_field_name_in_setting( $group_key, $field_key, 'default' ) ); ?>"
 					class="widefat"
-					value="<?php echo esc_attr( $this->get_field_value( 'default' ) ); ?>" />
+					value="<?php echo esc_attr( $this->get( 'default' ) ); ?>" />
 			</td>
 		</tr>
 		<tr>
 			<th><?php esc_html_e( 'Date Format', 'smart-custom-fields' ); ?></th>
 			<td>
 				<input type="text"
-					name="<?php echo esc_attr( $this->get_field_name( $group_key, $field_key, 'date_format' ) ); ?>"
+					name="<?php echo esc_attr( $this->get_field_name_in_setting( $group_key, $field_key, 'date_format' ) ); ?>"
 					class="widefat"
-					value="<?php echo esc_attr( $this->get_field_value( 'date_format' ) ); ?>"
+					value="<?php echo esc_attr( $this->get( 'date_format' ) ); ?>"
 				/><br />
 				<span class="<?php echo esc_attr( SCF_Config::PREFIX ); ?>notes">
 					<?php esc_html_e( 'e.g dd/mm/yy', 'smart-custom-fields' ); ?>
@@ -144,9 +163,9 @@ class Smart_Custom_Fields_Field_Datepicker extends Smart_Custom_Fields_Field_Bas
 			<th><?php esc_html_e( 'Max Date', 'smart-custom-fields' ); ?></th>
 			<td>
 				<input type="text"
-					name="<?php echo esc_attr( $this->get_field_name( $group_key, $field_key, 'max_date' ) ); ?>"
+					name="<?php echo esc_attr( $this->get_field_name_in_setting( $group_key, $field_key, 'max_date' ) ); ?>"
 					class="widefat"
-					value="<?php echo esc_attr( $this->get_field_value( 'max_date' ) ); ?>"
+					value="<?php echo esc_attr( $this->get( 'max_date' ) ); ?>"
 				/><br />
 				<span class="<?php echo esc_attr( SCF_Config::PREFIX ); ?>notes">
 					<?php esc_html_e( 'e.g +1m +1w', 'smart-custom-fields' ); ?>
@@ -162,9 +181,9 @@ class Smart_Custom_Fields_Field_Datepicker extends Smart_Custom_Fields_Field_Bas
 			<th><?php esc_html_e( 'Min Date', 'smart-custom-fields' ); ?></th>
 			<td>
 				<input type="text"
-					name="<?php echo esc_attr( $this->get_field_name( $group_key, $field_key, 'min_date' ) ); ?>"
+					name="<?php echo esc_attr( $this->get_field_name_in_setting( $group_key, $field_key, 'min_date' ) ); ?>"
 					class="widefat"
-					value="<?php echo esc_attr( $this->get_field_value( 'min_date' ) ); ?>"
+					value="<?php echo esc_attr( $this->get( 'min_date' ) ); ?>"
 				/><br />
 				<span class="<?php echo esc_attr( SCF_Config::PREFIX ); ?>notes">
 					<?php esc_html_e( 'e.g +1m +1w', 'smart-custom-fields' ); ?>
@@ -180,9 +199,9 @@ class Smart_Custom_Fields_Field_Datepicker extends Smart_Custom_Fields_Field_Bas
 			<th><?php esc_html_e( 'Notes', 'smart-custom-fields' ); ?></th>
 			<td>
 				<input type="text"
-					name="<?php echo esc_attr( $this->get_field_name( $group_key, $field_key, 'notes' ) ); ?>"
+					name="<?php echo esc_attr( $this->get_field_name_in_setting( $group_key, $field_key, 'notes' ) ); ?>"
 					class="widefat"
-					value="<?php echo esc_attr( $this->get_field_value( 'notes' ) ); ?>"
+					value="<?php echo esc_attr( $this->get( 'notes' ) ); ?>"
 				/>
 			</td>
 		</tr>
