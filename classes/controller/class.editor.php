@@ -1,5 +1,14 @@
 <?php
-class Smart_Custom_Fields_Editor {
+/**
+ * Smart_Custom_Fields_Controller_Editor
+ * Version    : 1.0.0
+ * Author     : Takashi Kitajima
+ * Created    : September 23, 2014
+ * Modified   : February 27, 2015
+ * License    : GPLv2
+ * License URI: http://www.gnu.org/licenses/gpl-2.0.html
+ */
+class Smart_Custom_Fields_Controller_Editor {
 
 	/**
 	 * post_custom 格納用
@@ -50,7 +59,7 @@ class Smart_Custom_Fields_Editor {
 
 	/**
 	 * 投稿画面にカスタムフィールドを表示
-	 * @param stirng $post_type
+	 * @param string $post_type
 	 * @param WP_Post $post
 	 */
 	public function add_meta_boxes( $post_type, $post ) {

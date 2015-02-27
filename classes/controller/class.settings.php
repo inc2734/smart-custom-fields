@@ -1,14 +1,14 @@
 <?php
 /**
- * Smart_Custom_Fields_Settings
- * Version    : 1.0.2
+ * Smart_Custom_Fields_Controller_Settings
+ * Version    : 1.1.0
  * Author     : Takashi Kitajima
  * Created    : September 23, 2014
- * Modified   : January 22, 2015
+ * Modified   : February 27, 2015
  * License    : GPLv2
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
  */
-class Smart_Custom_Fields_Settings {
+class Smart_Custom_Fields_Controller_Settings {
 
 	/**
 	 * フィールド選択のセレクトボックスの選択肢用
@@ -50,11 +50,11 @@ class Smart_Custom_Fields_Settings {
 	public function admin_enqueue_scripts() {
 		wp_enqueue_style(
 			SCF_Config::PREFIX . 'settings',
-			plugin_dir_url( __FILE__ ) . '../css/settings.css'
+			plugins_url( SCF_Config::NAME ) . '/css/settings.css'
 		);
 		wp_enqueue_script(
 			SCF_Config::PREFIX . 'settings',
-			plugin_dir_url( __FILE__ ) . '../js/settings.js',
+			plugins_url( SCF_Config::NAME ) . '/js/settings.js',
 			array( 'jquery' ),
 			null,
 			true

@@ -42,7 +42,7 @@ class Smart_Custom_Fields_Field_Relation extends Smart_Custom_Fields_Field_Base 
 		if ( in_array( $hook, array( 'post-new.php', 'post.php' ) ) ) {
 			wp_enqueue_script(
 				SCF_Config::PREFIX . 'editor-relation',
-				plugin_dir_url( __FILE__ ) . '../../js/editor-relation.js',
+				plugins_url( SCF_Config::NAME ) . '/js/editor-relation.js',
 				array( 'jquery' ),
 				null,
 				true

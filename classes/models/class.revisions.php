@@ -223,7 +223,7 @@ class Smart_Custom_Fields_Revisions {
 	 * wp_save_post_revision_check_for_changes
 	 * @return bool false ならリビジョンとして保存される。
 	 */
-	public function wp_save_post_revision_check_for_changes( $check_for_changes = true, $last_revision, $post ) {
+	public function wp_save_post_revision_check_for_changes( $check_for_changes, $last_revision, $post ) {
 		$post_meta = array();
 		$p = get_post_custom( $post->ID );
 		foreach ( $p as $key => $value ) {

@@ -3,11 +3,11 @@
  * Plugin name: Smart Custom Fields
  * Plugin URI: https://github.com/inc2734/smart-custom-fields/
  * Description: Smart Custom Fields is a simple plugin that management custom fields.
- * Version: 1.1.3
+ * Version: 1.2.0
  * Author: Takashi Kitajima
  * Author URI: http://2inc.org
  * Created: October 9, 2014
- * Modified: February 10, 2015
+ * Modified: February 27, 2015
  * Text Domain: smart-custom-fields
  * Domain Path: /languages
  * License: GPLv2
@@ -25,14 +25,15 @@ class Smart_Custom_Fields {
 	}
 
 	/**
-	 * plugins_loaded
+	 * 各クラス・翻訳ファイルの読み込み
 	 */
 	public function plugins_loaded() {
 		do_action( SCF_Config::PREFIX . 'load' );
-		require_once plugin_dir_path( __FILE__ ) . 'classes/test_class.php'; // TODO
-		require_once plugin_dir_path( __FILE__ ) . 'classes/class.field-base.php';
+		require_once plugin_dir_path( __FILE__ ) . 'classes/models/class.setting.php';
+		require_once plugin_dir_path( __FILE__ ) . 'classes/models/class.group.php';
+		require_once plugin_dir_path( __FILE__ ) . 'classes/models/class.abstract-field-base.php';
+		require_once plugin_dir_path( __FILE__ ) . 'classes/models/class.revisions.php';
 		require_once plugin_dir_path( __FILE__ ) . 'classes/class.scf.php';
-		require_once plugin_dir_path( __FILE__ ) . 'classes/class.revisions.php';
 		new Smart_Custom_Fields_Revisions();
 
 		foreach ( glob( plugin_dir_path( __FILE__ ) . 'classes/fields/*.php' ) as $form_item ) {
@@ -73,22 +74,23 @@ class Smart_Custom_Fields {
 	}
 
 	/**
+	 * 各管理画面の実行
+	 *
 	 * @param WP_Screen $screen
 	 */
 	public function current_screen( $screen ) {
 		// 一覧画面
 		if ( $screen->id === 'edit-' . SCF_Config::NAME ) {
-
 		}
 		// 新規作成・編集画面
 		elseif ( $screen->id === SCF_Config::NAME ) {
-			require_once plugin_dir_path( __FILE__ ) . 'classes/class.settings.php';
-			new Smart_Custom_Fields_Settings();
+			require_once plugin_dir_path( __FILE__ ) . 'classes/controller/class.settings.php';
+			new Smart_Custom_Fields_Controller_Settings();
 		}
 		// その他の新規作成・編集画面
 		elseif ( in_array( $screen->id, get_post_types() ) ) {
-			require_once plugin_dir_path( __FILE__ ) . 'classes/class.editor.php';
-			new Smart_Custom_Fields_Editor();
+			require_once plugin_dir_path( __FILE__ ) . 'classes/controller/class.editor.php';
+			new Smart_Custom_Fields_Controller_Editor();
 		}
 	}
 
@@ -119,7 +121,7 @@ class Smart_Custom_Fields {
 				'public'          => false,
 				'show_ui'         => true,
 				'capability_type' => 'page',
-				'supports'        => array( 'title' ),
+				'supports'        => array( 'title', 'page-attributes' ),
 				'show_in_menu'    => false,
 			)
 		);

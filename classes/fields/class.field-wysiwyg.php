@@ -45,7 +45,7 @@ class Smart_Custom_Fields_Field_Wysiwyg extends Smart_Custom_Fields_Field_Base {
 	public function after_wp_tiny_mce() {
 		printf(
 			'<script type="text/javascript" src="%s"></script>',
-			plugin_dir_url( __FILE__ ) . '../../js/editor-wysiwyg.js'
+			plugins_url( SCF_Config::NAME ) . '/js/editor-wysiwyg.js'
 		);
 	}
 
