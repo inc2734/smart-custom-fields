@@ -179,8 +179,9 @@ class Smart_Custom_Fields_Controller_Editor {
 
 		foreach ( $_POST[SCF_Config::NAME] as $name => $values ) {
 			foreach ( $values as $value ) {
-				if ( in_array( $name, $multiple_data_fields ) && $value === '' )
+				if ( in_array( $name, $multiple_data_fields ) && $value === '' ) {
 					continue;
+				}
 				if ( !is_array( $value ) ) {
 					$this->add_post_meta( $post_id, $name, $value );
 				} else {
