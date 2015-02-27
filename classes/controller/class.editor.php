@@ -11,8 +11,8 @@
 class Smart_Custom_Fields_Controller_Editor {
 
 	/**
-	 * post_custom 格納用
-	 * 何度も関数呼び出ししなくて良いように保存
+	 * post_custom 格納用。何度も関数呼び出ししなくて良いように保存
+	 * @var array
 	 */
 	protected $post_custom = array();
 
@@ -26,16 +26,14 @@ class Smart_Custom_Fields_Controller_Editor {
 	 * __construct
 	 */
 	public function __construct() {
-		$settings = SCF::get_settings( get_post_type() );
-		if ( !empty( $settings ) ) {
-			add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts' ) );
-			add_action( 'add_meta_boxes', array( $this, 'add_meta_boxes' ), 10, 2 );
-			add_action( 'save_post', array( $this, 'save_post' ) );
-		}
+		add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts' ) );
+		add_action( 'add_meta_boxes'       , array( $this, 'add_meta_boxes' ), 10, 2 );
+		add_action( 'save_post'            , array( $this, 'save_post' ) );
 	}
 
 	/**
 	 * 投稿画面用の css、js、翻訳ファイルのロード
+	 * 
 	 * @param string $hook
 	 */
 	public function admin_enqueue_scripts( $hook ) {
@@ -59,13 +57,11 @@ class Smart_Custom_Fields_Controller_Editor {
 
 	/**
 	 * 投稿画面にカスタムフィールドを表示
+	 *
 	 * @param string $post_type
 	 * @param WP_Post $post
 	 */
 	public function add_meta_boxes( $post_type, $post ) {
-		if ( $post_type === SCF_Config::NAME ) {
-			return;
-		}
 		$_post = $post;
 		$settings = SCF::get_settings( $post_type );
 		foreach ( $settings as $Setting ) {
@@ -83,6 +79,7 @@ class Smart_Custom_Fields_Controller_Editor {
 
 	/**
 	 * 投稿画面にカスタムフィールドを表示
+	 * 
 	 * @param object $post
 	 * @param array $callback_args カスタムフィールドの設定情報
 	 */
@@ -122,6 +119,7 @@ class Smart_Custom_Fields_Controller_Editor {
 
 	/**
 	 * 投稿画面のカスタムフィールドからのメタデータを保存
+	 * 
 	 * @param int $post_id
 	 */
 	public function save_post( $post_id ) {
@@ -196,6 +194,7 @@ class Smart_Custom_Fields_Controller_Editor {
 
 	/**
 	 * メタデータを保存
+	 * 
 	 * @param int $post_id
 	 * @param string $name
 	 * @param mixed $value
@@ -211,6 +210,7 @@ class Smart_Custom_Fields_Controller_Editor {
 
 	/**
 	 * メタデータの取得
+	 * 
 	 * @param int $post_id
 	 * @return array
 	 */
@@ -228,6 +228,7 @@ class Smart_Custom_Fields_Controller_Editor {
 
 	/**
 	 * カスタムフィールドを出力するための配列を生成
+	 * 
 	 * @param array $groups カスタムフィールド設定ページで保存した設定
 	 * @return array $tables カスタムフィールド表示用のテーブルを出力するための配列
 	 */
@@ -276,6 +277,7 @@ class Smart_Custom_Fields_Controller_Editor {
 
 	/**
 	 * 複数許可フィールドのメタデータを取得
+	 * 
 	 * @param int $post_id
 	 * @param string $field_name
 	 * @param int $index
@@ -310,6 +312,7 @@ class Smart_Custom_Fields_Controller_Editor {
 
 	/**
 	 * 非複数許可フィールドのメタデータを取得
+	 * 
 	 * @param int $post_id
 	 * @param string $field_name
 	 * @param int $index
@@ -325,7 +328,8 @@ class Smart_Custom_Fields_Controller_Editor {
 	}
 
 	/**
-	 * display_tr
+	 * カスタムフィールド表示 table で使用する各 tr を出力
+	 * 
 	 * @param int $post_id
 	 * @param bool $is_repeat
 	 * @param array $fields
@@ -334,7 +338,10 @@ class Smart_Custom_Fields_Controller_Editor {
 	protected function display_tr( $post_id, $is_repeat, $fields, $index = null ) {
 		$btn_repeat = '';
 		if ( $is_repeat ) {
-			$btn_repeat  = sprintf( '<span class="%s"></span>', esc_attr( SCF_Config::PREFIX . 'icon-handle' ) );
+			$btn_repeat  = sprintf(
+				'<span class="%s"></span>',
+				esc_attr( SCF_Config::PREFIX . 'icon-handle' )
+			);
 			$btn_repeat .= '<span class="button btn-add-repeat-group">+</span>';
 			$btn_repeat .= ' <span class="button btn-remove-repeat-group">-</span>';
 		}
@@ -354,6 +361,7 @@ class Smart_Custom_Fields_Controller_Editor {
 		foreach ( $fields as $Field ) {
 			$type         = $Field->get_attribute( 'type' );
 			$display_name = $Field->get_attribute( 'display-name' );
+			$default      = $Field->get( 'default' );
 			$field_name   = $Field->get( 'name' );
 			$field_label  = $Field->get( 'label' );
 			if ( !$field_label ) {
@@ -362,7 +370,6 @@ class Smart_Custom_Fields_Controller_Editor {
 
 			// 複数値許可フィールドのとき
 			$post_status = get_post_status( $post_id );
-			$default = $Field->get( 'default' );
 			if ( $Field->get_attribute( 'allow-multiple-data' ) ) {
 				$value = array();
 				if ( !SCF::is_empty( $default ) && ( $post_status === 'auto-draft' || is_null( $index ) ) ) {

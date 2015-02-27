@@ -1,10 +1,10 @@
 <?php
 /**
  * SCF
- * Version    : 1.0.3
+ * Version    : 1.1.0
  * Author     : Takashi Kitajima
  * Created    : September 23, 2014
- * Modified   : February 10, 2015
+ * Modified   : February 27, 2015
  * License    : GPLv2
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
  */
@@ -12,52 +12,53 @@ class SCF {
 
 	/**
 	 * Smart Custom Fields に登録されているフォームフィールド（field）のインスタンスの配列
+	 * @var array
 	 */
 	protected static $fields = array();
 
 	/**
 	 * データ取得処理は重いので、一度取得したデータは cache に保存する。
 	 * キーに post_id を設定すること。
+	 * @var array
 	 */
 	protected static $cache = array();
 
 	/**
 	 * データ取得処理は重いので、一度取得した設定データは settings_posts_cache に保存する。
 	 * キーに post_type を設定すること。
+	 * @var array
 	 */
 	protected static $settings_posts_cache = array();
 
 	/**
 	 * データ取得処理は重いので、一度取得した設定データは cache に保存する。
 	 * キーに post_type を設定すること。
+	 * @var array
 	 */
 	protected static $settings_cache = array();
 
 	/**
 	 * データ取得処理は重いので、一度取得した設定データは cache に保存する。
 	 * キーに post_id を設定すること。
+	 * @var array
 	 */
 	protected static $repeat_multiple_data_cache = array();
 
 	/**
-	 * gets
 	 * その投稿の全てのメタデータを良い感じに取得
-	 * @param $post_id
+	 * 
+	 * @param int $post_id
 	 * @return array
 	 */
 	public static function gets( $post_id = null ) {
 		if ( is_null( $post_id ) ) {
 			$post_id = get_the_ID();
 		}
-		if ( $public_post_id = wp_is_post_revision( $post_id ) ) {
-			$post_type = get_post_type( $public_post_id );
-		} else {
-			$post_type = get_post_type( $post_id );
-		}
 		$post_id = self::get_real_post_id( $post_id );
 
 		// 設定画面で未設定のメタデータは投稿が保持していても出力しないようにしないといけないので
 		// 設定データを取得して出力して良いか判別する
+		$post_type = self::get_public_post_type( $post_id );
 		$settings  = self::get_settings( $post_type );
 		$post_meta = array();
 		foreach ( $settings as $Setting ) {
@@ -81,8 +82,8 @@ class SCF {
 	}
 
 	/**
-	 * get
 	 * その投稿の任意のメタデータを良い感じに取得
+	 * 
 	 * @param string $name グループ名もしくはフィールド名
 	 * @param int $post_id
 	 * @return mixed
@@ -90,11 +91,6 @@ class SCF {
 	public static function get( $name, $post_id = null ) {
 		if ( is_null( $post_id ) ) {
 			$post_id = get_the_ID();
-		}
-		if ( $public_post_id = wp_is_post_revision( $post_id ) ) {
-			$post_type = get_post_type( $public_post_id );
-		} else {
-			$post_type = get_post_type( $post_id );
 		}
 		$post_id = self::get_real_post_id( $post_id );
 
@@ -104,7 +100,8 @@ class SCF {
 
 		// 設定画面で未設定のメタデータは投稿が保持していても出力しないようにしないといけないので
 		// 設定データを取得して出力して良いか判別する
-		$settings = self::get_settings( $post_type );
+		$post_type = self::get_public_post_type( $post_id );
+		$settings  = self::get_settings( $post_type );
 		foreach ( $settings as $Setting ) {
 			$groups = $Setting->get_groups();
 			foreach ( $groups as $Group ) {
@@ -128,6 +125,27 @@ class SCF {
 		}
 	}
 
+	/**
+	 * Post ID がリビジョンのものでも良い感じに投稿タイプを取得
+	 * 
+	 * @param int $post_id
+	 * @return string
+	 */
+	protected static function get_public_post_type( $post_id ) {
+		if ( $public_post_id = wp_is_post_revision( $post_id ) ) {
+			$post_type = get_post_type( $public_post_id );
+		} else {
+			$post_type = get_post_type( $post_id );
+		}
+		return $post_type;
+	}
+
+	/**
+	 * プレビューのときはそのプレビューの Post ID を返す
+	 *
+	 * @param int $post_id
+	 * @return int
+	 */
 	protected static function get_real_post_id( $post_id ) {
 		if ( is_preview() ) {
 			$preview_post = wp_get_post_autosave( $post_id );
@@ -139,7 +157,8 @@ class SCF {
 	}
 
 	/**
-	 * save_cache
+	 * キャシュに保存
+	 * 
 	 * @param int $post_id
 	 * @param string $name
 	 * @param mixed $data
@@ -149,7 +168,8 @@ class SCF {
 	}
 
 	/**
-	 * get_cache
+	 * キャッシュを取得
+	 * 
 	 * @param int $post_id
 	 * @param string $name
 	 * @return mixed
@@ -167,14 +187,15 @@ class SCF {
 	}
 
 	/**
-	 * get_values_by_group
+	 * そのグループのメタデータを取得
+	 * 
 	 * @param int $post_id
 	 * @param Smart_Custom_Fields_Group $Group
-	 * @return mixed $post_meta
+	 * @return mixed
 	 */
 	protected static function get_values_by_group( $post_id, $Group ) {
 		$post_meta = array();
-		$fields = $Group->get_fields();
+		$fields    = $Group->get_fields();
 		foreach ( $fields as $Field ) {
 			$field_name = $Field->get( 'name' );
 			if ( !$field_name ) {
@@ -189,7 +210,7 @@ class SCF {
 					if ( $repeat_multiple_value === 0 ) {
 						$value = array();
 					} else {
-						$value = array_slice( $_post_meta, $start, $repeat_multiple_value );
+						$value  = array_slice( $_post_meta, $start, $repeat_multiple_value );
 						$start += $repeat_multiple_value;
 					}
 					$post_meta[$repeat_multiple_key][$field_name] = $value;
@@ -197,11 +218,14 @@ class SCF {
 			}
 			// チェックボックス以外
 			else {
+				$field_type = $Field->get_attribute( 'type' );
 				foreach ( $_post_meta as $_post_meta_key => $value ) {
-					$field_type = $Field->get_attribute( 'type' );
-					if ( in_array( $field_type, array( 'wysiwyg' ) ) ) {
+					// wysiwyg の場合はフィルタを通す
+					if ( $field_type === 'wysiwyg' ) {
 						$value = apply_filters( 'the_content', $value );
-					} elseif ( $field_type === 'relation' ) {
+					}
+					// relation のときは $value = Post ID。公開済みでない場合は取得しない
+					elseif ( $field_type === 'relation' ) {
 						if ( get_post_status( $value ) !== 'publish' ) {
 							continue;
 						}
@@ -215,7 +239,8 @@ class SCF {
 	}
 
 	/**
-	 * get_value_by_field
+	 * そのフィールドのメタデータを取得
+	 * 
 	 * @param int $post_id
 	 * @param array $field
 	 * @param bool $is_repeatable このフィールドが所属するグループが repeat かどうか
@@ -414,7 +439,11 @@ class SCF {
 	}
 
 	public static function get_form_field_instances() {
-		return self::$fields;
+		$fields = array();
+		foreach ( self::$fields as $type => $instance ) {
+			$fields[$type] = self::get_form_field_instance( $type );
+		}
+		return $fields;
 	}
 	
 	/**

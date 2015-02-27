@@ -29,6 +29,8 @@ class Smart_Custom_Fields_Group {
 	protected $repeat = false;
 
 	/**
+	 * __construct
+	 *
 	 * @param string $group_name グループ名
 	 * @param bool $repeat 繰り返しグループかどうか
 	 * @param array $_fields フィールドオブジェクトの配列
@@ -55,6 +57,7 @@ class Smart_Custom_Fields_Group {
 
 	/**
 	 * グループ名を返す
+	 * 
 	 * @return string
 	 */
 	public function get_name() {
@@ -66,6 +69,7 @@ class Smart_Custom_Fields_Group {
 
 	/**
 	 * この設定ページに保存されている各フィールドを取得
+	 *
 	 * @return array
 	 */
 	public function get_fields() {
@@ -74,6 +78,7 @@ class Smart_Custom_Fields_Group {
 
 	/**
 	 * 繰り返しグループかどうか
+	 *
 	 * @return bool
 	 */
 	public function is_repeatable() {
@@ -81,24 +86,9 @@ class Smart_Custom_Fields_Group {
 	}
 
 	/**
-	 * フィールドを追加
-	 * @string $type フィールドタイプ
-	 * @param array $options 設定値
-	 */
-	/*
-	public function add_field( $type, array $options ) {
-		$Field = SCF::get_form_field_instance( $type );
-		if ( $Field ) {
-			foreach ( $options as $key => $value ) {
-				$Field->set( $key, $value );
-			}
-		}
-	}
-	*/
-
-	/**
-	 * add_hide_class
-	 * @param string $key 値があれば hide を表示
+	 * $key が空でなければ hide を表示
+	 * 
+	 * @param string $key
 	 */
 	private function add_hide_class( $key ) {
 		if ( !$key ) {
@@ -106,6 +96,11 @@ class Smart_Custom_Fields_Group {
 		}
 	}
 
+	/**
+	 * 設定画面にグループの共通設定を表示
+	 * 
+	 * @param int $group_key
+	 */
 	public function display_options( $group_key ) {
 		?>
 		<div class="<?php echo esc_attr( SCF_Config::PREFIX . 'group-repeat' ); ?>">

@@ -45,7 +45,7 @@ class Smart_Custom_Fields_Controller_Settings {
 	}
 
 	/**
-	 * admin_enqueue_scripts
+	 * CSS、JSの読み込み
 	 */
 	public function admin_enqueue_scripts() {
 		wp_enqueue_style(
@@ -66,7 +66,6 @@ class Smart_Custom_Fields_Controller_Settings {
 	}
 
 	/**
-	 * add_meta_boxes
 	 * 投稿画面にカスタムフィールドを表示
 	 */
 	public function add_meta_boxes() {
@@ -86,8 +85,9 @@ class Smart_Custom_Fields_Controller_Settings {
 	}
 
 	/**
-	 * add_hide_class
-	 * @param string $key 値があれば hide を表示
+	 * $key が空でなければ hide を表示
+	 * 
+	 * @param string $key
 	 */
 	private function add_hide_class( $key ) {
 		if ( !$key ) {
@@ -96,7 +96,7 @@ class Smart_Custom_Fields_Controller_Settings {
 	}
 
 	/**
-	 * display_meta_box
+	 * 投稿画面にカスタムフィールドを表示
 	 */
 	public function display_meta_box() {
 		$Setting = SCF::add_setting( get_the_ID(), get_the_title() );
@@ -177,7 +177,6 @@ class Smart_Custom_Fields_Controller_Settings {
 	}
 
 	/**
-	 * display_meta_box_condition
 	 * メタボックスの表示条件を設定するメタボックスを表示
 	 */
 	public function display_meta_box_condition() {
@@ -215,7 +214,9 @@ class Smart_Custom_Fields_Controller_Settings {
 	}
 
 	/**
-	 * save_post
+	 * 設定を保存
+	 *
+	 * @param int $post_id
 	 */
 	public function save_post( $post_id ) {
 		if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
@@ -231,9 +232,17 @@ class Smart_Custom_Fields_Controller_Settings {
 
 		$data = array();
 		foreach ( $_POST[SCF_Config::NAME] as $group_key => $group_value ) {
+			// $group_key = 0 は隠しフィールドなので保存不要
+			if ( $group_key === 0 ) {
+				continue;
+			}
 			if ( !empty( $group_value['fields'] ) && count( $group_value['fields'] ) > 1 ) {
 				$fields = array();
-				foreach ( $group_value['fields'] as $field_value ) {
+				foreach ( $group_value['fields'] as $field_key => $field_value ) {
+					// $field_key = 0 は隠しフィールドなので保存不要
+					if ( $field_key === 0 ) {
+						continue;
+					}
 					if ( !empty( $field_value['name'] ) ) {
 						$fields[] = $field_value;
 					}

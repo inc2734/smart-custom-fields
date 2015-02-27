@@ -1,16 +1,18 @@
 <?php
 /**
  * Smart_Custom_Fields_Field_Wysiwyg
- * Version    : 1.0.1
+ * Version    : 1.1.0
  * Author     : Takashi Kitajima
  * Created    : October 7, 2014
- * Modified   : October 10, 2014
+ * Modified   : February 27, 2015
  * License    : GPLv2
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
  */
 class Smart_Custom_Fields_Field_Wysiwyg extends Smart_Custom_Fields_Field_Base {
 
 	/**
+	 * 必須項目の設定
+	 *
 	 * @return array
 	 */
 	protected function init() {
@@ -23,6 +25,8 @@ class Smart_Custom_Fields_Field_Wysiwyg extends Smart_Custom_Fields_Field_Base {
 	}
 
 	/**
+	 * 設定項目の設定
+	 *
 	 * @return array
 	 */
 	protected function options() {
@@ -33,7 +37,8 @@ class Smart_Custom_Fields_Field_Wysiwyg extends Smart_Custom_Fields_Field_Base {
 	}
 
 	/**
-	 * admin_enqueue_scripts
+	 * TinyMCE 読み込み後にオリジナルの JS を読み込み
+	 *
 	 * @param string $hook
 	 */
 	public function admin_enqueue_scripts( $hook ) {
@@ -42,6 +47,9 @@ class Smart_Custom_Fields_Field_Wysiwyg extends Smart_Custom_Fields_Field_Base {
 		}
 	}
 
+	/**
+	 * JS の読み込み
+	 */
 	public function after_wp_tiny_mce() {
 		printf(
 			'<script type="text/javascript" src="%s"></script>',
@@ -50,7 +58,7 @@ class Smart_Custom_Fields_Field_Wysiwyg extends Smart_Custom_Fields_Field_Base {
 	}
 
 	/**
-	 * after_loaded
+	 * フィールド初期化直後に実行する処理
 	 */
 	protected function after_loaded() {
 		add_action( 'admin_footer', array( $this, 'admin_footer' ) );
@@ -64,12 +72,14 @@ class Smart_Custom_Fields_Field_Wysiwyg extends Smart_Custom_Fields_Field_Base {
 	}
 
 	/**
-	 * get_field
+	 * 投稿画面にフィールドを表示
+	 *
 	 * @param int $index インデックス番号
 	 * @param mixed $value 保存されている値（check のときだけ配列）
+	 * @return string html
 	 */
 	public function get_field( $index, $value ) {
-		$name = $this->get_field_name_in_editor( $index );
+		$name     = $this->get_field_name_in_editor( $index );
 		$disabled = $this->get_disable_attribute( $index );
 		return sprintf(
 			'<div class="wp-editor-wrap">
@@ -86,7 +96,8 @@ class Smart_Custom_Fields_Field_Wysiwyg extends Smart_Custom_Fields_Field_Base {
 	}
 
 	/**
-	 * display_field_options
+	 * 設定画面にフィールドを表示（オリジナル項目）
+	 *
 	 * @param int $group_key
 	 * @param int $field_key
 	 */
@@ -114,6 +125,12 @@ class Smart_Custom_Fields_Field_Wysiwyg extends Smart_Custom_Fields_Field_Base {
 		<?php
 	}
 	
+	/**
+	 * メディアボタンを返す
+	 *
+	 * @param string $editor_id
+	 * @return string
+	 */
 	protected function media_buttons( $editor_id = 'content' ) {
 		$img = '<span class="wp-media-buttons-icon"></span> ';
 		return sprintf( '<a href="#" class="button insert-media add_media" data-editor="%s" title="%s">%s</a>',

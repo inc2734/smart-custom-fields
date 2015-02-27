@@ -1,16 +1,18 @@
 <?php
 /**
  * Smart_Custom_Fields_Field_Radio
- * Version    : 1.0.1
+ * Version    : 1.1.0
  * Author     : Takashi Kitajima
  * Created    : October 7, 2014
- * Modified   : February 10, 2015
+ * Modified   : February 27, 2015
  * License    : GPLv2
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
  */
 class Smart_Custom_Fields_Field_Radio extends Smart_Custom_Fields_Field_Base {
 
 	/**
+	 * 必須項目の設定
+	 *
 	 * @return array
 	 */
 	protected function init() {
@@ -22,6 +24,8 @@ class Smart_Custom_Fields_Field_Radio extends Smart_Custom_Fields_Field_Base {
 	}
 
 	/**
+	 * 設定項目の設定
+	 *
 	 * @return array
 	 */
 	protected function options() {
@@ -33,14 +37,16 @@ class Smart_Custom_Fields_Field_Radio extends Smart_Custom_Fields_Field_Base {
 	}
 
 	/**
-	 * get_field
+	 * 投稿画面にフィールドを表示
+	 *
 	 * @param int $index インデックス番号
 	 * @param mixed $value 保存されている値（check のときだけ配列）
+	 * @return string html
 	 */
 	public function get_field( $index, $value ) {
-		$name = $this->get_field_name_in_editor( $index );
+		$name     = $this->get_field_name_in_editor( $index );
 		$disabled = $this->get_disable_attribute( $index );
-		$choices = SCF::choices_eol_to_array( $this->get( 'choices' ) );
+		$choices  = SCF::choices_eol_to_array( $this->get( 'choices' ) );
 
 		$form_field = sprintf(
 			'<input type="hidden" name="%s" value="" %s />',
@@ -62,7 +68,8 @@ class Smart_Custom_Fields_Field_Radio extends Smart_Custom_Fields_Field_Base {
 	}
 
 	/**
-	 * display_field_options
+	 * 設定画面にフィールドを表示（オリジナル項目）
+	 *
 	 * @param int $group_key
 	 * @param int $field_key
 	 */

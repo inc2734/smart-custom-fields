@@ -1,10 +1,10 @@
 <?php
 /**
  * Smart_Custom_Fields_Field_Base
- * Version    : 1.0.3
+ * Version    : 1.1.0
  * Author     : Takashi Kitajima
  * Created    : October 7, 2014
- * Modified   : February 10, 2015
+ * Modified   : February 28, 2015
  * License    : GPLv2
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
  */
@@ -37,7 +37,7 @@ abstract class Smart_Custom_Fields_Field_Base {
 		$attributes = array_merge( $this->attributes, $this->init() );
 		$options    = array_merge( $this->options, $this->options() );
 		if ( empty( $attributes['type'] ) || empty( $attributes['display-name'] ) ) {
-			exit;
+			exit( 'This field object is invalid. Field object must have type and display-name attributes.' );
 		}
 		if ( empty( $attributes['optgroup'] ) ) {
 			$attributes['optgroup'] = 'basic-fields';
@@ -55,24 +55,27 @@ abstract class Smart_Custom_Fields_Field_Base {
 
 	/**
 	 * 必須項目の設定
+	 *
 	 * @return array
 	 */
 	abstract protected function init();
 
 	/**
 	 * 設定項目の設定
+	 *
 	 * @return array
 	 */
 	abstract protected function options();
 
 	/**
-	 * after_loaded
+	 * フィールド初期化直後に実行する処理
 	 */
 	protected function after_loaded() {
 	}
 
 	/**
-	 * get_field
+	 * 投稿画面にフィールドを表示
+	 *
 	 * @param int $index インデックス番号
 	 * @param mixed $value 保存されている値（check のときだけ配列）
 	 * @return string html
@@ -80,19 +83,26 @@ abstract class Smart_Custom_Fields_Field_Base {
 	abstract public function get_field( $index, $value );
 
 	/**
-	 * field_select
+	 * 設定画面でこのフィールドのタイプ選択にこのフィールドのタイプを追加
+	 *
 	 * @param array $attributes その optgroup に属するフィールドのリスト
-	 * @return array $attributes
+	 * @return array
 	 */
 	public function field_select( $attributes ) {
 		$attributes[$this->get_attribute( 'type' )] = $this->get_attribute( 'display-name' );
 		return $attributes;
 	}
 
+	/**
+	 * 設定画面にフィールドを表示（共通項目）
+	 * 
+	 * @param int $group_key
+	 * @param int $field_key
+	 */
 	public function display_options( $group_key, $field_key ) {
 		?>
 		<tr>
-			<th><?php esc_html_e( 'Name', 'smart-custom-fields' ); ?><span class="<?php echo esc_attr( SCF_Config::PREFIX . 'require' ); ?> hide">*</span></th>
+			<th><?php esc_html_e( 'Name', 'smart-custom-fields' ); ?><span class="<?php echo esc_attr( SCF_Config::PREFIX . 'require' ); ?>">*</span></th>
 			<td>
 				<input type="text"
 					name="<?php echo esc_attr( $this->get_field_name_in_setting( $group_key, $field_key, 'name' ) ); ?>"
@@ -126,7 +136,8 @@ abstract class Smart_Custom_Fields_Field_Base {
 	}
 
 	/**
-	 * display_field_options
+	 * 設定画面にフィールドを表示（オリジナル項目）
+	 *
 	 * @param int $group_key
 	 * @param int $field_key
 	 */
@@ -144,14 +155,15 @@ abstract class Smart_Custom_Fields_Field_Base {
 	}
 
 	/**
-	 * get_field_name_in_editor
+	 * 投稿画面で表示するカスタムフィールドの name 属性値を返す
+	 * 
 	 * @param string $name 定義されたフィールドの name
 	 * @param string $index 添字
 	 * @return string
 	 */
 	protected function get_field_name_in_editor( $index ) {
 		return sprintf(
-			'%s[%s][_%s]',
+			'%s[%s][%s]',
 			SCF_Config::NAME,
 			$this->get( 'name' ),
 			$index
@@ -159,7 +171,9 @@ abstract class Smart_Custom_Fields_Field_Base {
 	}
 
 	/**
-	 * get_disable_attribute
+	 * 投稿画面で表示するカスタムフィールドを disabled にするかどうか
+	 * $index が null 以外のときは全てユーザーが保存したデータなので null のときのみ true を返すこと
+	 * 
 	 * @param string $index 添字
 	 * @return bool $disabled
 	 */
@@ -172,8 +186,12 @@ abstract class Smart_Custom_Fields_Field_Base {
 	}
 
 	/**
-	 * get_field_name_in_setting
-	 * フィールド設定画面で使用する name 属性を返す
+	 * 設定画面で使用する name 属性値を返す
+	 * 
+	 * @param int $group_key
+	 * @param int $field_key
+	 * @param string $name
+	 * @return string
 	 */
 	public function get_field_name_in_setting( $group_key, $field_key, $name ) {
 		return sprintf(
@@ -187,6 +205,7 @@ abstract class Smart_Custom_Fields_Field_Base {
 
 	/**
 	 * 設定値を返す
+	 *
 	 * @param string $key 取得したいデータのキー
 	 * @return mixed
 	 */
@@ -198,6 +217,7 @@ abstract class Smart_Custom_Fields_Field_Base {
 
 	/**
 	 * 設定値を設定
+	 * 
 	 * @param string $key 取得したいデータのキー
 	 * @param mixed $value 取得したいデータ
 	 */
@@ -209,6 +229,7 @@ abstract class Smart_Custom_Fields_Field_Base {
 
 	/**
 	 * 属性値を返す
+	 *
 	 * @param string $key 取得したいデータのキー
 	 * @return mixed
 	 */

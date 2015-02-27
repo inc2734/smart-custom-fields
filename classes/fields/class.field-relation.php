@@ -1,16 +1,18 @@
 <?php
 /**
  * Smart_Custom_Fields_Field_Relation
- * Version    : 1.0.2
+ * Version    : 1.1.0
  * Author     : Takashi Kitajima
  * Created    : October 7, 2014
- * Modified   : October 21, 2014
+ * Modified   : February 27, 2015
  * License    : GPLv2
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
  */
 class Smart_Custom_Fields_Field_Relation extends Smart_Custom_Fields_Field_Base {
 
 	/**
+	 * 必須項目の設定
+	 *
 	 * @return array
 	 */
 	protected function init() {
@@ -25,6 +27,8 @@ class Smart_Custom_Fields_Field_Relation extends Smart_Custom_Fields_Field_Base 
 	}
 
 	/**
+	 * 設定項目の設定
+	 *
 	 * @return array
 	 */
 	protected function options() {
@@ -35,7 +39,8 @@ class Smart_Custom_Fields_Field_Relation extends Smart_Custom_Fields_Field_Base 
 	}
 
 	/**
-	 * admin_enqueue_scripts
+	 * JS の読み込み
+	 * 
 	 * @param string $hook
 	 */
 	public function admin_enqueue_scripts( $hook ) {
@@ -56,7 +61,7 @@ class Smart_Custom_Fields_Field_Relation extends Smart_Custom_Fields_Field_Base 
 	}
 
 	/**
-	 * relational_posts_search
+	 * 投稿読み込みボタンをクリックされたときに投稿を読み込む実処理
 	 */
 	public function relational_posts_search() {
 		check_ajax_referer( SCF_Config::NAME . '-relation', 'nonce' );
@@ -79,13 +84,15 @@ class Smart_Custom_Fields_Field_Relation extends Smart_Custom_Fields_Field_Base 
 	}
 
 	/**
-	 * get_field
+	 * 投稿画面にフィールドを表示
+	 *
 	 * @param int $index インデックス番号
 	 * @param mixed $value 保存されている値（check のときだけ配列）
+	 * @return string html
 	 */
 	public function get_field( $index, $value ) {
-		$name = $this->get_field_name_in_editor( $index );
-		$disabled = $this->get_disable_attribute( $index );
+		$name      = $this->get_field_name_in_editor( $index );
+		$disabled  = $this->get_disable_attribute( $index );
 		$post_type = $this->get( 'post-type' );
 		if ( !$post_type ) {
 			$post_type = array( 'post' );
@@ -94,9 +101,9 @@ class Smart_Custom_Fields_Field_Relation extends Smart_Custom_Fields_Field_Base 
 
 		// 選択肢
 		$choices_posts  = get_posts( array(
-			'post_type' => $post_type,
-			'order'     => 'ASC',
-			'orderby'   => 'ID',
+			'post_type'      => $post_type,
+			'order'          => 'ASC',
+			'orderby'        => 'ID',
 			'posts_per_page' => $posts_per_page,
 		) );
 		$choices_li = array();
@@ -168,7 +175,8 @@ class Smart_Custom_Fields_Field_Relation extends Smart_Custom_Fields_Field_Base 
 	}
 
 	/**
-	 * display_field_options
+	 * 設定画面にフィールドを表示（オリジナル項目）
+	 *
 	 * @param int $group_key
 	 * @param int $field_key
 	 */

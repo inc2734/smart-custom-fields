@@ -28,6 +28,12 @@ class Smart_Custom_Fields {
 	 * 各クラス・翻訳ファイルの読み込み
 	 */
 	public function plugins_loaded() {
+		load_plugin_textdomain (
+			'smart-custom-fields',
+			false,
+			dirname( plugin_basename( __FILE__ ) ) . '/languages'
+		);
+		
 		do_action( SCF_Config::PREFIX . 'load' );
 		require_once plugin_dir_path( __FILE__ ) . 'classes/models/class.setting.php';
 		require_once plugin_dir_path( __FILE__ ) . 'classes/models/class.group.php';
@@ -44,17 +50,10 @@ class Smart_Custom_Fields {
 				new $classname();
 			}
 		}
-		
-		load_plugin_textdomain (
-			'smart-custom-fields',
-			false,
-			dirname( plugin_basename( __FILE__ ) ) . '/languages'
-		);
-		
 		do_action( SCF_Config::PREFIX . 'fields-loaded' );
 		
-		add_action( 'init', array( $this, 'register_post_type' ) );
-		add_action( 'admin_menu', array( $this, 'admin_menu' ) );
+		add_action( 'init'          , array( $this, 'register_post_type' ) );
+		add_action( 'admin_menu'    , array( $this, 'admin_menu' ) );
 		add_action( 'current_screen', array( $this, 'current_screen' ) );
 	}
 
@@ -88,14 +87,14 @@ class Smart_Custom_Fields {
 			new Smart_Custom_Fields_Controller_Settings();
 		}
 		// その他の新規作成・編集画面
-		elseif ( in_array( $screen->id, get_post_types() ) ) {
+		elseif ( SCF::get_settings( $screen->id ) ) {
 			require_once plugin_dir_path( __FILE__ ) . 'classes/controller/class.editor.php';
 			new Smart_Custom_Fields_Controller_Editor();
 		}
 	}
 
 	/**
-	 * カスタム投稿タイプの登録
+	 * カスタム投稿タイプの登録。メニュー表示は別メソッドで実行
 	 */
 	public function register_post_type() {
 		$labels = array(
@@ -127,6 +126,9 @@ class Smart_Custom_Fields {
 		);
 	}
 
+	/**
+	 * 管理画面にメニューを追加
+	 */
 	public function admin_menu() {
 		add_menu_page(
 			'Smart Custom Fields',

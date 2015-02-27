@@ -1,10 +1,10 @@
 <?php
 /**
  * Smart_Custom_Fields_Revisions
- * Version    : 1.0.2
+ * Version    : 1.1.0
  * Author     : Takashi Kitajima
  * Created    : September 23, 2014
- * Modified   : February 10, 2015
+ * Modified   : February 27, 2015
  * License    : GPLv2
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
  */
@@ -14,21 +14,28 @@ class Smart_Custom_Fields_Revisions {
 	 * __construct
 	 */
 	public function __construct() {
+		add_filter(
+			'_wp_post_revision_field_' . SCF_Config::PREFIX . 'debug-preview',
+			array( $this, '_wp_post_revision_field_debug_preview' ),
+			10,
+			3
+		);
+		add_filter(
+			'wp_save_post_revision_check_for_changes',
+			array( $this, 'wp_save_post_revision_check_for_changes' ),
+			10,
+			3
+		);
 		add_filter( '_wp_post_revision_fields', array( $this, '_wp_post_revision_fields' ) );
-		add_filter( '_wp_post_revision_field_' . SCF_Config::PREFIX . 'debug-preview', array( $this, '_wp_post_revision_field_debug_preview' ), 10, 3 );
-
-		add_filter( 'get_post_metadata', array( $this, 'get_post_metadata' ), 10, 4 );
-
-		add_action( 'edit_form_after_title', array( $this, 'edit_form_after_title' ) );
+		add_filter( 'get_post_metadata'       , array( $this, 'get_post_metadata' ), 10, 4 );
+		add_action( 'edit_form_after_title'   , array( $this, 'edit_form_after_title' ) );
 		add_action( 'wp_restore_post_revision', array( $this, 'wp_restore_post_revision' ), 10, 2 );
-		add_action( 'wp_insert_post', array( $this, 'wp_insert_post' ) );
-
-		add_filter( 'wp_save_post_revision_check_for_changes', array( $this, 'wp_save_post_revision_check_for_changes' ), 10, 3);
+		add_action( 'wp_insert_post'          , array( $this, 'wp_insert_post' ) );
 	}
 
 	/**
-	 * wp_restore_post_revision
 	 * リビジョンから復元するときに呼び出される
+	 *
 	 * @param int $post_id
 	 * @param int $revision_id
 	 */
@@ -64,11 +71,20 @@ class Smart_Custom_Fields_Revisions {
 	}
 
 	/**
-	 * wp_insert_post
+	 * リビジョンデータを保存
+	 * *_post_meta はリビジョンIDのときに自動的に本物IDに変換して処理してしまうので、*_metadata を使うこと
+	 *
 	 * @param int $post_id
 	 */
 	public function wp_insert_post( $post_id ) {
 		if ( !isset( $_POST[SCF_Config::NAME] ) ) {
+			return;
+		}
+		if ( !wp_is_post_revision( $post_id ) ) {
+			return;
+		}
+		$settings = SCF::get_settings( get_post_type() );
+		if ( !$settings ) {
 			return;
 		}
 
@@ -77,56 +93,54 @@ class Smart_Custom_Fields_Revisions {
 			SCF_Config::PREFIX . 'fields-nonce'
 		);
 
-		if ( wp_is_post_revision( $post_id ) ) {
-			// 繰り返しフィールドのチェックボックスは、普通のチェックボックスと混ざって
-			// 判別できなくなるのでわかるように保存しておく
-			$repeat_multiple_data = array();
+		// 繰り返しフィールドのチェックボックスは、普通のチェックボックスと混ざって
+		// 判別できなくなるのでわかるように保存しておく
+		$repeat_multiple_data = array();
 
-			// チェックボックスが未入力のときは "" がくるので、それは保存しないように判別
-			$multiple_data_fields = array();
+		// チェックボックスが未入力のときは "" がくるので、それは保存しないように判別
+		$multiple_data_fields = array();
 
-			$post_type = get_post_type();
-			$settings = SCF::get_settings( $post_type );
-			foreach ( $settings as $Setting ) {
-				$groups = $Setting->get_groups();
-				foreach ( $groups as $Group ) {
-					$fields = $Group->get_fields();
-					foreach ( $fields as $Field ) {
-						$field_name = $Field->get( 'name' );
-						delete_metadata( 'post', $post_id, $field_name );
-						if ( $Field->get_attribute( 'allow-multiple-data' ) ) {
-							$multiple_data_fields[] = $field_name;
-						}
-					
-						if ( $Group->is_repeatable() && $Field->get_attribute( 'allow-multiple-data' ) ) {
-							$repeat_multiple_data_fields = $_POST[SCF_Config::NAME][$field_name];
-							foreach ( $repeat_multiple_data_fields as $values ) {
-								if ( is_array( $values ) ) {
-									$repeat_multiple_data[$field_name][] = count( $values );
-								} else {
-									$repeat_multiple_data[$field_name][] = 0;
-								}
+		$post_type = get_post_type();
+		$settings = SCF::get_settings( $post_type );
+		foreach ( $settings as $Setting ) {
+			$groups = $Setting->get_groups();
+			foreach ( $groups as $Group ) {
+				$fields = $Group->get_fields();
+				foreach ( $fields as $Field ) {
+					$field_name = $Field->get( 'name' );
+					delete_metadata( 'post', $post_id, $field_name );
+					if ( $Field->get_attribute( 'allow-multiple-data' ) ) {
+						$multiple_data_fields[] = $field_name;
+					}
+				
+					if ( $Group->is_repeatable() && $Field->get_attribute( 'allow-multiple-data' ) ) {
+						$repeat_multiple_data_fields = $_POST[SCF_Config::NAME][$field_name];
+						foreach ( $repeat_multiple_data_fields as $values ) {
+							if ( is_array( $values ) ) {
+								$repeat_multiple_data[$field_name][] = count( $values );
+							} else {
+								$repeat_multiple_data[$field_name][] = 0;
 							}
 						}
 					}
 				}
 			}
+		}
 
-			delete_metadata( 'post', $post_id, SCF_Config::PREFIX . 'repeat-multiple-data' );
-			if ( $repeat_multiple_data ) {
-				update_metadata( 'post', $post_id, SCF_Config::PREFIX . 'repeat-multiple-data', $repeat_multiple_data );
-			}
+		delete_metadata( 'post', $post_id, SCF_Config::PREFIX . 'repeat-multiple-data' );
+		if ( $repeat_multiple_data ) {
+			update_metadata( 'post', $post_id, SCF_Config::PREFIX . 'repeat-multiple-data', $repeat_multiple_data );
+		}
 
-			foreach ( $_POST[SCF_Config::NAME] as $name => $values ) {
-				foreach ( $values as $value ) {
-					if ( in_array( $name, $multiple_data_fields ) && $value === '' )
-						continue;
-					if ( !is_array( $value ) ) {
-						add_metadata( 'post', $post_id, $name, $value );
-					} else {
-						foreach ( $value as $val ) {
-							add_metadata( 'post', $post_id, $name, $val );
-						}
+		foreach ( $_POST[SCF_Config::NAME] as $name => $values ) {
+			foreach ( $values as $value ) {
+				if ( in_array( $name, $multiple_data_fields ) && $value === '' )
+					continue;
+				if ( !is_array( $value ) ) {
+					add_metadata( 'post', $post_id, $name, $value );
+				} else {
+					foreach ( $value as $val ) {
+						add_metadata( 'post', $post_id, $name, $val );
 					}
 				}
 			}
@@ -134,8 +148,8 @@ class Smart_Custom_Fields_Revisions {
 	}
 
 	/**
-	 * get_post_metadata
 	 * プレビューのときはプレビューのメタデータを返す
+	 * 
 	 * @param mixed $value
 	 * @param int $post_id
 	 * @param string $meta_key
@@ -152,7 +166,8 @@ class Smart_Custom_Fields_Revisions {
 	}
 
 	/**
-	 * get_preview_id
+	 * プレビューの Post ID を返す
+	 * 
 	 * @param int $post_id
 	 * @return int $preview_id
 	 */
@@ -166,7 +181,8 @@ class Smart_Custom_Fields_Revisions {
 	}
 
 	/**
-	 * _wp_post_revision_fields
+	 * リビジョン比較画面でメタデータを表示させるためにキーを追加する
+	 * 
 	 * @param array $fields
 	 * @return array $fields
 	 */
@@ -176,7 +192,7 @@ class Smart_Custom_Fields_Revisions {
 	}
 
 	/**
-	 * edit_form_after_title
+	 * プレビュー時にメタデータを保存するためにキーとなる項目を出力する
 	 */
 	public function edit_form_after_title() {
 		printf(
@@ -186,7 +202,8 @@ class Smart_Custom_Fields_Revisions {
 	}
 
 	/**
-	 * _wp_post_revision_field_debug_preview
+	 * リビジョン比較画面にメタデータを表示
+	 * 
 	 * @param $value
 	 * @param $column
 	 * @param array $post
@@ -220,8 +237,12 @@ class Smart_Custom_Fields_Revisions {
 	}
 
 	/**
-	 * wp_save_post_revision_check_for_changes
-	 * @return bool false ならリビジョンとして保存される。
+	 * false ならリビジョンとして保存される
+	 * 
+	 * @param bool $check_for_changes
+	 * @param WP_Post $last_revision 最新のリビジョン
+	 * @param WP_Post $post 現在の投稿
+	 * @return bool
 	 */
 	public function wp_save_post_revision_check_for_changes( $check_for_changes, $last_revision, $post ) {
 		$post_meta = array();
@@ -233,8 +254,12 @@ class Smart_Custom_Fields_Revisions {
 			}
 		}
 
-		if ( isset( $_POST[SCF_Config::NAME] ) && serialize( $post_meta ) != serialize( $_POST[SCF_Config::NAME] ) ) {
-			return false;
+		if ( isset( $_POST[SCF_Config::NAME] ) ) {
+			$serialized_post_meta = serialize( $post_meta );
+			$serialized_send_data = $_POST[SCF_Config::NAME];
+			if ( $serialized_post_meta != $serialized_send_data ) {
+				return false;
+			}
 		}
 		return true;
 	}
