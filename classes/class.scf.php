@@ -262,6 +262,8 @@ class SCF {
 		$_posts = get_posts( array(
 			'post_type'      => SCF_Config::NAME,
 			'posts_per_page' => -1,
+			'order' => 'ASC',
+			'order_by' => 'menu_order',
 			'meta_query'     => array(
 				array(
 					'key'     => SCF_Config::PREFIX . 'condition',
