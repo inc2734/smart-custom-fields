@@ -11,25 +11,33 @@
 class Smart_Custom_Fields_Field_Text extends Smart_Custom_Fields_Field_Base {
 
 	/**
-	 * init
-	 * @return array ( name, label, optgroup )
+	 * @return array
 	 */
 	protected function init() {
 		return array(
-			'name'     => 'text',
-			'label'    => __( 'Text', 'smart-custom-fields' ),
-			'optgroup' => 'basic-fields',
+			'type'         => 'text',
+			'display-name' => __( 'Text', 'smart-custom-fields' ),
+			'optgroup'     => 'basic-fields',
+		);
+	}
+
+	/**
+	 * @return array
+	 */
+	protected function options() {
+		return array(
+			'default' => '',
+			'notes'   => '',
 		);
 	}
 
 	/**
 	 * get_field
-	 * @param array $field フィールドの情報
 	 * @param int $index インデックス番号
 	 * @param mixed $value 保存されている値（check のときだけ配列）
 	 */
-	public function get_field( $field, $index, $value ) {
-		$name = $this->get_name_attribute( $field['name'], $index );
+	public function get_field( $index, $value ) {
+		$name = $this->get_field_name_in_editor( $index );
 		$disabled = $this->get_disable_attribute( $index );
 		return sprintf(
 			'<input type="text" name="%s" value="%s" class="widefat" %s />',
@@ -50,18 +58,18 @@ class Smart_Custom_Fields_Field_Text extends Smart_Custom_Fields_Field_Base {
 			<th><?php esc_html_e( 'Default', 'smart-custom-fields' ); ?></th>
 			<td>
 				<input type="text"
-					name="<?php echo esc_attr( $this->get_field_name( $group_key, $field_key, 'default' ) ); ?>"
+					name="<?php echo esc_attr( $this->get_field_name_in_setting( $group_key, $field_key, 'default' ) ); ?>"
 					class="widefat"
-					value="<?php echo esc_attr( $this->get_field_value( 'default' ) ); ?>" />
+					value="<?php echo esc_attr( $this->get( 'default' ) ); ?>" />
 			</td>
 		</tr>
 		<tr>
 			<th><?php esc_html_e( 'Notes', 'smart-custom-fields' ); ?></th>
 			<td>
 				<input type="text"
-					name="<?php echo esc_attr( $this->get_field_name( $group_key, $field_key, 'notes' ) ); ?>"
+					name="<?php echo esc_attr( $this->get_field_name_in_setting( $group_key, $field_key, 'notes' ) ); ?>"
 					class="widefat"
-					value="<?php echo esc_attr( $this->get_field_value( 'notes' ) ); ?>"
+					value="<?php echo esc_attr( $this->get( 'notes' ) ); ?>"
 				/>
 			</td>
 		</tr>

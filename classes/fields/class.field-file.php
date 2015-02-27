@@ -11,25 +11,32 @@
 class Smart_Custom_Fields_Field_File extends Smart_Custom_Fields_Field_Base {
 
 	/**
-	 * init
-	 * @return array ( name, label, optgroup )
+	 * @return array
 	 */
 	protected function init() {
 		return array(
-			'name'     => 'file',
-			'label'    => __( 'File', 'smart-custom-fields' ),
-			'optgroup' => 'content-fields',
+			'type'         => 'file',
+			'display-name' => __( 'File', 'smart-custom-fields' ),
+			'optgroup'     => 'content-fields',
+		);
+	}
+
+	/**
+	 * @return array
+	 */
+	protected function options() {
+		return array(
+			'notes' => '',
 		);
 	}
 
 	/**
 	 * get_field
-	 * @param array $field フィールドの情報
 	 * @param int $index インデックス番号
 	 * @param mixed $value 保存されている値（check のときだけ配列）
 	 */
-	public function get_field( $field, $index, $value ) {
-		$name = $this->get_name_attribute( $field['name'], $index );
+	public function get_field( $index, $value ) {
+		$name = $this->get_field_name_in_editor( $index );
 		$disabled = $this->get_disable_attribute( $index );
 
 		$btn_remove = sprintf(
@@ -78,9 +85,9 @@ class Smart_Custom_Fields_Field_File extends Smart_Custom_Fields_Field_Base {
 			<th><?php esc_html_e( 'Notes', 'smart-custom-fields' ); ?></th>
 			<td>
 				<input type="text"
-					name="<?php echo esc_attr( $this->get_field_name( $group_key, $field_key, 'notes' ) ); ?>"
+					name="<?php echo esc_attr( $this->get_field_name_in_setting( $group_key, $field_key, 'notes' ) ); ?>"
 					class="widefat"
-					value="<?php echo esc_attr( $this->get_field_value( 'notes' ) ); ?>"
+					value="<?php echo esc_attr( $this->get( 'notes' ) ); ?>"
 				/>
 			</td>
 		</tr>

@@ -11,57 +11,59 @@
 abstract class Smart_Custom_Fields_Field_Base {
 
 	/**
-	 * $name
+	 * このフィールドの内部属性値
+	 * @var array
 	 */
-	protected $name;
+	protected $attributes = array(
+		'type'                => '', // eg. text
+		'display-name'        => '', // eg. Text
+		'optgroup'            => 'other-fields',
+		'allow-multiple-data' => false,
+	);
 
 	/**
-	 * $label
+	 * このフィールドの設定項目
+	 * @var array
 	 */
-	protected $label;
-
-	/**
-	 * $allow_multiple_data
-	 */
-	protected $allow_multiple_data = false;
-
-	/**
-	 * $field
-	 */
-	protected $field = array();
+	protected $options = array(
+		'name'  => '', // name 属性
+		'label' => '', // カスタムフィールド入力画面で表示するラベル
+	);
 
 	/**
 	 * __construct
 	 */
 	public function __construct() {
-		$settings = $this->init();
-		if ( !empty( $settings['name'] ) ) {
-			$this->name = $settings['name'];
-		}
-		if ( !empty( $settings['label'] ) ) {
-			$this->label = $settings['label'];
-		}
-		if ( !$this->name || !$this->label ) {
+		$attributes = array_merge( $this->attributes, $this->init() );
+		$options    = array_merge( $this->options, $this->options() );
+		if ( empty( $attributes['type'] ) || empty( $attributes['display-name'] ) ) {
 			exit;
 		}
-		if ( empty( $settings['optgroup'] ) ) {
-			$settings['optgroup'] = 'basic-fields';
+		if ( empty( $attributes['optgroup'] ) ) {
+			$attributes['optgroup'] = 'basic-fields';
 		}
-		if ( isset( $settings['allow-multiple-data'] ) && $settings['allow-multiple-data'] === true ) {
-			$this->allow_multiple_data = true;
-		}
-		add_filter( SCF_Config::PREFIX . 'field-select-' . $settings['optgroup'], array( $this, 'field_select' ) );
-		add_action( SCF_Config::PREFIX . 'field-options', array( $this, '_display_field_options' ), 10, 3 );
+		$this->attributes = $attributes;
+		$this->options    = $options;
+		add_filter(
+			SCF_Config::PREFIX . 'field-select-' . $attributes['optgroup'],
+			array( $this, 'field_select' )
+		);
 		$this->after_loaded();
 
 		SCF::add_form_field_instance( $this );
 	}
 
 	/**
-	 * init
-	 * @return array ( name, label, optgroup, allow-multiple-data )
+	 * 必須項目の設定
+	 * @return array
 	 */
 	abstract protected function init();
+
+	/**
+	 * 設定項目の設定
+	 * @return array
+	 */
+	abstract protected function options();
 
 	/**
 	 * after_loaded
@@ -71,21 +73,56 @@ abstract class Smart_Custom_Fields_Field_Base {
 
 	/**
 	 * get_field
-	 * @param array $field フィールドの情報
 	 * @param int $index インデックス番号
 	 * @param mixed $value 保存されている値（check のときだけ配列）
 	 * @return string html
 	 */
-	abstract public function get_field( $field, $index, $value );
+	abstract public function get_field( $index, $value );
 
 	/**
 	 * field_select
-	 * @param array $options その optgroup に属するフィールドのリスト
-	 * @return array $options
+	 * @param array $attributes その optgroup に属するフィールドのリスト
+	 * @return array $attributes
 	 */
-	public function field_select( $options ) {
-		$options[$this->name] = $this->label;
-		return $options;
+	public function field_select( $attributes ) {
+		$attributes[$this->get_attribute( 'type' )] = $this->get_attribute( 'display-name' );
+		return $attributes;
+	}
+
+	public function display_options( $group_key, $field_key ) {
+		?>
+		<tr>
+			<th><?php esc_html_e( 'Name', 'smart-custom-fields' ); ?><span class="<?php echo esc_attr( SCF_Config::PREFIX . 'require' ); ?> hide">*</span></th>
+			<td>
+				<input type="text"
+					name="<?php echo esc_attr( $this->get_field_name_in_setting( $group_key, $field_key, 'name' ) ); ?>"
+					size="30"
+					class="<?php echo esc_attr( SCF_Config::PREFIX . 'field-name' ); ?>"
+					value="<?php echo esc_attr( $this->get( 'name' ) ); ?>"
+				/>
+			</td>
+		</tr>
+		<tr>
+			<th><?php esc_html_e( 'Label', 'smart-custom-fields' ); ?></th>
+			<td>
+				<input type="text"
+					name="<?php echo esc_attr( $this->get_field_name_in_setting( $group_key, $field_key, 'label' ) ); ?>"
+					size="30"
+					class="<?php echo esc_attr( SCF_Config::PREFIX . 'field-label' ); ?>"
+					value="<?php echo esc_attr( $this->get( 'label' ) ); ?>"
+				/>
+			</td>
+		</tr>
+		<?php
+		$fields = SCF::get_form_field_instances();
+		foreach ( $fields as $Field ) {
+			if ( $Field->get_attribute( 'type' ) === $this->get_attribute( 'type' ) ) {
+				foreach ( $this->options as $key => $value ) {
+					$Field->set( $key, $value );
+				}
+			}
+			$Field->_display_field_options( $group_key, $field_key );
+		}
 	}
 
 	/**
@@ -94,10 +131,9 @@ abstract class Smart_Custom_Fields_Field_Base {
 	 * @param int $field_key
 	 */
 	abstract protected function display_field_options( $group_key, $field_key );
-	public function _display_field_options( $group_key, $field_key, $field ) {
-		$this->field = $field;
+	public function _display_field_options( $group_key, $field_key ) {
 		?>
-		<tr class="<?php echo esc_attr( SCF_Config::PREFIX . 'field-options' ); ?> <?php echo esc_attr( SCF_Config::PREFIX . 'field-options-' . $this->name ); ?> hide">
+		<tr class="<?php echo esc_attr( SCF_Config::PREFIX . 'field-options' ); ?> <?php echo esc_attr( SCF_Config::PREFIX . 'field-options-' . $this->get_attribute( 'type' ) ); ?> hide">
 			<td colspan="2">
 				<table>
 					<?php $this->display_field_options( $group_key, $field_key ); ?>
@@ -108,13 +144,18 @@ abstract class Smart_Custom_Fields_Field_Base {
 	}
 
 	/**
-	 * get_name_attribute
+	 * get_field_name_in_editor
 	 * @param string $name 定義されたフィールドの name
 	 * @param string $index 添字
 	 * @return string
 	 */
-	protected function get_name_attribute( $name, $index ) {
-		return SCF_Config::NAME . '[' . $name . '][_' . $index . ']';
+	protected function get_field_name_in_editor( $index ) {
+		return sprintf(
+			'%s[%s][_%s]',
+			SCF_Config::NAME,
+			$this->get( 'name' ),
+			$index
+		);
 	}
 
 	/**
@@ -131,10 +172,10 @@ abstract class Smart_Custom_Fields_Field_Base {
 	}
 
 	/**
-	 * get_field_name
+	 * get_field_name_in_setting
 	 * フィールド設定画面で使用する name 属性を返す
 	 */
-	protected function get_field_name( $group_key, $field_key, $name ) {
+	public function get_field_name_in_setting( $group_key, $field_key, $name ) {
 		return sprintf(
 			'%s[%d][fields][%d][%s]',
 			SCF_Config::NAME,
@@ -145,37 +186,35 @@ abstract class Smart_Custom_Fields_Field_Base {
 	}
 
 	/**
-	 * get_field_value
-	 * フィールド設定画面で使用する value を返す
-	 */
-	protected function get_field_value( $name ) {
-		return $this->get( $name, $this->field );
-	}
-
-	/**
-	 * get
+	 * 設定値を返す
 	 * @param string $key 取得したいデータのキー
-	 * @param array $data データ配列
 	 * @return mixed
 	 */
-	protected function get( $key, array $data ) {
-		if ( isset( $data[$key] ) ) {
-			return $data[$key];
+	public function get( $key ) {
+		if ( array_key_exists( $key, $this->options ) ) {
+			return $this->options[$key];
 		}
-	}
-	
-	/**
-	 * get_name
-	 * @return string
-	 */
-	public function get_name() {
-		return $this->name;
 	}
 
 	/**
-	 * get_allow_multiple_data
+	 * 設定値を設定
+	 * @param string $key 取得したいデータのキー
+	 * @param mixed $value 取得したいデータ
 	 */
-	public function allow_multiple_data() {
-		return $this->allow_multiple_data;
+	public function set( $key, $value ) {
+		if ( array_key_exists( $key, $this->options ) ) {
+			$this->options[$key] = $value;
+		}
+	}
+
+	/**
+	 * 属性値を返す
+	 * @param string $key 取得したいデータのキー
+	 * @return mixed
+	 */
+	public function get_attribute( $key ) {
+		if ( array_key_exists( $key, $this->attributes ) ) {
+			return $this->attributes[$key];
+		}
 	}
 }

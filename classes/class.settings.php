@@ -11,69 +11,58 @@
 class Smart_Custom_Fields_Settings {
 
 	/**
+	 * フィールド選択のセレクトボックスの選択肢用
+	 * @var array
+	 */
+	private $optgroups = array();
+
+	/**
 	 * __construct
 	 */
 	public function __construct() {
 		add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts' ) );
 		add_action( 'save_post', array( $this, 'save_post' ) );
-		add_action( 'init', array( $this, 'register_post_type' ) );
 		add_action( 'add_meta_boxes', array( $this, 'add_meta_boxes' ) );
+
+		$this->optgroups = array(
+			'basic-fields' => array(
+				'label'   => esc_attr__( 'Basic fields', 'smart-custom-fields' ),
+				'options' => array(),
+			),
+			'select-fields' => array(
+				'label'   => esc_attr__( 'Select fields', 'smart-custom-fields' ),
+				'options' => array(),
+			),
+			'content-fields' => array(
+				'label'   => esc_attr__( 'Content fields', 'smart-custom-fields' ),
+				'options' => array(),
+			),
+			'other-fields' => array(
+				'label'   => esc_attr__( 'Other fields', 'smart-custom-fields' ),
+				'options' => array(),
+			),
+		);
 	}
 
 	/**
 	 * admin_enqueue_scripts
 	 */
 	public function admin_enqueue_scripts() {
-		if ( get_post_type() === SCF_Config::NAME ) {
-			wp_enqueue_style(
-				SCF_Config::PREFIX . 'settings',
-				plugin_dir_url( __FILE__ ) . '../css/settings.css'
-			);
-			wp_enqueue_script(
-				SCF_Config::PREFIX . 'settings',
-				plugin_dir_url( __FILE__ ) . '../js/settings.js',
-				array( 'jquery' ),
-				null,
-				true
-			);
-			wp_localize_script( SCF_Config::PREFIX . 'settings', 'smart_cf_settings', array(
-				'duplicate_alert' => esc_html__( 'Same name exists!', 'smart-custom-fields' ),
-			) );
-			wp_enqueue_script( 'jquery-ui-sortable' );
-		}
-	}
-
-	/**
-	 * register_post_type
-	 */
-	public function register_post_type() {
-		$labels = array(
-			'name'               => __( 'Smart Custom Fields', 'smart-custom-fields' ),
-			'menu_name'          => __( 'Smart Custom Fields', 'smart-custom-fields' ),
-			'name_admin_bar'     => __( 'Smart Custom Fields', 'smart-custom-fields' ),
-			'add_new'            => __( 'Add New', 'smart-custom-fields' ),
-			'add_new_item'       => __( 'Add New', 'smart-custom-fields' ),
-			'new_item'           => __( 'New Field', 'smart-custom-fields' ),
-			'edit_item'          => __( 'Edit Field', 'smart-custom-fields' ),
-			'view_item'          => __( 'View Field', 'smart-custom-fields' ),
-			'all_items'          => __( 'All Fields', 'smart-custom-fields' ),
-			'search_items'       => __( 'Search Fields', 'smart-custom-fields' ),
-			'parent_item_colon'  => __( 'Parent Fields:', 'smart-custom-fields' ),
-			'not_found'          => __( 'No Fields found.', 'smart-custom-fields' ),
-			'not_found_in_trash' => __( 'No Fields found in Trash.', 'smart-custom-fields' )
+		wp_enqueue_style(
+			SCF_Config::PREFIX . 'settings',
+			plugin_dir_url( __FILE__ ) . '../css/settings.css'
 		);
-		register_post_type(
-			SCF_Config::NAME,
-			array(
-				'label'                => 'Smart Custom Fields',
-				'labels'               => $labels,
-				'public'               => false,
-				'show_ui'              => true,
-				'capability_type'      => 'page',
-				'supports'             => array( 'title' ),
-				'menu_position'        => 80,
-			)
+		wp_enqueue_script(
+			SCF_Config::PREFIX . 'settings',
+			plugin_dir_url( __FILE__ ) . '../js/settings.js',
+			array( 'jquery' ),
+			null,
+			true
 		);
+		wp_localize_script( SCF_Config::PREFIX . 'settings', 'smart_cf_settings', array(
+			'duplicate_alert' => esc_html__( 'Same name exists!', 'smart-custom-fields' ),
+		) );
+		wp_enqueue_script( 'jquery-ui-sortable' );
 	}
 
 	/**
@@ -97,18 +86,6 @@ class Smart_Custom_Fields_Settings {
 	}
 
 	/**
-	 * get
-	 * @param string $key 取得したいデータのキー
-	 * @param array $data データ配列
-	 * @return mixed
-	 */
-	private function get( $key, array $data ) {
-		if ( isset( $data[$key] ) ) {
-			return $data[$key];
-		}
-	}
-
-	/**
 	 * add_hide_class
 	 * @param string $key 値があれば hide を表示
 	 */
@@ -122,59 +99,28 @@ class Smart_Custom_Fields_Settings {
 	 * display_meta_box
 	 */
 	public function display_meta_box() {
-		$default = array(
-			array(
-				'group-name'  => '',
-				'fields'  => array(),
-			),
-		);
-		$settings = get_post_meta( get_the_ID(), SCF_Config::PREFIX . 'setting', true );
-		$settings = wp_parse_args( $settings, $default );
+		$Setting = SCF::add_setting( get_the_ID(), get_the_title() );
+		$Setting->add_group_unshift();
+		$groups  = $Setting->get_groups();
 		?>
 		<div class="<?php echo esc_attr( SCF_Config::PREFIX . 'fields-wrapper' ); ?>">
 			<div class="<?php echo esc_attr( SCF_Config::PREFIX . 'groups' ); ?>">
-			<?php foreach ( $settings as $group_key => $group ) : ?>
+			<?php foreach ( $groups as $group_key => $Group ) : ?>
 				<?php
-				$group_name = '';
-				if ( !is_numeric( $group['group-name'] ) ) {
-					$group_name = $group['group-name'];
-				}
-				array_unshift( $group['fields'], array() );
+				$fields = $Group->get_fields();
+				array_unshift( $fields, SCF::get_form_field_instance( 'text' ) );
 				?>
 				<div class="<?php echo esc_attr( SCF_Config::PREFIX . 'group' ); ?> <?php $this->add_hide_class( $group_key ); ?>">
 					<div class="btn-remove-group"><span class="dashicons dashicons-no-alt"></span></div>
-					<div class="<?php echo esc_attr( SCF_Config::PREFIX . 'group-repeat' ); ?>">
-						<div class="<?php echo esc_attr( SCF_Config::PREFIX . 'icon-handle' ); ?>"></div>
-						<label>
-							<input type="checkbox"
-								name="<?php echo esc_attr( SCF_Config::NAME . '[' . $group_key . '][repeat]' ); ?>"
-								value="true"
-								<?php checked( $this->get( 'repeat', $group ), true ); ?>
-							/>
-							<?php esc_html_e( 'Repeat', 'smart-custom-fields' ); ?>
-						</label>
-					</div>
-					<table class="<?php echo esc_attr( SCF_Config::PREFIX . 'group-names' ); ?> <?php $this->add_hide_class( $this->get( 'repeat', $group ) ); ?>">
-						<tr>
-							<th><?php esc_html_e( 'Group name', 'smart-custom-fields' ); ?><span class="<?php echo esc_attr( SCF_Config::PREFIX . 'require' ); ?>">*</span></th>
-							<td>
-								<input type="text"
-									name="<?php echo esc_attr( SCF_Config::NAME . '[' . $group_key . '][group-name]' ); ?>"
-									size="30"
-									class="<?php echo esc_attr( SCF_Config::PREFIX . 'group-name' ); ?>"
-									value="<?php echo esc_attr( $group_name ); ?>"
-								/>
-							</td>
-						</tr>
-					</table>
+					<?php $Group->display_options( $group_key ); ?>
 
 					<div class="<?php echo esc_attr( SCF_Config::PREFIX . 'fields' ); ?>">
-						<?php foreach ( $group['fields'] as $field_key => $field ) : ?>
+						<?php foreach ( $fields as $field_key => $Field ) : ?>
 						<div class="<?php echo esc_attr( SCF_Config::PREFIX . 'field' ); ?> <?php $this->add_hide_class( $field_key ); ?>">
 							<?php
-							$field_label = $this->get( 'label', $field );
+							$field_label = $Field->get( 'label' );
 							if ( !$field_label ) {
-								$field_label = $this->get( 'name', $field );
+								$field_label = $Field->get( 'name' );
 								if ( !$field_label ) {
 									$field_label = "&nbsp;";
 								}
@@ -183,55 +129,15 @@ class Smart_Custom_Fields_Settings {
 							<div class="<?php echo esc_attr( SCF_Config::PREFIX . 'icon-handle' ); ?>"></div>
 							<b class="btn-remove-field"><span class="dashicons dashicons-no-alt"></span></b>
 							<div class="field-label"><?php echo esc_html( $field_label ); ?></div>
-							<table class="<?php $this->add_hide_class( !$this->get( 'name', $field ) ); ?>">
-								<tr>
-									<th><?php esc_html_e( 'Name', 'smart-custom-fields' ); ?><span class="<?php echo esc_attr( SCF_Config::PREFIX . 'require' ); ?>">*</span></th>
-									<td>
-										<input type="text"
-											name="<?php echo esc_attr( SCF_Config::NAME . '[' . $group_key . '][fields][' . $field_key . '][name]' ); ?>"
-											size="30"
-											class="<?php echo esc_attr( SCF_Config::PREFIX . 'field-name' ); ?>"
-											value="<?php echo esc_attr( $this->get( 'name', $field ) ); ?>"
-										/>
-									</td>
-								</tr>
-								<tr>
-									<th><?php esc_html_e( 'Label', 'smart-custom-fields' ); ?></th>
-									<td>
-										<input type="text"
-											name="<?php echo esc_attr( SCF_Config::NAME . '[' . $group_key . '][fields][' . $field_key . '][label]' ); ?>"
-											size="30"
-											class="<?php echo esc_attr( SCF_Config::PREFIX . 'field-label' ); ?>"
-											value="<?php echo esc_attr( $this->get( 'label', $field ) ); ?>"
-										/>
-									</td>
-								</tr>
+							<table class="<?php $this->add_hide_class( !$Field->get( 'name' ) ); ?>">
 								<tr>
 									<th><?php esc_html_e( 'Type', 'smart-custom-fields' ); ?><span class="<?php echo esc_attr( SCF_Config::PREFIX . 'require' ); ?>">*</span></th>
 									<td>
 										<select
-											name="<?php echo esc_attr( SCF_Config::NAME . '[' . $group_key . '][fields][' . $field_key . '][type]' ); ?>"
+											name="<?php echo esc_attr( $Field->get_field_name_in_setting( $group_key, $field_key, 'type' ) ); ?>"
 											class="<?php echo esc_attr( SCF_Config::PREFIX . 'field-select' ); ?>" />
 											<?php
-											$optgroups = array(
-												'basic-fields' => array(
-													'label'   => esc_attr__( 'Basic fields', 'smart-custom-fields' ),
-													'options' => array(),
-												),
-												'select-fields' => array(
-													'label'   => esc_attr__( 'Select fields', 'smart-custom-fields' ),
-													'options' => array(),
-												),
-												'content-fields' => array(
-													'label'   => esc_attr__( 'Content fields', 'smart-custom-fields' ),
-													'options' => array(),
-												),
-												'other-fields' => array(
-													'label'   => esc_attr__( 'Other fields', 'smart-custom-fields' ),
-													'options' => array(),
-												),
-											);
-											foreach ( $optgroups as $optgroup_name => $optgroup_values ) {
+											foreach ( $this->optgroups as $optgroup_name => $optgroup_values ) {
 												$optgroup_fields = array();
 												$optgroup_values['options'] = apply_filters(
 													SCF_Config::PREFIX . 'field-select-' . $optgroup_name,
@@ -241,7 +147,7 @@ class Smart_Custom_Fields_Settings {
 													$optgroup_fields[] = sprintf(
 														'<option value="%s" %s>%s</option>',
 														esc_attr( $option_key ),
-														selected( $this->get( 'type', $field ), $option_key, false ),
+														selected( $Field->get_attribute( 'type' ), $option_key, false ),
 														esc_html( $option )
 													);
 												}
@@ -255,12 +161,12 @@ class Smart_Custom_Fields_Settings {
 										</select>
 									</td>
 								</tr>
-								<?php do_action( SCF_Config::PREFIX . 'field-options', $group_key, $field_key, $field ); ?>
+								<?php $Field->display_options( $group_key, $field_key ); ?>
 							</table>
 						</div>
 						<?php endforeach; ?>
 					</div>
-					<div class="button btn-add-field <?php $this->add_hide_class( $this->get( 'repeat', $group ) ); ?>"><?php esc_html_e( 'Add Sub field', 'smart-custom-fields' ); ?></div>
+					<div class="button btn-add-field <?php $this->add_hide_class( $Group->is_repeatable() ); ?>"><?php esc_html_e( 'Add Sub field', 'smart-custom-fields' ); ?></div>
 				</div>
 			<?php endforeach; ?>
 			</div>
@@ -312,21 +218,16 @@ class Smart_Custom_Fields_Settings {
 	 * save_post
 	 */
 	public function save_post( $post_id ) {
-		if ( !isset( $_POST[SCF_Config::PREFIX . 'settings-nonce'] ) ) {
-			return;
-		}
-		if ( !wp_verify_nonce( $_POST[SCF_Config::PREFIX . 'settings-nonce'], SCF_Config::NAME . '-settings' ) ) {
-			return;
-		}
 		if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
-			return;
-		}
-		if ( get_post_type() !== SCF_Config::NAME ) {
 			return;
 		}
 		if ( !isset( $_POST[SCF_Config::NAME] ) ) {
 			return;
 		}
+		check_admin_referer(
+			SCF_Config::NAME . '-settings',
+			SCF_Config::PREFIX . 'settings-nonce'
+		);
 
 		$data = array();
 		foreach ( $_POST[SCF_Config::NAME] as $group_key => $group_value ) {
@@ -337,11 +238,14 @@ class Smart_Custom_Fields_Settings {
 						$fields[] = $field_value;
 					}
 				}
-				if ( !$fields )
+				if ( !$fields ) {
 					continue;
+				}
 
 				if ( !empty( $group_value['repeat'] ) && $group_value['repeat'] === 'true' ) {
 					$group_value['repeat'] = true;
+				} else {
+					$group_value['repeat'] = false;
 				}
 
 				// repeat が true でないときは name を空に

@@ -14,18 +14,15 @@ class Smart_Custom_Fields_Revisions {
 	 * __construct
 	 */
 	public function __construct() {
+		add_filter( '_wp_post_revision_fields', array( $this, '_wp_post_revision_fields' ) );
+		add_filter( '_wp_post_revision_field_' . SCF_Config::PREFIX . 'debug-preview', array( $this, '_wp_post_revision_field_debug_preview' ), 10, 3 );
+
 		add_filter( 'get_post_metadata', array( $this, 'get_post_metadata' ), 10, 4 );
+
+		add_action( 'edit_form_after_title', array( $this, 'edit_form_after_title' ) );
 		add_action( 'wp_restore_post_revision', array( $this, 'wp_restore_post_revision' ), 10, 2 );
 		add_action( 'wp_insert_post', array( $this, 'wp_insert_post' ) );
 
-		// Always auto save when click preview button.
-		add_filter( '_wp_post_revision_fields', array( $this, '_wp_post_revision_fields' ) );
-		add_action( 'edit_form_after_title', array( $this, 'edit_form_after_title' ) );
-
-		// Add custom fields preview in revision diff page.
-		add_filter( '_wp_post_revision_field_' . SCF_Config::PREFIX . 'debug-preview', array( $this, '_wp_post_revision_field_debug_preview' ), 10, 3 );
-
-		// Save revision when changing custom fields.
 		add_filter( 'wp_save_post_revision_check_for_changes', array( $this, 'wp_save_post_revision_check_for_changes' ), 10, 3);
 	}
 
@@ -41,9 +38,12 @@ class Smart_Custom_Fields_Revisions {
 		$post_type = get_post_type();
 
 		$settings = SCF::get_settings( $post_type );
-		foreach ( $settings as $setting ) {
-			foreach ( $setting as $group ) {
-				foreach ( $group['fields'] as $field_name => $field ) {
+		foreach ( $settings as $Setting ) {
+			$groups = $Setting->get_groups();
+			foreach ( $groups as $Group ) {
+				$fields = $Group->get_fields();
+				foreach ( $fields as $Field ) {
+					$field_name = $Field->get( 'name' );
 					delete_post_meta( $post->ID, $field_name );
 					$value = SCF::get( $field_name, $revision->ID );
 					if ( is_array( $value ) ) {
@@ -68,29 +68,37 @@ class Smart_Custom_Fields_Revisions {
 	 * @param int $post_id
 	 */
 	public function wp_insert_post( $post_id ) {
-		if ( !isset( $_POST[SCF_Config::PREFIX . 'fields-nonce'] ) ) {
-			return;
-		}
-		if ( !wp_verify_nonce( $_POST[SCF_Config::PREFIX . 'fields-nonce'], SCF_Config::NAME . '-fields' ) ) {
-			return;
-		}
 		if ( !isset( $_POST[SCF_Config::NAME] ) ) {
 			return;
 		}
+
+		check_admin_referer(
+			SCF_Config::NAME . '-fields',
+			SCF_Config::PREFIX . 'fields-nonce'
+		);
+
 		if ( wp_is_post_revision( $post_id ) ) {
 			// 繰り返しフィールドのチェックボックスは、普通のチェックボックスと混ざって
 			// 判別できなくなるのでわかるように保存しておく
 			$repeat_multiple_data = array();
 
+			// チェックボックスが未入力のときは "" がくるので、それは保存しないように判別
+			$multiple_data_fields = array();
+
 			$post_type = get_post_type();
 			$settings = SCF::get_settings( $post_type );
-			foreach ( $settings as $setting ) {
-				foreach ( $setting as $group ) {
-					$is_repeat = ( isset( $group['repeat'] ) && $group['repeat'] === true ) ? true : false;
-					foreach ( $group['fields'] as $field_name => $field ) {
+			foreach ( $settings as $Setting ) {
+				$groups = $Setting->get_groups();
+				foreach ( $groups as $Group ) {
+					$fields = $Group->get_fields();
+					foreach ( $fields as $Field ) {
+						$field_name = $Field->get( 'name' );
 						delete_metadata( 'post', $post_id, $field_name );
-
-						if ( $is_repeat && $field['allow-multiple-data'] ) {
+						if ( $Field->get_attribute( 'allow-multiple-data' ) ) {
+							$multiple_data_fields[] = $field_name;
+						}
+					
+						if ( $Group->is_repeatable() && $Field->get_attribute( 'allow-multiple-data' ) ) {
 							$repeat_multiple_data_fields = $_POST[SCF_Config::NAME][$field_name];
 							foreach ( $repeat_multiple_data_fields as $values ) {
 								if ( is_array( $values ) ) {
@@ -111,6 +119,8 @@ class Smart_Custom_Fields_Revisions {
 
 			foreach ( $_POST[SCF_Config::NAME] as $name => $values ) {
 				foreach ( $values as $value ) {
+					if ( in_array( $name, $multiple_data_fields ) && $value === '' )
+						continue;
 					if ( !is_array( $value ) ) {
 						add_metadata( 'post', $post_id, $name, $value );
 					} else {
@@ -182,10 +192,7 @@ class Smart_Custom_Fields_Revisions {
 	 * @param array $post
 	 * @return string
 	 */
-	public function _wp_post_revision_field_debug_preview( $value = '', $column = null, $post ) {
-		if ( is_null( $column ) ) {
-			$column = SCF_Config::PREFIX . 'debug-preview';
-		}
+	public function _wp_post_revision_field_debug_preview( $value, $column, $post ) {
 		$output = '';
 		$values = SCF::gets( $post->ID );
 		foreach ( $values as $key => $value ) {

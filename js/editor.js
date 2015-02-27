@@ -33,6 +33,7 @@ jQuery( function( $ ) {
 		 */
 		btn_add_repeat_group.click( function( e ) {
 			cnt ++;
+			console.log( cnt );
 			var parent = $( this ).parents( '.smart-cf-meta-box-repeat-tables' );
 			add_repeat_group( $( this ) );
 		} );
