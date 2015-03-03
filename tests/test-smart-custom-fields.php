@@ -1,53 +1,51 @@
 <?php
 class SmartCustomFieldsTest extends WP_UnitTestCase {
 
+	protected $post_id;
+
 	public function setUp() {
 		parent::setUp();
+		$this->post_id = $this->factory->post->create();
 		add_filter( 'smart-cf-register-fields', array( $this, '_register' ) );
 	}
 
 	public function test_when_not_saved_metadata() {
-		$post_id = $this->factory->post->create();
-		$this->assertFalse( SCF::get( 'text' ), $post_id );
-		$this->assertFalse( SCF::get( 'checkbox' ), $post_id );
+		$this->assertFalse( SCF::get( 'text' ), $this->post_id );
+		$this->assertFalse( SCF::get( 'checkbox' ), $this->post_id );
 	}
 
 	public function test_when_saved_norepeat_text() {
-		$post_id = $this->factory->post->create();
-		update_post_meta( $post_id, 'text', 'hoge' );
-		$this->assertEquals( 'hoge', SCF::get( 'text', $post_id ) );
+		update_post_meta( $this->post_id, 'text', 'hoge' );
+		$this->assertEquals( 'hoge', SCF::get( 'text', $this->post_id ) );
 	}
 
 	public function test_when_saved_norepeat_checkbox() {
-		$post_id = $this->factory->post->create();
-		add_post_meta( $post_id, 'checkbox', 1 );
-		add_post_meta( $post_id, 'checkbox', 2 );
-		add_post_meta( $post_id, 'checkbox', 3 );
-		add_post_meta( $post_id, 'checkbox', 4 );
+		add_post_meta( $this->post_id, 'checkbox', 1 );
+		add_post_meta( $this->post_id, 'checkbox', 2 );
+		add_post_meta( $this->post_id, 'checkbox', 3 );
+		add_post_meta( $this->post_id, 'checkbox', 4 );
 		$this->assertEquals(
 			array( 1, 2, 3, 4 ),
-			SCF::get( 'checkbox', $post_id )
+			SCF::get( 'checkbox', $this->post_id )
 		);
 	}
 
 	public function test_gets_when_not_saved() {
-		$post_id = $this->factory->post->create();
 		$this->assertEquals(
 			array(
 				'text'     => '',
 				'checkbox' => array(),
 			),
-			SCF::gets( $post_id )
+			SCF::gets( $this->post_id )
 		);
 	}
 
 	public function test_gets_when_saved() {
-		$post_id = $this->factory->post->create();
-		update_post_meta( $post_id, 'text', 'hoge' );
-		add_post_meta( $post_id, 'checkbox', 1 );
-		add_post_meta( $post_id, 'checkbox', 2 );
-		add_post_meta( $post_id, 'checkbox', 3 );
-		add_post_meta( $post_id, 'checkbox', 4 );
+		update_post_meta( $this->post_id, 'text', 'hoge' );
+		add_post_meta( $this->post_id, 'checkbox', 1 );
+		add_post_meta( $this->post_id, 'checkbox', 2 );
+		add_post_meta( $this->post_id, 'checkbox', 3 );
+		add_post_meta( $this->post_id, 'checkbox', 4 );
 		$this->assertEquals(
 			array(
 				'text'     => 'hoge',
@@ -55,7 +53,7 @@ class SmartCustomFieldsTest extends WP_UnitTestCase {
 					1, 2, 3, 4
 				),
 			),
-			SCF::gets( $post_id )
+			SCF::gets( $this->post_id )
 		);
 	}
 
