@@ -45,6 +45,10 @@ This method can get meta data of any group.
 * SCF::gets()  
 This method can get all meta data.
 
+= Register custom fields by the code. =
+
+https://gist.github.com/inc2734/9f6d65c7473d060d0fd6
+
 = GitHub =
 
 https://github.com/inc2734/smart-custom-fields/
@@ -71,7 +75,7 @@ You can send your own language pack to me.
 = 1.2.0 =
 * refactoring. A lot of changes in all.
 * Renewd the Smart_Custom_Fields_Field_Base.
-* Add filter hook smart-cf-register-fields. If You use this hook, you can define custom fields in the code.
+* Add filter hook smart-cf-register-fields. If You use this hook, you can define custom fields by the code.
 
 = 1.1.3 =
 * Change method SCF::get_field to SCF::get_value_by_field
