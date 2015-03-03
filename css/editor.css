@@ -50,8 +50,11 @@
 /** ==================================================
  * .smart-cf-meta-box-repeat-tables
  */
-.smart-cf-meta-box-repeat-tables .smart-cf-meta-box-table > .smart-cf-icon-handle {
-	top: 5px;
+.smart-cf-meta-box-repeat-tables .smart-cf-meta-box-table > .smart-cf-icon-handle,
+.smart-cf-meta-box-repeat-tables .smart-cf-meta-box-table > .smart-cf-repeat-btn {
+	position: relative;
+	top: 3px;
+	vertical-align: middle;
 }
 
 /** ==================================================
@@ -158,12 +161,30 @@
  * classes
  */
 .smart-cf-icon-handle {
-	background: url( ../images/handle.png ) no-repeat;
 	cursor: move;
 	display: inline-block;
 	margin-right: 10px;
-	height: 10px;
-	width: 10px;
 	overflow: hidden;
 	position: relative;
+	color: #CCC;
+}
+
+
+.smart-cf-repeat-btn {
+	cursor: pointer;
+	width: auto;
+	height: auto;
+	font-size: 1.7em;
+	padding: 0;
+	-webkit-border-radius: 50%;
+	border-radius: 50%;
+	display: inline-block;
+	vertical-align: middle;
+	text-align: center;
+	color: #CCC;
+}
+
+.smart-cf-icon-handle:hover,
+.smart-cf-repeat-btn:hover {
+	color: #333;
 }

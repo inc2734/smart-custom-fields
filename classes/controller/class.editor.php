@@ -341,10 +341,10 @@ class Smart_Custom_Fields_Controller_Editor {
 		if ( $is_repeat ) {
 			$btn_repeat  = sprintf(
 				'<span class="%s"></span>',
-				esc_attr( SCF_Config::PREFIX . 'icon-handle' )
+				esc_attr( SCF_Config::PREFIX . 'icon-handle dashicons dashicons-menu' )
 			);
-			$btn_repeat .= '<span class="button btn-add-repeat-group">+</span>';
-			$btn_repeat .= ' <span class="button btn-remove-repeat-group">-</span>';
+			$btn_repeat .= '<span class="btn-add-repeat-group dashicons dashicons-plus-alt '.SCF_Config::PREFIX.'repeat-btn"></span>';
+			$btn_repeat .= ' <span class="btn-remove-repeat-group dashicons dashicons-dismiss '.SCF_Config::PREFIX.'repeat-btn"></span>';
 		}
 
 		$style = '';
