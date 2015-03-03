@@ -52,9 +52,9 @@
  */
 .smart-cf-meta-box-repeat-tables .smart-cf-meta-box-table > .smart-cf-icon-handle,
 .smart-cf-meta-box-repeat-tables .smart-cf-meta-box-table > .smart-cf-repeat-btn {
-    position: relative;
+	position: relative;
 	top: 3px;
-    vertical-align: middle;
+	vertical-align: middle;
 }
 
 /** ==================================================
@@ -166,25 +166,25 @@
 	margin-right: 10px;
 	overflow: hidden;
 	position: relative;
-    color: #ccc;
+	color: #CCC;
 }
 
 
 .smart-cf-repeat-btn {
-    cursor: pointer;
-    width: auto;
-    height: auto;
-    font-size: 1.6em;
-    border: 2px solid transparent;
-    padding: 2px;
-    -webkit-border-radius: 50%;
-    border-radius: 50%;
-    display: inline-block;
-    vertical-align: middle;
-    text-align: center;
-    color: #aaa;
+	cursor: pointer;
+	width: auto;
+	height: auto;
+	font-size: 1.7em;
+	padding: 0;
+	-webkit-border-radius: 50%;
+	border-radius: 50%;
+	display: inline-block;
+	vertical-align: middle;
+	text-align: center;
+	color: #CCC;
 }
 
+.smart-cf-icon-handle:hover,
 .smart-cf-repeat-btn:hover {
-    border-color: #aaa;
+	color: #333;
 }
