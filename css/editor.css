@@ -56,6 +56,27 @@
 	top: 3px;
 	vertical-align: middle;
 }
+.smart-cf-meta-box-repeat-tables .smart-cf-repeat-btn {
+	cursor: pointer;
+	width: auto;
+	height: auto;
+	font-size: 1.3em;
+	padding: 0;
+	-webkit-border-radius: 50%;
+	border-radius: 50%;
+	display: inline-block;
+	vertical-align: middle;
+	text-align: center;
+	color: #999;
+	margin-right: 3px;
+}
+.smart-cf-meta-box-repeat-tables .smart-cf-icon-handle:hover,
+.smart-cf-meta-box-repeat-tables .smart-cf-repeat-btn:hover {
+	color: #333;
+}
+.smart-cf-meta-box-repeat-tables table {
+	margin-top: 7px;
+}
 
 /** ==================================================
  * relation
@@ -167,24 +188,4 @@
 	overflow: hidden;
 	position: relative;
 	color: #CCC;
-}
-
-
-.smart-cf-repeat-btn {
-	cursor: pointer;
-	width: auto;
-	height: auto;
-	font-size: 1.7em;
-	padding: 0;
-	-webkit-border-radius: 50%;
-	border-radius: 50%;
-	display: inline-block;
-	vertical-align: middle;
-	text-align: center;
-	color: #CCC;
-}
-
-.smart-cf-icon-handle:hover,
-.smart-cf-repeat-btn:hover {
-	color: #333;
 }
