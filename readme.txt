@@ -76,6 +76,10 @@ You can send your own language pack to me.
 * refactoring. A lot of changes in all.
 * Renewd the Smart_Custom_Fields_Field_Base.
 * Add filter hook smart-cf-register-fields. If You use this hook, you can define custom fields by the code.
+* Add action hook smart-cf-before-editor-enqueue-scripts
+* Add action hook smart-cf-after-editor-enqueue-scripts
+* Add action hook smart-cf-before-settings-enqueue-scripts
+* Add action hook smart-cf-after-settings-enqueue-scripts
 
 = 1.1.3 =
 * Change method SCF::get_field to SCF::get_value_by_field
