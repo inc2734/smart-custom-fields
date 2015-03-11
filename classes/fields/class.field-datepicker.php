@@ -16,7 +16,14 @@ class Smart_Custom_Fields_Field_Datepicker extends Smart_Custom_Fields_Field_Bas
 	 * @return array
 	 */
 	protected function init() {
-		add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts' ) );
+		add_action(
+			SCF_Config::PREFIX . 'before-editor-enqueue-scripts',
+			array( $this, 'editor_enqueue_scripts' )
+		);
+		add_action(
+			SCF_Config::PREFIX . 'before-settings-enqueue-scripts',
+			array( $this, 'settings_enqueue_scripts' )
+		);
 		return array(
 			'type'         => 'datepicker',
 			'display-name' => __( 'Date picker', 'smart-custom-fields' ),
@@ -41,28 +48,46 @@ class Smart_Custom_Fields_Field_Datepicker extends Smart_Custom_Fields_Field_Bas
 
 	/**
 	 * CSS、JSの読み込み
-	 *
-	 * @param string $hook
 	 */
-	public function admin_enqueue_scripts( $hook ) {
+	public function editor_enqueue_scripts() {
 		global $wp_scripts;
-		if ( in_array( $hook, array( 'post-new.php', 'post.php' ) ) ) {
-			$ui = $wp_scripts->query( 'jquery-ui-core' );
-			wp_enqueue_style(
-				'jquery.ui',
-				'//ajax.googleapis.com/ajax/libs/jqueryui/' . $ui->ver . '/themes/smoothness/jquery-ui.min.css',
-				array(),
-				$ui->ver
-			);
-			wp_enqueue_script( 'jquery-ui-datepicker' );
-			wp_enqueue_script(
-				SCF_Config::PREFIX . 'datepicker',
-				plugins_url( '../../js/editor-datepicker.js', __FILE__ ),
-				array( 'jquery', 'jquery-ui-datepicker' ),
-				false,
-				true
-			);
-		}
+		$ui = $wp_scripts->query( 'jquery-ui-core' );
+		wp_enqueue_style(
+			'jquery.ui',
+			'//ajax.googleapis.com/ajax/libs/jqueryui/' . $ui->ver . '/themes/smoothness/jquery-ui.min.css',
+			array(),
+			$ui->ver
+		);
+		wp_enqueue_script( 'jquery-ui-datepicker' );
+		wp_enqueue_script(
+			SCF_Config::PREFIX . 'editor-datepicker',
+			plugins_url( '../../js/editor-datepicker.js', __FILE__ ),
+			array( 'jquery', 'jquery-ui-datepicker' ),
+			false,
+			true
+		);
+	}
+
+	/**
+	 * CSS、JSの読み込み
+	 */
+	public function settings_enqueue_scripts() {
+		global $wp_scripts;
+		$ui = $wp_scripts->query( 'jquery-ui-core' );
+		wp_enqueue_style(
+			'jquery.ui',
+			'//ajax.googleapis.com/ajax/libs/jqueryui/' . $ui->ver . '/themes/smoothness/jquery-ui.min.css',
+			array(),
+			$ui->ver
+		);
+		wp_enqueue_script( 'jquery-ui-datepicker' );
+		wp_enqueue_script(
+			SCF_Config::PREFIX . 'settings-datepicker',
+			plugins_url( '../../js/settings-datepicker.js', __FILE__ ),
+			array( 'jquery', 'jquery-ui-datepicker' ),
+			false,
+			true
+		);
 	}
 
 	/**
@@ -75,44 +100,7 @@ class Smart_Custom_Fields_Field_Datepicker extends Smart_Custom_Fields_Field_Bas
 	public function get_field( $index, $value ) {
 		$name     = $this->get_field_name_in_editor( $index );
 		$disabled = $this->get_disable_attribute( $index );
-
-		$js = array(
-			'showMonthAfterYear' => true,
-			'changeYear'         => true,
-			'changeMonth'        => true,
-		);
-		// 日本語の場合は日本語表記に変更
-		if ( get_locale() === 'ja' ) {
-			$js = array_merge( $js, array(
-				'yearSuffix'      => '年',
-				'dateFormat'      => 'yy-mm-dd',
-				'dayNames'        => array(
-					'日曜日', '月曜日', '火曜日', '水曜日', '木曜日', '金曜日', '土曜日',
-				),
-				'dayNamesMin'     => array(
-					'日', '月', '火', '水', '木', '金', '土',
-				),
-				'dayNamesShort'   => array(
-					'日曜', '月曜', '火曜', '水曜', '木曜', '金曜', '土曜',
-				),
-				'monthNames'      => array(
-					'1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月',
-				),
-				'monthNamesShort' =>  array(
-					'1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月',
-				)
-			) );
-		}
-		if ( !$this->get( 'date_format' ) ) {
-			$js['dateFormat'] = $this->get( 'date_format' );
-		}
-		if ( !$this->get( 'max_date' ) ) {
-			$js['maxDate'] = $this->get( 'max_date' );
-		}
-		if ( !$this->get( 'min_date' ) ) {
-			$js['minDate'] = $this->get( 'min_date' );
-		}
-		$data_js = json_encode( $js );
+		$data_js  = $this->get_data_js();
 
 		return sprintf(
 			'<input type="text" name="%s" value="%s" class="%s" %s data-js=\'%s\' />',
@@ -137,8 +125,9 @@ class Smart_Custom_Fields_Field_Datepicker extends Smart_Custom_Fields_Field_Bas
 			<td>
 				<input type="text"
 					name="<?php echo esc_attr( $this->get_field_name_in_setting( $group_key, $field_key, 'default' ) ); ?>"
-					class="widefat"
-					value="<?php echo esc_attr( $this->get( 'default' ) ); ?>" />
+					class="widefat default-option"
+					value="<?php echo esc_attr( $this->get( 'default' ) ); ?>"
+					data-js='<?php echo $this->get_data_js(); ?>' />
 			</td>
 		</tr>
 		<tr>
@@ -206,5 +195,50 @@ class Smart_Custom_Fields_Field_Datepicker extends Smart_Custom_Fields_Field_Bas
 			</td>
 		</tr>
 		<?php
+	}
+
+	/**
+	 * 管理画面で設定された datepicker のオプションを json_encode して返す
+	 *
+	 * @return string json_encode された設定
+	 */
+	protected function get_data_js() {
+		$js = array(
+			'showMonthAfterYear' => true,
+			'changeYear'         => true,
+			'changeMonth'        => true,
+		);
+		// 日本語の場合は日本語表記に変更
+		if ( get_locale() === 'ja' ) {
+			$js = array_merge( $js, array(
+				'yearSuffix'      => '年',
+				'dateFormat'      => 'yy-mm-dd',
+				'dayNames'        => array(
+					'日曜日', '月曜日', '火曜日', '水曜日', '木曜日', '金曜日', '土曜日',
+				),
+				'dayNamesMin'     => array(
+					'日', '月', '火', '水', '木', '金', '土',
+				),
+				'dayNamesShort'   => array(
+					'日曜', '月曜', '火曜', '水曜', '木曜', '金曜', '土曜',
+				),
+				'monthNames'      => array(
+					'1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月',
+				),
+				'monthNamesShort' =>  array(
+					'1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月',
+				)
+			) );
+		}
+		if ( $this->get( 'date_format' ) ) {
+			$js['dateFormat'] = $this->get( 'date_format' );
+		}
+		if ( $this->get( 'max_date' ) ) {
+			$js['maxDate'] = $this->get( 'max_date' );
+		}
+		if ( $this->get( 'min_date' ) ) {
+			$js['minDate'] = $this->get( 'min_date' );
+		}
+		return json_encode( $js );
 	}
 }

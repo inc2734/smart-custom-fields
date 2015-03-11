@@ -16,7 +16,10 @@ class Smart_Custom_Fields_Field_Wysiwyg extends Smart_Custom_Fields_Field_Base {
 	 * @return array
 	 */
 	protected function init() {
-		add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts' ) );
+		add_action(
+			SCF_Config::PREFIX . 'before-editor-enqueue-scripts',
+			array( $this, 'editor_enqueue_scripts' )
+		);
 		return array(
 			'type'         => 'wysiwyg',
 			'display-name' => __( 'Wysiwyg', 'smart-custom-fields' ),
@@ -38,13 +41,9 @@ class Smart_Custom_Fields_Field_Wysiwyg extends Smart_Custom_Fields_Field_Base {
 
 	/**
 	 * TinyMCE 読み込み後にオリジナルの JS を読み込み
-	 *
-	 * @param string $hook
 	 */
-	public function admin_enqueue_scripts( $hook ) {
-		if ( in_array( $hook, array( 'post-new.php', 'post.php' ) ) ) {
-			add_action( 'after_wp_tiny_mce', array( $this, 'after_wp_tiny_mce' ) );
-		}
+	public function editor_enqueue_scripts() {
+		add_action( 'after_wp_tiny_mce', array( $this, 'after_wp_tiny_mce' ) );
 	}
 
 	/**

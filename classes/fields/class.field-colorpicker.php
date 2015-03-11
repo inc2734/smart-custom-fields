@@ -16,7 +16,14 @@ class Smart_Custom_Fields_Field_Colorpicker extends Smart_Custom_Fields_Field_Ba
 	 * @return array
 	 */
 	protected function init() {
-		add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts' ) );
+		add_action(
+			SCF_Config::PREFIX . 'before-editor-enqueue-scripts',
+			array( $this, 'editor_enqueue_scripts' )
+		);
+		add_action(
+			SCF_Config::PREFIX . 'before-settings-enqueue-scripts',
+			array( $this, 'settings_enqueue_scripts' )
+		);
 		return array(
 			'type'         => 'colorpicker',
 			'display-name' => __( 'Color picker', 'smart-custom-fields' ),
@@ -38,20 +45,30 @@ class Smart_Custom_Fields_Field_Colorpicker extends Smart_Custom_Fields_Field_Ba
 
 	/**
 	 * CSS、JSの読み込み
-	 *
-	 * @param string $hook
 	 */
-	public function admin_enqueue_scripts( $hook ) {
-		if ( in_array( $hook, array( 'post-new.php', 'post.php' ) ) ) {
-			wp_enqueue_style( 'wp-color-picker' );
-			wp_enqueue_script(
-				SCF_Config::PREFIX . 'colorpicker',
-				plugins_url( '../../js/editor-colorpicker.js', __FILE__ ),
-				array( 'jquery', 'wp-color-picker' ),
-				false,
-				true
-			);
-		}
+	public function editor_enqueue_scripts() {
+		wp_enqueue_style( 'wp-color-picker' );
+		wp_enqueue_script(
+			SCF_Config::PREFIX . 'editor-colorpicker',
+			plugins_url( '../../js/editor-colorpicker.js', __FILE__ ),
+			array( 'jquery', 'wp-color-picker' ),
+			false,
+			true
+		);
+	}
+
+	/**
+	 * CSS、JSの読み込み
+	 */
+	public function settings_enqueue_scripts() {
+		wp_enqueue_style( 'wp-color-picker' );
+		wp_enqueue_script(
+			SCF_Config::PREFIX . 'settings-colorpicker',
+			plugins_url( '../../js/settings-colorpicker.js', __FILE__ ),
+			array( 'jquery', 'wp-color-picker' ),
+			false,
+			true
+		);
 	}
 
 	/**
@@ -86,7 +103,7 @@ class Smart_Custom_Fields_Field_Colorpicker extends Smart_Custom_Fields_Field_Ba
 			<td>
 				<input type="text"
 					name="<?php echo esc_attr( $this->get_field_name_in_setting( $group_key, $field_key, 'default' ) ); ?>"
-					class="widefat"
+					class="widefat default-option"
 					value="<?php echo esc_attr( $this->get( 'default' ) ); ?>" />
 			</td>
 		</tr>

@@ -1,9 +1,9 @@
 /**
  * settings.js
- * Version    : 1.0.1
+ * Version    : 1.1.0
  * Author     : Takashi Kitajima
  * Created    : September 23, 2014
- * Modified   : January 22, 2015
+ * Modified   : March 10, 2015
  * License    : GPLv2
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
  */
@@ -73,6 +73,9 @@ jQuery( function( $ ) {
 				field_label.html( "&nbsp;" );
 				table.fadeIn( 'fast', function() {
 					$( this ).removeClass( 'hide' );
+					table.find( '.smart-cf-field-options' ).each( function( i, e ) {
+						$( this ).trigger( 'smart-cf-setting-field-open', e );
+					} );
 				} );
 			} else {
 				var label = table.find( '.smart-cf-field-label' ).val();
@@ -186,6 +189,7 @@ jQuery( function( $ ) {
 			var show_options = field.find( '.smart-cf-field-options-' + val );
 			show_options.find( 'input, textarea, select' ).removeAttr( 'disabled' );
 			show_options.removeClass( 'hide' );
+			show_options.trigger( 'smart-cf-setting-show-options', show_options );
 		} );
 
 		/**

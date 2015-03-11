@@ -1,5 +1,5 @@
 /**
- * datepicker.js
+ * editor-datepicker.js
  * Version    : 1.0.0
  * Author     : Takashi Kitajima
  * Created    : January 18, 2015

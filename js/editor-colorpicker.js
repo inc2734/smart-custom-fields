@@ -1,5 +1,5 @@
 /**
- * colorpicker.js
+ * editor-colorpicker.js
  * Version    : 1.0.0
  * Author     : Takashi Kitajima
  * Created    : October 21, 2014
