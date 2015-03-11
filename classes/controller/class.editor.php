@@ -37,6 +37,7 @@ class Smart_Custom_Fields_Controller_Editor {
 	 * @param string $hook
 	 */
 	public function admin_enqueue_scripts( $hook ) {
+		do_action( SCF_Config::PREFIX . 'before-editor-enqueue-scripts' );
 		wp_enqueue_style(
 			SCF_Config::PREFIX . 'editor',
 			plugins_url( SCF_Config::NAME ) . '/css/editor.css'
@@ -53,6 +54,7 @@ class Smart_Custom_Fields_Controller_Editor {
 			'image_uploader_title' => esc_html__( 'Image setting', 'smart-custom-fields' ),
 			'file_uploader_title'  => esc_html__( 'File setting', 'smart-custom-fields' ),
 		) );
+		do_action( SCF_Config::PREFIX . 'after-editor-enqueue-scripts' );
 	}
 
 	/**

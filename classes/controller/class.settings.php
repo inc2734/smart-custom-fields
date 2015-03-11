@@ -48,6 +48,7 @@ class Smart_Custom_Fields_Controller_Settings {
 	 * CSS、JSの読み込み
 	 */
 	public function admin_enqueue_scripts() {
+		do_action( SCF_Config::PREFIX . 'before-settings-enqueue-scripts' );
 		wp_enqueue_style(
 			SCF_Config::PREFIX . 'settings',
 			plugins_url( SCF_Config::NAME ) . '/css/settings.css'
@@ -63,6 +64,7 @@ class Smart_Custom_Fields_Controller_Settings {
 			'duplicate_alert' => esc_html__( 'Same name exists!', 'smart-custom-fields' ),
 		) );
 		wp_enqueue_script( 'jquery-ui-sortable' );
+		do_action( SCF_Config::PREFIX . 'after-settings-enqueue-scripts' );
 	}
 
 	/**
