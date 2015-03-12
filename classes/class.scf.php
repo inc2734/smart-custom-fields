@@ -1,10 +1,10 @@
 <?php
 /**
  * SCF
- * Version    : 1.1.0
+ * Version    : 1.1.1
  * Author     : Takashi Kitajima
  * Created    : September 23, 2014
- * Modified   : February 27, 2015
+ * Modified   : March 12, 2015
  * License    : GPLv2
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
  */
@@ -296,16 +296,16 @@ class SCF {
 	/**
 	 * その投稿タイプで有効になっている SCF を取得
 	 * 
-	 * @param int $post_type
-	 * @param array $settings
+	 * @param string $post_type
+	 * @param bool $do_caching
+	 * @return array $settings
 	 */
-	public static function get_settings_posts( $post_type ) {
-		global $post;
+	public static function get_settings_posts( $post_type, $do_caching = true ) {
 		$posts = array();
 		if ( isset( self::$settings_posts_cache[$post_type] ) ) {
 			return self::$settings_posts_cache[$post_type];
 		}
-		$_posts = get_posts( array(
+		$settings_posts = get_posts( array(
 			'post_type'      => SCF_Config::NAME,
 			'posts_per_page' => -1,
 			'order'          => 'ASC',
@@ -320,25 +320,33 @@ class SCF {
 		) );
 
 		// Post ID による表示条件設定がある場合はフィルタリングする
+		global $post;
 		if ( isset( $post->ID ) ) {
-			foreach ( $_posts as $_post ) {
-				$condition_post_ids = array();
-				$_condition_post_ids = get_post_meta( $_post->ID, SCF_Config::PREFIX . 'condition-post-ids', true );
+			$post_id = $post->ID;
+			foreach ( $settings_posts as $settings_post ) {
+				$condition_post_ids  = array();
+				$_condition_post_ids = get_post_meta(
+					$settings_post->ID,
+					SCF_Config::PREFIX . 'condition-post-ids',
+					true
+				);
 				if ( $_condition_post_ids ) {
 					$_condition_post_ids = explode( ',', $_condition_post_ids );
 					foreach ( $_condition_post_ids as $condition_post_id ) {
 						$condition_post_ids[] = trim( $condition_post_id );
 					}
-					if ( $condition_post_ids && !in_array( $post->ID, $condition_post_ids ) ) {
+					if ( $condition_post_ids && !in_array( $post_id, $condition_post_ids ) ) {
 						continue;
 					}
 				}
-				$posts[] = $_post;
+				$posts[] = $settings_post;
 			}
 		} else {
-			$posts = $_posts;
+			$posts = $settings_posts;
 		}
-		self::save_settings_posts_cache( $post_type, $posts );
+		if ( $do_caching === true ) {
+			self::save_settings_posts_cache( $post_type, $posts );
+		}
 		return $posts;
 	}
 
@@ -355,20 +363,23 @@ class SCF {
 	/**
 	 * Setting オブジェクトの配列を取得
 	 *
-	 * @param int $post_type
-	 * @param array $settings
+	 * @param string $post_type
+	 * @param bool $do_caching
+	 * @return array $settings
 	 */
-	public static function get_settings( $post_type ) {
+	public static function get_settings( $post_type, $do_caching = true ) {
 		if ( isset( self::$settings_cache[$post_type] ) ) {
 			return self::$settings_cache[$post_type];
 		}
 		$settings = array();
-		$cf_posts = self::get_settings_posts( $post_type );
+		$cf_posts = self::get_settings_posts( $post_type, $do_caching );
 		foreach ( $cf_posts as $post ) {
 			$settings[] = SCF::add_setting( $post->ID, $post->post_title );
 		}
 		$settings = apply_filters( SCF_Config::PREFIX . 'register-fields', $settings, $post_type );
-		self::save_settings_cache( $post_type, $settings );
+		if ( $do_caching === true ) {
+			self::save_settings_cache( $post_type, $settings );
+		}
 		return $settings;
 	}
 
