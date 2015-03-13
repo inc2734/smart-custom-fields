@@ -449,7 +449,7 @@ class SCF {
 		foreach ( $cf_posts as $post ) {
 			$settings[] = SCF::add_setting( $post->ID, $post->post_title );
 		}
-		$settings = apply_filters( SCF_Config::PREFIX . 'register-fields', $settings, $post_type );
+		$settings = apply_filters( SCF_Config::PREFIX . 'register-fields', $settings, $post_type, $post_id );
 
 		// $post_id が false のときはキャッシュに保存しない
 		if ( !empty( $post_id ) ) {
