@@ -541,6 +541,29 @@ class SCF {
 		}
 		return $fields;
 	}
+
+	/**
+	 * 管理画面で保存されたフィールドを取得
+	 * 同じ投稿タイプで、同名のフィールド名を持つフィールドを複数定義しても一つしか返らないので注意
+	 * 
+	 * @param string $post_type
+	 * @param string $field_name
+	 * @return Smart_Custom_Fields_Field_Base
+	 */
+	public static function get_field( $post_type, $field_name ) {
+		$settings = self::get_settings( $post_type );
+		foreach ( $settings as $Setting ) {
+			$groups = $Setting->get_groups();
+			foreach ( $groups as $Group ) {
+				$fields = $Group->get_fields();
+				foreach ( $fields as $Field ) {
+					if ( !is_null( $Field ) && $Field->get( 'name' ) === $field_name ) {
+						return $Field;
+					}
+				}
+			}
+		}
+	}
 	
 	/**
 	 * 改行区切りの $choices を配列に変換
