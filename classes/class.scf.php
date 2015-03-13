@@ -230,7 +230,7 @@ class SCF {
 				foreach ( $_post_meta as $_post_meta_key => $value ) {
 					// wysiwyg の場合はフィルタを通す
 					if ( $field_type === 'wysiwyg' ) {
-						$value = apply_filters( 'the_content', $value );
+						$value = self::add_the_content_filter( $value );
 					}
 					// relation のときは $value = Post ID。公開済みでない場合は取得しない
 					elseif ( $field_type === 'relation' ) {
@@ -270,18 +270,19 @@ class SCF {
 			if ( is_array( $post_meta ) ) {
 				$_post_meta = array();
 				foreach ( $post_meta as $key => $value ) {
-					$_post_meta[$key] = apply_filters( 'the_content', $value );
+					$_post_meta[$key] = self::add_the_content_filter( $value );
 				}
 				$post_meta = $_post_meta;
 			} else {
-				$post_meta = apply_filters( 'the_content', $post_meta );
+				$post_meta = self::add_the_content_filter( $post_meta );
 			}
 		} elseif ( $field_type === 'relation' ) {
 			$_post_meta = array();
 			if ( is_array( $post_meta ) ) {
 				foreach ( $post_meta as $post_id ) {
-					if ( get_post_status( $post_id ) !== 'publish' )
+					if ( get_post_status( $post_id ) !== 'publish' ) {
 						continue;
+					}
 					$_post_meta[] = $post_id;
 				}
 			}
@@ -563,5 +564,33 @@ class SCF {
 	 */
 	public static function add_setting( $id, $title ) {
 		return new Smart_Custom_Fields_Setting( $id, $title );
+	}
+
+	/**
+	 * デフォルトで the_content に適用される関数を適用
+	 *
+	 * @param string $value
+	 * @return string
+	 */
+	protected static function add_the_content_filter( $value ) {
+		if ( has_filter( 'the_content', 'wptexturize' ) ) {
+			$value = wptexturize( $value );
+		}
+		if ( has_filter( 'the_content', 'convert_smilies' ) ) {
+			$value = convert_smilies( $value );
+		}
+		if ( has_filter( 'the_content', 'convert_chars' ) ) {
+			$value = convert_chars( $value );
+		}
+		if ( has_filter( 'the_content', 'wpautop' ) ) {
+			$value = wpautop( $value );
+		}
+		if ( has_filter( 'the_content', 'shortcode_unautop' ) ) {
+			$value = shortcode_unautop( $value );
+		}
+		if ( has_filter( 'the_content', 'prepend_attachment' ) ) {
+			$value = prepend_attachment( $value );
+		}
+		return $value;
 	}
 }
