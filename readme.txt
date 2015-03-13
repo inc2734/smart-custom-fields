@@ -72,6 +72,11 @@ You can send your own language pack to me.
 
 == Changelog ==
 
+= 1.2.2 =
+* Fixed a bug that can not get the correct data when the posts use post id filtering.
+* Changed that original the_content filter does not apply to wisywig field.
+* Add post_id attribute to smart-cf-register-fields.
+
 = 1.2.1 =
 * Fixed a bug that post id filtering incorrect.
 
