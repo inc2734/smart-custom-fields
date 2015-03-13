@@ -1,10 +1,10 @@
 <?php
 /**
  * Smart_Custom_Fields_Controller_Editor
- * Version    : 1.0.0
+ * Version    : 1.0.1
  * Author     : Takashi Kitajima
  * Created    : September 23, 2014
- * Modified   : February 27, 2015
+ * Modified   : March 13, 2015
  * License    : GPLv2
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
  */
@@ -65,7 +65,7 @@ class Smart_Custom_Fields_Controller_Editor {
 	 */
 	public function add_meta_boxes( $post_type, $post ) {
 		$_post = $post;
-		$settings = SCF::get_settings( $post_type );
+		$settings = SCF::get_settings( $post_type, $post->ID );
 		foreach ( $settings as $Setting ) {
 			add_meta_box(
 				SCF_Config::PREFIX . 'custom-field-' . $Setting->get_id(),
@@ -148,7 +148,7 @@ class Smart_Custom_Fields_Controller_Editor {
 		$multiple_data_fields = array();
 
 		$post_type = get_post_type();
-		$settings  = SCF::get_settings( $post_type );
+		$settings  = SCF::get_settings( $post_type, $post_id );
 		foreach ( $settings as $Setting ) {
 			$groups = $Setting->get_groups();
 			foreach ( $groups as $Group ) {

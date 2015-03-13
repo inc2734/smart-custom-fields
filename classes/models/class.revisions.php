@@ -1,10 +1,10 @@
 <?php
 /**
  * Smart_Custom_Fields_Revisions
- * Version    : 1.1.0
+ * Version    : 1.1.1
  * Author     : Takashi Kitajima
  * Created    : September 23, 2014
- * Modified   : February 27, 2015
+ * Modified   : March 13, 2015
  * License    : GPLv2
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
  */
@@ -44,7 +44,7 @@ class Smart_Custom_Fields_Revisions {
 		$revision  = get_post( $revision_id );
 		$post_type = get_post_type();
 
-		$settings = SCF::get_settings( $post_type );
+		$settings = SCF::get_settings( $post_type, $post_id );
 		foreach ( $settings as $Setting ) {
 			$groups = $Setting->get_groups();
 			foreach ( $groups as $Group ) {
@@ -83,7 +83,7 @@ class Smart_Custom_Fields_Revisions {
 		if ( !wp_is_post_revision( $post_id ) ) {
 			return;
 		}
-		$settings = SCF::get_settings( get_post_type() );
+		$settings = SCF::get_settings( get_post_type( $post_id ), $post_id );
 		if ( !$settings ) {
 			return;
 		}
@@ -100,8 +100,8 @@ class Smart_Custom_Fields_Revisions {
 		// チェックボックスが未入力のときは "" がくるので、それは保存しないように判別
 		$multiple_data_fields = array();
 
-		$post_type = get_post_type();
-		$settings = SCF::get_settings( $post_type );
+		$post_type = get_post_type( $post_id );
+		$settings = SCF::get_settings( $post_type, $post_id );
 		foreach ( $settings as $Setting ) {
 			$groups = $Setting->get_groups();
 			foreach ( $groups as $Group ) {

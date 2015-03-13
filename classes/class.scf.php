@@ -1,10 +1,10 @@
 <?php
 /**
  * SCF
- * Version    : 1.1.1
+ * Version    : 1.1.2
  * Author     : Takashi Kitajima
  * Created    : September 23, 2014
- * Modified   : March 12, 2015
+ * Modified   : March 13, 2015
  * License    : GPLv2
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
  */
@@ -56,10 +56,14 @@ class SCF {
 		}
 		$post_id = self::get_real_post_id( $post_id );
 
+		if ( empty( $post_id ) ) {
+			return array();
+		}
+
 		// 設定画面で未設定のメタデータは投稿が保持していても出力しないようにしないといけないので
 		// 設定データを取得して出力して良いか判別する
 		$post_type = self::get_public_post_type( $post_id );
-		$settings  = self::get_settings( $post_type );
+		$settings  = self::get_settings( $post_type, $post_id );
 		$post_meta = array();
 		foreach ( $settings as $Setting ) {
 			$groups = $Setting->get_groups();
@@ -94,6 +98,10 @@ class SCF {
 		}
 		$post_id = self::get_real_post_id( $post_id );
 
+		if ( empty( $post_id ) ) {
+			return;
+		}
+
 		if ( self::get_cache( $post_id, $name ) ) {
 			return self::get_cache( $post_id, $name );
 		}
@@ -101,7 +109,7 @@ class SCF {
 		// 設定画面で未設定のメタデータは投稿が保持していても出力しないようにしないといけないので
 		// 設定データを取得して出力して良いか判別する
 		$post_type = self::get_public_post_type( $post_id );
-		$settings  = self::get_settings( $post_type );
+		$settings  = self::get_settings( $post_type, $post_id );
 		foreach ( $settings as $Setting ) {
 			$groups = $Setting->get_groups();
 			foreach ( $groups as $Group ) {
@@ -286,24 +294,56 @@ class SCF {
 	/**
 	 * その投稿タイプで有効になっている SCF をキャッシュに保存
 	 *
-	 * @param int $post_type
-	 * @param array $posts
+	 * @param string $post_type
+	 * @param int|false $post_type
+	 * @param WP_Post $post
 	 */
-	protected static function save_settings_posts_cache( $post_type, array $posts = array() ) {
-		self::$settings_posts_cache[$post_type] = $posts;
+	protected static function save_settings_posts_cache( $post_type, $post_id, $post ) {
+		if ( empty( $post_id ) ) {
+			self::$settings_posts_cache[$post_type][0][] = $post;
+		} else {
+			self::$settings_posts_cache[$post_type][$post_id][] = $post;
+		}
+	}
+
+	/**
+	 * その投稿タイプで有効になっている SCF のキャッシュを取得
+	 * その投稿IDのキャッシュがあればそれを返す。無いときは 0 のキャッシュを返す
+	 *
+	 * @param int $post_type
+	 * @param int|false $post_id
+	 * @return array
+	 */
+	public static function get_settings_posts_cache( $post_type, $post_id ) {
+		$settings_posts = array();
+		if ( empty( $post_id ) ) {
+			return $settings_posts;
+		}
+		if ( !isset( self::$settings_posts_cache[$post_type] ) ) {
+			return $settings_posts;
+		}
+		if ( isset( self::$settings_posts_cache[$post_type][0] ) ) {
+			$settings_posts = self::$settings_posts_cache[$post_type][0];
+		}
+		if ( !empty( $post_id ) ) {
+			if ( isset( self::$settings_posts_cache[$post_type][$post_id] ) ) {
+				$settings_posts = array_merge( $settings_posts, self::$settings_posts_cache[$post_type][$post_id] );
+			}
+		}
+		return $settings_posts;
 	}
 
 	/**
 	 * その投稿タイプで有効になっている SCF を取得
 	 * 
 	 * @param string $post_type
-	 * @param bool $do_caching
+	 * @param int|false $post_id
 	 * @return array $settings
 	 */
-	public static function get_settings_posts( $post_type, $do_caching = true ) {
+	public static function get_settings_posts( $post_type, $post_id ) {
 		$posts = array();
-		if ( isset( self::$settings_posts_cache[$post_type] ) ) {
-			return self::$settings_posts_cache[$post_type];
+		if ( self::get_settings_posts_cache( $post_type, $post_id ) ) {
+			return self::get_settings_posts_cache( $post_type, $post_id );
 		}
 		$settings_posts = get_posts( array(
 			'post_type'      => SCF_Config::NAME,
@@ -319,66 +359,100 @@ class SCF {
 			),
 		) );
 
-		// Post ID による表示条件設定がある場合はフィルタリングする
-		global $post;
-		if ( isset( $post->ID ) ) {
-			$post_id = $post->ID;
-			foreach ( $settings_posts as $settings_post ) {
-				$condition_post_ids  = array();
-				$_condition_post_ids = get_post_meta(
-					$settings_post->ID,
-					SCF_Config::PREFIX . 'condition-post-ids',
-					true
-				);
-				if ( $_condition_post_ids ) {
-					$_condition_post_ids = explode( ',', $_condition_post_ids );
-					foreach ( $_condition_post_ids as $condition_post_id ) {
-						$condition_post_ids[] = trim( $condition_post_id );
+		// $post_id が false のときはキャッシュに保存しない
+		if ( empty( $post_id ) ) {
+			return $settings_posts;
+		}
+
+		$return_settings_posts = array();
+		foreach ( $settings_posts as $settings_post ) {
+			$condition_post_ids_raw = get_post_meta(
+				$settings_post->ID,
+				SCF_Config::PREFIX . 'condition-post-ids',
+				true
+			);
+			if ( $condition_post_ids_raw ) {
+				$condition_post_ids_raw = explode( ',', $condition_post_ids_raw );
+				foreach ( $condition_post_ids_raw as $condition_post_id ) {
+					$condition_post_id = trim( $condition_post_id );
+					if ( $post_id == $condition_post_id ) {
+						$return_settings_posts[] = $settings_post;
 					}
-					if ( $condition_post_ids && !in_array( $post_id, $condition_post_ids ) ) {
-						continue;
-					}
+					self::save_settings_posts_cache( $post_type, $condition_post_id, $settings_post );
 				}
-				$posts[] = $settings_post;
+			} else {
+				$return_settings_posts[] = $settings_post;
+				self::save_settings_posts_cache( $post_type, false, $settings_post );
 			}
-		} else {
-			$posts = $settings_posts;
 		}
-		if ( $do_caching === true ) {
-			self::save_settings_posts_cache( $post_type, $posts );
-		}
-		return $posts;
+		return $return_settings_posts;
 	}
 
 	/**
-	 * Setting オブジェクト をキャッシュに保存
+	 * Setting オブジェクトをキャッシュに保存
 	 *
-	 * @param int $post_type
+	 * @param string $post_type
+	 * @param int|false $post_id
 	 * @param array $settings
 	 */
-	protected static function save_settings_cache( $post_type, array $settings = array() ) {
-		self::$settings_cache[$post_type] = $settings;
+	protected static function save_settings_cache( $post_type, $post_id, array $settings = array() ) {
+		if ( empty( $post_id ) ) {
+			self::$settings_cache[$post_type][0] = $settings;
+		} else {
+			self::$settings_cache[$post_type][$post_id] = $settings;
+		}
+	}
+
+	/**
+	 * Setting オブジェクトキャッシュを取得
+	 *
+	 * @param string $post_type
+	 * @param int|false $post_id
+	 * @return array
+	 */
+	public static function get_settings_cache( $post_type, $post_id ) {
+		$settings = array();
+		if ( empty( $post_id ) ) {
+			return $settings;
+		}
+		if ( !isset( self::$settings_cache[$post_type] ) ) {
+			return $settings;
+		}
+		if ( isset( self::$settings_cache[$post_type][0] ) ) {
+			$settings = self::$settings_cache[$post_type][0];
+		}
+		if ( !empty( $post_id ) ) {
+			if ( isset( self::$settings_cache[$post_type][$post_id] ) ) {
+				$settings = array_merge( $settings, self::$settings_cache[$post_type][$post_id] );
+			}
+		}
+		return $settings;
 	}
 
 	/**
 	 * Setting オブジェクトの配列を取得
 	 *
 	 * @param string $post_type
-	 * @param bool $do_caching
+	 * @param int|false $post_id
 	 * @return array $settings
 	 */
-	public static function get_settings( $post_type, $do_caching = true ) {
-		if ( isset( self::$settings_cache[$post_type] ) ) {
-			return self::$settings_cache[$post_type];
+	public static function get_settings( $post_type, $post_id = false ) {
+		if ( empty( $post_id ) ) {
+			$post_id = get_the_ID();
+		} 
+		if ( self::get_settings_cache( $post_type, $post_id ) ) {
+			return self::get_settings_cache( $post_type, $post_id );
 		}
 		$settings = array();
-		$cf_posts = self::get_settings_posts( $post_type, $do_caching );
+		$cf_posts = self::get_settings_posts( $post_type, $post_id );
 		foreach ( $cf_posts as $post ) {
 			$settings[] = SCF::add_setting( $post->ID, $post->post_title );
 		}
 		$settings = apply_filters( SCF_Config::PREFIX . 'register-fields', $settings, $post_type );
-		if ( $do_caching === true ) {
-			self::save_settings_cache( $post_type, $settings );
+
+		// $post_id が false のときはキャッシュに保存しない
+		if ( !empty( $post_id ) ) {
+			self::save_settings_cache( $post_type, $post_id, $settings );
 		}
 		return $settings;
 	}
