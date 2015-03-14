@@ -78,6 +78,12 @@ class Smart_Custom_Fields {
 	 * @param WP_Screen $screen
 	 */
 	public function current_screen( $screen ) {
+		$post_id = false;
+		if ( !empty( $_GET['post'] ) ) {
+			$post_id = $_GET['post'];
+		} elseif ( !empty( $_POST['post_ID'] ) ) {
+			$post_id = $_POST['post_ID'];
+		}
 		// 一覧画面
 		if ( $screen->id === 'edit-' . SCF_Config::NAME ) {
 		}
@@ -87,7 +93,7 @@ class Smart_Custom_Fields {
 			new Smart_Custom_Fields_Controller_Settings();
 		}
 		// その他の新規作成・編集画面
-		elseif ( SCF::get_settings( $screen->id ) ) {
+		elseif ( SCF::get_settings( $screen->id, $post_id ) ) {
 			require_once plugin_dir_path( __FILE__ ) . 'classes/controller/class.editor.php';
 			new Smart_Custom_Fields_Controller_Editor();
 		}
