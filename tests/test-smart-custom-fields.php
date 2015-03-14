@@ -85,12 +85,10 @@ class SmartCustomFieldsTest extends WP_UnitTestCase {
 		) );
 		update_post_meta( $post_id, SCF_Config::PREFIX . 'condition', array( 'post' ) );
 
-		$this->assertEquals( array(), SCF::get_settings_posts_cache( 'post', false ) );
-		$this->assertEquals( array(), SCF::get_settings_posts_cache( 'post', $this->post_id ) );
-		$settings_posts = SCF::get_settings_posts( 'post', $this->post_id );
+		$this->assertEquals( array(), SCF::get_settings_posts_cache( 'post' ) );
+		$settings_posts = SCF::get_settings_posts( 'post' );
 		$this->assertEquals( 'test_settings_post', $settings_posts[0]->post_title );
-		$this->assertEquals( array(), SCF::get_settings_posts_cache( 'post', false ) );
-		$settings_posts_cache = SCF::get_settings_posts_cache( 'post', $this->post_id );
+		$settings_posts_cache = SCF::get_settings_posts_cache( 'post' );
 		$this->assertEquals( 'test_settings_post', $settings_posts_cache[0]->post_title );
 	}
 
