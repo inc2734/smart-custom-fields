@@ -1,10 +1,10 @@
 <?php
 /**
  * SCF
- * Version    : 1.1.2
+ * Version    : 1.1.3
  * Author     : Takashi Kitajima
  * Created    : September 23, 2014
- * Modified   : March 13, 2015
+ * Modified   : March 16, 2015
  * License    : GPLv2
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
  */
@@ -71,7 +71,7 @@ class SCF {
 				$is_repeatable = $Group->is_repeatable();
 				$group_name    = $Group->get_name();
 				if ( $is_repeatable && $group_name ) {
-					$post_meta[$group_name] = self::get_values_by_group( $post_id, $Group );
+					$post_meta[$group_name] = self::get_values_by_group( $post_id, get_post_type( $post_id ), $Group );
 				}
 				else {
 					$fields = $Group->get_fields();
@@ -120,7 +120,7 @@ class SCF {
 				$is_repeatable = $Group->is_repeatable();
 				$group_name    = $Group->get_name();
 				if ( $is_repeatable && $group_name && $group_name === $name ) {
-					return self::get_values_by_group( $post_id, $Group );
+					return self::get_values_by_group( $post_id, get_post_type( $post_id ), $Group );
 				}
 				// グループ名と一致しない場合は一致するフィールドを返す
 				else {
@@ -201,10 +201,11 @@ class SCF {
 	 * そのグループのメタデータを取得
 	 * 
 	 * @param int $post_id
+	 * @param string $post_type
 	 * @param Smart_Custom_Fields_Group $Group
 	 * @return mixed
 	 */
-	protected static function get_values_by_group( $post_id, $Group ) {
+	protected static function get_values_by_group( $post_id, $post_type, $Group ) {
 		$post_meta = array();
 		$fields    = $Group->get_fields();
 		foreach ( $fields as $Field ) {
@@ -212,9 +213,13 @@ class SCF {
 			if ( !$field_name ) {
 				continue;
 			}
-			$_post_meta = get_post_meta( $post_id, $field_name );
+			if ( $post_type === SCF_Config::PROFILE ) {
+				$_post_meta = get_user_meta( $post_id, $field_name );
+			} else {
+				$_post_meta = get_post_meta( $post_id, $field_name );
+			}
 			// チェックボックスの場合
-			$repeat_multiple_data = self::get_repeat_multiple_data( $post_id );
+			$repeat_multiple_data = self::get_repeat_multiple_data( $post_id, $post_type );
 			if ( is_array( $repeat_multiple_data ) && array_key_exists( $field_name, $repeat_multiple_data ) ) {
 				$start = 0;
 				foreach ( $repeat_multiple_data[$field_name] as $repeat_multiple_key => $repeat_multiple_value ) {
@@ -439,30 +444,36 @@ class SCF {
 	 * 繰り返しに設定された複数許可フィールドデータの区切り識別用データをキャッシュに保存
 	 *
 	 * @param int $post_id
+	 * @param string $post_type
 	 * @param mixed $repeat_multiple_data
 	 */
-	protected static function save_repeat_multiple_data_cache( $post_id, $repeat_multiple_data ) {
-		self::$repeat_multiple_data_cache[$post_id] = $repeat_multiple_data;
+	protected static function save_repeat_multiple_data_cache( $post_id, $post_type, $repeat_multiple_data ) {
+		self::$repeat_multiple_data_cache[$post_id][$post_type] = $repeat_multiple_data;
 	}
 
 	/**
 	 * 繰り返しに設定された複数許可フィールドデータの区切り識別用データを取得
 	 * 
 	 * @param int $post_id
+	 * @param string $post_type
 	 * @return mixed
 	 */
-	public static function get_repeat_multiple_data( $post_id ) {
+	public static function get_repeat_multiple_data( $post_id, $post_type ) {
 		$repeat_multiple_data = array();
-		if ( isset( self::$repeat_multiple_data_cache[$post_id] ) ) {
-			return self::$repeat_multiple_data_cache[$post_id];
+		if ( isset( self::$repeat_multiple_data_cache[$post_id][$post_type] ) ) {
+			return self::$repeat_multiple_data_cache[$post_id][$post_type];
 		}
 		if ( empty( $repeat_multiple_data ) ) {
-			$_repeat_multiple_data = get_post_meta( $post_id, SCF_Config::PREFIX . 'repeat-multiple-data', true );
+			if ( $post_type === SCF_Config::PROFILE ) {
+				$_repeat_multiple_data = get_user_meta( $post_id, SCF_Config::PREFIX . 'repeat-multiple-data', true );
+			} else {
+				$_repeat_multiple_data = get_post_meta( $post_id, SCF_Config::PREFIX . 'repeat-multiple-data', true );
+			}
 			if ( $_repeat_multiple_data ) {
 				$repeat_multiple_data = $_repeat_multiple_data;
 			}
 		}
-		self::save_repeat_multiple_data_cache( $post_id, $repeat_multiple_data );
+		self::save_repeat_multiple_data_cache( $post_id, $post_type, $repeat_multiple_data );
 		return $repeat_multiple_data;
 	}
 

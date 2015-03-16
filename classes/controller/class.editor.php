@@ -1,10 +1,10 @@
 <?php
 /**
  * Smart_Custom_Fields_Controller_Editor
- * Version    : 1.0.1
+ * Version    : 1.0.2
  * Author     : Takashi Kitajima
  * Created    : September 23, 2014
- * Modified   : March 13, 2015
+ * Modified   : March 16, 2015
  * License    : GPLv2
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
  */
@@ -87,7 +87,12 @@ class Smart_Custom_Fields_Controller_Editor {
 	 */
 	public function display_meta_box( $post, $callback_args ) {
 		$groups = $callback_args['args'];
-		$tables = $this->get_tables( $post->ID, $groups );
+		if ( is_a( $post, 'WP_Post' ) ) {
+			$post_type = $post->post_type;
+		} elseif ( is_a( $post, 'WP_User' ) ) {
+			$post_type = SCF_Config::PROFILE;
+		}
+		$tables = $this->get_tables( $post->ID, $post_type, $groups );
 
 		printf( '<div class="%s">', esc_attr( SCF_Config::PREFIX . 'meta-box' ) );
 		$index = 0;
@@ -98,9 +103,9 @@ class Smart_Custom_Fields_Controller_Editor {
 					'<div class="%s">',
 					esc_attr( SCF_Config::PREFIX . 'meta-box-repeat-tables' )
 				);
-				$this->display_tr( $post->ID, $is_repeatable, $Group->get_fields() );
+				$this->display_tr( $post->ID, $post_type, $is_repeatable, $Group->get_fields() );
 			}
-			$this->display_tr( $post->ID, $is_repeatable, $Group->get_fields(), $index );
+			$this->display_tr( $post->ID, $post_type, $is_repeatable, $Group->get_fields(), $index );
 
 			// ループの場合は添字をカウントアップ
 			// ループを抜けたらカウントをもとに戻す
@@ -232,12 +237,14 @@ class Smart_Custom_Fields_Controller_Editor {
 	/**
 	 * カスタムフィールドを出力するための配列を生成
 	 * 
+	 * @param int $post_id
+	 * @param string $post_type
 	 * @param array $groups カスタムフィールド設定ページで保存した設定
 	 * @return array $tables カスタムフィールド表示用のテーブルを出力するための配列
 	 */
-	protected function get_tables( $post_id, $groups ) {
+	protected function get_tables( $post_id, $post_type, $groups ) {
 		$post_custom = $this->get_post_custom( $post_id );
-		$repeat_multiple_data = SCF::get_repeat_multiple_data( $post_id );
+		$repeat_multiple_data = SCF::get_repeat_multiple_data( $post_id, $post_type );
 		$tables = array();
 		foreach ( $groups as $Group ) {
 			// ループのときは、ループの分だけグループを追加する
@@ -282,13 +289,14 @@ class Smart_Custom_Fields_Controller_Editor {
 	 * 複数許可フィールドのメタデータを取得
 	 * 
 	 * @param int $post_id
+	 * @param string $post_type
 	 * @param string $field_name
 	 * @param int $index
 	 * @return array or null
 	 */
-	protected function get_multiple_data_field_value( $post_id, $field_name, $index ) {
+	protected function get_multiple_data_field_value( $post_id, $post_type, $field_name, $index ) {
 		$post_custom = $this->get_post_custom( $post_id );
-		$repeat_multiple_data = SCF::get_repeat_multiple_data( $post_id );
+		$repeat_multiple_data = SCF::get_repeat_multiple_data( $post_id, $post_type );
 		$value = null;
 		if ( isset( $post_custom[$field_name] ) && is_array( $post_custom[$field_name] ) ) {
 			$value = $post_custom[$field_name];
@@ -334,11 +342,12 @@ class Smart_Custom_Fields_Controller_Editor {
 	 * カスタムフィールド表示 table で使用する各 tr を出力
 	 * 
 	 * @param int $post_id
+	 * @param string $post_type
 	 * @param bool $is_repeat
 	 * @param array $fields
 	 * @param int, null $index
 	 */
-	protected function display_tr( $post_id, $is_repeat, $fields, $index = null ) {
+	protected function display_tr( $post_id, $post_type, $is_repeat, $fields, $index = null ) {
 		$btn_repeat = '';
 		if ( $is_repeat ) {
 			$btn_repeat  = sprintf(
@@ -372,13 +381,13 @@ class Smart_Custom_Fields_Controller_Editor {
 			}
 
 			// 複数値許可フィールドのとき
-			$post_status = get_post_status( $post_id );
+			$post_status = $this->get_post_status( $post_id );
 			if ( $Field->get_attribute( 'allow-multiple-data' ) ) {
 				$value = array();
 				if ( !SCF::is_empty( $default ) && ( $post_status === 'auto-draft' || is_null( $index ) ) ) {
 					$value = SCF::choices_eol_to_array( $default );
 				}
-				$_value = $this->get_multiple_data_field_value( $post_id, $field_name, $index );
+				$_value = $this->get_multiple_data_field_value( $post_id, $post_type, $field_name, $index );
 			}
 			// 複数不値許可フィールドのとき
 			else {
@@ -411,5 +420,15 @@ class Smart_Custom_Fields_Controller_Editor {
 			);
 		}
 		echo '</table></div>';
+	}
+
+	/**
+	 * 投稿ステータスを返す
+	 *
+	 * @param int $post_id
+	 * @return string
+	 */
+	protected function get_post_status( $post_id ) {
+		return get_post_status( $post_id );
 	}
 }
