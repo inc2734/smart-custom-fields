@@ -337,19 +337,35 @@ class SCF {
 		} else {
 			self::debug_cache_message( "dont use settings posts cache... {$post_type}" );
 		}
-		$settings_posts = get_posts( array(
+
+		$args = array(
 			'post_type'      => SCF_Config::NAME,
 			'posts_per_page' => -1,
 			'order'          => 'ASC',
 			'order_by'       => 'menu_order',
-			'meta_query'     => array(
-				array(
-					'key'     => SCF_Config::PREFIX . 'condition',
-					'compare' => 'LIKE',
-					'value'   => $post_type,
+		);
+		if ( $post_type === SCF_Config::PROFILE ) {
+			$args = array_merge( $args, array(
+				'meta_query'     => array(
+					array(
+						'key'     => SCF_Config::PREFIX . 'profile',
+						'compare' => 'LIKE',
+						'value'   => $post_type,
+					),
 				),
-			),
-		) );
+			) );
+		} else {
+			$args = array_merge( $args, array(
+				'meta_query'     => array(
+					array(
+						'key'     => SCF_Config::PREFIX . 'condition',
+						'compare' => 'LIKE',
+						'value'   => $post_type,
+					),
+				),
+			) );
+		}
+		$settings_posts = get_posts( $args );
 		self::save_settings_posts_cache( $post_type, $settings_posts );
 		return $settings_posts;
 	}
@@ -414,26 +430,34 @@ class SCF {
 		}
 		$settings = array();
 		$settings_posts = self::get_settings_posts( $post_type );
-		foreach ( $settings_posts as $settings_post ) {
-			$condition_post_ids_raw = get_post_meta(
-				$settings_post->ID,
-				SCF_Config::PREFIX . 'condition-post-ids',
-				true
-			);
-			if ( $condition_post_ids_raw ) {
-				$condition_post_ids_raw = explode( ',', $condition_post_ids_raw );
-				foreach ( $condition_post_ids_raw as $condition_post_id ) {
-					$condition_post_id = trim( $condition_post_id );
-					$Setting = SCF::add_setting( $settings_post->ID, $settings_post->post_title );
-					if ( $post_id == $condition_post_id ) {
-						$settings[] = $Setting;
-					}
-					self::save_settings_cache( $post_type, $condition_post_id, $Setting );
-				}
-			} else {
+		if ( $post_type === SCF_Config::PROFILE ) {
+			foreach ( $settings_posts as $settings_post ) {
 				$Setting = SCF::add_setting( $settings_post->ID, $settings_post->post_title );
 				$settings[] = $Setting;
 				self::save_settings_cache( $post_type, false, $Setting );
+			}
+		} else {
+			foreach ( $settings_posts as $settings_post ) {
+				$condition_post_ids_raw = get_post_meta(
+					$settings_post->ID,
+					SCF_Config::PREFIX . 'condition-post-ids',
+					true
+				);
+				if ( $condition_post_ids_raw ) {
+					$condition_post_ids_raw = explode( ',', $condition_post_ids_raw );
+					foreach ( $condition_post_ids_raw as $condition_post_id ) {
+						$condition_post_id = trim( $condition_post_id );
+						$Setting = SCF::add_setting( $settings_post->ID, $settings_post->post_title );
+						if ( $post_id == $condition_post_id ) {
+							$settings[] = $Setting;
+						}
+						self::save_settings_cache( $post_type, $condition_post_id, $Setting );
+					}
+				} else {
+					$Setting = SCF::add_setting( $settings_post->ID, $settings_post->post_title );
+					$settings[] = $Setting;
+					self::save_settings_cache( $post_type, false, $Setting );
+				}
 			}
 		}
 		$settings = apply_filters( SCF_Config::PREFIX . 'register-fields', $settings, $post_type, $post_id );

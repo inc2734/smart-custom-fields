@@ -97,8 +97,8 @@ class Smart_Custom_Fields {
 		elseif ( SCF::get_settings( $screen->id, $post_id ) ) {
 			require_once plugin_dir_path( __FILE__ ) . 'classes/controller/class.editor.php';
 			new Smart_Custom_Fields_Controller_Editor();
-		// TODO: } elseif ( in_array( $screen->id, array( 'profile', 'user-edit' ) ) && SCF::get_settings( SCF_Config::PROFILE, null ) ) {
-		} else {
+		// プロフィール編集画面
+		} elseif ( in_array( $screen->id, array( 'profile', 'user-edit' ) ) && SCF::get_settings( SCF_Config::PROFILE, null ) ) {
 			require_once plugin_dir_path( __FILE__ ) . 'classes/controller/class.editor.php';
 			require_once plugin_dir_path( __FILE__ ) . 'classes/controller/class.profile.php';
 			new Smart_Custom_Fields_Controller_Profile();

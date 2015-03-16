@@ -25,11 +25,7 @@ class Smart_Custom_Fields_Controller_Profile extends Smart_Custom_Fields_Control
 	 * user_profile
 	 */
 	public function user_profile( $user ) {
-		echo '<pre>';
-		var_dump( get_user_meta( $user->ID, 'check' ) );
-		echo '</pre>';
-		// TODO: $settings = SCF::get_settings( SCF_Config::PROFILE, null );
-		$settings = SCF::get_settings( 'movie', null );
+		$settings = SCF::get_settings( SCF_Config::PROFILE, null );
 		foreach ( $settings as $Setting ) {
 			printf( '<h3>%s</h3>', esc_html( $Setting->get_title() ) );
 			$callback_args['args'] = $Setting->get_groups();
@@ -61,8 +57,7 @@ class Smart_Custom_Fields_Controller_Profile extends Smart_Custom_Fields_Control
 		// チェックボックスが未入力のときは "" がくるので、それは保存しないように判別
 		$multiple_data_fields = array();
 
-		// TODO: $post_type = SCF_Config::PROFILE;
-		$post_type = 'movie';
+		$post_type = SCF_Config::PROFILE;
 		$settings  = SCF::get_settings( $post_type, null );
 		foreach ( $settings as $Setting ) {
 			$groups = $Setting->get_groups();

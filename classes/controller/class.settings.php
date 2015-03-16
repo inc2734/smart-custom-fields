@@ -213,6 +213,21 @@ class Smart_Custom_Fields_Controller_Settings {
 			esc_attr( SCF_Config::PREFIX . 'condition-post-ids' ),
 			$condition_post_ids
 		);
+
+		$profile = get_post_meta( get_the_ID(), SCF_Config::PREFIX . 'profile', true );
+		$current = ( is_array( $profile ) && in_array( SCF_Config::PROFILE, $profile ) ) ? SCF_Config::PROFILE : false;
+		$profile_field = sprintf(
+			'<label><input type="checkbox" name="%s" value="%s" %s /> %s</label>',
+			esc_attr( SCF_Config::PREFIX . 'profile[]' ),
+			esc_attr( SCF_Config::PROFILE ),
+			checked( $current, SCF_Config::PROFILE, false ),
+			esc_html__( 'Profile', 'smart-custom-fields' )
+		);
+		printf(
+			'<p><b>%s</b>%s</p>',
+			esc_html__( 'Profile', 'smart-custom-fields' ),
+			$profile_field
+		);
 	}
 
 	/**
@@ -281,6 +296,12 @@ class Smart_Custom_Fields_Controller_Settings {
 			delete_post_meta( $post_id, SCF_Config::PREFIX . 'condition-post-ids' );
 		} else {
 			update_post_meta( $post_id, SCF_Config::PREFIX . 'condition-post-ids', $_POST[SCF_Config::PREFIX . 'condition-post-ids'] );
+		}
+
+		if ( !isset( $_POST[SCF_Config::PREFIX . 'profile'] ) ) {
+			delete_post_meta( $post_id, SCF_Config::PREFIX . 'profile' );
+		} else {
+			update_post_meta( $post_id, SCF_Config::PREFIX . 'profile', $_POST[SCF_Config::PREFIX . 'profile'] );
 		}
 	}
 }
