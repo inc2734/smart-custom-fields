@@ -25,7 +25,7 @@ class Smart_Custom_Fields_Controller_Profile extends Smart_Custom_Fields_Control
 	 * user_profile
 	 */
 	public function user_profile( $user ) {
-		$settings = SCF::get_settings( SCF_Config::PROFILE, null );
+		$settings = SCF::get_settings( $user->roles[0], $user->ID );
 		foreach ( $settings as $Setting ) {
 			printf( '<h3>%s</h3>', esc_html( $Setting->get_title() ) );
 			$callback_args['args'] = $Setting->get_groups();
@@ -45,64 +45,31 @@ class Smart_Custom_Fields_Controller_Profile extends Smart_Custom_Fields_Control
 		if ( !isset( $_POST[SCF_Config::NAME] ) ) {
 			return;
 		}
-		check_admin_referer(
-			SCF_Config::NAME . '-fields',
-			SCF_Config::PREFIX . 'fields-nonce'
-		);
 
-		// 繰り返しフィールドのチェックボックスは、普通のチェックボックスと混ざって
-		// 判別できなくなるのでわかるように保存しておく
-		$repeat_multiple_data = array();
+		$user_data = get_userdata( $user_id );
+		$this->save( $_POST, $user_data->roles[0], $user_id );
+	}
 
-		// チェックボックスが未入力のときは "" がくるので、それは保存しないように判別
-		$multiple_data_fields = array();
+	/**
+	 * メタデータを更新。そのメタデータが存在しない場合は追加。
+	 *
+	 * @param int $id Post ID もしくは Author ID
+	 * @param string $key メタキー
+	 * @param mixed $value 保存する値
+	 * @param mixed $prev_value 指定された場合、この値のものだけを上書き
+	 */
+	public function update_post_meta( $id, $key, $value, $prev_value = '' ) {
+		update_user_meta( $id, $key, $value, $prev_value );
+	}
 
-		$post_type = SCF_Config::PROFILE;
-		$settings  = SCF::get_settings( $post_type, null );
-		foreach ( $settings as $Setting ) {
-			$groups = $Setting->get_groups();
-			foreach ( $groups as $Group ) {
-				$fields = $Group->get_fields();
-				foreach ( $fields as $Field ) {
-					$field_name = $Field->get( 'name' );
-					delete_user_meta( $user_id, $field_name );
-					if ( $Field->get_attribute( 'allow-multiple-data' ) ) {
-						$multiple_data_fields[] = $field_name;
-					}
-
-					if ( $Group->is_repeatable() && $Field->get_attribute( 'allow-multiple-data' ) ) {
-						$repeat_multiple_data_fields = $_POST[SCF_Config::NAME][$field_name];
-						foreach ( $repeat_multiple_data_fields as $values ) {
-							if ( is_array( $values ) ) {
-								$repeat_multiple_data[$field_name][] = count( $values );
-							} else {
-								$repeat_multiple_data[$field_name][] = 0;
-							}
-						}
-					}
-				}
-			}
-		}
-
-		delete_user_meta( $user_id, SCF_Config::PREFIX . 'repeat-multiple-data' );
-		if ( $repeat_multiple_data ) {
-			update_user_meta( $user_id, SCF_Config::PREFIX . 'repeat-multiple-data', $repeat_multiple_data );
-		}
-
-		foreach ( $_POST[SCF_Config::NAME] as $name => $values ) {
-			foreach ( $values as $value ) {
-				if ( in_array( $name, $multiple_data_fields ) && $value === '' ) {
-					continue;
-				}
-				if ( !is_array( $value ) ) {
-					$this->add_user_meta( $user_id, $name, $value );
-				} else {
-					foreach ( $value as $val ) {
-						$this->add_user_meta( $user_id, $name, $val );
-					}
-				}
-			}
-		}
+	/**
+	 * メタデータを削除
+	 *
+	 * @param int $user_id
+	 * @param string $field_name
+	 */
+	protected function delete_post_meta( $user_id, $field_name ) {
+		delete_user_meta( $user_id, $field_name );
 	}
 
 	/**
@@ -112,7 +79,7 @@ class Smart_Custom_Fields_Controller_Profile extends Smart_Custom_Fields_Control
 	 * @param string $name
 	 * @param mixed $value
 	 */
-	protected function add_user_meta( $user_id, $name, $value ) {
+	protected function add_post_meta( $user_id, $name, $value ) {
 		do_action( SCF_Config::PREFIX . '-before-save-profile', $user_id, $name, $value );
 		$is_valid = apply_filters( SCF_Config::PREFIX . '-validate-save-profile', true, $user_id, $name, $value );
 		if ( $is_valid ) {
@@ -147,5 +114,17 @@ class Smart_Custom_Fields_Controller_Profile extends Smart_Custom_Fields_Control
 	 */
 	protected function get_post_status( $user_id ) {
 		return 'auto-draft';
+	}
+
+	/**
+	 * display_meta_box 用のロールを返す
+	 *
+	 * @param WP_User $object
+	 * @return string
+	 */
+	protected function get_post_type_for_display_meta_box( $object ) {
+		if ( !empty( $object->roles[0] ) ) {
+			return $object->roles[0];
+		}
 	}
 }

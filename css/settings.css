@@ -173,11 +173,13 @@
 /** ==================================================
  * #smart-cf-meta-box-condition
  */
-#smart-cf-meta-box-condition b {
+#smart-cf-meta-box-condition-post b,
+#smart-cf-meta-box-condition-profile b {
 	display: block;
 	margin: 0 0 5px;
 }
-#smart-cf-meta-box-condition label {
+#smart-cf-meta-box-condition-post label,
+#smart-cf-meta-box-condition-profile label {
 	display: block;
 	margin: 0 0 5px;
 }

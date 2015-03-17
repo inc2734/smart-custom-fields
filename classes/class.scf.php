@@ -213,10 +213,12 @@ class SCF {
 			if ( !$field_name ) {
 				continue;
 			}
-			if ( $post_type === SCF_Config::PROFILE ) {
-				$_post_meta = get_user_meta( $post_id, $field_name );
-			} else {
+
+			$_post_meta = array();
+			if ( in_array( $post_type, get_post_types() ) ) {
 				$_post_meta = get_post_meta( $post_id, $field_name );
+			} elseif ( in_array( $post_type, array_keys( get_editable_roles() ) ) ) {
+				$_post_meta = get_user_meta( $post_id, $field_name );
 			}
 			// チェックボックスの場合
 			$repeat_multiple_data = self::get_repeat_multiple_data( $post_id, $post_type );
@@ -330,7 +332,7 @@ class SCF {
 	 * @return array $settings
 	 */
 	public static function get_settings_posts( $post_type ) {
-		$posts = array();
+		$settings_posts = array();
 		if ( self::get_settings_posts_cache( $post_type ) ) {
 			self::debug_cache_message( "use settings posts cache. {$post_type}" );
 			return self::get_settings_posts_cache( $post_type );
@@ -338,34 +340,26 @@ class SCF {
 			self::debug_cache_message( "dont use settings posts cache... {$post_type}" );
 		}
 
-		$args = array(
-			'post_type'      => SCF_Config::NAME,
-			'posts_per_page' => -1,
-			'order'          => 'ASC',
-			'order_by'       => 'menu_order',
-		);
-		if ( $post_type === SCF_Config::PROFILE ) {
-			$args = array_merge( $args, array(
+		if ( in_array( $post_type, get_post_types() ) ) {
+			$key = SCF_Config::PREFIX . 'condition';
+		} elseif ( in_array( $post_type, array_keys( get_editable_roles() ) ) ) {
+			$key = SCF_Config::PREFIX . 'roles';
+		}
+		if ( !empty( $key ) ) {
+			$settings_posts = get_posts( array(
+				'post_type'      => SCF_Config::NAME,
+				'posts_per_page' => -1,
+				'order'          => 'ASC',
+				'order_by'       => 'menu_order',
 				'meta_query'     => array(
 					array(
-						'key'     => SCF_Config::PREFIX . 'profile',
-						'compare' => 'LIKE',
-						'value'   => $post_type,
-					),
-				),
-			) );
-		} else {
-			$args = array_merge( $args, array(
-				'meta_query'     => array(
-					array(
-						'key'     => SCF_Config::PREFIX . 'condition',
+						'key'     => $key,
 						'compare' => 'LIKE',
 						'value'   => $post_type,
 					),
 				),
 			) );
 		}
-		$settings_posts = get_posts( $args );
 		self::save_settings_posts_cache( $post_type, $settings_posts );
 		return $settings_posts;
 	}
@@ -415,12 +409,13 @@ class SCF {
 	 * Setting オブジェクトの配列を取得
 	 *
 	 * @param string $post_type
-	 * @param int|false $post_id
+	 * @param int|false $post_id or $user_id
 	 * @return array $settings
 	 */
 	public static function get_settings( $post_type, $post_id ) {
+		// 新規投稿のときは $post_id は false
 		if ( empty( $post_id ) ) {
-			$post_id = get_the_ID();
+			// TODO: $post_id = get_the_ID();
 		}
 		if ( self::get_settings_cache( $post_type, $post_id ) ) {
 			self::debug_cache_message( "use settings cache. {$post_type} {$post_id}" );
@@ -430,13 +425,9 @@ class SCF {
 		}
 		$settings = array();
 		$settings_posts = self::get_settings_posts( $post_type );
-		if ( $post_type === SCF_Config::PROFILE ) {
-			foreach ( $settings_posts as $settings_post ) {
-				$Setting = SCF::add_setting( $settings_post->ID, $settings_post->post_title );
-				$settings[] = $Setting;
-				self::save_settings_cache( $post_type, false, $Setting );
-			}
-		} else {
+
+		// エディタ
+		if ( in_array( $post_type, get_post_types() ) ) {
 			foreach ( $settings_posts as $settings_post ) {
 				$condition_post_ids_raw = get_post_meta(
 					$settings_post->ID,
@@ -460,6 +451,30 @@ class SCF {
 				}
 			}
 		}
+		// プロフィール
+		elseif ( in_array( $post_type, array_keys( get_editable_roles() ) ) ) {
+			foreach ( $settings_posts as $settings_post ) {
+				$profile_roles = get_post_meta(
+					$settings_post->ID,
+					SCF_Config::PREFIX . 'roles',
+					true
+				);
+				if ( $profile_roles ) {
+					foreach ( $profile_roles as $role ) {
+						$Setting = SCF::add_setting( $settings_post->ID, $settings_post->post_title );
+						if ( $post_type == $role ) {
+							$settings[] = $Setting;
+						}
+						self::save_settings_cache( $post_type, $role, $Setting );
+					}
+				} else {
+					$Setting = SCF::add_setting( $settings_post->ID, $settings_post->post_title );
+					$settings[] = $Setting;
+					self::save_settings_cache( $post_type, false, $Setting );
+				}
+			}
+		}
+
 		$settings = apply_filters( SCF_Config::PREFIX . 'register-fields', $settings, $post_type, $post_id );
 		return $settings;
 	}
@@ -484,18 +499,19 @@ class SCF {
 	 */
 	public static function get_repeat_multiple_data( $post_id, $post_type ) {
 		$repeat_multiple_data = array();
+		if ( empty( $post_type ) ) {
+			return $repeat_multiple_data;
+		}
 		if ( isset( self::$repeat_multiple_data_cache[$post_id][$post_type] ) ) {
 			return self::$repeat_multiple_data_cache[$post_id][$post_type];
 		}
-		if ( empty( $repeat_multiple_data ) ) {
-			if ( $post_type === SCF_Config::PROFILE ) {
-				$_repeat_multiple_data = get_user_meta( $post_id, SCF_Config::PREFIX . 'repeat-multiple-data', true );
-			} else {
-				$_repeat_multiple_data = get_post_meta( $post_id, SCF_Config::PREFIX . 'repeat-multiple-data', true );
-			}
-			if ( $_repeat_multiple_data ) {
-				$repeat_multiple_data = $_repeat_multiple_data;
-			}
+		if ( in_array( $post_type, get_post_types() ) ) {
+			$_repeat_multiple_data = get_post_meta( $post_id, SCF_Config::PREFIX . 'repeat-multiple-data', true );
+		} elseif ( in_array( $post_type, array_keys( get_editable_roles() ) ) ) {
+			$_repeat_multiple_data = get_user_meta( $post_id, SCF_Config::PREFIX . 'repeat-multiple-data', true );
+		}
+		if ( !empty( $_repeat_multiple_data ) ) {
+			$repeat_multiple_data = $_repeat_multiple_data;
 		}
 		self::save_repeat_multiple_data_cache( $post_id, $post_type, $repeat_multiple_data );
 		return $repeat_multiple_data;

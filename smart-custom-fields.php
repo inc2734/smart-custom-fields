@@ -35,6 +35,7 @@ class Smart_Custom_Fields {
 		);
 		
 		do_action( SCF_Config::PREFIX . 'load' );
+		require_once plugin_dir_path( __FILE__ ) . 'classes/models/class.meta.php';
 		require_once plugin_dir_path( __FILE__ ) . 'classes/models/class.setting.php';
 		require_once plugin_dir_path( __FILE__ ) . 'classes/models/class.group.php';
 		require_once plugin_dir_path( __FILE__ ) . 'classes/models/class.abstract-field-base.php';
@@ -78,13 +79,6 @@ class Smart_Custom_Fields {
 	 * @param WP_Screen $screen
 	 */
 	public function current_screen( $screen ) {
-		$post_id = false;
-		if ( !empty( $_GET['post'] ) ) {
-			$post_id = $_GET['post'];
-		} elseif ( !empty( $_POST['post_ID'] ) ) {
-			$post_id = $_POST['post_ID'];
-		}
-
 		// 一覧画面
 		if ( $screen->id === 'edit-' . SCF_Config::NAME ) {
 		}
@@ -94,14 +88,39 @@ class Smart_Custom_Fields {
 			new Smart_Custom_Fields_Controller_Settings();
 		}
 		// その他の新規作成・編集画面
-		elseif ( SCF::get_settings( $screen->id, $post_id ) ) {
-			require_once plugin_dir_path( __FILE__ ) . 'classes/controller/class.editor.php';
-			new Smart_Custom_Fields_Controller_Editor();
+		elseif ( in_array( $screen->id, get_post_types() ) ) {
+			$post_id = false;
+			if ( !empty( $_GET['post'] ) ) {
+				$post_id = $_GET['post'];
+			} elseif ( !empty( $_POST['post_ID'] ) ) {
+				$post_id = $_POST['post_ID'];
+			}
+			if ( SCF::get_settings( $screen->id, $post_id ) ) {
+				require_once plugin_dir_path( __FILE__ ) . 'classes/controller/class.editor.php';
+				new Smart_Custom_Fields_Controller_Editor();
+			}
+		}
 		// プロフィール編集画面
-		} elseif ( in_array( $screen->id, array( 'profile', 'user-edit' ) ) && SCF::get_settings( SCF_Config::PROFILE, null ) ) {
-			require_once plugin_dir_path( __FILE__ ) . 'classes/controller/class.editor.php';
-			require_once plugin_dir_path( __FILE__ ) . 'classes/controller/class.profile.php';
-			new Smart_Custom_Fields_Controller_Profile();
+		elseif ( in_array( $screen->id, array( 'profile', 'user-edit' ) ) ) {
+			$user_id = false;
+			if ( !empty( $_GET['user_id'] ) ) {
+				$user_id = $_GET['user_id'];
+			} elseif ( !empty( $_POST['user_id'] ) ) {
+				$user_id = $_POST['user_id'];
+			} elseif ( $screen->id === 'profile' ) {
+				$current_user = wp_get_current_user();
+				$user_id      = $current_user->ID;
+			}
+			$user_data = get_userdata( $user_id );
+			$roles[0]  = false;
+			if ( $user_data ) {
+				$roles = $user_data->roles;
+			}
+			if ( SCF::get_settings( $roles[0], $user_id ) ) {
+				require_once plugin_dir_path( __FILE__ ) . 'classes/controller/class.editor.php';
+				require_once plugin_dir_path( __FILE__ ) . 'classes/controller/class.profile.php';
+				new Smart_Custom_Fields_Controller_Profile();
+			}
 		}
 	}
 

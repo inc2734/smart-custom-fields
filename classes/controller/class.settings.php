@@ -78,9 +78,16 @@ class Smart_Custom_Fields_Controller_Settings {
 			SCF_Config::NAME
 		);
 		add_meta_box(
-			SCF_Config::PREFIX . 'meta-box-condition',
-			__( 'Display conditions', 'smart-custom-fields' ),
-			array( $this, 'display_meta_box_condition' ),
+			SCF_Config::PREFIX . 'meta-box-condition-post',
+			__( 'Display conditions ( Post )', 'smart-custom-fields' ),
+			array( $this, 'display_meta_box_condition_post' ),
+			SCF_Config::NAME,
+			'side'
+		);
+		add_meta_box(
+			SCF_Config::PREFIX . 'meta-box-condition-profile',
+			__( 'Display conditions ( Profile )', 'smart-custom-fields' ),
+			array( $this, 'display_meta_box_condition_profile' ),
 			SCF_Config::NAME,
 			'side'
 		);
@@ -181,7 +188,7 @@ class Smart_Custom_Fields_Controller_Settings {
 	/**
 	 * メタボックスの表示条件を設定するメタボックスを表示
 	 */
-	public function display_meta_box_condition() {
+	public function display_meta_box_condition_post() {
 		$post_types = get_post_types( array(
 			'show_ui'  => true,
 		), 'objects' );
@@ -213,19 +220,25 @@ class Smart_Custom_Fields_Controller_Settings {
 			esc_attr( SCF_Config::PREFIX . 'condition-post-ids' ),
 			$condition_post_ids
 		);
+	}
 
-		$profile = get_post_meta( get_the_ID(), SCF_Config::PREFIX . 'profile', true );
-		$current = ( is_array( $profile ) && in_array( SCF_Config::PROFILE, $profile ) ) ? SCF_Config::PROFILE : false;
-		$profile_field = sprintf(
-			'<label><input type="checkbox" name="%s" value="%s" %s /> %s</label>',
-			esc_attr( SCF_Config::PREFIX . 'profile[]' ),
-			esc_attr( SCF_Config::PROFILE ),
-			checked( $current, SCF_Config::PROFILE, false ),
-			esc_html__( 'Profile', 'smart-custom-fields' )
-		);
+	public function display_meta_box_condition_profile() {
+		$roles = get_editable_roles();
+		$conditions = get_post_meta( get_the_ID(), SCF_Config::PREFIX . 'roles', true );
+		$profile_field = '';
+		foreach ( $roles as $name => $role ) {
+			$current = ( is_array( $conditions ) && in_array( $name, $conditions ) ) ? $name : false;
+			$profile_field .= sprintf(
+				'<label><input type="checkbox" name="%s" value="%s" %s /> %s</label>',
+				esc_attr( SCF_Config::PREFIX . 'roles[]' ),
+				esc_attr( $name ),
+				checked( $current, $name, false ),
+				esc_html__( $role['name'], 'smart-custom-fields' )
+			);
+		}
 		printf(
 			'<p><b>%s</b>%s</p>',
-			esc_html__( 'Profile', 'smart-custom-fields' ),
+			esc_html__( 'Roles', 'smart-custom-fields' ),
 			$profile_field
 		);
 	}
@@ -298,10 +311,10 @@ class Smart_Custom_Fields_Controller_Settings {
 			update_post_meta( $post_id, SCF_Config::PREFIX . 'condition-post-ids', $_POST[SCF_Config::PREFIX . 'condition-post-ids'] );
 		}
 
-		if ( !isset( $_POST[SCF_Config::PREFIX . 'profile'] ) ) {
-			delete_post_meta( $post_id, SCF_Config::PREFIX . 'profile' );
+		if ( !isset( $_POST[SCF_Config::PREFIX . 'roles'] ) ) {
+			delete_post_meta( $post_id, SCF_Config::PREFIX . 'roles' );
 		} else {
-			update_post_meta( $post_id, SCF_Config::PREFIX . 'profile', $_POST[SCF_Config::PREFIX . 'profile'] );
+			update_post_meta( $post_id, SCF_Config::PREFIX . 'roles', $_POST[SCF_Config::PREFIX . 'roles'] );
 		}
 	}
 }

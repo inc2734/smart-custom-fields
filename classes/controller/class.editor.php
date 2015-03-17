@@ -87,11 +87,7 @@ class Smart_Custom_Fields_Controller_Editor {
 	 */
 	public function display_meta_box( $post, $callback_args ) {
 		$groups = $callback_args['args'];
-		if ( is_a( $post, 'WP_Post' ) ) {
-			$post_type = $post->post_type;
-		} elseif ( is_a( $post, 'WP_User' ) ) {
-			$post_type = SCF_Config::PROFILE;
-		}
+		$post_type = $this->get_post_type_for_display_meta_box( $post );
 		$tables = $this->get_tables( $post->ID, $post_type, $groups );
 
 		printf( '<div class="%s">', esc_attr( SCF_Config::PREFIX . 'meta-box' ) );
@@ -140,6 +136,18 @@ class Smart_Custom_Fields_Controller_Editor {
 			return;
 		}
 
+		$post_type = get_post_type( $post_id );
+		$this->save( $_POST, $post_type, $post_id );
+	}
+
+	/**
+	 * 送信されたデータを保存
+	 *
+	 * @param array $data
+	 * @param string $post_type
+	 * @param int $post_id
+	 */
+	protected function save( $data, $post_type, $post_id ) {
 		check_admin_referer(
 			SCF_Config::NAME . '-fields',
 			SCF_Config::PREFIX . 'fields-nonce'
@@ -152,7 +160,6 @@ class Smart_Custom_Fields_Controller_Editor {
 		// チェックボックスが未入力のときは "" がくるので、それは保存しないように判別
 		$multiple_data_fields = array();
 
-		$post_type = get_post_type();
 		$settings  = SCF::get_settings( $post_type, $post_id );
 		foreach ( $settings as $Setting ) {
 			$groups = $Setting->get_groups();
@@ -160,13 +167,13 @@ class Smart_Custom_Fields_Controller_Editor {
 				$fields = $Group->get_fields();
 				foreach ( $fields as $Field ) {
 					$field_name = $Field->get( 'name' );
-					delete_post_meta( $post_id, $field_name );
+					$this->delete_post_meta( $post_id, $field_name );
 					if ( $Field->get_attribute( 'allow-multiple-data' ) ) {
 						$multiple_data_fields[] = $field_name;
 					}
 
 					if ( $Group->is_repeatable() && $Field->get_attribute( 'allow-multiple-data' ) ) {
-						$repeat_multiple_data_fields = $_POST[SCF_Config::NAME][$field_name];
+						$repeat_multiple_data_fields = $data[SCF_Config::NAME][$field_name];
 						foreach ( $repeat_multiple_data_fields as $values ) {
 							if ( is_array( $values ) ) {
 								$repeat_multiple_data[$field_name][] = count( $values );
@@ -179,12 +186,12 @@ class Smart_Custom_Fields_Controller_Editor {
 			}
 		}
 
-		delete_post_meta( $post_id, SCF_Config::PREFIX . 'repeat-multiple-data' );
+		$this->delete_post_meta( $post_id, SCF_Config::PREFIX . 'repeat-multiple-data' );
 		if ( $repeat_multiple_data ) {
-			update_post_meta( $post_id, SCF_Config::PREFIX . 'repeat-multiple-data', $repeat_multiple_data );
+			$this->update_post_meta( $post_id, SCF_Config::PREFIX . 'repeat-multiple-data', $repeat_multiple_data );
 		}
 
-		foreach ( $_POST[SCF_Config::NAME] as $name => $values ) {
+		foreach ( $data[SCF_Config::NAME] as $name => $values ) {
 			foreach ( $values as $value ) {
 				if ( in_array( $name, $multiple_data_fields ) && $value === '' ) {
 					continue;
@@ -217,6 +224,28 @@ class Smart_Custom_Fields_Controller_Editor {
 	}
 
 	/**
+	 * メタデータを更新。そのメタデータが存在しない場合は追加。
+	 *
+	 * @param int $id Post ID もしくは Author ID
+	 * @param string $key メタキー
+	 * @param mixed $value 保存する値
+	 * @param mixed $prev_value 指定された場合、この値のものだけを上書き
+	 */
+	public function update_post_meta( $id, $key, $value, $prev_value = '' ) {
+		update_post_meta( $id, $key, $value, $prev_value );
+	}
+
+	/**
+	 * メタデータを削除
+	 *
+	 * @param int $post_id
+	 * @param string $field_name
+	 */
+	protected function delete_post_meta( $post_id, $field_name ) {
+		delete_post_meta( $post_id, $field_name );
+	}
+
+	/**
 	 * メタデータの取得
 	 * 
 	 * @param int $post_id
@@ -225,7 +254,7 @@ class Smart_Custom_Fields_Controller_Editor {
 	protected function get_post_custom( $post_id ) {
 		$post_custom = $this->post_custom;
 		if ( empty( $post_custom ) ) {
-			$post_custom = get_post_custom( $post_id );
+			$post_custom = get_post_meta( $post_id );
 			if ( empty( $post_custom ) ) {
 				return array();
 			}
@@ -430,5 +459,17 @@ class Smart_Custom_Fields_Controller_Editor {
 	 */
 	protected function get_post_status( $post_id ) {
 		return get_post_status( $post_id );
+	}
+
+	/**
+	 * display_meta_box 用の投稿タイプを返す
+	 *
+	 * @param WP_Post $object
+	 * @return string
+	 */
+	protected function get_post_type_for_display_meta_box( $object ) {
+		if ( !empty( $object->post_type ) ) {
+			return $object->post_type;
+		}
 	}
 }
