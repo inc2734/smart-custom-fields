@@ -153,6 +153,8 @@ class Smart_Custom_Fields_Controller_Editor {
 			SCF_Config::PREFIX . 'fields-nonce'
 		);
 
+		$Meta = new Smart_Custom_Fields_Meta( $post_type );
+
 		// 繰り返しフィールドのチェックボックスは、普通のチェックボックスと混ざって
 		// 判別できなくなるのでわかるように保存しておく
 		$repeat_multiple_data = array();
@@ -167,7 +169,7 @@ class Smart_Custom_Fields_Controller_Editor {
 				$fields = $Group->get_fields();
 				foreach ( $fields as $Field ) {
 					$field_name = $Field->get( 'name' );
-					$this->delete_post_meta( $post_id, $field_name );
+					$Meta->delete( $post_id, $field_name );
 					if ( $Field->get_attribute( 'allow-multiple-data' ) ) {
 						$multiple_data_fields[] = $field_name;
 					}
@@ -186,9 +188,9 @@ class Smart_Custom_Fields_Controller_Editor {
 			}
 		}
 
-		$this->delete_post_meta( $post_id, SCF_Config::PREFIX . 'repeat-multiple-data' );
+		$Meta->delete( $post_id, SCF_Config::PREFIX . 'repeat-multiple-data' );
 		if ( $repeat_multiple_data ) {
-			$this->update_post_meta( $post_id, SCF_Config::PREFIX . 'repeat-multiple-data', $repeat_multiple_data );
+			$Meta->update( $post_id, SCF_Config::PREFIX . 'repeat-multiple-data', $repeat_multiple_data );
 		}
 
 		foreach ( $data[SCF_Config::NAME] as $name => $values ) {
@@ -197,10 +199,10 @@ class Smart_Custom_Fields_Controller_Editor {
 					continue;
 				}
 				if ( !is_array( $value ) ) {
-					$this->add_post_meta( $post_id, $name, $value );
+					$this->add_meta( $post_id, $name, $value );
 				} else {
 					foreach ( $value as $val ) {
-						$this->add_post_meta( $post_id, $name, $val );
+						$this->add_meta( $post_id, $name, $val );
 					}
 				}
 			}
@@ -214,35 +216,13 @@ class Smart_Custom_Fields_Controller_Editor {
 	 * @param string $name
 	 * @param mixed $value
 	 */
-	protected function add_post_meta( $post_id, $name, $value ) {
+	protected function add_meta( $post_id, $name, $value ) {
 		do_action( SCF_Config::PREFIX . '-before-save-post', $post_id, $name, $value );
 		$is_valid = apply_filters( SCF_Config::PREFIX . '-validate-save-post', true, $post_id, $name, $value );
 		if ( $is_valid ) {
 			add_post_meta( $post_id, $name, $value );
 		}
 		do_action( SCF_Config::PREFIX . '-after-save-post', $post_id, $name, $value );
-	}
-
-	/**
-	 * メタデータを更新。そのメタデータが存在しない場合は追加。
-	 *
-	 * @param int $id Post ID もしくは Author ID
-	 * @param string $key メタキー
-	 * @param mixed $value 保存する値
-	 * @param mixed $prev_value 指定された場合、この値のものだけを上書き
-	 */
-	public function update_post_meta( $id, $key, $value, $prev_value = '' ) {
-		update_post_meta( $id, $key, $value, $prev_value );
-	}
-
-	/**
-	 * メタデータを削除
-	 *
-	 * @param int $post_id
-	 * @param string $field_name
-	 */
-	protected function delete_post_meta( $post_id, $field_name ) {
-		delete_post_meta( $post_id, $field_name );
 	}
 
 	/**
@@ -273,7 +253,7 @@ class Smart_Custom_Fields_Controller_Editor {
 	 */
 	protected function get_tables( $post_id, $post_type, $groups ) {
 		$post_custom = $this->get_post_custom( $post_id );
-		$repeat_multiple_data = SCF::get_repeat_multiple_data( $post_id, $post_type );
+		$repeat_multiple_data = SCF::get_repeat_multiple_data( $post_type, $post_id );
 		$tables = array();
 		foreach ( $groups as $Group ) {
 			// ループのときは、ループの分だけグループを追加する
@@ -325,7 +305,7 @@ class Smart_Custom_Fields_Controller_Editor {
 	 */
 	protected function get_multiple_data_field_value( $post_id, $post_type, $field_name, $index ) {
 		$post_custom = $this->get_post_custom( $post_id );
-		$repeat_multiple_data = SCF::get_repeat_multiple_data( $post_id, $post_type );
+		$repeat_multiple_data = SCF::get_repeat_multiple_data( $post_type, $post_id );
 		$value = null;
 		if ( isset( $post_custom[$field_name] ) && is_array( $post_custom[$field_name] ) ) {
 			$value = $post_custom[$field_name];

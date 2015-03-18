@@ -200,12 +200,12 @@ class SCF {
 	/**
 	 * そのグループのメタデータを取得
 	 * 
-	 * @param int $post_id
-	 * @param string $post_type
+	 * @param int $id 投稿ID or ユーザーID
+	 * @param string $type 投稿タイプ or ロール
 	 * @param Smart_Custom_Fields_Group $Group
 	 * @return mixed
 	 */
-	protected static function get_values_by_group( $post_id, $post_type, $Group ) {
+	protected static function get_values_by_group( $id, $type, $Group ) {
 		$post_meta = array();
 		$fields    = $Group->get_fields();
 		foreach ( $fields as $Field ) {
@@ -215,13 +215,11 @@ class SCF {
 			}
 
 			$_post_meta = array();
-			if ( in_array( $post_type, get_post_types() ) ) {
-				$_post_meta = get_post_meta( $post_id, $field_name );
-			} elseif ( in_array( $post_type, array_keys( get_editable_roles() ) ) ) {
-				$_post_meta = get_user_meta( $post_id, $field_name );
-			}
+			$Meta       = new Smart_Custom_Fields_Meta( $type );
+			$_post_meta = $Meta->get( $id, $field_name );
+
 			// チェックボックスの場合
-			$repeat_multiple_data = self::get_repeat_multiple_data( $post_id, $post_type );
+			$repeat_multiple_data = self::get_repeat_multiple_data( $type, $id );
 			if ( is_array( $repeat_multiple_data ) && array_key_exists( $field_name, $repeat_multiple_data ) ) {
 				$start = 0;
 				foreach ( $repeat_multiple_data[$field_name] as $repeat_multiple_key => $repeat_multiple_value ) {
@@ -252,7 +250,7 @@ class SCF {
 				}
 			}
 		}
-		self::save_cache( $post_id, $Group->get_name(), $post_meta );
+		self::save_cache( $id, $Group->get_name(), $post_meta );
 		return $post_meta;
 	}
 
@@ -305,22 +303,22 @@ class SCF {
 	/**
 	 * その投稿タイプで有効になっている SCF をキャッシュに保存
 	 *
-	 * @param string $post_type
+	 * @param string $type 投稿タイプ or ロール
 	 * @param array $settings_posts
 	 */
-	protected static function save_settings_posts_cache( $post_type, $settings_posts ) {
-		self::$settings_posts_cache[$post_type] = $settings_posts;
+	protected static function save_settings_posts_cache( $type, $settings_posts ) {
+		self::$settings_posts_cache[$type] = $settings_posts;
 	}
 
 	/**
 	 * その投稿タイプで有効になっている SCF のキャッシュを取得
 	 *
-	 * @param string $post_type
+	 * @param string $type 投稿タイプ or ロール
 	 * @return array
 	 */
-	public static function get_settings_posts_cache( $post_type ) {
-		if ( isset( self::$settings_posts_cache[$post_type] ) ) {
-			return self::$settings_posts_cache[$post_type];
+	public static function get_settings_posts_cache( $type ) {
+		if ( isset( self::$settings_posts_cache[$type] ) ) {
+			return self::$settings_posts_cache[$type];
 		}
 		return array();
 	}
@@ -328,23 +326,30 @@ class SCF {
 	/**
 	 * その投稿タイプで有効になっている SCF を取得
 	 * 
-	 * @param string $post_type
+	 * @param string $type 投稿タイプ or ロール
 	 * @return array $settings
 	 */
-	public static function get_settings_posts( $post_type ) {
+	public static function get_settings_posts( $type ) {
 		$settings_posts = array();
-		if ( self::get_settings_posts_cache( $post_type ) ) {
-			self::debug_cache_message( "use settings posts cache. {$post_type}" );
-			return self::get_settings_posts_cache( $post_type );
+		if ( self::get_settings_posts_cache( $type ) ) {
+			self::debug_cache_message( "use settings posts cache. {$type}" );
+			return self::get_settings_posts_cache( $type );
 		} else {
-			self::debug_cache_message( "dont use settings posts cache... {$post_type}" );
+			self::debug_cache_message( "dont use settings posts cache... {$type}" );
 		}
 
-		if ( in_array( $post_type, get_post_types() ) ) {
-			$key = SCF_Config::PREFIX . 'condition';
-		} elseif ( in_array( $post_type, array_keys( get_editable_roles() ) ) ) {
-			$key = SCF_Config::PREFIX . 'roles';
+		$Meta = new Smart_Custom_Fields_Meta( $type );
+		switch ( $Meta->get_type() ) {
+			case 'post' :
+				$key = SCF_Config::PREFIX . 'condition';
+				break;
+			case 'user' :
+				$key = SCF_Config::PREFIX . 'roles';
+				break;
+			default :
+				$key = '';
 		}
+
 		if ( !empty( $key ) ) {
 			$settings_posts = get_posts( array(
 				'post_type'      => SCF_Config::NAME,
@@ -355,12 +360,12 @@ class SCF {
 					array(
 						'key'     => $key,
 						'compare' => 'LIKE',
-						'value'   => $post_type,
+						'value'   => $type,
 					),
 				),
 			) );
 		}
-		self::save_settings_posts_cache( $post_type, $settings_posts );
+		self::save_settings_posts_cache( $type, $settings_posts );
 		return $settings_posts;
 	}
 
@@ -408,112 +413,123 @@ class SCF {
 	/**
 	 * Setting オブジェクトの配列を取得
 	 *
-	 * @param string $post_type
-	 * @param int|false $post_id or $user_id
+	 * @param string $type 投稿タイプ or ロール
+	 * @param int|false $id 投稿ID or ユーザーID
 	 * @return array $settings
 	 */
-	public static function get_settings( $post_type, $post_id ) {
-		// 新規投稿のときは $post_id は false
-		if ( empty( $post_id ) ) {
-			// TODO: $post_id = get_the_ID();
+	public static function get_settings( $type, $id ) {
+		// 新規投稿のときは $id は false
+		if ( empty( $id ) ) {
+			// TODO: 
 		}
-		if ( self::get_settings_cache( $post_type, $post_id ) ) {
-			self::debug_cache_message( "use settings cache. {$post_type} {$post_id}" );
-			return self::get_settings_cache( $post_type, $post_id );
+		if ( self::get_settings_cache( $type, $id ) ) {
+			self::debug_cache_message( "use settings cache. {$type} {$id}" );
+			return self::get_settings_cache( $type, $id );
 		} else {
-			self::debug_cache_message( "dont use settings cache... {$post_type} {$post_id}" );
+			self::debug_cache_message( "dont use settings cache... {$type} {$id}" );
 		}
+		$settings_posts = self::get_settings_posts( $type );
+
+		$Meta      = new Smart_Custom_Fields_Meta( $type );
+		$meta_tyep = $Meta->get_type();
+		if ( $meta_tyep === 'post' ) {
+			$settings = self::get_settings_for_post( $type, $id, $settings_posts );
+		}
+		elseif ( $meta_tyep === 'user' ) {
+			$settings = self::get_settings_for_profile( $type, $id, $settings_posts );
+		}
+
+		$settings = apply_filters( SCF_Config::PREFIX . 'register-fields', $settings, $type, $id );
+		return $settings;
+	}
+
+	/**
+	 * Setting オブジェクトの配列を取得（投稿用）
+	 *
+	 * @param string $post_type
+	 * @param int|false $post_id
+	 * @param array $settings_posts
+	 * @return array
+	 */
+	protected static function get_settings_for_post( $post_type, $post_id, $settings_posts ) {
 		$settings = array();
-		$settings_posts = self::get_settings_posts( $post_type );
-
-		// エディタ
-		if ( in_array( $post_type, get_post_types() ) ) {
-			foreach ( $settings_posts as $settings_post ) {
-				$condition_post_ids_raw = get_post_meta(
-					$settings_post->ID,
-					SCF_Config::PREFIX . 'condition-post-ids',
-					true
-				);
-				if ( $condition_post_ids_raw ) {
-					$condition_post_ids_raw = explode( ',', $condition_post_ids_raw );
-					foreach ( $condition_post_ids_raw as $condition_post_id ) {
-						$condition_post_id = trim( $condition_post_id );
-						$Setting = SCF::add_setting( $settings_post->ID, $settings_post->post_title );
-						if ( $post_id == $condition_post_id ) {
-							$settings[] = $Setting;
-						}
-						self::save_settings_cache( $post_type, $condition_post_id, $Setting );
-					}
-				} else {
+		foreach ( $settings_posts as $settings_post ) {
+			$condition_post_ids_raw = get_post_meta(
+				$settings_post->ID,
+				SCF_Config::PREFIX . 'condition-post-ids',
+				true
+			);
+			if ( $condition_post_ids_raw ) {
+				$condition_post_ids_raw = explode( ',', $condition_post_ids_raw );
+				foreach ( $condition_post_ids_raw as $condition_post_id ) {
+					$condition_post_id = trim( $condition_post_id );
 					$Setting = SCF::add_setting( $settings_post->ID, $settings_post->post_title );
-					$settings[] = $Setting;
-					self::save_settings_cache( $post_type, false, $Setting );
+					if ( $post_id == $condition_post_id ) {
+						$settings[] = $Setting;
+					}
+					self::save_settings_cache( $post_type, $condition_post_id, $Setting );
 				}
+			} else {
+				$Setting    = SCF::add_setting( $settings_post->ID, $settings_post->post_title );
+				$settings[] = $Setting;
+				self::save_settings_cache( $post_type, false, $Setting );
 			}
 		}
-		// プロフィール
-		elseif ( in_array( $post_type, array_keys( get_editable_roles() ) ) ) {
-			foreach ( $settings_posts as $settings_post ) {
-				$profile_roles = get_post_meta(
-					$settings_post->ID,
-					SCF_Config::PREFIX . 'roles',
-					true
-				);
-				if ( $profile_roles ) {
-					foreach ( $profile_roles as $role ) {
-						$Setting = SCF::add_setting( $settings_post->ID, $settings_post->post_title );
-						if ( $post_type == $role ) {
-							$settings[] = $Setting;
-						}
-						self::save_settings_cache( $post_type, $role, $Setting );
-					}
-				} else {
-					$Setting = SCF::add_setting( $settings_post->ID, $settings_post->post_title );
-					$settings[] = $Setting;
-					self::save_settings_cache( $post_type, false, $Setting );
-				}
-			}
-		}
+		return $settings;
+	}
 
-		$settings = apply_filters( SCF_Config::PREFIX . 'register-fields', $settings, $post_type, $post_id );
+	/**
+	 * Setting オブジェクトの配列を取得（プロフィール用）
+	 *
+	 * @param string $role
+	 * @param int|false $user_id
+	 * @param array $settings_posts
+	 * @return array
+	 */
+	protected static function get_settings_for_profile( $role, $user_id, $settings_posts ) {
+		$settings = array();
+		foreach ( $settings_posts as $settings_post ) {
+			$Setting    = SCF::add_setting( $settings_post->ID, $settings_post->post_title );
+			$settings[] = $Setting;
+			self::save_settings_cache( $role, false, $Setting );
+		}
 		return $settings;
 	}
 
 	/**
 	 * 繰り返しに設定された複数許可フィールドデータの区切り識別用データをキャッシュに保存
 	 *
-	 * @param int $post_id
-	 * @param string $post_type
+	 * @param string $type 投稿タイプ or ロール
+	 * @param int $id 投稿ID or ユーザーID
 	 * @param mixed $repeat_multiple_data
 	 */
-	protected static function save_repeat_multiple_data_cache( $post_id, $post_type, $repeat_multiple_data ) {
-		self::$repeat_multiple_data_cache[$post_id][$post_type] = $repeat_multiple_data;
+	protected static function save_repeat_multiple_data_cache( $type, $id, $repeat_multiple_data ) {
+		self::$repeat_multiple_data_cache[$type . '_' . $id] = $repeat_multiple_data;
 	}
 
 	/**
 	 * 繰り返しに設定された複数許可フィールドデータの区切り識別用データを取得
 	 * 
-	 * @param int $post_id
-	 * @param string $post_type
+	 * @param string $type 投稿タイプ or ロール
+	 * @param int $id 投稿ID or ユーザーID
 	 * @return mixed
 	 */
-	public static function get_repeat_multiple_data( $post_id, $post_type ) {
+	public static function get_repeat_multiple_data( $type, $id ) {
 		$repeat_multiple_data = array();
-		if ( empty( $post_type ) ) {
+		if ( empty( $type ) ) {
 			return $repeat_multiple_data;
 		}
-		if ( isset( self::$repeat_multiple_data_cache[$post_id][$post_type] ) ) {
-			return self::$repeat_multiple_data_cache[$post_id][$post_type];
+		if ( isset( self::$repeat_multiple_data_cache[$type . '_' . $id] ) ) {
+			return self::$repeat_multiple_data_cache[$type . '_' . $id];
 		}
-		if ( in_array( $post_type, get_post_types() ) ) {
-			$_repeat_multiple_data = get_post_meta( $post_id, SCF_Config::PREFIX . 'repeat-multiple-data', true );
-		} elseif ( in_array( $post_type, array_keys( get_editable_roles() ) ) ) {
-			$_repeat_multiple_data = get_user_meta( $post_id, SCF_Config::PREFIX . 'repeat-multiple-data', true );
-		}
+
+		$Meta = new Smart_Custom_Fields_Meta( $type );
+		$_repeat_multiple_data = $Meta->get( $id, SCF_Config::PREFIX . 'repeat-multiple-data', true );
 		if ( !empty( $_repeat_multiple_data ) ) {
 			$repeat_multiple_data = $_repeat_multiple_data;
 		}
-		self::save_repeat_multiple_data_cache( $post_id, $post_type, $repeat_multiple_data );
+
+		self::save_repeat_multiple_data_cache( $type, $id, $repeat_multiple_data );
 		return $repeat_multiple_data;
 	}
 

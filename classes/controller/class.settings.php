@@ -186,7 +186,7 @@ class Smart_Custom_Fields_Controller_Settings {
 	}
 
 	/**
-	 * メタボックスの表示条件を設定するメタボックスを表示
+	 * メタボックスの表示条件を設定するメタボックス（投稿用）を表示
 	 */
 	public function display_meta_box_condition_post() {
 		$post_types = get_post_types( array(
@@ -222,6 +222,9 @@ class Smart_Custom_Fields_Controller_Settings {
 		);
 	}
 
+	/**
+	 * メタボックスの表示条件を設定するメタボックス（プロフィール用）を表示
+	 */
 	public function display_meta_box_condition_profile() {
 		$roles = get_editable_roles();
 		$conditions = get_post_meta( get_the_ID(), SCF_Config::PREFIX . 'roles', true );

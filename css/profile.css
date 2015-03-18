@@ -1,0 +1,25 @@
+/**
+ * profile.css
+ * Version    : 1.0.0
+ * Author     : Takashi Kitajima
+ * Created    : March 18, 2014
+ * Modified   : 
+ * License    : GPLv2
+ * License URI: http://www.gnu.org/licenses/gpl-2.0.html
+ */
+
+/** ==================================================
+ * .smart-cf-meta-box
+ */
+.smart-cf-meta-box:first-child {
+	border-top: #ddd solid 1px;
+}
+
+/** ==================================================
+ * .smart-cf-meta-box-table
+ */
+.smart-cf-meta-box-table {
+	background: transparent;
+	border-bottom: #ddd solid 1px;
+	padding: 10px 0;
+}

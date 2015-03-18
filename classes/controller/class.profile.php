@@ -22,14 +22,34 @@ class Smart_Custom_Fields_Controller_Profile extends Smart_Custom_Fields_Control
 	}
 
 	/**
+	 * 投稿画面用の css、js、翻訳ファイルのロード
+	 * 
+	 * @param string $hook
+	 */
+	public function admin_enqueue_scripts( $hook ) {
+		parent::admin_enqueue_scripts( $hook );
+		wp_enqueue_style(
+			SCF_Config::PREFIX . 'profile',
+			plugins_url( SCF_Config::NAME ) . '/css/profile.css'
+		);
+	}
+
+	/**
 	 * user_profile
 	 */
 	public function user_profile( $user ) {
+		printf( '<h3>%s</h3>', esc_html__( 'Custom Fields', 'smart-custom-fields' ) );
 		$settings = SCF::get_settings( $user->roles[0], $user->ID );
 		foreach ( $settings as $Setting ) {
-			printf( '<h3>%s</h3>', esc_html( $Setting->get_title() ) );
 			$callback_args['args'] = $Setting->get_groups();
-			$this->display_meta_box( $user, $callback_args );
+			?>
+			<table class="form-table">
+				<tr>
+					<th scope="row"><?php echo esc_html( $Setting->get_title() ); ?></th>
+					<td><?php $this->display_meta_box( $user, $callback_args ); ?></td>
+				</tr>
+			</table>
+			<?php
 		}
 	}
 
@@ -51,35 +71,13 @@ class Smart_Custom_Fields_Controller_Profile extends Smart_Custom_Fields_Control
 	}
 
 	/**
-	 * メタデータを更新。そのメタデータが存在しない場合は追加。
-	 *
-	 * @param int $id Post ID もしくは Author ID
-	 * @param string $key メタキー
-	 * @param mixed $value 保存する値
-	 * @param mixed $prev_value 指定された場合、この値のものだけを上書き
-	 */
-	public function update_post_meta( $id, $key, $value, $prev_value = '' ) {
-		update_user_meta( $id, $key, $value, $prev_value );
-	}
-
-	/**
-	 * メタデータを削除
-	 *
-	 * @param int $user_id
-	 * @param string $field_name
-	 */
-	protected function delete_post_meta( $user_id, $field_name ) {
-		delete_user_meta( $user_id, $field_name );
-	}
-
-	/**
 	 * メタデータを保存
 	 * 
 	 * @param int $user_id
 	 * @param string $name
 	 * @param mixed $value
 	 */
-	protected function add_post_meta( $user_id, $name, $value ) {
+	protected function add_meta( $user_id, $name, $value ) {
 		do_action( SCF_Config::PREFIX . '-before-save-profile', $user_id, $name, $value );
 		$is_valid = apply_filters( SCF_Config::PREFIX . '-validate-save-profile', true, $user_id, $name, $value );
 		if ( $is_valid ) {
