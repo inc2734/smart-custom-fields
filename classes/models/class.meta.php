@@ -20,6 +20,9 @@ class Smart_Custom_Fields_Meta {
 	 * @param string $type 投稿タイプもしくは smart-cf-profile
 	 */
 	public function __construct( $type ) {
+		if ( !function_exists( 'get_editable_roles' ) ) {
+			require_once( ABSPATH . '/wp-admin/includes/user.php' );
+		}
 		if ( in_array( $type, get_post_types() ) ) {
 			$this->type = 'post';
 		} elseif ( in_array( $type, array_keys( get_editable_roles() ) ) ) {

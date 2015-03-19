@@ -11,10 +11,16 @@
 class Smart_Custom_Fields_Controller_Editor {
 
 	/**
-	 * post_custom 格納用。何度も関数呼び出ししなくて良いように保存
+	 * meta_data 格納用。何度も関数呼び出ししなくて良いように保存
 	 * @var array
 	 */
-	protected $post_custom = array();
+	protected $meta_data = array();
+
+	/**
+	 * メタデータの識別用
+	 * @var string
+	 */
+	protected $type = 'post';
 
 	/**
 	 * 各フォーム部品のオブジェクトを格納する配列
@@ -82,13 +88,13 @@ class Smart_Custom_Fields_Controller_Editor {
 	/**
 	 * 投稿画面にカスタムフィールドを表示
 	 * 
-	 * @param object $post
+	 * @param WP_Post|WP_User $object
 	 * @param array $callback_args カスタムフィールドの設定情報
 	 */
-	public function display_meta_box( $post, $callback_args ) {
+	public function display_meta_box( $object, $callback_args ) {
 		$groups = $callback_args['args'];
-		$post_type = $this->get_post_type_for_display_meta_box( $post );
-		$tables = $this->get_tables( $post->ID, $post_type, $groups );
+		$type   = $this->get_type_for_display_meta_box( $object );
+		$tables = $this->get_tables( $object->ID, $type, $groups );
 
 		printf( '<div class="%s">', esc_attr( SCF_Config::PREFIX . 'meta-box' ) );
 		$index = 0;
@@ -99,9 +105,9 @@ class Smart_Custom_Fields_Controller_Editor {
 					'<div class="%s">',
 					esc_attr( SCF_Config::PREFIX . 'meta-box-repeat-tables' )
 				);
-				$this->display_tr( $post->ID, $post_type, $is_repeatable, $Group->get_fields() );
+				$this->display_tr( $object->ID, $type, $is_repeatable, $Group->get_fields() );
 			}
-			$this->display_tr( $post->ID, $post_type, $is_repeatable, $Group->get_fields(), $index );
+			$this->display_tr( $object->ID, $type, $is_repeatable, $Group->get_fields(), $index );
 
 			// ループの場合は添字をカウントアップ
 			// ループを抜けたらカウントをもとに戻す
@@ -144,16 +150,17 @@ class Smart_Custom_Fields_Controller_Editor {
 	 * 送信されたデータを保存
 	 *
 	 * @param array $data
-	 * @param string $post_type
-	 * @param int $post_id
+	 * @param string $type 投稿タイプ or ロール
+	 * @param int $id 投稿ID or ユーザーID
 	 */
-	protected function save( $data, $post_type, $post_id ) {
+	protected function save( $data, $type, $id ) {
+		// TODO: ユーザーのときにちゃんと動くかチェック
 		check_admin_referer(
 			SCF_Config::NAME . '-fields',
 			SCF_Config::PREFIX . 'fields-nonce'
 		);
 
-		$Meta = new Smart_Custom_Fields_Meta( $post_type );
+		$Meta = new Smart_Custom_Fields_Meta( $type );
 
 		// 繰り返しフィールドのチェックボックスは、普通のチェックボックスと混ざって
 		// 判別できなくなるのでわかるように保存しておく
@@ -162,14 +169,14 @@ class Smart_Custom_Fields_Controller_Editor {
 		// チェックボックスが未入力のときは "" がくるので、それは保存しないように判別
 		$multiple_data_fields = array();
 
-		$settings  = SCF::get_settings( $post_type, $post_id );
+		$settings  = SCF::get_settings( $type, $id );
 		foreach ( $settings as $Setting ) {
 			$groups = $Setting->get_groups();
 			foreach ( $groups as $Group ) {
 				$fields = $Group->get_fields();
 				foreach ( $fields as $Field ) {
 					$field_name = $Field->get( 'name' );
-					$Meta->delete( $post_id, $field_name );
+					$Meta->delete( $id, $field_name );
 					if ( $Field->get_attribute( 'allow-multiple-data' ) ) {
 						$multiple_data_fields[] = $field_name;
 					}
@@ -188,9 +195,9 @@ class Smart_Custom_Fields_Controller_Editor {
 			}
 		}
 
-		$Meta->delete( $post_id, SCF_Config::PREFIX . 'repeat-multiple-data' );
+		$Meta->delete( $id, SCF_Config::PREFIX . 'repeat-multiple-data' );
 		if ( $repeat_multiple_data ) {
-			$Meta->update( $post_id, SCF_Config::PREFIX . 'repeat-multiple-data', $repeat_multiple_data );
+			$Meta->update( $id, SCF_Config::PREFIX . 'repeat-multiple-data', $repeat_multiple_data );
 		}
 
 		foreach ( $data[SCF_Config::NAME] as $name => $values ) {
@@ -199,10 +206,10 @@ class Smart_Custom_Fields_Controller_Editor {
 					continue;
 				}
 				if ( !is_array( $value ) ) {
-					$this->add_meta( $post_id, $name, $value );
+					$this->add_meta( $id, $name, $value );
 				} else {
 					foreach ( $value as $val ) {
-						$this->add_meta( $post_id, $name, $val );
+						$this->add_meta( $id, $name, $val );
 					}
 				}
 			}
@@ -228,32 +235,33 @@ class Smart_Custom_Fields_Controller_Editor {
 	/**
 	 * メタデータの取得
 	 * 
-	 * @param int $post_id
+	 * @param int $id 投稿ID or ユーザーID
 	 * @return array
 	 */
-	protected function get_post_custom( $post_id ) {
-		$post_custom = $this->post_custom;
-		if ( empty( $post_custom ) ) {
-			$post_custom = get_post_meta( $post_id );
-			if ( empty( $post_custom ) ) {
+	protected function get_all_meta( $id ) {
+		$meta_data = $this->meta_data;
+		if ( empty( $meta_data ) ) {
+			$Meta = new Smart_Custom_Fields_Meta( $this->type );
+			$meta_data = $Meta->get( $id );
+			if ( empty( $meta_data ) ) {
 				return array();
 			}
-			$this->post_custom = $post_custom;
+			$this->meta_data = $meta_data;
 		}
-		return $this->post_custom;
+		return $this->meta_data;
 	}
 
 	/**
 	 * カスタムフィールドを出力するための配列を生成
 	 * 
-	 * @param int $post_id
-	 * @param string $post_type
+	 * @param int $id 投稿ID or ユーザーID
+	 * @param string $type 投稿タイプ or ロール
 	 * @param array $groups カスタムフィールド設定ページで保存した設定
 	 * @return array $tables カスタムフィールド表示用のテーブルを出力するための配列
 	 */
-	protected function get_tables( $post_id, $post_type, $groups ) {
-		$post_custom = $this->get_post_custom( $post_id );
-		$repeat_multiple_data = SCF::get_repeat_multiple_data( $post_type, $post_id );
+	protected function get_tables( $id, $type, $groups ) {
+		$meta_data = $this->get_all_meta( $id );
+		$repeat_multiple_data = SCF::get_repeat_multiple_data( $type, $id );
 		$tables = array();
 		foreach ( $groups as $Group ) {
 			// ループのときは、ループの分だけグループを追加する
@@ -263,21 +271,21 @@ class Smart_Custom_Fields_Controller_Editor {
 				$fields = $Group->get_fields();
 				foreach ( $fields as $Field ) {
 					$field_name = $Field->get( 'name' );
-					if ( isset( $post_custom[$field_name] ) && is_array( $post_custom[$field_name] ) ) {
-						$post_meta       = $post_custom[$field_name];
-						$post_meta_count = count( $post_meta );
+					if ( isset( $meta_data[$field_name] ) && is_array( $meta_data[$field_name] ) ) {
+						$meta       = $meta_data[$field_name];
+						$meta_count = count( $meta );
 						// 同名のカスタムフィールドが複数のとき（チェックボックス or ループ）
-						if ( $post_meta_count > 1 ) {
+						if ( $meta_count > 1 ) {
 							// チェックボックスの場合
-							if ( is_array( $repeat_multiple_data ) && array_key_exists( $field_name, $repeat_multiple_data ) ) {
+							if ( is_array( $repeat_multiple_data ) && isset( $repeat_multiple_data[$field_name] ) ) {
 								$repeat_multiple_data_count = count( $repeat_multiple_data[$field_name] );
 								if ( $loop_count < $repeat_multiple_data_count )
 									$loop_count = $repeat_multiple_data_count;
 							}
 							// チェックボックス以外
 							else {
-								if ( $loop_count < $post_meta_count )
-									$loop_count = $post_meta_count;
+								if ( $loop_count < $meta_count )
+									$loop_count = $meta_count;
 							}
 						}
 					}
@@ -297,33 +305,33 @@ class Smart_Custom_Fields_Controller_Editor {
 	/**
 	 * 複数許可フィールドのメタデータを取得
 	 * 
-	 * @param int $post_id
-	 * @param string $post_type
+	 * @param int $id 投稿ID or ユーザーID
+	 * @param string $type 投稿タイプ or ロール
 	 * @param string $field_name
 	 * @param int $index
 	 * @return array or null
 	 */
-	protected function get_multiple_data_field_value( $post_id, $post_type, $field_name, $index ) {
-		$post_custom = $this->get_post_custom( $post_id );
-		$repeat_multiple_data = SCF::get_repeat_multiple_data( $post_type, $post_id );
+	protected function get_multiple_data_field_value( $id, $type, $field_name, $index ) {
+		$meta_data = $this->get_all_meta( $id );
+		$repeat_multiple_data = SCF::get_repeat_multiple_data( $type, $id );
 		$value = null;
-		if ( isset( $post_custom[$field_name] ) && is_array( $post_custom[$field_name] ) ) {
-			$value = $post_custom[$field_name];
+		if ( isset( $meta_data[$field_name] ) && is_array( $meta_data[$field_name] ) ) {
+			$value = $meta_data[$field_name];
 			// ループのとき
-			if ( is_array( $repeat_multiple_data ) && array_key_exists( $field_name, $repeat_multiple_data ) ) {
+			if ( is_array( $repeat_multiple_data ) && isset( $repeat_multiple_data[$field_name] ) ) {
 				$now_num = 0;
-				if ( isset( $repeat_multiple_data[$field_name][$index] ) ) {
+				if ( is_array( $repeat_multiple_data[$field_name] ) && isset( $repeat_multiple_data[$field_name][$index] ) ) {
 					$now_num = $repeat_multiple_data[$field_name][$index];
 				}
 
 				// 自分（$index）より前の個数の合計が指す index が start
 				$_temp = array_slice( $repeat_multiple_data[$field_name], 0, $index );
-				$sum = array_sum( $_temp );
+				$sum   = array_sum( $_temp );
 				$start = $sum;
 
 				$value = null;
 				if ( $now_num ) {
-					$value = array_slice( $post_custom[$field_name], $start, $now_num );
+					$value = array_slice( $meta_data[$field_name], $start, $now_num );
 				}
 			}
 		}
@@ -333,16 +341,16 @@ class Smart_Custom_Fields_Controller_Editor {
 	/**
 	 * 非複数許可フィールドのメタデータを取得
 	 * 
-	 * @param int $post_id
+	 * @param int $id 投稿ID or ユーザーID
 	 * @param string $field_name
 	 * @param int $index
 	 * @return string or null
 	 */
-	protected function get_single_data_field_value( $post_id, $field_name, $index ) {
-		$post_custom = $this->get_post_custom( $post_id );
+	protected function get_single_data_field_value( $id, $field_name, $index ) {
+		$meta_data = $this->get_all_meta( $id );
 		$value = null;
-		if ( isset( $post_custom[$field_name][$index] ) ) {
-			$value = $post_custom[$field_name][$index];
+		if ( isset( $meta_data[$field_name][$index] ) ) {
+			$value = $meta_data[$field_name][$index];
 		}
 		return $value;
 	}
@@ -350,13 +358,13 @@ class Smart_Custom_Fields_Controller_Editor {
 	/**
 	 * カスタムフィールド表示 table で使用する各 tr を出力
 	 * 
-	 * @param int $post_id
-	 * @param string $post_type
+	 * @param int $id 投稿ID or ユーザーID
+	 * @param string $type 投稿タイプ or ロール
 	 * @param bool $is_repeat
 	 * @param array $fields
 	 * @param int, null $index
 	 */
-	protected function display_tr( $post_id, $post_type, $is_repeat, $fields, $index = null ) {
+	protected function display_tr( $id, $type, $is_repeat, $fields, $index = null ) {
 		$btn_repeat = '';
 		if ( $is_repeat ) {
 			$btn_repeat  = sprintf(
@@ -380,7 +388,6 @@ class Smart_Custom_Fields_Controller_Editor {
 		);
 
 		foreach ( $fields as $Field ) {
-			$type         = $Field->get_attribute( 'type' );
 			$display_name = $Field->get_attribute( 'display-name' );
 			$default      = $Field->get( 'default' );
 			$field_name   = $Field->get( 'name' );
@@ -390,13 +397,13 @@ class Smart_Custom_Fields_Controller_Editor {
 			}
 
 			// 複数値許可フィールドのとき
-			$post_status = $this->get_post_status( $post_id );
+			$post_status = $this->get_post_status( $id );
 			if ( $Field->get_attribute( 'allow-multiple-data' ) ) {
 				$value = array();
 				if ( !SCF::is_empty( $default ) && ( $post_status === 'auto-draft' || is_null( $index ) ) ) {
 					$value = SCF::choices_eol_to_array( $default );
 				}
-				$_value = $this->get_multiple_data_field_value( $post_id, $post_type, $field_name, $index );
+				$_value = $this->get_multiple_data_field_value( $id, $type, $field_name, $index );
 			}
 			// 複数不値許可フィールドのとき
 			else {
@@ -406,7 +413,7 @@ class Smart_Custom_Fields_Controller_Editor {
 						$value = $default;
 					}
 				}
-				$_value = $this->get_single_data_field_value( $post_id, $field_name, $index );
+				$_value = $this->get_single_data_field_value( $id, $field_name, $index );
 			}
 			if ( !is_null( $_value ) ) {
 				$value = $_value;
@@ -447,7 +454,7 @@ class Smart_Custom_Fields_Controller_Editor {
 	 * @param WP_Post $object
 	 * @return string
 	 */
-	protected function get_post_type_for_display_meta_box( $object ) {
+	protected function get_type_for_display_meta_box( $object ) {
 		if ( !empty( $object->post_type ) ) {
 			return $object->post_type;
 		}

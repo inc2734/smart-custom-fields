@@ -11,6 +11,12 @@
 class Smart_Custom_Fields_Controller_Profile extends Smart_Custom_Fields_Controller_Editor {
 
 	/**
+	 * メタデータの識別用
+	 * @var string
+	 */
+	protected $type = 'user';
+
+	/**
 	 * __construct
 	 */
 	public function __construct() {
@@ -87,24 +93,6 @@ class Smart_Custom_Fields_Controller_Profile extends Smart_Custom_Fields_Control
 	}
 
 	/**
-	 * メタデータの取得
-	 * 
-	 * @param int $user_id
-	 * @return array
-	 */
-	protected function get_post_custom( $user_id ) {
-		$post_custom = $this->post_custom;
-		if ( empty( $post_custom ) ) {
-			$post_custom = get_user_meta( $user_id );
-			if ( empty( $post_custom ) ) {
-				return array();
-			}
-			$this->post_custom = $post_custom;
-		}
-		return $this->post_custom;
-	}
-
-	/**
 	 * 投稿ステータスを返す（ユーザーにステータスは無いので必ず 'auto-draft' を返すこと）
 	 *
 	 * @param int $user_id
@@ -120,7 +108,7 @@ class Smart_Custom_Fields_Controller_Profile extends Smart_Custom_Fields_Control
 	 * @param WP_User $object
 	 * @return string
 	 */
-	protected function get_post_type_for_display_meta_box( $object ) {
+	protected function get_type_for_display_meta_box( $object ) {
 		if ( !empty( $object->roles[0] ) ) {
 			return $object->roles[0];
 		}

@@ -1,10 +1,10 @@
 <?php
 /**
  * Smart_Custom_Fields_Field_Wysiwyg
- * Version    : 1.1.0
+ * Version    : 1.1.1
  * Author     : Takashi Kitajima
  * Created    : October 7, 2014
- * Modified   : February 27, 2015
+ * Modified   : March 19, 2015
  * License    : GPLv2
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
  */
@@ -20,6 +20,7 @@ class Smart_Custom_Fields_Field_Wysiwyg extends Smart_Custom_Fields_Field_Base {
 			SCF_Config::PREFIX . 'before-editor-enqueue-scripts',
 			array( $this, 'editor_enqueue_scripts' )
 		);
+		add_filter( 'smart-cf-validate-get-value', array( $this, 'validate_get_value' ), 10, 2 );
 		return array(
 			'type'         => 'wysiwyg',
 			'display-name' => __( 'Wysiwyg', 'smart-custom-fields' ),
@@ -137,5 +138,55 @@ class Smart_Custom_Fields_Field_Wysiwyg extends Smart_Custom_Fields_Field_Base {
 			esc_attr__( 'Add Media' ),
 			$img . __( 'Add Media' )
 		);
+	}
+
+	/**
+	 * メタデータの表示時にバリデート
+	 *
+	 * @param mixed $value
+	 * @param string $field_type
+	 * @return string|array
+	 */
+	public function validate_get_value( $value, $field_type ) {
+		if ( $field_type === $this->get_attribute( 'type' ) ) {
+			if ( is_array( $value ) ) {
+				$validated_value = array();
+				foreach ( $value as $k => $v ) {
+					$validated_value[$k] = $this->add_the_content_filter( $v );
+				}
+				$value = $validated_value;
+			} else {
+				$value = $this->add_the_content_filter( $value );
+			}
+		}
+		return $value;
+	}
+
+	/**
+	 * デフォルトで the_content に適用される関数を適用
+	 *
+	 * @param string $value
+	 * @return string
+	 */
+	protected function add_the_content_filter( $value ) {
+		if ( has_filter( 'the_content', 'wptexturize' ) ) {
+			$value = wptexturize( $value );
+		}
+		if ( has_filter( 'the_content', 'convert_smilies' ) ) {
+			$value = convert_smilies( $value );
+		}
+		if ( has_filter( 'the_content', 'convert_chars' ) ) {
+			$value = convert_chars( $value );
+		}
+		if ( has_filter( 'the_content', 'wpautop' ) ) {
+			$value = wpautop( $value );
+		}
+		if ( has_filter( 'the_content', 'shortcode_unautop' ) ) {
+			$value = shortcode_unautop( $value );
+		}
+		if ( has_filter( 'the_content', 'prepend_attachment' ) ) {
+			$value = prepend_attachment( $value );
+		}
+		return $value;
 	}
 }
