@@ -1,9 +1,9 @@
 /**
  * editor.js
- * Version    : 1.0.0
+ * Version    : 1.0.1
  * Author     : Takashi Kitajima
  * Created    : September 30, 2014
- * Modified   :
+ * Modified   : March 19, 2015
  * License    : GPLv2
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
  */
@@ -17,7 +17,7 @@ jQuery( function( $ ) {
 	$( '.smart-cf-meta-box .load-relation-posts' )
 		.data( 'click_count', 0 )
 		.click( function() {
-			var parent = $( this ).parents( '.smart-cf-meta-box-table' );
+			var parent = $( this ).closest( '.smart-cf-meta-box-table' );
 			var click_count = $( this ).data( 'click_count' );
 			var post_types = $( this ).data( 'post-types' );
 			var btn_load = $( this );
@@ -56,14 +56,14 @@ jQuery( function( $ ) {
 	var choices_li = '.smart-cf-relation-children-select li';
 	$( '.smart-cf-meta-box' ).on( 'click', choices_li, function() {
 		var id = $( this ).data( 'id' );
-		var parent = $( this ).parents( table_class );
+		var parent = $( this ).closest( table_class );
 		if ( parent.find( '.smart-cf-relation-right li[data-id="' + id + '"]' ).length === 0 ) {
 			var clone = $( this ).clone();
 			clone
 				.prepend( $( '<span class="smart-cf-icon-handle"></span>' ) )
 				.append(  $( '<span class="relation-remove">-</span>' ) );
 			parent.find( '.smart-cf-relation-right ul' ).append( clone );
-			update_relation_value( $( this ).parents( 'tr' ) );
+			update_relation_value( $( this ).closest( 'tr' ) );
 		}
 	} );
 
@@ -72,7 +72,7 @@ jQuery( function( $ ) {
 	 */
 	var relation_remove = '.smart-cf-relation-right li .relation-remove';
 	$( '.smart-cf-meta-box' ).on( 'click', relation_remove, function() {
-		var tr = $( this ).parents( 'tr' );
+		var tr = $( this ).closest( 'tr' );
 		$( this ).parent().remove();
 		update_relation_value( tr );
 	} );
@@ -89,7 +89,7 @@ jQuery( function( $ ) {
 			}
 		} );
 		tr.find( '.smart-cf-relation-right li' ).each( function( i, e ) {
-			var hidden_box = $( this ).parents( table_class ).find( '.smart-cf-relation-children-select' );
+			var hidden_box = $( this ).closest( table_class ).find( '.smart-cf-relation-children-select' );
 			var id = $( this ).data( 'id' );
 			var clone = hidden.first().clone();
 			var name = clone.attr( 'name' );
@@ -105,7 +105,7 @@ jQuery( function( $ ) {
 	$( '.smart-cf-meta-box .smart-cf-relation-right ul' ).sortable( {
 		handle: '.smart-cf-icon-handle',
 		update: function() {
-			update_relation_value( $( this ).parents( 'tr' ) );
+			update_relation_value( $( this ).closest( 'tr' ) );
 		}
 	} );
 } );
