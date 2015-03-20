@@ -57,7 +57,7 @@ class SCF {
 		$post_id = self::get_real_post_id( $post_id );
 
 		if ( empty( $post_id ) ) {
-			return array();
+			return null;
 		}
 
 		$post_type = self::get_public_post_type( $post_id );
@@ -132,7 +132,7 @@ class SCF {
 			self::debug_cache_message( "dont use get cache... [id: {$id}] [name: {$name}]" );
 		}
 
-		$settings  = self::get_settings( $type, $id );
+		$settings = self::get_settings( $type, $id );
 		foreach ( $settings as $Setting ) {
 			$groups = $Setting->get_groups();
 			foreach ( $groups as $Group ) {
@@ -455,6 +455,8 @@ class SCF {
 	 * @return array $settings
 	 */
 	public static function get_settings( $type, $id ) {
+		$settings  = array();
+		$meta_type = '';
 		if ( !empty( $type ) ) {
 			// 新規投稿のときは $id は false
 			if ( empty( $id ) ) {
