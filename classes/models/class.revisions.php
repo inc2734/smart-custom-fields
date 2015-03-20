@@ -44,6 +44,8 @@ class Smart_Custom_Fields_Revisions {
 		$revision  = get_post( $revision_id );
 		$post_type = get_post_type( $post_id );
 
+		$Meta = new Smart_Custom_Fields_Meta( $post_type );
+
 		$settings = SCF::get_settings( $post_type, $post_id );
 		foreach ( $settings as $Setting ) {
 			$groups = $Setting->get_groups();
@@ -51,39 +53,39 @@ class Smart_Custom_Fields_Revisions {
 				$fields = $Group->get_fields();
 				foreach ( $fields as $Field ) {
 					$field_name = $Field->get( 'name' );
-					delete_post_meta( $post->ID, $field_name );
+					$Meta->delete( $post->ID, $field_name );
 					$value = SCF::get( $field_name, $revision->ID );
 					if ( is_array( $value ) ) {
 						foreach ( $value as $val ) {
 							if ( is_array( $val ) ) {
 								foreach ( $val as $v ) {
 									// ループ内複数値項目
-									add_post_meta( $post->ID, $field_name, $v );
+									$Meta->add( $post->ID, $field_name, $v );
 								}
 							} else {
 								// ループ内単一項目 or ループ外複数値項目
-								add_post_meta( $post->ID, $field_name, $val );
+								$Meta->add( $post->ID, $field_name, $val );
 							}
 						}
 					} else {
 						// ループ外単一項目
-						add_post_meta( $post->ID, $field_name, $value );
+						$Meta->add( $post->ID, $field_name, $value );
 					}
 				}
 			}
 		}
 
 		$repeat_multiple_data_name = SCF_Config::PREFIX . 'repeat-multiple-data';
-		$repeat_multiple_data = get_post_meta( $revision->ID, $repeat_multiple_data_name, true );
-		delete_post_meta( $post->ID, $repeat_multiple_data_name );
-		update_post_meta( $post->ID, $repeat_multiple_data_name, $repeat_multiple_data );
+		$repeat_multiple_data = $Meta->get( $revision->ID, $repeat_multiple_data_name, true );
+		$Meta->delete( $post->ID, $repeat_multiple_data_name );
+		$Meta->update( $post->ID, $repeat_multiple_data_name, $repeat_multiple_data );
 	}
 
 	/**
 	 * リビジョンデータを保存
 	 * *_post_meta はリビジョンIDのときに自動的に本物IDに変換して処理してしまうので、*_metadata を使うこと
 	 *
-	 * @param int $post_id
+	 * @param int $post_id リビジョンの投稿ID
 	 */
 	public function wp_insert_post( $post_id ) {
 		if ( !isset( $_POST[SCF_Config::NAME] ) ) {
@@ -92,8 +94,8 @@ class Smart_Custom_Fields_Revisions {
 		if ( !wp_is_post_revision( $post_id ) ) {
 			return;
 		}
-		$post_type = get_post_type( wp_is_post_revision( $post_id ) );
-		$settings = SCF::get_settings( $post_type, $post_id );
+		$post_type = SCF::get_public_post_type( $post_id );
+		$settings  = SCF::get_settings( $post_type, $post_id );
 		if ( !$settings ) {
 			return;
 		}
@@ -102,6 +104,8 @@ class Smart_Custom_Fields_Revisions {
 			SCF_Config::NAME . '-fields',
 			SCF_Config::PREFIX . 'fields-nonce'
 		);
+
+		$Meta = new Smart_Custom_Fields_Meta( $post_type );
 
 		// 繰り返しフィールドのチェックボックスは、普通のチェックボックスと混ざって
 		// 判別できなくなるのでわかるように保存しておく
@@ -117,7 +121,7 @@ class Smart_Custom_Fields_Revisions {
 				$fields = $Group->get_fields();
 				foreach ( $fields as $Field ) {
 					$field_name = $Field->get( 'name' );
-					delete_metadata( 'post', $post_id, $field_name );
+					$Meta->delete( $post_id, $field_name );
 					if ( $Field->get_attribute( 'allow-multiple-data' ) ) {
 						$multiple_data_fields[] = $field_name;
 					}
@@ -136,9 +140,9 @@ class Smart_Custom_Fields_Revisions {
 			}
 		}
 
-		delete_metadata( 'post', $post_id, SCF_Config::PREFIX . 'repeat-multiple-data' );
+		$Meta->delete( $post_id, SCF_Config::PREFIX . 'repeat-multiple-data' );
 		if ( $repeat_multiple_data ) {
-			update_metadata( 'post', $post_id, SCF_Config::PREFIX . 'repeat-multiple-data', $repeat_multiple_data );
+			$Meta->update( $post_id, SCF_Config::PREFIX . 'repeat-multiple-data', $repeat_multiple_data );
 		}
 
 		foreach ( $_POST[SCF_Config::NAME] as $name => $values ) {
@@ -146,10 +150,10 @@ class Smart_Custom_Fields_Revisions {
 				if ( in_array( $name, $multiple_data_fields ) && $value === '' )
 					continue;
 				if ( !is_array( $value ) ) {
-					add_metadata( 'post', $post_id, $name, $value );
+					$Meta->add( $post_id, $name, $value );
 				} else {
 					foreach ( $value as $val ) {
-						add_metadata( 'post', $post_id, $name, $val );
+						$Meta->add( $post_id, $name, $val );
 					}
 				}
 			}

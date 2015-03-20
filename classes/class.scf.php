@@ -200,7 +200,7 @@ class SCF {
 	 * @param int $post_id
 	 * @return string
 	 */
-	protected static function get_public_post_type( $post_id ) {
+	public static function get_public_post_type( $post_id ) {
 		if ( $public_post_id = wp_is_post_revision( $post_id ) ) {
 			$post_type = get_post_type( $public_post_id );
 		} else {

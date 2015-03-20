@@ -162,7 +162,7 @@ class Smart_Custom_Fields_Controller_Editor {
 		// チェックボックスが未入力のときは "" がくるので、それは保存しないように判別
 		$multiple_data_fields = array();
 
-		$settings  = SCF::get_settings( $type, $id );
+		$settings = SCF::get_settings( $type, $id );
 		foreach ( $settings as $Setting ) {
 			$groups = $Setting->get_groups();
 			foreach ( $groups as $Group ) {
@@ -199,30 +199,14 @@ class Smart_Custom_Fields_Controller_Editor {
 					continue;
 				}
 				if ( !is_array( $value ) ) {
-					$this->add_meta( $id, $name, $value );
+					$Meta->add( $id, $name, $value );
 				} else {
 					foreach ( $value as $val ) {
-						$this->add_meta( $id, $name, $val );
+						$Meta->add( $id, $name, $val );
 					}
 				}
 			}
 		}
-	}
-
-	/**
-	 * メタデータを保存
-	 * 
-	 * @param int $post_id
-	 * @param string $name
-	 * @param mixed $value
-	 */
-	protected function add_meta( $post_id, $name, $value ) {
-		do_action( SCF_Config::PREFIX . '-before-save-post', $post_id, $name, $value );
-		$is_valid = apply_filters( SCF_Config::PREFIX . '-validate-save-post', true, $post_id, $name, $value );
-		if ( $is_valid ) {
-			add_post_meta( $post_id, $name, $value );
-		}
-		do_action( SCF_Config::PREFIX . '-after-save-post', $post_id, $name, $value );
 	}
 
 	/**

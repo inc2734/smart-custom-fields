@@ -14,9 +14,14 @@ class SmartCustomFieldsTest extends WP_UnitTestCase {
 	public function setUp() {
 		parent::setUp();
 		// カスタムフィールドを設定するための投稿
-		$this->post_id = $this->factory->post->create( array( 'post_type' => 'post' ) );
+		$this->post_id = $this->factory->post->create( array(
+			'post_type' => 'post',
+		) );
 		// リビジョン用として投稿を準備
-		$this->revision_id = $this->factory->post->create( array( 'post_type' => 'revision' ) );
+		$this->revision_id = $this->factory->post->create( array(
+			'post_type'   => 'revision',
+			'post_parent' => $this->post_id,
+		) );
 		// カスタムフィールドを設定するためのユーザー
 		$this->user_id = $this->factory->user->create( array( 'role' => 'editor' ) );
 
@@ -531,11 +536,8 @@ class SmartCustomFieldsTest extends WP_UnitTestCase {
 		$this->assertNull( $Setting );
 	}
 
-
-
 	/**
 	 * @backupStaticAttributes enabled
-	 * @group todo
 	 */
 	public function test_wp_restore_post_revision() {
 		// 投稿のメタデータ
@@ -544,13 +546,13 @@ class SmartCustomFieldsTest extends WP_UnitTestCase {
 		add_post_meta( $this->post_id, 'text3', 'loop-text' );
 
 		// リビジョンのメタデータ
-		add_post_meta( $this->revision_id, 'text', 'text-2' );
-		add_post_meta( $this->revision_id, SCF_Config::PREFIX . 'repeat-multiple-data', array(
+		add_metadata( 'post', $this->revision_id, 'text', 'text-2' );
+		add_metadata( 'post', $this->revision_id, SCF_Config::PREFIX . 'repeat-multiple-data', array(
 			'checkbox3' => array( 1, 2 ),
 		) );
-		add_post_meta( $this->revision_id, 'checkbox3', 'loop-check-1' );
-		add_post_meta( $this->revision_id, 'checkbox3', 'loop-check-2' );
-		add_post_meta( $this->revision_id, 'checkbox3', 'loop-check-3' );
+		add_metadata( 'post', $this->revision_id, 'checkbox3', 'loop-check-1' );
+		add_metadata( 'post', $this->revision_id, 'checkbox3', 'loop-check-2' );
+		add_metadata( 'post', $this->revision_id, 'checkbox3', 'loop-check-3' );
 
 		$Revision = new Smart_Custom_Fields_Revisions();
 		$Revision->wp_restore_post_revision( $this->post_id, $this->revision_id );
@@ -575,6 +577,16 @@ class SmartCustomFieldsTest extends WP_UnitTestCase {
 		);
 	}
 
+	/**
+	 * @backupStaticAttributes enabled
+	 */
+	public function test_wp_insert_post_Post_IDがrevisionのときはnull() {
+		$_POST[SCF_Config::NAME] = array(
+			'text' => 'text',
+		);
+		$Revision = new Smart_Custom_Fields_Revisions();
+		$this->assertNull( $Revision->wp_insert_post( $this->post_id ) );
+	}
 
 
 

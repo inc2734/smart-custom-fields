@@ -28,7 +28,7 @@ class Smart_Custom_Fields_Meta {
 		} elseif ( in_array( $type, array_keys( get_editable_roles() ) ) ) {
 			$this->type = 'user';
 		} else {
-			throw new Exception( 'Invalid post type error.' );
+			throw new Exception( sprintf( 'Invalid post type error. Type is "%s".', $type ) );
 		}
 	}
 
@@ -50,8 +50,7 @@ class Smart_Custom_Fields_Meta {
 	 * @return mixed
 	 */
 	public function get( $id, $key = '', $single = false ) {
-		$function = "get_{$this->type}_meta";
-		return $function( $id, $key, $single );
+		return get_metadata( $this->type, $id, $key, $single );
 	}
 
 	/**
@@ -64,8 +63,14 @@ class Smart_Custom_Fields_Meta {
 	 * @return int|false Meta ID
 	 */
 	public function update( $id, $key, $value, $prev_value = '' ) {
-		$function = "update_{$this->type}_meta";
-		return $function( $id, $key, $value, $prev_value );
+		$return = false;
+		do_action( SCF_Config::PREFIX . '-before-save-' . $this->type, $id, $key, $value );
+		$is_valid = apply_filters( SCF_Config::PREFIX . '-validate-save-' . $this->type, $id, $key, $value );
+		if ( $is_valid ) {
+			$return = update_metadata( $this->type, $id, $key, $value, $prev_value );
+		}
+		do_action( SCF_Config::PREFIX . '-after-save-' . $this->type, $id, $key, $value );
+		return $return;
 	}
 
 	/**
@@ -78,8 +83,14 @@ class Smart_Custom_Fields_Meta {
 	 * @return int|false Meta ID
 	 */
 	public function add( $id, $key, $value, $unique = false ) {
-		$function = "add_{$this->type}_meta";
-		return $function( $id, $key, $value, $unique );
+		$return = false;
+		do_action( SCF_Config::PREFIX . '-before-save-' . $this->type, $id, $key, $value );
+		$is_valid = apply_filters( SCF_Config::PREFIX . '-validate-save-' . $this->type, $id, $key, $value );
+		if ( $is_valid ) {
+			$return = add_metadata( $this->type, $id, $key, $value, $unique );
+		}
+		do_action( SCF_Config::PREFIX . '-after-save-' . $this->type, $id, $key, $value );
+		return $return;
 	}
 
 	/**
@@ -91,7 +102,6 @@ class Smart_Custom_Fields_Meta {
 	 * @return bool
 	 */
 	public function delete( $id, $key, $value = '' ) {
-		$function = "delete_{$this->type}_meta";
-		return $function( $id, $key, $value );
+		return delete_metadata( $this->type, $id, $key, $value );
 	}
 }

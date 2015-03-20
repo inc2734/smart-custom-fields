@@ -71,22 +71,6 @@ class Smart_Custom_Fields_Controller_Profile extends Smart_Custom_Fields_Control
 	}
 
 	/**
-	 * メタデータを保存
-	 * 
-	 * @param int $user_id
-	 * @param string $name
-	 * @param mixed $value
-	 */
-	protected function add_meta( $user_id, $name, $value ) {
-		do_action( SCF_Config::PREFIX . '-before-save-profile', $user_id, $name, $value );
-		$is_valid = apply_filters( SCF_Config::PREFIX . '-validate-save-profile', true, $user_id, $name, $value );
-		if ( $is_valid ) {
-			add_user_meta( $user_id, $name, $value );
-		}
-		do_action( SCF_Config::PREFIX . '-after-save-profile', $user_id, $name, $value );
-	}
-
-	/**
 	 * メタデータの取得
 	 * 
 	 * @param int $id 投稿ID or ユーザーID
