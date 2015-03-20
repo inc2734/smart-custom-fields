@@ -319,9 +319,9 @@ class SCF {
 	}
 
 	/**
-	 * その投稿タイプで有効になっている SCF をキャッシュに保存
+	 * その投稿タイプ or ロールで有効になっている SCF をキャッシュに保存
 	 *
-	 * @param string $type 投稿タイプ or ロール
+	 * @param WP_Post|WP_User $object
 	 * @param array $settings_posts
 	 */
 	protected static function save_settings_posts_cache( $object, $settings_posts ) {

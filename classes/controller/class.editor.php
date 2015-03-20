@@ -381,7 +381,6 @@ class Smart_Custom_Fields_Controller_Editor {
 				if ( !SCF::is_empty( $default ) && ( $post_status === 'auto-draft' || is_null( $index ) ) ) {
 					$value = SCF::choices_eol_to_array( $default );
 				}
-				// todo
 				$_value = $this->get_multiple_data_field_value( $object, $field_name, $index );
 			}
 			// 複数不値許可フィールドのとき
