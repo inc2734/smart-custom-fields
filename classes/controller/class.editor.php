@@ -17,12 +17,6 @@ class Smart_Custom_Fields_Controller_Editor {
 	protected $meta_data = array();
 
 	/**
-	 * メタデータの識別用
-	 * @var string
-	 */
-	protected $type = 'post';
-
-	/**
 	 * 各フォーム部品のオブジェクトを格納する配列
 	 * @var array
 	 */
@@ -154,7 +148,6 @@ class Smart_Custom_Fields_Controller_Editor {
 	 * @param int $id 投稿ID or ユーザーID
 	 */
 	protected function save( $data, $type, $id ) {
-		// TODO: ユーザーのときにちゃんと動くかチェック
 		check_admin_referer(
 			SCF_Config::NAME . '-fields',
 			SCF_Config::PREFIX . 'fields-nonce'
@@ -241,8 +234,7 @@ class Smart_Custom_Fields_Controller_Editor {
 	protected function get_all_meta( $id ) {
 		$meta_data = $this->meta_data;
 		if ( empty( $meta_data ) ) {
-			$Meta = new Smart_Custom_Fields_Meta( $this->type );
-			$meta_data = $Meta->get( $id );
+			$meta_data = get_post_meta( $id );
 			if ( empty( $meta_data ) ) {
 				return array();
 			}

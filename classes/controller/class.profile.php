@@ -11,12 +11,6 @@
 class Smart_Custom_Fields_Controller_Profile extends Smart_Custom_Fields_Controller_Editor {
 
 	/**
-	 * メタデータの識別用
-	 * @var string
-	 */
-	protected $type = 'user';
-
-	/**
 	 * __construct
 	 */
 	public function __construct() {
@@ -90,6 +84,24 @@ class Smart_Custom_Fields_Controller_Profile extends Smart_Custom_Fields_Control
 			add_user_meta( $user_id, $name, $value );
 		}
 		do_action( SCF_Config::PREFIX . '-after-save-profile', $user_id, $name, $value );
+	}
+
+	/**
+	 * メタデータの取得
+	 * 
+	 * @param int $id 投稿ID or ユーザーID
+	 * @return array
+	 */
+	protected function get_all_meta( $id ) {
+		$meta_data = $this->meta_data;
+		if ( empty( $meta_data ) ) {
+			$meta_data = get_user_meta( $id );
+			if ( empty( $meta_data ) ) {
+				return array();
+			}
+			$this->meta_data = $meta_data;
+		}
+		return $this->meta_data;
 	}
 
 	/**
