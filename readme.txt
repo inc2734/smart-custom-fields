@@ -45,6 +45,15 @@ This method can get meta data of any group.
 * SCF::gets()  
 This method can get all meta data.
 
+* SCF::get_user_meta( $user_id, 'field-name' )  
+This method can get any user meta data.
+
+* SCF::get_user_meta( $user_id, 'group-name' )  
+This method can get user meta data of any group.
+
+* SCF::get_user_meta( $user_id )  
+This method can get all user meta data.
+
 = Register custom fields by the code. =
 
 https://gist.github.com/inc2734/9f6d65c7473d060d0fd6
