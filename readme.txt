@@ -75,7 +75,9 @@ You can send your own language pack to me.
 = 1.3.0 =
 * Add profile custom fields.
 * Add filter hook smart-cf-validate-get-value
+* Add method SCF::get_user_meta( $user_id, $name = null )
 * Fixed a revision bug.
+* Fixed a bug that thumbnail is not displayed correctly in preview.
 * Fixed a relation field bug.
 * Changed SCF::get with multiple data in loop.
 

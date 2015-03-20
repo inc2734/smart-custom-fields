@@ -42,7 +42,7 @@ class Smart_Custom_Fields_Revisions {
 	public function wp_restore_post_revision( $post_id, $revision_id ) {
 		$post      = get_post( $post_id );
 		$revision  = get_post( $revision_id );
-		$post_type = get_post_type();
+		$post_type = get_post_type( $post_id );
 
 		$settings = SCF::get_settings( $post_type, $post_id );
 		foreach ( $settings as $Setting ) {
@@ -55,9 +55,18 @@ class Smart_Custom_Fields_Revisions {
 					$value = SCF::get( $field_name, $revision->ID );
 					if ( is_array( $value ) ) {
 						foreach ( $value as $val ) {
-							add_post_meta( $post->ID, $field_name, $val );
+							if ( is_array( $val ) ) {
+								foreach ( $val as $v ) {
+									// ループ内複数値項目
+									add_post_meta( $post->ID, $field_name, $v );
+								}
+							} else {
+								// ループ内単一項目 or ループ外複数値項目
+								add_post_meta( $post->ID, $field_name, $val );
+							}
 						}
 					} else {
+						// ループ外単一項目
 						add_post_meta( $post->ID, $field_name, $value );
 					}
 				}
@@ -65,9 +74,9 @@ class Smart_Custom_Fields_Revisions {
 		}
 
 		$repeat_multiple_data_name = SCF_Config::PREFIX . 'repeat-multiple-data';
-		delete_post_meta( $post->ID, $repeat_multiple_data_name );
 		$repeat_multiple_data = get_post_meta( $revision->ID, $repeat_multiple_data_name, true );
-		add_post_meta( $post->ID, $repeat_multiple_data_name, $repeat_multiple_data );
+		delete_post_meta( $post->ID, $repeat_multiple_data_name );
+		update_post_meta( $post->ID, $repeat_multiple_data_name, $repeat_multiple_data );
 	}
 
 	/**
@@ -83,7 +92,7 @@ class Smart_Custom_Fields_Revisions {
 		if ( !wp_is_post_revision( $post_id ) ) {
 			return;
 		}
-		$post_type = get_post_type();
+		$post_type = get_post_type( wp_is_post_revision( $post_id ) );
 		$settings = SCF::get_settings( $post_type, $post_id );
 		if ( !$settings ) {
 			return;
@@ -148,7 +157,7 @@ class Smart_Custom_Fields_Revisions {
 	}
 
 	/**
-	 * プレビューのときはプレビューのメタデータを返す
+	 * プレビューのときはプレビューのメタデータを返す。ただし、アイキャッチはリビジョンが無いので除外する
 	 * 
 	 * @param mixed $value
 	 * @param int $post_id
@@ -157,7 +166,7 @@ class Smart_Custom_Fields_Revisions {
 	 * @return mixed $value
 	 */
 	public function get_post_metadata( $value, $post_id, $meta_key, $single ) {
-		if ( $preview_id = $this->get_preview_id( $post_id ) ) {
+		if ( $preview_id = $this->get_preview_id( $post_id ) && $meta_key !== '_thumbnail_id' ) {
 			if ( $post_id !== $preview_id ) {
 				$value = get_post_meta( $preview_id, $meta_key, $single );
 			}

@@ -89,28 +89,16 @@ class Smart_Custom_Fields {
 		}
 		// その他の新規作成・編集画面
 		elseif ( in_array( $screen->id, get_post_types() ) ) {
-			$post_id = false;
-			if ( !empty( $_GET['post'] ) ) {
-				$post_id = $_GET['post'];
-			} elseif ( !empty( $_POST['post_ID'] ) ) {
-				$post_id = $_POST['post_ID'];
-			}
+			$post_id = $this->get_post_id_in_admin();
 			if ( SCF::get_settings( $screen->id, $post_id ) ) {
 				require_once plugin_dir_path( __FILE__ ) . 'classes/controller/class.editor.php';
+				new Smart_Custom_Fields_Revisions();
 				new Smart_Custom_Fields_Controller_Editor();
 			}
 		}
 		// プロフィール編集画面
 		elseif ( in_array( $screen->id, array( 'profile', 'user-edit' ) ) ) {
-			$user_id = false;
-			if ( !empty( $_GET['user_id'] ) ) {
-				$user_id = $_GET['user_id'];
-			} elseif ( !empty( $_POST['user_id'] ) ) {
-				$user_id = $_POST['user_id'];
-			} elseif ( $screen->id === 'profile' ) {
-				$current_user = wp_get_current_user();
-				$user_id      = $current_user->ID;
-			}
+			$user_id = $this->get_user_id_in_admin();
 			$user_data = get_userdata( $user_id );
 			$roles[0]  = false;
 			if ( $user_data ) {
@@ -177,6 +165,40 @@ class Smart_Custom_Fields {
 			'manage_options',
 			'post-new.php?post_type=' . SCF_Config::NAME
 		);
+	}
+
+	/**
+	 * 編集画面でその投稿のIDを取得
+	 *
+	 * @return int
+	 */
+	protected function get_post_id_in_admin() {
+		$post_id = false;
+		if ( !empty( $_GET['post'] ) ) {
+			$post_id = $_GET['post'];
+		} elseif ( !empty( $_POST['post_ID'] ) ) {
+			$post_id = $_POST['post_ID'];
+		}
+		return $post_id;
+	}
+
+	/**
+	 * プロフィール、ユーザー編集画面でそのユーザーのIDを取得
+	 *
+	 * @return int
+	 */
+	protected function get_user_id_in_admin() {
+		$screen = get_current_screen();
+		$user_id = false;
+		if ( !empty( $_GET['user_id'] ) ) {
+			$user_id = $_GET['user_id'];
+		} elseif ( !empty( $_POST['user_id'] ) ) {
+			$user_id = $_POST['user_id'];
+		} elseif ( $screen->id === 'profile' ) {
+			$current_user = wp_get_current_user();
+			$user_id      = $current_user->ID;
+		}
+		return $user_id;
 	}
 }
 new Smart_Custom_Fields();

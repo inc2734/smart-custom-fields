@@ -35,7 +35,7 @@ class SCF {
 	 * キーに post_type を設定すること。
 	 * @var array
 	 */
-	protected static $settings_cache = array();
+	public static $settings_cache = array();
 
 	/**
 	 * データ取得処理は重いので、一度取得した設定データは cache に保存する。
@@ -455,21 +455,22 @@ class SCF {
 	 * @return array $settings
 	 */
 	public static function get_settings( $type, $id ) {
-		// 新規投稿のときは $id は false
-		if ( empty( $id ) ) {
-			// TODO: 
-		}
-		$settings_posts = self::get_settings_posts( $type );
+		if ( !empty( $type ) ) {
+			// 新規投稿のときは $id は false
+			if ( empty( $id ) ) {
+				// TODO: 
+			}
+			$settings_posts = self::get_settings_posts( $type );
 
-		$Meta      = new Smart_Custom_Fields_Meta( $type );
-		$meta_type = $Meta->get_type();
-		if ( $meta_type === 'post' ) {
-			$settings = self::get_settings_for_post( $type, $id, $settings_posts );
+			$Meta      = new Smart_Custom_Fields_Meta( $type );
+			$meta_type = $Meta->get_type();
+			if ( $meta_type === 'post' ) {
+				$settings = self::get_settings_for_post( $type, $id, $settings_posts );
+			}
+			elseif ( $meta_type === 'user' ) {
+				$settings = self::get_settings_for_profile( $type, $id, $settings_posts );
+			}
 		}
-		elseif ( $meta_type === 'user' ) {
-			$settings = self::get_settings_for_profile( $type, $id, $settings_posts );
-		}
-
 		$settings = apply_filters( SCF_Config::PREFIX . 'register-fields', $settings, $type, $id, $meta_type );
 		return $settings;
 	}
