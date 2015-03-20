@@ -373,7 +373,7 @@ class SCF {
 				$key = '';
 		}
 
-		if ( !empty( $key ) ) {
+		if ( !empty( $key ) && !empty( $type ) ) {
 			$settings_posts = get_posts( array(
 				'post_type'      => SCF_Config::NAME,
 				'posts_per_page' => -1,
@@ -396,12 +396,16 @@ class SCF {
 	 * Setting オブジェクトをキャッシュに保存
 	 *
 	 * @param int $settings_post_id
-	 * @param string $meta_type post or user
-	 * @param int $id 投稿ID or ユーザーID
+	 * @param WP_post|WP_User $object
 	 * @param Smart_Custom_Fields_Setting $Setting
 	 */
-	protected static function save_settings_cache( $settings_post_id, $Setting, $meta_type = null, $id = null ) {
-		if ( !is_null( $meta_type ) && !is_null( $id ) ) {
+	protected static function save_settings_cache( $settings_post_id, $Setting, $object = null ) {
+		if ( !is_null( $object ) ) {
+			$Meta      = new Smart_Custom_Fields_Meta( $object );
+			$id        = $Meta->get_id();
+			$meta_type = $Meta->get_meta_type();
+		}
+		if ( !empty( $meta_type ) && !empty( $id ) ) {
 			self::$settings_cache[$settings_post_id][$meta_type . '_' . $id] = $Setting;
 		} else {
 			self::$settings_cache[$settings_post_id][0] = $Setting;
@@ -417,8 +421,8 @@ class SCF {
 	 *         全般のものが無い ... false
 	 *     指定した $meta_type + $id のものがあるとき ... Smart_Custom_Fields_Setting
 	 *
+	 * @param int $settings_post_id
 	 * @param WP_post|WP_User $object
-	 * @param int $id 投稿ID or ユーザーID
 	 * @return Smart_Custom_Fields_Setting|false|null
 	 */
 	public static function get_settings_cache( $settings_post_id, $object = null ) {
@@ -454,12 +458,7 @@ class SCF {
 
 		$settings = array();
 		if ( !empty( $type ) ) {
-			// 新規投稿のときは $id は false
-			if ( empty( $id ) ) {
-				// TODO: 
-			}
 			$settings_posts = self::get_settings_posts( $object );
-
 			if ( $meta_type === 'post' ) {
 				$settings = self::get_settings_for_post( $object, $settings_posts );
 			}
@@ -503,7 +502,13 @@ class SCF {
 					if ( $object->ID == $condition_post_id ) {
 						$settings[$settings_post->ID] = $Setting;
 					}
-					self::save_settings_cache( $settings_post->ID, $Setting, 'post', $condition_post_id );
+					$Post = get_post( $condition_post_id );
+					if ( empty( $Post ) ) {
+						$Post = new stdClass();
+						$Post->ID = $condition_post_id;
+						$Post = new WP_Post( $Post );
+					}
+					self::save_settings_cache( $settings_post->ID, $Setting, $Post );
 				}
 			} else {
 				$Setting = SCF::add_setting( $settings_post->ID, $settings_post->post_title );
