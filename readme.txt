@@ -73,13 +73,14 @@ You can send your own language pack to me.
 == Changelog ==
 
 = 1.3.0 =
+* refactoring.
 * Add profile custom fields.
 * Add filter hook smart-cf-validate-get-value
 * Add method SCF::get_user_meta( $user_id, $name = null )
 * Fixed a revision bug.
 * Fixed a bug that thumbnail is not displayed correctly in preview.
 * Fixed a relation field bug.
-* Changed SCF::get with multiple data in loop.
+* Changed return value of SCF::get with multiple data in loop.
 
 = 1.2.2 =
 * Fixed a bug that can not get the correct data when the posts use post id filtering.
