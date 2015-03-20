@@ -6,6 +6,7 @@ class SmartCustomFieldsTest extends WP_UnitTestCase {
 	public function setUp() {
 		parent::setUp();
 		$this->post_id = $this->factory->post->create();
+		$this->user_id = $this->factory->user->create( array( 'role' => 'editor' ) );
 		add_filter( 'smart-cf-register-fields', array( $this, '_register' ), 10, 4 );
 	}
 
@@ -155,6 +156,7 @@ class SmartCustomFieldsTest extends WP_UnitTestCase {
 	 * @backupStaticAttributes enabled
 	 */
 	public function test_get_field_when_exist() {
+		$this->go_to( $this->post_id );
 		$Field = SCF::get_field( 'post', 'text' );
 		$this->assertEquals( 'text', $Field->get( 'name' ) );
 	}
@@ -163,6 +165,7 @@ class SmartCustomFieldsTest extends WP_UnitTestCase {
 	 * @backupStaticAttributes enabled
 	 */
 	public function test_get_field_when_not_exist() {
+		$this->go_to( $this->post_id );
 		$Field = SCF::get_field( 'post', 'not_exist' );
 		$this->assertNull( $Field );
 	}
@@ -196,12 +199,7 @@ class SmartCustomFieldsTest extends WP_UnitTestCase {
 
 		$this->assertNull( SCF::get_settings_cache( false ) );
 
-		$settings       = SCF::get_settings( 'post', $this->post_id );
-		$settings_posts = SCF::get_settings_posts( 'post' );
-		foreach ( $settings_posts as $settings_post ) {
-			$Setting = SCF::add_setting( $settings_post->ID, $settings_post->post_title );
-			$this->assertEquals( $Setting, SCF::get_settings_cache( $settings_post->ID ) );
-		}
+		$settings = SCF::get_settings( 'post', $this->post_id );
 		foreach ( $settings as $Setting ) {
 			$this->assertTrue( in_array( $Setting->get_title(), array( 'test_settings', 'Register Test' ) ) );
 		}
@@ -211,71 +209,203 @@ class SmartCustomFieldsTest extends WP_UnitTestCase {
 	 * @backupStaticAttributes enabled
 	 */
 	public function test_get_settings_when_post_id_is_match() {
-		// TODO
+		$post_id = $this->factory->post->create( array(
+			'post_type'  => SCF_Config::NAME,
+			'post_title' => 'test_settings',
+		) );
+		$settings = SCF::get_settings( get_post_type( $this->post_id ), $this->post_id );
+		$this->assertTrue( is_a( $settings[0], 'Smart_Custom_Fields_Setting' ) );
 	}
 
 	/**
 	 * @backupStaticAttributes enabled
 	 */
 	public function test_get_settings_when_post_id_is_not_match() {
-		// TODO
+		$post_id = $this->factory->post->create( array(
+			'post_type'  => SCF_Config::NAME,
+			'post_title' => 'test_settings',
+		) );
+		$settings = SCF::get_settings( get_post_type( $this->post_id ), 99999 );
+		$this->assertEquals( array(), $settings );
 	}
 
 	/**
 	 * @backupStaticAttributes enabled
 	 */
 	public function test_get_settings_when_post_type_is_not_match() {
-		// TODO
+		$post_id = $this->factory->post->create( array(
+			'post_type'  => SCF_Config::NAME,
+			'post_title' => 'test_settings',
+		) );
+		$settings = SCF::get_settings( 'page', $this->post_id );
+		$this->assertEquals( array(), $settings );
 	}
 
 	/**
 	 * @backupStaticAttributes enabled
 	 */
 	public function test_get_settings_when_user_role_is_match() {
-		// TODO
+		$post_id = $this->factory->post->create( array(
+			'post_type'  => SCF_Config::NAME,
+			'post_title' => 'test_settings',
+		) );
+		$settings = SCF::get_settings( 'editor', $this->user_id );
+		$this->assertTrue( is_a( $settings[0], 'Smart_Custom_Fields_Setting' ) );
 	}
 
 	/**
 	 * @backupStaticAttributes enabled
 	 */
 	public function test_get_settings_when_user_role_is_not_match() {
-		// TODO
+		$post_id = $this->factory->post->create( array(
+			'post_type'  => SCF_Config::NAME,
+			'post_title' => 'test_settings',
+		) );
+		$settings = SCF::get_settings( 'administrator', $this->user_id );
+		$this->assertEquals( array(), $settings );
 	}
 
-	public function _register( $settings, $post_type, $post_id, $meta_type ) {
-		// TODO: $post_type と $post_id で制限をかける
+	/**
+	 * @backupStaticAttributes enabled
+	 */
+	public function test_get_settings_cache_when_post_type_is_match() {
+		$post_id = $this->factory->post->create( array(
+			'post_type'  => SCF_Config::NAME,
+			'post_title' => 'test_settings',
+		) );
+		update_post_meta( $post_id, SCF_Config::PREFIX . 'condition', array( 'post' ) );
+
+		// キャッシュに保存
+		$settings = SCF::get_settings( get_post_type( $this->post_id ), $this->post_id );
+
+		$Setting = SCF::get_settings_cache( $post_id );
+		$this->assertTrue( is_a( $Setting, 'Smart_Custom_Fields_Setting' ) );
+	}
+
+	/**
+	 * @backupStaticAttributes enabled
+	 */
+	public function test_get_settings_cache_when_post_type_is_not_match() {
+		$post_id = $this->factory->post->create( array(
+			'post_type'  => SCF_Config::NAME,
+			'post_title' => 'test_settings',
+		) );
+		update_post_meta( $post_id, SCF_Config::PREFIX . 'condition', array( 'page' ) );
+
+		// キャッシュに保存
+		$settings = SCF::get_settings( get_post_type( $this->post_id ), $this->post_id );
+
+		$Setting = SCF::get_settings_cache( $post_id );
+		$this->assertNull( $Setting );
+	}
+
+	/**
+	 * @backupStaticAttributes enabled
+	 */
+	public function test_get_settings_cache_when_post_id_is_match() {
+		$post_id = $this->factory->post->create( array(
+			'post_type'  => SCF_Config::NAME,
+			'post_title' => 'test_settings',
+		) );
+		update_post_meta( $post_id, SCF_Config::PREFIX . 'condition', array( 'post' ) );
+		update_post_meta( $post_id, SCF_Config::PREFIX . 'condition-post-ids', $this->post_id );
+
+		// キャッシュに保存
+		$settings = SCF::get_settings( get_post_type( $this->post_id ), $this->post_id );
+
+		$Setting = SCF::get_settings_cache( $post_id, 'post', $this->post_id );
+		$this->assertTrue( is_a( $Setting, 'Smart_Custom_Fields_Setting' ) );
+	}
+
+	/**
+	 * @backupStaticAttributes enabled
+	 */
+	public function test_get_settings_cache_when_post_id_is_not_match() {
+		$post_id = $this->factory->post->create( array(
+			'post_type'  => SCF_Config::NAME,
+			'post_title' => 'test_settings',
+		) );
+		update_post_meta( $post_id, SCF_Config::PREFIX . 'condition', array( 'post' ) );
+		update_post_meta( $post_id, SCF_Config::PREFIX . 'condition-post-ids', '99999' );
+
+		// キャッシュに保存
+		$settings = SCF::get_settings( get_post_type( $this->post_id ), $this->post_id );
+
+		$Setting = SCF::get_settings_cache( $post_id, 'post', $this->post_id );
+		$this->assertFalse( $Setting );
+	}
+
+	/**
+	 * @backupStaticAttributes enabled
+	 */
+	public function test_get_settings_cache_when_role_is_match() {
+		$post_id = $this->factory->post->create( array(
+			'post_type'  => SCF_Config::NAME,
+			'post_title' => 'test_settings',
+		) );
+		update_post_meta( $post_id, SCF_Config::PREFIX . 'roles', array( 'editor' ) );
+
+		// キャッシュに保存
+		$userdata = get_userdata( $this->user_id );
+		$settings = SCF::get_settings( $userdata->roles[0], $this->user_id );
+
+		$Setting = SCF::get_settings_cache( $post_id, 'user', $this->user_id );
+		$this->assertTrue( is_a( $Setting, 'Smart_Custom_Fields_Setting' ) );
+	}
+
+	/**
+	 * @backupStaticAttributes enabled
+	 */
+	public function test_get_settings_cache_when_role_is_not_match() {
+		$post_id = $this->factory->post->create( array(
+			'post_type'  => SCF_Config::NAME,
+			'post_title' => 'test_settings',
+		) );
+		update_post_meta( $post_id, SCF_Config::PREFIX . 'roles', array( 'administrator' ) );
+
+		// キャッシュに保存
+		$userdata = get_userdata( $this->user_id );
+		$settings = SCF::get_settings( $userdata->roles[0], $this->user_id );
+
+		$Setting = SCF::get_settings_cache( $post_id, 'user', $this->user_id );
+		$this->assertNull( $Setting );
+	}
+
+	public function _register( $settings, $type, $id, $meta_type ) {
 		// SCF::add_setting( 'ユニークなID', 'メタボックスのタイトル' );
-		$Setting = SCF::add_setting( 'id-1', 'Register Test' );
-		// $Setting->add_group( 'ユニークなID', 繰り返し可能か, カスタムフィールドの配列 );
-		$Setting->add_group( 'group-name-1', false, array(
-			array(
-				'name'  => 'text',
-				'label' => 'text field',
-				'type'  => 'text',
-			),
-		) );
-		$Setting->add_group( 'group-name-2', false, array(
-			array(
-				'name'    => 'checkbox',
-				'label'   => 'checkbox field',
-				'type'    => 'check',
-				'choices' => array( 1, 2, 3 ),
-			),
-		) );
-		$Setting->add_group( 'group-name-3', true, array(
-			array(
-				'name'  => 'text3',
-				'label' => 'text field 3',
-				'type'  => 'text',
-			),
-			array(
-				'name'    => 'checkbox3',
-				'label'   => 'checkbox field 3',
-				'type'    => 'check',
-				'choices' => array( 1, 2, 3 ),
-			),
-		) );
-		$settings[] = $Setting;
+		if ( ( $type === 'post' && $id === $this->post_id ) || ( $type === 'editor' ) ) {
+			$Setting = SCF::add_setting( 'id-1', 'Register Test' );
+			// $Setting->add_group( 'ユニークなID', 繰り返し可能か, カスタムフィールドの配列 );
+			$Setting->add_group( 'group-name-1', false, array(
+				array(
+					'name'  => 'text',
+					'label' => 'text field',
+					'type'  => 'text',
+				),
+			) );
+			$Setting->add_group( 'group-name-2', false, array(
+				array(
+					'name'    => 'checkbox',
+					'label'   => 'checkbox field',
+					'type'    => 'check',
+					'choices' => array( 1, 2, 3 ),
+				),
+			) );
+			$Setting->add_group( 'group-name-3', true, array(
+				array(
+					'name'  => 'text3',
+					'label' => 'text field 3',
+					'type'  => 'text',
+				),
+				array(
+					'name'    => 'checkbox3',
+					'label'   => 'checkbox field 3',
+					'type'    => 'check',
+					'choices' => array( 1, 2, 3 ),
+				),
+			) );
+			$settings[] = $Setting;
+		}
 		return $settings;
 	}
 }
