@@ -90,7 +90,10 @@ class Smart_Custom_Fields {
 		// その他の新規作成・編集画面
 		elseif ( in_array( $screen->id, get_post_types() ) ) {
 			$post_id = $this->get_post_id_in_admin();
-			if ( SCF::get_settings( $screen->id, $post_id ) ) {
+			$Post = new stdClass();
+			$Post->ID        = $post_id;
+			$Post->post_type = $screen->id;
+			if ( SCF::get_settings( new WP_Post( $Post ) ) ) {
 				require_once plugin_dir_path( __FILE__ ) . 'classes/controller/class.editor.php';
 				new Smart_Custom_Fields_Revisions();
 				new Smart_Custom_Fields_Controller_Editor();
@@ -104,7 +107,7 @@ class Smart_Custom_Fields {
 			if ( $user_data ) {
 				$roles = $user_data->roles;
 			}
-			if ( SCF::get_settings( $roles[0], $user_id ) ) {
+			if ( SCF::get_settings( get_userdata( $user_id ) ) ) {
 				require_once plugin_dir_path( __FILE__ ) . 'classes/controller/class.editor.php';
 				require_once plugin_dir_path( __FILE__ ) . 'classes/controller/class.profile.php';
 				new Smart_Custom_Fields_Controller_Profile();

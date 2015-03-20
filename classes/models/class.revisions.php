@@ -42,43 +42,42 @@ class Smart_Custom_Fields_Revisions {
 	public function wp_restore_post_revision( $post_id, $revision_id ) {
 		$post      = get_post( $post_id );
 		$revision  = get_post( $revision_id );
-		$post_type = get_post_type( $post_id );
 
-		$Meta = new Smart_Custom_Fields_Meta( $post_type );
+		$Meta = new Smart_Custom_Fields_Meta( get_post( $post_id ) );
 
-		$settings = SCF::get_settings( $post_type, $post_id );
+		$settings = SCF::get_settings( get_post( $post_id ) );
 		foreach ( $settings as $Setting ) {
 			$groups = $Setting->get_groups();
 			foreach ( $groups as $Group ) {
 				$fields = $Group->get_fields();
 				foreach ( $fields as $Field ) {
 					$field_name = $Field->get( 'name' );
-					$Meta->delete( $post->ID, $field_name );
+					$Meta->delete( $field_name );
 					$value = SCF::get( $field_name, $revision->ID );
 					if ( is_array( $value ) ) {
 						foreach ( $value as $val ) {
 							if ( is_array( $val ) ) {
 								foreach ( $val as $v ) {
 									// ループ内複数値項目
-									$Meta->add( $post->ID, $field_name, $v );
+									$Meta->add( $field_name, $v );
 								}
 							} else {
 								// ループ内単一項目 or ループ外複数値項目
-								$Meta->add( $post->ID, $field_name, $val );
+								$Meta->add( $field_name, $val );
 							}
 						}
 					} else {
 						// ループ外単一項目
-						$Meta->add( $post->ID, $field_name, $value );
+						$Meta->add( $field_name, $value );
 					}
 				}
 			}
 		}
 
 		$repeat_multiple_data_name = SCF_Config::PREFIX . 'repeat-multiple-data';
-		$repeat_multiple_data = $Meta->get( $revision->ID, $repeat_multiple_data_name, true );
-		$Meta->delete( $post->ID, $repeat_multiple_data_name );
-		$Meta->update( $post->ID, $repeat_multiple_data_name, $repeat_multiple_data );
+		$repeat_multiple_data = SCF::get_repeat_multiple_data( $revision );
+		$Meta->delete( $repeat_multiple_data_name );
+		$Meta->update( $repeat_multiple_data_name, $repeat_multiple_data );
 	}
 
 	/**
@@ -94,8 +93,7 @@ class Smart_Custom_Fields_Revisions {
 		if ( !wp_is_post_revision( $post_id ) ) {
 			return;
 		}
-		$post_type = SCF::get_public_post_type( $post_id );
-		$settings  = SCF::get_settings( $post_type, $post_id );
+		$settings  = SCF::get_settings( get_post( $post_id ) );
 		if ( !$settings ) {
 			return;
 		}
@@ -105,7 +103,7 @@ class Smart_Custom_Fields_Revisions {
 			SCF_Config::PREFIX . 'fields-nonce'
 		);
 
-		$Meta = new Smart_Custom_Fields_Meta( $post_type );
+		$Meta = new Smart_Custom_Fields_Meta( get_post( $post_id ) );
 
 		// 繰り返しフィールドのチェックボックスは、普通のチェックボックスと混ざって
 		// 判別できなくなるのでわかるように保存しておく
@@ -114,14 +112,14 @@ class Smart_Custom_Fields_Revisions {
 		// チェックボックスが未入力のときは "" がくるので、それは保存しないように判別
 		$multiple_data_fields = array();
 
-		$settings = SCF::get_settings( $post_type, $post_id );
+		$settings = SCF::get_settings( get_post( $post_id ) );
 		foreach ( $settings as $Setting ) {
 			$groups = $Setting->get_groups();
 			foreach ( $groups as $Group ) {
 				$fields = $Group->get_fields();
 				foreach ( $fields as $Field ) {
 					$field_name = $Field->get( 'name' );
-					$Meta->delete( $post_id, $field_name );
+					$Meta->delete( $field_name );
 					if ( $Field->get_attribute( 'allow-multiple-data' ) ) {
 						$multiple_data_fields[] = $field_name;
 					}
@@ -140,9 +138,9 @@ class Smart_Custom_Fields_Revisions {
 			}
 		}
 
-		$Meta->delete( $post_id, SCF_Config::PREFIX . 'repeat-multiple-data' );
+		$Meta->delete( SCF_Config::PREFIX . 'repeat-multiple-data' );
 		if ( $repeat_multiple_data ) {
-			$Meta->update( $post_id, SCF_Config::PREFIX . 'repeat-multiple-data', $repeat_multiple_data );
+			$Meta->update( SCF_Config::PREFIX . 'repeat-multiple-data', $repeat_multiple_data );
 		}
 
 		foreach ( $_POST[SCF_Config::NAME] as $name => $values ) {
@@ -150,10 +148,10 @@ class Smart_Custom_Fields_Revisions {
 				if ( in_array( $name, $multiple_data_fields ) && $value === '' )
 					continue;
 				if ( !is_array( $value ) ) {
-					$Meta->add( $post_id, $name, $value );
+					$Meta->add( $name, $value );
 				} else {
 					foreach ( $value as $val ) {
-						$Meta->add( $post_id, $name, $val );
+						$Meta->add( $name, $val );
 					}
 				}
 			}

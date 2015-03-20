@@ -39,7 +39,7 @@ class Smart_Custom_Fields_Controller_Profile extends Smart_Custom_Fields_Control
 	 */
 	public function user_profile( $user ) {
 		printf( '<h3>%s</h3>', esc_html__( 'Custom Fields', 'smart-custom-fields' ) );
-		$settings = SCF::get_settings( $user->roles[0], $user->ID );
+		$settings = SCF::get_settings( $user );
 		foreach ( $settings as $Setting ) {
 			$callback_args['args'] = $Setting->get_groups();
 			?>
@@ -67,7 +67,7 @@ class Smart_Custom_Fields_Controller_Profile extends Smart_Custom_Fields_Control
 		}
 
 		$user_data = get_userdata( $user_id );
-		$this->save( $_POST, $user_data->roles[0], $user_id );
+		$this->save( $_POST, get_userdata( $user_id ) );
 	}
 
 	/**
@@ -96,17 +96,5 @@ class Smart_Custom_Fields_Controller_Profile extends Smart_Custom_Fields_Control
 	 */
 	protected function get_post_status( $user_id ) {
 		return 'auto-draft';
-	}
-
-	/**
-	 * display_meta_box 用のロールを返す
-	 *
-	 * @param WP_User $object
-	 * @return string
-	 */
-	protected function get_type_for_display_meta_box( $object ) {
-		if ( !empty( $object->roles[0] ) ) {
-			return $object->roles[0];
-		}
 	}
 }

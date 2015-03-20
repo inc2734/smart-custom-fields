@@ -30,6 +30,7 @@ class SmartCustomFieldsTest extends WP_UnitTestCase {
 
 	/**
 	 * @backupStaticAttributes enabled
+	 * @group get
 	 */
 	public function test_get_Post_IDが取得できないときはnull() {
 		$this->assertNull( SCF::get( 'text', false ) );
@@ -40,9 +41,10 @@ class SmartCustomFieldsTest extends WP_UnitTestCase {
 
 	/**
 	 * @backupStaticAttributes enabled
+	 * @group get
 	 */
 	public function test_get_メタデータが保存されていないときは空値() {
-		$this->assertSame( '', SCF::get( 'text', $this->post_id ) );
+		$this->assertSame( ''     , SCF::get( 'text', $this->post_id ) );
 		$this->assertSame( array(), SCF::get( 'text3', $this->post_id ) );
 		$this->assertSame( array(), SCF::get( 'checkbox', $this->post_id ) );
 		$this->assertSame( array(), SCF::get( 'checkbox3', $this->post_id ) );
@@ -63,6 +65,7 @@ class SmartCustomFieldsTest extends WP_UnitTestCase {
 
 	/**
 	 * @backupStaticAttributes enabled
+	 * @group get
 	 */
 	public function test_get_存在しないカスタムフィールドの場合はnull() {
 		$this->assertNull( SCF::get( 'not_exist', $this->post_id ) );
@@ -70,6 +73,7 @@ class SmartCustomFieldsTest extends WP_UnitTestCase {
 
 	/**
 	 * @backupStaticAttributes enabled
+	 * @group gets
 	 */
 	public function test_gets_Post_IDが取得できないときはnull() {
 		$this->assertNull( SCF::gets( false ) );
@@ -77,6 +81,7 @@ class SmartCustomFieldsTest extends WP_UnitTestCase {
 
 	/**
 	 * @backupStaticAttributes enabled
+	 * @group get_user_meta
 	 */
 	public function test_get_user_meta_User_IDが取得できないときはnull() {
 		$this->assertNull( SCF::get_user_meta( false, 'text' ) );
@@ -88,9 +93,10 @@ class SmartCustomFieldsTest extends WP_UnitTestCase {
 
 	/**
 	 * @backupStaticAttributes enabled
+	 * @group get_user_meta
 	 */
 	public function test_get_user_meta_メタデータが保存されていないときは空値() {
-		$this->assertSame( '', SCF::get_user_meta( $this->user_id, 'text' ) );
+		$this->assertSame( ''     , SCF::get_user_meta( $this->user_id, 'text' ) );
 		$this->assertSame( array(), SCF::get_user_meta( $this->user_id, 'text3' ) );
 		$this->assertSame( array(), SCF::get_user_meta( $this->user_id, 'checkbox' ) );
 		$this->assertSame( array(), SCF::get_user_meta( $this->user_id, 'checkbox3' ) );
@@ -111,6 +117,7 @@ class SmartCustomFieldsTest extends WP_UnitTestCase {
 
 	/**
 	 * @backupStaticAttributes enabled
+	 * @group get_user_meta
 	 */
 	public function test_get_user_meta_存在しないカスタムフィールドの場合はnull() {
 		$this->assertNull( SCF::get_user_meta( $this->user_id, 'not_exist' ) );
@@ -118,6 +125,7 @@ class SmartCustomFieldsTest extends WP_UnitTestCase {
 
 	/**
 	 * @backupStaticAttributes enabled
+	 * @group get
 	 */
 	public function test_get_非繰り返し内の単一値項目() {
 		update_post_meta( $this->post_id, 'text', 'hoge' );
@@ -126,6 +134,7 @@ class SmartCustomFieldsTest extends WP_UnitTestCase {
 
 	/**
 	 * @backupStaticAttributes enabled
+	 * @group get
 	 */
 	public function test_get_非繰り返し内の複数値項目() {
 		add_post_meta( $this->post_id, 'checkbox', 1 );
@@ -140,6 +149,7 @@ class SmartCustomFieldsTest extends WP_UnitTestCase {
 
 	/**
 	 * @backupStaticAttributes enabled
+	 * @group get
 	 */
 	public function test_get_繰り返し内の単一値項目() {
 		add_post_meta( $this->post_id, 'text3', 1 );
@@ -152,6 +162,7 @@ class SmartCustomFieldsTest extends WP_UnitTestCase {
 
 	/**
 	 * @backupStaticAttributes enabled
+	 * @group get
 	 */
 	public function test_get_繰り返し内の複数値項目() {
 		// ループ内のチェックボックス（複数値項目）は必ずこのメタデータを持つ
@@ -173,6 +184,7 @@ class SmartCustomFieldsTest extends WP_UnitTestCase {
 
 	/**
 	 * @backupStaticAttributes enabled
+	 * @group gets
 	 */
 	public function test_gets() {
 		update_post_meta( $this->post_id, 'text', 'hoge' );
@@ -211,6 +223,7 @@ class SmartCustomFieldsTest extends WP_UnitTestCase {
 
 	/**
 	 * @backupStaticAttributes enabled
+	 * @group get_user_meta
 	 */
 	public function test_get_user_meta_繰り返し内の単一値項目() {
 		add_user_meta( $this->user_id, 'text3', 1 );
@@ -223,6 +236,7 @@ class SmartCustomFieldsTest extends WP_UnitTestCase {
 
 	/**
 	 * @backupStaticAttributes enabled
+	 * @group get_user_meta
 	 */
 	public function test_get_user_meta_繰り返し内の複数値項目() {
 		// ループ内のチェックボックス（複数値項目）は必ずこのメタデータを持つ
@@ -282,6 +296,7 @@ class SmartCustomFieldsTest extends WP_UnitTestCase {
 
 	/**
 	 * @backupStaticAttributes enabled
+	 * @group get_field
 	 */
 	public function test_get_field_フィールドが存在しないときはnull() {
 		$this->go_to( $this->post_id );
@@ -291,6 +306,7 @@ class SmartCustomFieldsTest extends WP_UnitTestCase {
 
 	/**
 	 * @backupStaticAttributes enabled
+	 * @group get_field
 	 */
 	public function test_get_field_フィールドが存在する() {
 		$this->go_to( $this->post_id );
@@ -308,7 +324,7 @@ class SmartCustomFieldsTest extends WP_UnitTestCase {
 		) );
 		update_post_meta( $post_id, SCF_Config::PREFIX . 'condition', array( 'post' ) );
 
-		$settings_posts = SCF::get_settings_posts( 'post' );
+		$settings_posts = SCF::get_settings_posts( get_post( $post_id ) );
 		foreach ( $settings_posts as $settings_post ) {
 			$this->assertEquals( 'test_settings_post', $settings_post->post_title );
 		}
@@ -324,10 +340,10 @@ class SmartCustomFieldsTest extends WP_UnitTestCase {
 		) );
 		update_post_meta( $post_id, SCF_Config::PREFIX . 'condition', array( 'post' ) );
 
-		$this->assertNull( SCF::get_settings_posts_cache( 'post' ) );
+		$this->assertNull( SCF::get_settings_posts_cache( get_post( $post_id ) ) );
 
-		$settings_posts = SCF::get_settings_posts( 'post' );
-		$settings_posts_cache = SCF::get_settings_posts_cache( 'post' );
+		$settings_posts = SCF::get_settings_posts( get_post( $post_id ) );
+		$settings_posts_cache = SCF::get_settings_posts_cache( get_post( $post_id ) );
 		foreach ( $settings_posts_cache as $settings_post ) {
 			$this->assertEquals( 'test_settings_post', $settings_post->post_title );
 		}
@@ -343,7 +359,7 @@ class SmartCustomFieldsTest extends WP_UnitTestCase {
 		) );
 		update_post_meta( $post_id, SCF_Config::PREFIX . 'condition', array( 'post' ) );
 
-		$settings = SCF::get_settings( 'post', $this->post_id );
+		$settings = SCF::get_settings( get_post( $this->post_id ) );
 		foreach ( $settings as $Setting ) {
 			$this->assertTrue( in_array( $Setting->get_title(), array( 'test_settings', 'Register Test' ) ) );
 		}
@@ -351,6 +367,7 @@ class SmartCustomFieldsTest extends WP_UnitTestCase {
 
 	/**
 	 * @backupStaticAttributes enabled
+	 * @group get_settings
 	 */
 	public function test_get_settings_投稿タイプとPost_IDが一致する() {
 		$post_id = $this->factory->post->create( array(
@@ -358,7 +375,7 @@ class SmartCustomFieldsTest extends WP_UnitTestCase {
 			'post_title' => 'test_settings',
 		) );
 
-		$settings = SCF::get_settings( get_post_type( $this->post_id ), $this->post_id );
+		$settings = SCF::get_settings( get_post( $this->post_id ) );
 		foreach ( $settings as $Setting ) {
 			$this->assertTrue( is_a( $Setting, 'Smart_Custom_Fields_Setting' ) );
 		}
@@ -366,33 +383,7 @@ class SmartCustomFieldsTest extends WP_UnitTestCase {
 
 	/**
 	 * @backupStaticAttributes enabled
-	 */
-	public function test_get_settings_投稿タイプは一致するがPost_IDは一致しない_管理画面で設定なし() {
-		$post_id = $this->factory->post->create( array(
-			'post_type'  => SCF_Config::NAME,
-			'post_title' => 'test_settings',
-		) );
-
-		$settings = SCF::get_settings( get_post_type( $this->post_id ), 99999 );
-		$this->assertSame( array(), $settings );
-	}
-
-	/**
-	 * @backupStaticAttributes enabled
-	 */
-	public function test_get_settings_投稿タイプは一致するがPost_IDは一致しない_管理画面で設定あり() {
-		$post_id = $this->factory->post->create( array(
-			'post_type'  => SCF_Config::NAME,
-			'post_title' => 'test_settings',
-		) );
-		update_post_meta( $post_id, SCF_Config::PREFIX . 'condition', array( 'post' ) );
-
-		$settings = SCF::get_settings( get_post_type( $this->post_id ), 99999 );
-		$this->assertTrue( is_a( current( $settings ), 'Smart_Custom_Fields_Setting' ) );
-	}
-
-	/**
-	 * @backupStaticAttributes enabled
+	 * @group get_settings
 	 */
 	public function test_get_settings_投稿タイプが一致しない() {
 		$post_id = $this->factory->post->create( array(
@@ -400,12 +391,13 @@ class SmartCustomFieldsTest extends WP_UnitTestCase {
 			'post_title' => 'test_settings',
 		) );
 
-		$settings = SCF::get_settings( 'page', $this->post_id );
+		$settings = SCF::get_settings( get_post( 99999 ) );
 		$this->assertSame( array(), $settings );
 	}
 
 	/**
 	 * @backupStaticAttributes enabled
+	 * @group get_settings
 	 */
 	public function test_get_settings_ロールが一致する() {
 		$post_id = $this->factory->post->create( array(
@@ -413,12 +405,13 @@ class SmartCustomFieldsTest extends WP_UnitTestCase {
 			'post_title' => 'test_settings',
 		) );
 
-		$settings = SCF::get_settings( 'editor', $this->user_id );
+		$settings = SCF::get_settings( get_userdata( $this->user_id ) );
 		$this->assertTrue( is_a( current( $settings ), 'Smart_Custom_Fields_Setting' ) );
 	}
 
 	/**
 	 * @backupStaticAttributes enabled
+	 * @group get_settings
 	 */
 	public function test_get_settings_ロールが一致しない() {
 		$post_id = $this->factory->post->create( array(
@@ -426,12 +419,13 @@ class SmartCustomFieldsTest extends WP_UnitTestCase {
 			'post_title' => 'test_settings',
 		) );
 
-		$settings = SCF::get_settings( 'administrator', $this->user_id );
+		$settings = SCF::get_settings( get_userdata( 99999 ) );
 		$this->assertSame( array(), $settings );
 	}
 
 	/**
 	 * @backupStaticAttributes enabled
+	 * @group get_settings_cache
 	 */
 	public function test_get_settings_cache_投稿タイプが一致する() {
 		$post_id = $this->factory->post->create( array(
@@ -441,7 +435,7 @@ class SmartCustomFieldsTest extends WP_UnitTestCase {
 		update_post_meta( $post_id, SCF_Config::PREFIX . 'condition', array( 'post' ) );
 
 		// キャッシュに保存
-		$settings = SCF::get_settings( get_post_type( $this->post_id ), $this->post_id );
+		$settings = SCF::get_settings( get_post( $this->post_id ) );
 
 		$Setting = SCF::get_settings_cache( $post_id );
 		$this->assertTrue( is_a( $Setting, 'Smart_Custom_Fields_Setting' ) );
@@ -449,6 +443,7 @@ class SmartCustomFieldsTest extends WP_UnitTestCase {
 
 	/**
 	 * @backupStaticAttributes enabled
+	 * @group get_settings_cache
 	 */
 	public function test_get_settings_cache_投稿タイプが一致しない() {
 		$post_id = $this->factory->post->create( array(
@@ -458,7 +453,7 @@ class SmartCustomFieldsTest extends WP_UnitTestCase {
 		update_post_meta( $post_id, SCF_Config::PREFIX . 'condition', array( 'page' ) );
 
 		// キャッシュに保存
-		$settings = SCF::get_settings( get_post_type( $this->post_id ), $this->post_id );
+		$settings = SCF::get_settings( get_post( $this->post_id ) );
 
 		$Setting = SCF::get_settings_cache( $post_id );
 		$this->assertNull( $Setting );
@@ -466,6 +461,7 @@ class SmartCustomFieldsTest extends WP_UnitTestCase {
 
 	/**
 	 * @backupStaticAttributes enabled
+	 * @group get_settings_cache
 	 */
 	public function test_get_settings_cache_投稿タイプとPost_IDが一致する() {
 		$post_id = $this->factory->post->create( array(
@@ -476,14 +472,15 @@ class SmartCustomFieldsTest extends WP_UnitTestCase {
 		update_post_meta( $post_id, SCF_Config::PREFIX . 'condition-post-ids', $this->post_id );
 
 		// キャッシュに保存
-		$settings = SCF::get_settings( get_post_type( $this->post_id ), $this->post_id );
+		$settings = SCF::get_settings( get_post( $this->post_id ) );
 
-		$Setting = SCF::get_settings_cache( $post_id, 'post', $this->post_id );
+		$Setting = SCF::get_settings_cache( $post_id, get_post( $this->post_id ) );
 		$this->assertTrue( is_a( $Setting, 'Smart_Custom_Fields_Setting' ) );
 	}
 
 	/**
 	 * @backupStaticAttributes enabled
+	 * @group get_settings_cache
 	 */
 	public function test_get_settings_cache_投稿タイプは一致するがPost_IDは一致しない() {
 		$post_id = $this->factory->post->create( array(
@@ -494,14 +491,15 @@ class SmartCustomFieldsTest extends WP_UnitTestCase {
 		update_post_meta( $post_id, SCF_Config::PREFIX . 'condition-post-ids', '99999' );
 
 		// キャッシュに保存
-		$settings = SCF::get_settings( get_post_type( $this->post_id ), $this->post_id );
+		$settings = SCF::get_settings( get_post( $this->post_id ) );
 
-		$Setting = SCF::get_settings_cache( $post_id, 'post', $this->post_id );
+		$Setting = SCF::get_settings_cache( $post_id, get_post( $this->post_id ) );
 		$this->assertFalse( $Setting );
 	}
 
 	/**
 	 * @backupStaticAttributes enabled
+	 * @group get_settings_cache
 	 */
 	public function test_get_settings_cache_ロールが一致する() {
 		$post_id = $this->factory->post->create( array(
@@ -511,15 +509,15 @@ class SmartCustomFieldsTest extends WP_UnitTestCase {
 		update_post_meta( $post_id, SCF_Config::PREFIX . 'roles', array( 'editor' ) );
 
 		// キャッシュに保存
-		$userdata = get_userdata( $this->user_id );
-		$settings = SCF::get_settings( $userdata->roles[0], $this->user_id );
+		$settings = SCF::get_settings( get_userdata( $this->user_id ) );
 
-		$Setting = SCF::get_settings_cache( $post_id, 'user', $this->user_id );
+		$Setting = SCF::get_settings_cache( $post_id, get_userdata( $this->user_id ) );
 		$this->assertTrue( is_a( $Setting, 'Smart_Custom_Fields_Setting' ) );
 	}
 
 	/**
 	 * @backupStaticAttributes enabled
+	 * @group get_settings_cache
 	 */
 	public function test_get_settings_cache_when_ロールが一致しない() {
 		$post_id = $this->factory->post->create( array(
@@ -529,10 +527,9 @@ class SmartCustomFieldsTest extends WP_UnitTestCase {
 		update_post_meta( $post_id, SCF_Config::PREFIX . 'roles', array( 'administrator' ) );
 
 		// キャッシュに保存
-		$userdata = get_userdata( $this->user_id );
-		$settings = SCF::get_settings( $userdata->roles[0], $this->user_id );
+		$settings = SCF::get_settings( get_userdata( $this->user_id ) );
 
-		$Setting = SCF::get_settings_cache( $post_id, 'user', $this->user_id );
+		$Setting = SCF::get_settings_cache( $post_id, get_userdata( $this->user_id ) );
 		$this->assertNull( $Setting );
 	}
 
@@ -588,9 +585,87 @@ class SmartCustomFieldsTest extends WP_UnitTestCase {
 		$this->assertNull( $Revision->wp_insert_post( $this->post_id ) );
 	}
 
+	/**
+	 * @group get_type
+	 */
+	public function test_get_type_objectが空のときはnull() {
+		$object = null;
+		$Meta = new Smart_Custom_Fields_Meta( $object );
+		$type = $Meta->get_type();
+		$this->assertNull( $type );
+	}
 
+	/**
+	 * @group get_type
+	 */
+	public function test_get_type_objectがpost() {
+		$object = get_post( $this->post_id );
+		$Meta = new Smart_Custom_Fields_Meta( $object );
+		$type = $Meta->get_type();
+		$this->assertEquals( get_post_type( $this->post_id ), $type );
+	}
 
+	/**
+	 * @group get_type
+	 */
+	public function test_get_type_objectが存在しないpostのときはnull() {
+		$object = get_post( 99999 );
+		$Meta = new Smart_Custom_Fields_Meta( $object );
+		$type = $Meta->get_type();
+		$this->assertNull( $type );
+	}
 
+	/**
+	 * @group get_type
+	 */
+	public function test_get_type_objectがpost_typeを持っている() {
+		$Post = new stdClass();
+		$Post->post_type = 'my-post-type';
+		$object = new WP_Post( $Post );
+		$Meta = new Smart_Custom_Fields_Meta( $object );
+		$type = $Meta->get_type();
+		$this->assertEquals( 'my-post-type', $type );
+	}
+
+	/**
+	 * @group get_type
+	 */
+	public function test_get_type_objectがrevisoinのときはrevision() {
+		$object = get_post( $this->revision_id );
+		$Meta = new Smart_Custom_Fields_Meta( $object );
+		$type = $Meta->get_type();
+		$this->assertEquals( get_post_type( $this->revision_id ), $type );
+	}
+
+	/**
+	 * @group get_type
+	 */
+	public function test_get_type_objectがrevisionでaccept_revisionがfalseのときは親投稿のpost_tye() {
+		$object = get_post( $this->revision_id );
+		$Meta = new Smart_Custom_Fields_Meta( $object );
+		$type = $Meta->get_type( false );
+		$this->assertEquals( get_post_type( wp_is_post_revision( $this->revision_id ) ), $type );
+	}
+
+	/**
+	 * @group get_type
+	 */
+	public function test_get_type_objectがeditor() {
+		$object = get_userdata( $this->user_id );
+		$Meta = new Smart_Custom_Fields_Meta( $object );
+		$type = $Meta->get_type();
+		$this->assertEquals( 'editor', $type );
+	}
+
+	/**
+	 * @group get_type
+	 */
+	public function test_get_type_objectが存在しないロールのときはnull() {
+		$object = get_userdata( 99999 );
+		$Meta = new Smart_Custom_Fields_Meta( $object );
+		$type = $Meta->get_type();
+		$this->assertNull( $type );
+	}
 
 	/**
 	 * フック経由でカスタムフィールドを設定

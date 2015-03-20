@@ -60,11 +60,9 @@ class SCF {
 			return null;
 		}
 
-		$post_type = self::get_public_post_type( $post_id );
-
 		// 設定画面で未設定のメタデータは投稿が保持していても出力しないようにしないといけないので
 		// 設定データを取得して出力して良いか判別する
-		return self::get_all_meta( $post_type, $post_id );
+		return self::get_all_meta( get_post( $post_id ) );
 	}
 
 	/**
@@ -84,11 +82,9 @@ class SCF {
 			return;
 		}
 
-		$post_type = self::get_public_post_type( $post_id );
-
 		// 設定画面で未設定のメタデータは投稿が保持していても出力しないようにしないといけないので
 		// 設定データを取得して出力して良いか判別する
-		return self::get_meta( $post_type, $post_id, $name );
+		return self::get_meta( get_post( $post_id ), $name );
 	}
 
 	/**
@@ -103,36 +99,32 @@ class SCF {
 			return;
 		}
 
-		$user_data = get_userdata( $user_id );
-		$role      = $user_data->roles[0];
-
 		// $name が null のときは全てのメタデータを返す
 		if ( $name === null ) {
-			return self::get_all_meta( $role, $user_id );
+			return self::get_all_meta( get_userdata( $user_id ) );
 		}
 
 		// 設定画面で未設定のメタデータはユーザーが保持していても出力しないようにしないといけないので
 		// 設定データを取得して出力して良いか判別する
-		return self::get_meta( $role, $user_id, $name );
+		return self::get_meta( get_userdata( $user_id ), $name );
 	}
 
 	/**
 	 * 任意のメタデータを良い感じに取得
 	 * 
-	 * @param string $type 投稿タイプ or ロール
-	 * @param int $id 投稿ID or ユーザーID
+	 * @param WP_Post|WP_User $object
 	 * @param string $name グループ名もしくはフィールド名
 	 * @return mixed
 	 */
-	protected static function get_meta( $type, $id, $name ) {
-		if ( self::get_cache( $type, $id, $name ) ) {
-			self::debug_cache_message( "use get cache. [id: {$id}] [name: {$name}]" );
-			return self::get_cache( $type, $id, $name );
+	protected static function get_meta( $object, $name ) {
+		if ( self::get_cache( $object, $name ) ) {
+			self::debug_cache_message( "use get cache. [name: {$name}]" );
+			return self::get_cache( $object, $name );
 		} else {
-			self::debug_cache_message( "dont use get cache... [id: {$id}] [name: {$name}]" );
+			self::debug_cache_message( "dont use get cache... [name: {$name}]" );
 		}
 
-		$settings = self::get_settings( $type, $id );
+		$settings = self::get_settings( $object );
 		foreach ( $settings as $Setting ) {
 			$groups = $Setting->get_groups();
 			foreach ( $groups as $Group ) {
@@ -140,8 +132,8 @@ class SCF {
 				$is_repeatable = $Group->is_repeatable();
 				$group_name    = $Group->get_name();
 				if ( $is_repeatable && $group_name && $group_name === $name ) {
-					$values_by_group = self::get_values_by_group( $type, $id, $Group );
-					self::save_cache( $type, $id, $Group->get_name(), $values_by_group );
+					$values_by_group = self::get_values_by_group( $object, $Group );
+					self::save_cache( $object, $Group->get_name(), $values_by_group );
 					return $values_by_group;
 				}
 				// グループ名と一致しない場合は一致するフィールドを返す
@@ -150,8 +142,8 @@ class SCF {
 					foreach ( $fields as $Field ) {
 						$field_name = $Field->get( 'name' );
 						if ( $field_name === $name ) {
-							$value_by_field = self::get_value_by_field( $type, $id, $Field, $is_repeatable );
-							self::save_cache( $type, $id, $Field->get( 'name' ), $value_by_field );
+							$value_by_field = self::get_value_by_field( $object, $Field, $is_repeatable );
+							self::save_cache( $object, $Field->get( 'name' ), $value_by_field );
 							return $value_by_field;
 						}
 					}
@@ -163,12 +155,11 @@ class SCF {
 	/**
 	 * 全てのメタデータを良い感じに取得
 	 * 
-	 * @param string $type 投稿タイプ or ロール
-	 * @param int $id 投稿ID or ユーザーID
+	 * @param WP_Post|WP_User $object
 	 * @return mixed
 	 */
-	protected static function get_all_meta( $type, $id ) {
-		$settings  = self::get_settings( $type, $id );
+	protected static function get_all_meta( $object ) {
+		$settings  = self::get_settings( $object );
 		$post_meta = array();
 		foreach ( $settings as $Setting ) {
 			$groups = $Setting->get_groups();
@@ -176,37 +167,22 @@ class SCF {
 				$is_repeatable = $Group->is_repeatable();
 				$group_name    = $Group->get_name();
 				if ( $is_repeatable && $group_name ) {
-					$values_by_group = self::get_values_by_group( $type, $id, $Group );
-					self::save_cache( $type, $id, $Group->get_name(), $values_by_group );
+					$values_by_group = self::get_values_by_group( $object, $Group );
+					self::save_cache( $object, $Group->get_name(), $values_by_group );
 					$post_meta[$group_name] = $values_by_group;
 				}
 				else {
 					$fields = $Group->get_fields();
 					foreach ( $fields as $Field ) {
 						$field_name = $Field->get( 'name' );
-						$value_by_field = self::get_value_by_field( $type, $id, $Field, $is_repeatable );
-						self::save_cache( $type, $id, $Field->get( 'name' ), $value_by_field );
+						$value_by_field = self::get_value_by_field( $object, $Field, $is_repeatable );
+						self::save_cache( $object, $Field->get( 'name' ), $value_by_field );
 						$post_meta[$field_name] = $value_by_field;
 					}
 				}
 			}
 		}
 		return $post_meta;
-	}
-
-	/**
-	 * Post ID がリビジョンのものでも良い感じに投稿タイプを取得
-	 * 
-	 * @param int $post_id
-	 * @return string
-	 */
-	public static function get_public_post_type( $post_id ) {
-		if ( $public_post_id = wp_is_post_revision( $post_id ) ) {
-			$post_type = get_post_type( $public_post_id );
-		} else {
-			$post_type = get_post_type( $post_id );
-		}
-		return $post_type;
 	}
 
 	/**
@@ -228,31 +204,39 @@ class SCF {
 	/**
 	 * キャシュに保存
 	 * 
-	 * @param string $type 投稿タイプ or ロール
-	 * @param int $id 投稿ID or ユーザーID
+	 * @param WP_Post|WP_User $object
 	 * @param string $name
 	 * @param mixed $data
 	 */
-	protected static function save_cache( $type, $id, $name, $data ) {
-		self::$cache[$type . '_' . $id][$name] = $data;
+	protected static function save_cache( $object, $name, $data ) {
+		$Meta = new Smart_Custom_Fields_Meta( $object );
+		$id   = $Meta->get_id();
+		$type = $Meta->get_type();
+		if ( !empty( $id ) && !empty( $type ) ) {
+			self::$cache[$type . '_' . $id][$name] = $data;
+		}
 	}
 
 	/**
 	 * キャッシュを取得
 	 * 
-	 * @param string $type 投稿タイプ or ロール
-	 * @param int $id 投稿ID or ユーザーID
+	 * @param WP_Post|WP_User $object
 	 * @param string $name
 	 * @return mixed
 	 */
-	protected static function get_cache( $type, $id, $name = null ) {
-		if ( is_null( $name ) ) {
-			if ( isset( self::$cache[$type . '_' . $id] ) ) {
-				return self::$cache[$type . '_' . $id];
-			}
-		} else {
-			if ( isset( self::$cache[$type . '_' . $id][$name] ) ) {
-				return self::$cache[$type . '_' . $id][$name];
+	protected static function get_cache( $object, $name = null ) {
+		$Meta = new Smart_Custom_Fields_Meta( $object );
+		$id   = $Meta->get_id();
+		$type = $Meta->get_type();
+		if ( !empty( $id ) && !empty( $type ) ) {
+			if ( is_null( $name ) ) {
+				if ( isset( self::$cache[$type . '_' . $id] ) ) {
+					return self::$cache[$type . '_' . $id];
+				}
+			} else {
+				if ( isset( self::$cache[$type . '_' . $id][$name] ) ) {
+					return self::$cache[$type . '_' . $id][$name];
+				}
 			}
 		}
 	}
@@ -260,12 +244,11 @@ class SCF {
 	/**
 	 * そのグループのメタデータを取得。グループの場合は必ず繰り返しになっている点に注意
 	 * 
-	 * @param string $type 投稿タイプ or ロール
-	 * @param int $id 投稿ID or ユーザーID
+	 * @param WP_Post|WP_User $object
 	 * @param Smart_Custom_Fields_Group $Group
 	 * @return mixed
 	 */
-	protected static function get_values_by_group( $type, $id, $Group ) {
+	protected static function get_values_by_group( $object, $Group ) {
 		$is_repeatable = $Group->is_repeatable();
 		$meta   = array();
 		$fields = $Group->get_fields();
@@ -279,7 +262,7 @@ class SCF {
 		}
 		$default_meta = $meta[0];
 		foreach ( $fields as $Field ) {
-			$value_by_field = self::get_value_by_field( $type, $id, $Field, $is_repeatable );
+			$value_by_field = self::get_value_by_field( $object, $Field, $is_repeatable );
 			foreach ( $value_by_field as $i => $value ) {
 				$meta[$i][$Field->get( 'name' )] = $value;
 			}
@@ -293,25 +276,24 @@ class SCF {
 	/**
 	 * そのフィールドのメタデータを取得
 	 * 
-	 * @param string $type 投稿タイプ or ロール
-	 * @param int $id 投稿ID or ユーザーID
+	 * @param WP_Post|WP_User $object
 	 * @param array $field
 	 * @param bool $is_repeatable このフィールドが所属するグループが repeat かどうか
 	 * @return mixed $post_meta
 	 */
-	protected static function get_value_by_field( $type, $id, $Field, $is_repeatable ) {
+	protected static function get_value_by_field( $object, $Field, $is_repeatable ) {
 		$field_name = $Field->get( 'name' );
 		if ( !$field_name ) {
 			return;
 		}
 
-		$Meta  = new Smart_Custom_Fields_Meta( $type );
+		$Meta  = new Smart_Custom_Fields_Meta( $object );
 
 		// ループ内の複数値項目の場合
 		$field_type = $Field->get_attribute( 'type' );
-		$repeat_multiple_data = self::get_repeat_multiple_data( $type, $id );
+		$repeat_multiple_data = self::get_repeat_multiple_data( $object );
 		if ( is_array( $repeat_multiple_data ) && isset( $repeat_multiple_data[$field_name] ) ) {
-			$_meta = $Meta->get( $id, $field_name );
+			$_meta = $Meta->get( $field_name );
 			$start = 0;
 			foreach ( $repeat_multiple_data[$field_name] as $repeat_multiple_key => $repeat_multiple_value ) {
 				if ( $repeat_multiple_value === 0 ) {
@@ -327,9 +309,9 @@ class SCF {
 		// それ以外
 		else {
 			if ( $Field->get_attribute( 'allow-multiple-data' ) || $is_repeatable ) {
-				$meta = $Meta->get( $id, $field_name );
+				$meta = $Meta->get( $field_name );
 			} else {
-				$meta = $Meta->get( $id, $field_name, true );
+				$meta = $Meta->get( $field_name, true );
 			}
 			$meta = apply_filters( SCF_Config::PREFIX . 'validate-get-value', $meta, $field_type );
 		}
@@ -342,17 +324,21 @@ class SCF {
 	 * @param string $type 投稿タイプ or ロール
 	 * @param array $settings_posts
 	 */
-	protected static function save_settings_posts_cache( $type, $settings_posts ) {
+	protected static function save_settings_posts_cache( $object, $settings_posts ) {
+		$Meta = new Smart_Custom_Fields_Meta( $object );
+		$type = $Meta->get_type( false );
 		self::$settings_posts_cache[$type] = $settings_posts;
 	}
 
 	/**
 	 * その投稿タイプで有効になっている SCF のキャッシュを取得
 	 *
-	 * @param string $type 投稿タイプ or ロール
+	 * @param WP_Post|WP_User $object
 	 * @return array|null
 	 */
-	public static function get_settings_posts_cache( $type ) {
+	public static function get_settings_posts_cache( $object ) {
+		$Meta = new Smart_Custom_Fields_Meta( $object );
+		$type = $Meta->get_type( false );
 		if ( isset( self::$settings_posts_cache[$type] ) ) {
 			return self::$settings_posts_cache[$type];
 		}
@@ -361,20 +347,22 @@ class SCF {
 	/**
 	 * その投稿タイプで有効になっている SCF を取得
 	 * 
-	 * @param string $type 投稿タイプ or ロール
+	 * @param WP_Post|WP_User $object
 	 * @return array $settings
 	 */
-	public static function get_settings_posts( $type ) {
+	public static function get_settings_posts( $object ) {
 		$settings_posts = array();
-		if ( self::get_settings_posts_cache( $type ) !== null ) {
-			self::debug_cache_message( "use settings posts cache. [type: {$type}]" );
-			return self::get_settings_posts_cache( $type );
+		if ( self::get_settings_posts_cache( $object ) !== null ) {
+			self::debug_cache_message( "use settings posts cache." );
+			return self::get_settings_posts_cache( $object );
 		} else {
-			self::debug_cache_message( "dont use settings posts cache... [type: {$type}]" );
+			self::debug_cache_message( "dont use settings posts cache..." );
 		}
 
-		$Meta = new Smart_Custom_Fields_Meta( $type );
-		switch ( $Meta->get_type() ) {
+		$Meta = new Smart_Custom_Fields_Meta( $object );
+		$type = $Meta->get_type( false );
+
+		switch ( $Meta->get_meta_type() ) {
 			case 'post' :
 				$key = SCF_Config::PREFIX . 'condition';
 				break;
@@ -400,7 +388,7 @@ class SCF {
 				),
 			) );
 		}
-		self::save_settings_posts_cache( $type, $settings_posts );
+		self::save_settings_posts_cache( $object, $settings_posts );
 		return $settings_posts;
 	}
 
@@ -429,15 +417,20 @@ class SCF {
 	 *         全般のものが無い ... false
 	 *     指定した $meta_type + $id のものがあるとき ... Smart_Custom_Fields_Setting
 	 *
-	 * @param int $settings_post_id SCF の ID
-	 * @param string $meta_type post or user
+	 * @param WP_post|WP_User $object
 	 * @param int $id 投稿ID or ユーザーID
 	 * @return Smart_Custom_Fields_Setting|false|null
 	 */
-	public static function get_settings_cache( $settings_post_id, $meta_type = null, $id = null ) {
+	public static function get_settings_cache( $settings_post_id, $object = null ) {
+		if ( !is_null( $object ) ) {
+			$Meta      = new Smart_Custom_Fields_Meta( $object );
+			$id        = $Meta->get_id();
+			$meta_type = $Meta->get_meta_type();
+		}
+
 		if ( isset( self::$settings_cache[$settings_post_id] ) ) {
 			$settings_cache = self::$settings_cache[$settings_post_id];
-			if ( isset( $settings_cache[$meta_type . '_' . $id] ) ) {
+			if ( !empty( $id ) && !empty( $meta_type ) && isset( $settings_cache[$meta_type . '_' . $id] ) ) {
 				return $settings_cache[$meta_type . '_' . $id];
 			}
 			if ( isset( $settings_cache[0] ) ) {
@@ -450,27 +443,28 @@ class SCF {
 	/**
 	 * Setting オブジェクトの配列を取得
 	 *
-	 * @param string $type 投稿タイプ or ロール
-	 * @param int|false $id 投稿ID or ユーザーID
+	 * @param WP_Post|WP_User $object
 	 * @return array $settings
 	 */
-	public static function get_settings( $type, $id ) {
-		$settings  = array();
-		$meta_type = '';
+	public static function get_settings( $object ) {
+		$Meta = new Smart_Custom_Fields_Meta( $object );
+		$id   = $Meta->get_id();
+		$type = $Meta->get_type( false );
+		$meta_type = $Meta->get_meta_type();
+
+		$settings = array();
 		if ( !empty( $type ) ) {
 			// 新規投稿のときは $id は false
 			if ( empty( $id ) ) {
 				// TODO: 
 			}
-			$settings_posts = self::get_settings_posts( $type );
+			$settings_posts = self::get_settings_posts( $object );
 
-			$Meta      = new Smart_Custom_Fields_Meta( $type );
-			$meta_type = $Meta->get_type();
 			if ( $meta_type === 'post' ) {
-				$settings = self::get_settings_for_post( $type, $id, $settings_posts );
+				$settings = self::get_settings_for_post( $object, $settings_posts );
 			}
 			elseif ( $meta_type === 'user' ) {
-				$settings = self::get_settings_for_profile( $type, $id, $settings_posts );
+				$settings = self::get_settings_for_profile( $object, $settings_posts );
 			}
 		}
 		$settings = apply_filters( SCF_Config::PREFIX . 'register-fields', $settings, $type, $id, $meta_type );
@@ -480,23 +474,22 @@ class SCF {
 	/**
 	 * Setting オブジェクトの配列を取得（投稿用）
 	 *
-	 * @param string $post_type
-	 * @param int|false $post_id
+	 * @param WP_Post $object
 	 * @param array $settings_posts
 	 * @return array
 	 */
-	protected static function get_settings_for_post( $post_type, $post_id, $settings_posts ) {
+	protected static function get_settings_for_post( $object, $settings_posts ) {
 		$settings = array();
 		foreach ( $settings_posts as $settings_post ) {
 			if ( self::get_settings_cache( $settings_post->ID ) !== null ) {
 				self::debug_cache_message( "use settings cache. [id: {$settings_post->ID}]" );
-				$Setting = self::get_settings_cache( $settings_post->ID, 'post', $post_id );
+				$Setting = self::get_settings_cache( $settings_post->ID, $object );
 				if ( $Setting ) {
 					$settings[$settings_post->ID] = $Setting;
 				}
 				continue;
 			}
-			self::debug_cache_message( "dont use settings cache... [SCF ID: {$settings_post->ID}] [post_type: {$post_type}] [Post ID: {$post_id}]" );
+			self::debug_cache_message( "dont use settings cache... [SCF ID: {$settings_post->ID}] [post_type: {$object->post_type}] [Post ID: {$object->ID}]" );
 			$condition_post_ids_raw = get_post_meta(
 				$settings_post->ID,
 				SCF_Config::PREFIX . 'condition-post-ids',
@@ -507,7 +500,7 @@ class SCF {
 				foreach ( $condition_post_ids_raw as $condition_post_id ) {
 					$condition_post_id = trim( $condition_post_id );
 					$Setting = SCF::add_setting( $settings_post->ID, $settings_post->post_title );
-					if ( $post_id == $condition_post_id ) {
+					if ( $object->ID == $condition_post_id ) {
 						$settings[$settings_post->ID] = $Setting;
 					}
 					self::save_settings_cache( $settings_post->ID, $Setting, 'post', $condition_post_id );
@@ -524,12 +517,11 @@ class SCF {
 	/**
 	 * Setting オブジェクトの配列を取得（プロフィール用）
 	 *
-	 * @param string $role
-	 * @param int|false $user_id
+	 * @param WP_User $object
 	 * @param array $settings_posts
 	 * @return array
 	 */
-	protected static function get_settings_for_profile( $role, $user_id, $settings_posts ) {
+	protected static function get_settings_for_profile( $object, $settings_posts ) {
 		$settings = array();
 		foreach ( $settings_posts as $settings_post ) {
 			if ( self::get_settings_cache( $settings_post->ID ) !== null ) {
@@ -548,37 +540,54 @@ class SCF {
 	/**
 	 * 繰り返しに設定された複数許可フィールドデータの区切り識別用データをキャッシュに保存
 	 *
-	 * @param string $type 投稿タイプ or ロール
-	 * @param int $id 投稿ID or ユーザーID
+	 * @param WP_Post|WP_User $object
 	 * @param mixed $repeat_multiple_data
 	 */
-	protected static function save_repeat_multiple_data_cache( $type, $id, $repeat_multiple_data ) {
-		self::$repeat_multiple_data_cache[$type . '_' . $id] = $repeat_multiple_data;
+	protected static function save_repeat_multiple_data_cache( $object, $repeat_multiple_data ) {
+		$Meta = new Smart_Custom_Fields_Meta( $object );
+		$id   = $Meta->get_id();
+		$type = $Meta->get_type();
+		if ( !empty( $id ) && !empty( $type ) ) {
+			self::$repeat_multiple_data_cache[$type . '_' . $id] = $repeat_multiple_data;
+		}
+	}
+
+	/**
+	 * 繰り返しに設定された複数許可フィールドデータの区切り識別用データをキャッシュから取得
+	 *
+	 * @param WP_Post|WP_User $object
+	 * @return mixed
+	 */
+	protected static function get_repeat_multiple_data_cache( $object ) {
+		$Meta = new Smart_Custom_Fields_Meta( $object );
+		$id   = $Meta->get_id();
+		$type = $Meta->get_type();
+		if ( !empty( $id ) && !empty( $type ) ) {
+			if ( isset( self::$repeat_multiple_data_cache[$type . '_' . $id] ) ) {
+				return self::$repeat_multiple_data_cache[$type . '_' . $id];
+			}
+		}
 	}
 
 	/**
 	 * 繰り返しに設定された複数許可フィールドデータの区切り識別用データを取得
 	 * 
-	 * @param string $type 投稿タイプ or ロール
-	 * @param int $id 投稿ID or ユーザーID
+	 * @param WP_Post|WP_User $object
 	 * @return mixed
 	 */
-	public static function get_repeat_multiple_data( $type, $id ) {
+	public static function get_repeat_multiple_data( $object ) {
 		$repeat_multiple_data = array();
-		if ( empty( $type ) ) {
-			return $repeat_multiple_data;
-		}
-		if ( isset( self::$repeat_multiple_data_cache[$type . '_' . $id] ) ) {
-			return self::$repeat_multiple_data_cache[$type . '_' . $id];
+		if ( self::get_repeat_multiple_data_cache( $object ) ) {
+			return self::get_repeat_multiple_data_cache( $object );
 		}
 
-		$Meta = new Smart_Custom_Fields_Meta( $type );
-		$_repeat_multiple_data = $Meta->get( $id, SCF_Config::PREFIX . 'repeat-multiple-data', true );
+		$Meta = new Smart_Custom_Fields_Meta( $object );
+		$_repeat_multiple_data = $Meta->get( SCF_Config::PREFIX . 'repeat-multiple-data', true );
 		if ( !empty( $_repeat_multiple_data ) ) {
 			$repeat_multiple_data = $_repeat_multiple_data;
 		}
 
-		self::save_repeat_multiple_data_cache( $type, $id, $repeat_multiple_data );
+		self::save_repeat_multiple_data_cache( $object, $repeat_multiple_data );
 		return $repeat_multiple_data;
 	}
 
@@ -644,7 +653,7 @@ class SCF {
 	 * @return Smart_Custom_Fields_Field_Base
 	 */
 	public static function get_field( $post_type, $field_name ) {
-		$settings = self::get_settings( $post_type, get_the_ID() );
+		$settings = self::get_settings( get_post( get_the_ID() ) );
 		foreach ( $settings as $Setting ) {
 			$groups = $Setting->get_groups();
 			foreach ( $groups as $Group ) {
