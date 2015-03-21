@@ -11,6 +11,9 @@ class SmartCustomFieldsTest extends WP_UnitTestCase {
 	 */
 	protected $revision_id;
 
+	/**
+	 * setUp
+	 */
 	public function setUp() {
 		parent::setUp();
 		// カスタムフィールドを設定するための投稿
@@ -33,9 +36,9 @@ class SmartCustomFieldsTest extends WP_UnitTestCase {
 	 * @group get
 	 */
 	public function test_get_Post_IDが取得できないときはnull() {
-		$this->assertNull( SCF::get( 'text', false ) );
-		$this->assertNull( SCF::get( 'text3', false ) );
-		$this->assertNull( SCF::get( 'checkbox', false ) );
+		$this->assertNull( SCF::get( 'text'     , false ) );
+		$this->assertNull( SCF::get( 'text3'    , false ) );
+		$this->assertNull( SCF::get( 'checkbox' , false ) );
 		$this->assertNull( SCF::get( 'checkbox3', false ) );
 	}
 
@@ -44,9 +47,9 @@ class SmartCustomFieldsTest extends WP_UnitTestCase {
 	 * @group get
 	 */
 	public function test_get_メタデータが保存されていないときは空値() {
-		$this->assertSame( ''     , SCF::get( 'text', $this->post_id ) );
-		$this->assertSame( array(), SCF::get( 'text3', $this->post_id ) );
-		$this->assertSame( array(), SCF::get( 'checkbox', $this->post_id ) );
+		$this->assertSame( ''     , SCF::get( 'text'     , $this->post_id ) );
+		$this->assertSame( array(), SCF::get( 'text3'    , $this->post_id ) );
+		$this->assertSame( array(), SCF::get( 'checkbox' , $this->post_id ) );
 		$this->assertSame( array(), SCF::get( 'checkbox3', $this->post_id ) );
 		$this->assertSame(
 			array(
@@ -668,6 +671,68 @@ class SmartCustomFieldsTest extends WP_UnitTestCase {
 	}
 
 	/**
+	 * @backupStaticAttributes enabled
+	 * @group save
+	 */
+	public function test_save() {
+		$object = get_post( $this->post_id );
+		$Meta = new Smart_Custom_Fields_Meta( $object );
+		$POST = array(
+			SCF_Config::NAME => array(
+				'checkbox'  => array(
+					array( 1, 2 ),
+				),
+				'checkbox3' => array(
+					array( 1, 2 ),
+					array( 2, 3 ),
+				),
+			),
+		);
+		$Meta->save( $POST );
+		$this->assertEquals(
+			array( 1, 2 ),
+			SCF::get( 'checkbox', $this->post_id )
+		);
+		$this->assertEquals(
+			array(
+				array( 1, 2 ),
+				array( 2, 3 ),
+			),
+			SCF::get( 'checkbox3', $this->post_id )
+		);
+		$this->assertEquals(
+			array(
+				'checkbox3' => array( 2, 2 ),
+			),
+			get_post_meta( $this->post_id, SCF_Config::PREFIX . 'repeat-multiple-data', true )
+		);
+	}
+
+	/**
+	 * @backupStaticAttributes enabled
+	 * @group save
+	 */
+	public function test_save_SCFのカスタムフィールドのデータが送信されていない() {
+		$object = get_post( $this->post_id );
+		$Meta = new Smart_Custom_Fields_Meta( $object );
+		$POST = array(
+			'hoge' => array(
+				'checkbox'  => array(
+					array( 1, 2 ),
+				),
+				'checkbox3' => array(
+					array( 1, 2 ),
+					array( 2, 3 ),
+				),
+			),
+		);
+		$Meta->save( $POST );
+		$this->assertSame( array(), SCF::get( 'checkbox' , $this->post_id ) );
+		$this->assertSame( array(), SCF::get( 'checkbox3', $this->post_id ) );
+		$this->assertSame( '', get_post_meta( $this->post_id, SCF_Config::PREFIX . 'repeat-multiple-data', true ) );
+	}
+
+	/**
 	 * フック経由でカスタムフィールドを設定
 	 *
 	 * @param array $settings 管理画面で設定された Smart_Custom_Fields_Setting の配列
@@ -714,4 +779,3 @@ class SmartCustomFieldsTest extends WP_UnitTestCase {
 		return $settings;
 	}
 }
-

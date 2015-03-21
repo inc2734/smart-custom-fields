@@ -150,59 +150,7 @@ class Smart_Custom_Fields_Controller_Editor {
 		);
 
 		$Meta = new Smart_Custom_Fields_Meta( $object );
-
-		// 繰り返しフィールドのチェックボックスは、普通のチェックボックスと混ざって
-		// 判別できなくなるのでわかるように保存しておく
-		$repeat_multiple_data = array();
-
-		// チェックボックスが未入力のときは "" がくるので、それは保存しないように判別
-		$multiple_data_fields = array();
-
-		$settings = SCF::get_settings( $object );
-		foreach ( $settings as $Setting ) {
-			$groups = $Setting->get_groups();
-			foreach ( $groups as $Group ) {
-				$fields = $Group->get_fields();
-				foreach ( $fields as $Field ) {
-					$field_name = $Field->get( 'name' );
-					$Meta->delete( $field_name );
-					if ( $Field->get_attribute( 'allow-multiple-data' ) ) {
-						$multiple_data_fields[] = $field_name;
-					}
-
-					if ( $Group->is_repeatable() && $Field->get_attribute( 'allow-multiple-data' ) ) {
-						$repeat_multiple_data_fields = $data[SCF_Config::NAME][$field_name];
-						foreach ( $repeat_multiple_data_fields as $values ) {
-							if ( is_array( $values ) ) {
-								$repeat_multiple_data[$field_name][] = count( $values );
-							} else {
-								$repeat_multiple_data[$field_name][] = 0;
-							}
-						}
-					}
-				}
-			}
-		}
-
-		$Meta->delete( SCF_Config::PREFIX . 'repeat-multiple-data' );
-		if ( $repeat_multiple_data ) {
-			$Meta->update( SCF_Config::PREFIX . 'repeat-multiple-data', $repeat_multiple_data );
-		}
-
-		foreach ( $data[SCF_Config::NAME] as $name => $values ) {
-			foreach ( $values as $value ) {
-				if ( in_array( $name, $multiple_data_fields ) && $value === '' ) {
-					continue;
-				}
-				if ( !is_array( $value ) ) {
-					$Meta->add( $name, $value );
-				} else {
-					foreach ( $value as $val ) {
-						$Meta->add( $name, $val );
-					}
-				}
-			}
-		}
+		$Meta->save( $_POST );
 	}
 
 	/**

@@ -43,41 +43,8 @@ class Smart_Custom_Fields_Revisions {
 		$post      = get_post( $post_id );
 		$revision  = get_post( $revision_id );
 
-		$Meta = new Smart_Custom_Fields_Meta( get_post( $post_id ) );
-
-		$settings = SCF::get_settings( get_post( $post_id ) );
-		foreach ( $settings as $Setting ) {
-			$groups = $Setting->get_groups();
-			foreach ( $groups as $Group ) {
-				$fields = $Group->get_fields();
-				foreach ( $fields as $Field ) {
-					$field_name = $Field->get( 'name' );
-					$Meta->delete( $field_name );
-					$value = SCF::get( $field_name, $revision->ID );
-					if ( is_array( $value ) ) {
-						foreach ( $value as $val ) {
-							if ( is_array( $val ) ) {
-								foreach ( $val as $v ) {
-									// ループ内複数値項目
-									$Meta->add( $field_name, $v );
-								}
-							} else {
-								// ループ内単一項目 or ループ外複数値項目
-								$Meta->add( $field_name, $val );
-							}
-						}
-					} else {
-						// ループ外単一項目
-						$Meta->add( $field_name, $value );
-					}
-				}
-			}
-		}
-
-		$repeat_multiple_data_name = SCF_Config::PREFIX . 'repeat-multiple-data';
-		$repeat_multiple_data = SCF::get_repeat_multiple_data( $revision );
-		$Meta->delete( $repeat_multiple_data_name );
-		$Meta->update( $repeat_multiple_data_name, $repeat_multiple_data );
+		$Meta = new Smart_Custom_Fields_Meta( $post );
+		$Meta->restore( $revision );
 	}
 
 	/**
@@ -93,7 +60,7 @@ class Smart_Custom_Fields_Revisions {
 		if ( !wp_is_post_revision( $post_id ) ) {
 			return;
 		}
-		$settings  = SCF::get_settings( get_post( $post_id ) );
+		$settings = SCF::get_settings( get_post( $post_id ) );
 		if ( !$settings ) {
 			return;
 		}
@@ -104,58 +71,7 @@ class Smart_Custom_Fields_Revisions {
 		);
 
 		$Meta = new Smart_Custom_Fields_Meta( get_post( $post_id ) );
-
-		// 繰り返しフィールドのチェックボックスは、普通のチェックボックスと混ざって
-		// 判別できなくなるのでわかるように保存しておく
-		$repeat_multiple_data = array();
-
-		// チェックボックスが未入力のときは "" がくるので、それは保存しないように判別
-		$multiple_data_fields = array();
-
-		$settings = SCF::get_settings( get_post( $post_id ) );
-		foreach ( $settings as $Setting ) {
-			$groups = $Setting->get_groups();
-			foreach ( $groups as $Group ) {
-				$fields = $Group->get_fields();
-				foreach ( $fields as $Field ) {
-					$field_name = $Field->get( 'name' );
-					$Meta->delete( $field_name );
-					if ( $Field->get_attribute( 'allow-multiple-data' ) ) {
-						$multiple_data_fields[] = $field_name;
-					}
-				
-					if ( $Group->is_repeatable() && $Field->get_attribute( 'allow-multiple-data' ) ) {
-						$repeat_multiple_data_fields = $_POST[SCF_Config::NAME][$field_name];
-						foreach ( $repeat_multiple_data_fields as $values ) {
-							if ( is_array( $values ) ) {
-								$repeat_multiple_data[$field_name][] = count( $values );
-							} else {
-								$repeat_multiple_data[$field_name][] = 0;
-							}
-						}
-					}
-				}
-			}
-		}
-
-		$Meta->delete( SCF_Config::PREFIX . 'repeat-multiple-data' );
-		if ( $repeat_multiple_data ) {
-			$Meta->update( SCF_Config::PREFIX . 'repeat-multiple-data', $repeat_multiple_data );
-		}
-
-		foreach ( $_POST[SCF_Config::NAME] as $name => $values ) {
-			foreach ( $values as $value ) {
-				if ( in_array( $name, $multiple_data_fields ) && $value === '' )
-					continue;
-				if ( !is_array( $value ) ) {
-					$Meta->add( $name, $value );
-				} else {
-					foreach ( $value as $val ) {
-						$Meta->add( $name, $val );
-					}
-				}
-			}
-		}
+		$Meta->save( $_POST );
 	}
 
 	/**

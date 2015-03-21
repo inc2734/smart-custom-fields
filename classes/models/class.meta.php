@@ -160,4 +160,135 @@ class Smart_Custom_Fields_Meta {
 	public function delete( $key, $value = '' ) {
 		return delete_metadata( $this->meta_type, $this->id, $key, $value );
 	}
+
+	/**
+	 * 送信されたデータをもとにメタデータを保存
+	 *
+	 * @param array $POST $_POST を渡すこと
+	 */
+	public function save( array $POST ) {
+		// 繰り返しフィールドのチェックボックスは、普通のチェックボックスと混ざって
+		// 判別できなくなるのでわかるように保存しておく
+		$repeat_multiple_data = array();
+
+		// チェックボックスが未入力のときは "" がくるので、それは保存しないように判別
+		$multiple_data_fields = array();
+
+		switch ( $this->meta_type ) {
+			case 'post' :
+				$object = get_post( $this->id );
+				break;
+			case 'user' :
+				$object = get_userdata( $this->id );
+				break;
+			default :
+				$object = null;
+		}
+
+		if ( is_null( $object ) ) {
+			return;
+		}
+
+		$this->delete( SCF_Config::PREFIX . 'repeat-multiple-data' );
+
+		if ( !isset( $POST[SCF_Config::NAME] ) ) {
+			return;
+		}
+		
+		$settings = SCF::get_settings( $object );
+		foreach ( $settings as $Setting ) {
+			$groups = $Setting->get_groups();
+			foreach ( $groups as $Group ) {
+				$fields = $Group->get_fields();
+				foreach ( $fields as $Field ) {
+					$field_name = $Field->get( 'name' );
+					$this->delete( $field_name );
+					if ( $Field->get_attribute( 'allow-multiple-data' ) ) {
+						$multiple_data_fields[] = $field_name;
+					}
+					if ( $Group->is_repeatable() && $Field->get_attribute( 'allow-multiple-data' ) ) {
+						$repeat_multiple_data_fields = $POST[SCF_Config::NAME][$field_name];
+						foreach ( $repeat_multiple_data_fields as $values ) {
+							if ( is_array( $values ) ) {
+								$repeat_multiple_data[$field_name][] = count( $values );
+							} else {
+								$repeat_multiple_data[$field_name][] = 0;
+							}
+						}
+					}
+				}
+			}
+		}
+
+		if ( $repeat_multiple_data ) {
+			$this->update( SCF_Config::PREFIX . 'repeat-multiple-data', $repeat_multiple_data );
+		}
+
+		foreach ( $POST[SCF_Config::NAME] as $name => $values ) {
+			foreach ( $values as $value ) {
+				if ( in_array( $name, $multiple_data_fields ) && $value === '' )
+					continue;
+				if ( !is_array( $value ) ) {
+					$this->add( $name, $value );
+				} else {
+					foreach ( $value as $val ) {
+						$this->add( $name, $val );
+					}
+				}
+			}
+		}
+	}
+
+	/**
+	 * 渡されたリビジョンからデータをリストア
+	 *
+	 * @param WP_Post $revision
+	 */
+	public function restore( $revision ) {
+		switch ( $this->meta_type ) {
+			case 'post' :
+				$object = get_post( $this->id );
+				break;
+			default :
+				$object = null;
+		}
+
+		if ( is_null( $object ) || !is_a( $revision, 'WP_Post' ) ) {
+			return;
+		}
+
+		$settings = SCF::get_settings( $object );
+		foreach ( $settings as $Setting ) {
+			$groups = $Setting->get_groups();
+			foreach ( $groups as $Group ) {
+				$fields = $Group->get_fields();
+				foreach ( $fields as $Field ) {
+					$field_name = $Field->get( 'name' );
+					$this->delete( $field_name );
+					$value = SCF::get( $field_name, $revision->ID );
+					if ( is_array( $value ) ) {
+						foreach ( $value as $val ) {
+							if ( is_array( $val ) ) {
+								foreach ( $val as $v ) {
+									// ループ内複数値項目
+									$this->add( $field_name, $v );
+								}
+							} else {
+								// ループ内単一項目 or ループ外複数値項目
+								$this->add( $field_name, $val );
+							}
+						}
+					} else {
+						// ループ外単一項目
+						$this->add( $field_name, $value );
+					}
+				}
+			}
+		}
+
+		$repeat_multiple_data_name = SCF_Config::PREFIX . 'repeat-multiple-data';
+		$repeat_multiple_data = SCF::get_repeat_multiple_data( $revision );
+		$this->delete( $repeat_multiple_data_name );
+		$this->update( $repeat_multiple_data_name, $repeat_multiple_data );
+	}
 }
