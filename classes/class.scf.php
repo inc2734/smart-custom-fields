@@ -45,6 +45,16 @@ class SCF {
 	protected static $repeat_multiple_data_cache = array();
 
 	/**
+	 * 全てのキャッシュをクリア
+	 */
+	public static function clear_all_cache() {
+		self::clear_cache();
+		self::clear_settings_posts_cache();
+		self::clear_settings_cache();
+		self::clear_repeat_multiple_data_cache();
+	}
+
+	/**
 	 * その投稿の全てのメタデータを良い感じに取得
 	 * 
 	 * @param int $post_id
@@ -133,7 +143,7 @@ class SCF {
 				$group_name    = $Group->get_name();
 				if ( $is_repeatable && $group_name && $group_name === $name ) {
 					$values_by_group = self::get_values_by_group( $object, $Group );
-					self::save_cache( $object, $Group->get_name(), $values_by_group );
+					self::save_cache( $object, $group_name, $values_by_group );
 					return $values_by_group;
 				}
 				// グループ名と一致しない場合は一致するフィールドを返す
@@ -168,7 +178,7 @@ class SCF {
 				$group_name    = $Group->get_name();
 				if ( $is_repeatable && $group_name ) {
 					$values_by_group = self::get_values_by_group( $object, $Group );
-					self::save_cache( $object, $Group->get_name(), $values_by_group );
+					self::save_cache( $object, $group_name, $values_by_group );
 					$post_meta[$group_name] = $values_by_group;
 				}
 				else {
@@ -242,6 +252,13 @@ class SCF {
 	}
 
 	/**
+	 * キャッシュをクリア
+	 */
+	public static function clear_cache() {
+		self::$cache = array();
+	}
+
+	/**
 	 * そのグループのメタデータを取得。グループの場合は必ず繰り返しになっている点に注意
 	 * 
 	 * @param WP_Post|WP_User $object
@@ -287,7 +304,7 @@ class SCF {
 			return;
 		}
 
-		$Meta  = new Smart_Custom_Fields_Meta( $object );
+		$Meta = new Smart_Custom_Fields_Meta( $object );
 
 		// ループ内の複数値項目の場合
 		$field_type = $Field->get_attribute( 'type' );
@@ -342,6 +359,13 @@ class SCF {
 		if ( isset( self::$settings_posts_cache[$type] ) ) {
 			return self::$settings_posts_cache[$type];
 		}
+	}
+
+	/**
+	 * SCF のキャッシュをクリア
+	 */
+	public static function clear_settings_posts_cache() {
+		self::$settings_posts_cache = array();
 	}
 
 	/**
@@ -442,6 +466,13 @@ class SCF {
 			}
 			return false;
 		}
+	}
+
+	/**
+	 * Setting オブジェクトキャッシュをクリア
+	 */
+	public static function clear_settings_cache() {
+		self::$settings_cache = array();
 	}
 
 	/**
@@ -575,10 +606,17 @@ class SCF {
 	}
 
 	/**
+	 * 繰り返しに設定された複数許可フィールドデータの区切り識別用データのキャッシュをクリア
+	 */
+	public static function clear_repeat_multiple_data_cache() {
+		self::$repeat_multiple_data_cache = array();
+	}
+
+	/**
 	 * 繰り返しに設定された複数許可フィールドデータの区切り識別用データを取得
 	 * 
 	 * @param WP_Post|WP_User $object
-	 * @return mixed
+	 * @return array
 	 */
 	public static function get_repeat_multiple_data( $object ) {
 		$repeat_multiple_data = array();
