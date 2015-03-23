@@ -40,8 +40,8 @@ class Smart_Custom_Fields_Revisions {
 	 * @param int $revision_id
 	 */
 	public function wp_restore_post_revision( $post_id, $revision_id ) {
-		$post      = get_post( $post_id );
-		$revision  = get_post( $revision_id );
+		$post     = get_post( $post_id );
+		$revision = get_post( $revision_id );
 
 		$Meta = new Smart_Custom_Fields_Meta( $post );
 		$Meta->restore( $revision );

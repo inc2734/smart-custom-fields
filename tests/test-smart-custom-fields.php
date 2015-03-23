@@ -562,7 +562,7 @@ class SmartCustomFieldsTest extends WP_UnitTestCase {
 		$this->assertEquals(
 			array(
 				array(
-					'loop-check-1'
+					'loop-check-1',
 				),
 				array(
 					'loop-check-2', 'loop-check-3',
