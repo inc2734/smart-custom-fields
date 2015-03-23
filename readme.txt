@@ -90,6 +90,7 @@ You can send your own language pack to me.
 * Fixed a bug that thumbnail is not displayed correctly in preview.
 * Fixed a relation field bug.
 * Changed return value of SCF::get with multiple data in loop.
+* Changed revision screen format.
 
 = 1.2.2 =
 * Fixed a bug that can not get the correct data when the posts use post id filtering.
