@@ -190,7 +190,7 @@ class Smart_Custom_Fields_Controller_Settings {
 	 */
 	public function display_meta_box_condition_post() {
 		$post_types = get_post_types( array(
-			'show_ui'  => true,
+			'show_ui' => true,
 		), 'objects' );
 		unset( $post_types['attachment'] );
 		unset( $post_types[SCF_Config::NAME] );

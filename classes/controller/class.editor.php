@@ -206,8 +206,9 @@ class Smart_Custom_Fields_Controller_Editor {
 							}
 							// チェックボックス以外
 							else {
-								if ( $loop_count < $meta_count )
+								if ( $loop_count < $meta_count ) {
 									$loop_count = $meta_count;
+								}
 							}
 						}
 					}

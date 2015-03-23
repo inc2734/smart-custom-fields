@@ -179,7 +179,7 @@ jQuery( function( $ ) {
 		} );
 
 		wrapper.find( '.smart-cf-field-select' ).change( function() {
-			var field  = $( this ).parents( field_class );
+			var field = $( this ).parents( field_class );
 			var val = $( this ).val();
 
 			var hide_options = field.find( '.smart-cf-field-options' );

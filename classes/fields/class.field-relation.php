@@ -101,7 +101,7 @@ class Smart_Custom_Fields_Field_Relation extends Smart_Custom_Fields_Field_Base 
 		$posts_per_page = get_option( 'posts_per_page' );
 
 		// 選択肢
-		$choices_posts  = get_posts( array(
+		$choices_posts = get_posts( array(
 			'post_type'      => $post_type,
 			'order'          => 'ASC',
 			'orderby'        => 'ID',
@@ -120,8 +120,9 @@ class Smart_Custom_Fields_Field_Relation extends Smart_Custom_Fields_Field_Base 
 		$selected_posts = array();
 		if ( !empty( $value ) && is_array( $value ) ) {
 			foreach ( $value as $post_id ) {
-				if ( get_post_status( $post_id ) !== 'publish' )
+				if ( get_post_status( $post_id ) !== 'publish' ) {
 					continue;
+				}
 				$post_title = get_the_title( $post_id );
 				if ( empty( $post_title ) ) {
 					$post_title = '&nbsp;';
@@ -188,7 +189,7 @@ class Smart_Custom_Fields_Field_Relation extends Smart_Custom_Fields_Field_Base 
 			<td>
 				<?php
 				$post_types = get_post_types( array(
-					'show_ui'  => true,
+					'show_ui' => true,
 				), 'objects' );
 				unset( $post_types['attachment'] );
 				unset( $post_types[SCF_Config::NAME] );

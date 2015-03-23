@@ -226,8 +226,9 @@ class Smart_Custom_Fields_Meta {
 
 		foreach ( $POST[SCF_Config::NAME] as $name => $values ) {
 			foreach ( $values as $value ) {
-				if ( in_array( $name, $multiple_data_fields ) && $value === '' )
+				if ( in_array( $name, $multiple_data_fields ) && $value === '' ) {
 					continue;
+				}
 				if ( !is_array( $value ) ) {
 					$this->add( $name, $value );
 				} else {
@@ -286,8 +287,8 @@ class Smart_Custom_Fields_Meta {
 			}
 		}
 
-		$repeat_multiple_data_name = SCF_Config::PREFIX . 'repeat-multiple-data';
 		$repeat_multiple_data = SCF::get_repeat_multiple_data( $revision );
+		$repeat_multiple_data_name = SCF_Config::PREFIX . 'repeat-multiple-data';
 		$this->delete( $repeat_multiple_data_name );
 		$this->update( $repeat_multiple_data_name, $repeat_multiple_data );
 	}
