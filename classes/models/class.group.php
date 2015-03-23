@@ -37,7 +37,7 @@ class Smart_Custom_Fields_Group {
 	 */
 	public function __construct( $group_name = null, $repeat = false, array $_fields = array() ) {
 		$this->name   = $group_name;
-		$this->repeat = $repeat;
+		$this->repeat = ( $repeat === true ) ? true : false;
 		$fields = array();
 		foreach ( $_fields as $field_attributes ) {
 			$Field = SCF::get_form_field_instance( $field_attributes['type'] );
