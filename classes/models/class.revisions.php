@@ -139,25 +139,26 @@ class Smart_Custom_Fields_Revisions {
 	public function _wp_post_revision_field_debug_preview( $value, $column, $post ) {
 		$output = '';
 		$values = SCF::gets( $post->ID );
-		foreach ( $values as $key => $value ) {
-			$output .= '[' . $key . ']' . "\n";
+		foreach ( $values as $field_name_or_group_name => $value ) {
+			$output .= sprintf( "■ %s\n", $field_name_or_group_name );
 			if ( is_array( $value ) ) {
 				if ( isset( $value[0] ) && is_array( $value[0] ) ) {
-					foreach ( $value as $sub_field_values ) {
-						foreach ( $sub_field_values as $sub_field_key => $sub_field_value ) {
-							$output .= $sub_field_key . " : ";
-							if ( is_array( $sub_field_value ) ) {
-								$output .= implode( ', ', $sub_field_value ) . "\n";
+					foreach ( $value as $i => $repeat_data_values ) {
+						$output .= sprintf( "- #%s\n", $i );
+						foreach ( $repeat_data_values as $field_name => $repeat_data_value ) {
+							$output .= sprintf( "　%s: ", $field_name );
+							if ( is_array( $repeat_data_value ) ) {
+								$output .= sprintf( "[%s]\n", implode( ', ', $repeat_data_value ) );
 							} else {
-								$output .= $sub_field_value . "\n";
+								$output .= sprintf( "%s\n", $repeat_data_value );
 							}
 						}
 					}
 				} else {
-					$output .= implode( ', ', $value ) . "\n";
+					$output .= sprintf( "[%s]\n", implode( ', ', $value ) );
 				}
 			} else {
-				$output .= $value . "\n";
+				$output .= $output .= sprintf( "%s\n", $value );
 			}
 		}
 		return $output;
