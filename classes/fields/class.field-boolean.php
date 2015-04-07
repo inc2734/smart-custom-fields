@@ -18,6 +18,7 @@ class Smart_Custom_Fields_Field_Boolean extends Smart_Custom_Fields_Field_Base {
 	 * @return array
 	 */
 	protected function init() {
+		add_filter( 'smart-cf-validate-get-value', array( $this, 'validate_get_value' ), 10, 2 );
 		return array(
 			'type'         => 'boolean',
 			'display-name' => __( 'Boolean', 'smart-custom-fields' ),
@@ -132,5 +133,20 @@ class Smart_Custom_Fields_Field_Boolean extends Smart_Custom_Fields_Field_Base {
 			</td>
 		</tr>
 	<?php
+	}
+
+
+	/**
+	 * メタデータの表示時にバリデート
+	 *
+	 * @param int|string $value
+	 * @param string $field_type
+	 * @return boolean
+	 */
+	public function validate_get_value( $value, $field_type ) {
+		if ( $field_type === $this->get_attribute( 'type' ) ) {
+			$value = !!$value;
+		}
+		return $value;
 	}
 }
