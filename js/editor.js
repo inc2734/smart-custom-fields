@@ -1,9 +1,9 @@
 /**
  * editor.js
- * Version    : 1.0.1
+ * Version    : 1.1.0
  * Author     : Takashi Kitajima
  * Created    : September 23, 2014
- * Modified   : February 27, 2015
+ * Modified   : April 11, 2015
  * License    : GPLv2
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
  */
@@ -24,6 +24,12 @@ jQuery( function( $ ) {
 				$( this ).attr( 'id', 'smart-cf-wysiwyg-' + cnt + i );
 				var editor_id = $( this ).attr( 'id' );
 				$( this ).parents( '.wp-editor-wrap' ).find( 'a.add_media' ).attr( 'data-editor', editor_id );
+				tinymce.init( {
+					menubar: false,
+					plugins: "hr,wplink,fullscreen,wordpress,textcolor,paste,charmap",
+					toolbar1: "bold,italic,strikethrough,bullist,numlist,blockquote,hr,alignleft,aligncenter,alignright,link,unlink,wp_more,spellchecker,wp_adv,fullscreen",
+					toolbar2: "formatselect,underline,alignjustify,forecolor,pastetext,removeformat,charmap,outdent,indent,undo,redo,wp_help,code"
+				} );
 				tinymce.execCommand( 'mceAddEditor', false, editor_id );
 			}
 		} );
