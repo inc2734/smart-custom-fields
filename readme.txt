@@ -83,6 +83,7 @@ You can send your own language pack to me.
 
 = 1.3.1 =
 * Fixed a wysiwyg field bug.
+* Add boolean field.
 
 = 1.3.0 =
 * refactoring.

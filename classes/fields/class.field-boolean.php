@@ -2,10 +2,10 @@
 
 /**
  * Smart_Custom_Fields_Field_Boolean
- * Version    : 1.0.0
+ * Version    : 1.0.1
  * Author     : Toro_Unit, Takashi Kitajima
  * Created    : April 6, 2015
- * Modified   : April 6, 2015
+ * Modified   : April 11, 2015
  * License    : GPLv2
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
  */
@@ -53,7 +53,7 @@ class Smart_Custom_Fields_Field_Boolean extends Smart_Custom_Fields_Field_Base {
 		$disabled = $this->get_disable_attribute( $index );
 
 		$true = sprintf(
-			'<label><input type="radio" name="%s" value="1" class="widefat" %s %s />%s</label>',
+			'<label><input type="radio" name="%s" value="1" class="widefat" %s %s />%s ( true )</label>',
 			esc_attr( $name ),
 			checked( 1, $value, false ),
 			disabled( true, $disabled, false ),
@@ -61,7 +61,7 @@ class Smart_Custom_Fields_Field_Boolean extends Smart_Custom_Fields_Field_Base {
 		);
 
 		$false = sprintf(
-			'<label><input type="radio" name="%s" value="0" class="widefat" %s %s />%s</label>',
+			'<label><input type="radio" name="%s" value="0" class="widefat" %s %s />%s ( false )</label>',
 			esc_attr( $name ),
 			checked( 0, $value, false ),
 			disabled( true, $disabled, false ),
@@ -89,14 +89,14 @@ class Smart_Custom_Fields_Field_Boolean extends Smart_Custom_Fields_Field_Base {
 						       name="<?php echo esc_attr( $this->get_field_name_in_setting( $group_key, $field_key, 'default' ) ); ?>"
 						       value="1"
 							<?php checked( 1, $this->get( 'default' ) ); ?> />
-						<span><?php echo esc_html( $this->get( 'true_label' ) ); ?></span>
+						<span><?php echo esc_html( $this->get( 'true_label' ) ); ?> ( true )</span>
 					</label>&nbsp;
 					<label>
 						<input type="radio"
 						       name="<?php echo esc_attr( $this->get_field_name_in_setting( $group_key, $field_key, 'default' ) ); ?>"
 						       value="0"
 							<?php checked( 0, $this->get( 'default' ) ); ?> />
-						<span><?php echo esc_html( $this->get( 'false_label' ) ); ?></span>
+						<span><?php echo esc_html( $this->get( 'false_label' ) ); ?> ( false )</span>
 					</label>
 
 				</fieldset>
