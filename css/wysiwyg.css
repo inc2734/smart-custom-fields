@@ -1,0 +1,14 @@
+/**
+ * wysiwyg.css
+ * Version    : 1.0.0
+ * Author     : Takashi Kitajima
+ * Created    : April 11, 2015
+ * Modified   :
+ * License    : GPLv2
+ * License URI: http://www.gnu.org/licenses/gpl-2.0.html
+ */
+
+body {
+	font-family: "Open Sans", Helvetica, Arial, sans-serif;
+	font-size: 13px;
+}

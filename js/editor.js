@@ -25,6 +25,7 @@ jQuery( function( $ ) {
 				var editor_id = $( this ).attr( 'id' );
 				$( this ).parents( '.wp-editor-wrap' ).find( 'a.add_media' ).attr( 'data-editor', editor_id );
 				tinymce.init( {
+					content_css: ['../wp-includes/js/tinymce/skins/wordpress/wp-content.css', '../wp-content/plugins/smart-custom-fields/css/wysiwyg.css'],
 					menubar: false,
 					plugins: "hr,wplink,fullscreen,wordpress,textcolor,paste,charmap",
 					toolbar1: "bold,italic,strikethrough,bullist,numlist,blockquote,hr,alignleft,aligncenter,alignright,link,unlink,wp_more,spellchecker,wp_adv,fullscreen",
