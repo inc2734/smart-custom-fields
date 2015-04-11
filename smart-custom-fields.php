@@ -25,7 +25,7 @@ class Smart_Custom_Fields {
 	}
 
 	/**
-	 * 各クラス・翻訳ファイルの読み込み
+	 * 翻訳ファイルの読み込み
 	 */
 	public function plugins_loaded() {
 		load_plugin_textdomain (
@@ -33,7 +33,14 @@ class Smart_Custom_Fields {
 			false,
 			dirname( plugin_basename( __FILE__ ) ) . '/languages'
 		);
-		
+
+		add_action( 'after_setup_theme', array( $this, 'after_setup_theme' ) );
+	}
+
+	/**
+	 * 各クラスの読み込み
+	 */
+	public function after_setup_theme() {
 		do_action( SCF_Config::PREFIX . 'load' );
 		require_once plugin_dir_path( __FILE__ ) . 'classes/models/class.meta.php';
 		require_once plugin_dir_path( __FILE__ ) . 'classes/models/class.setting.php';
