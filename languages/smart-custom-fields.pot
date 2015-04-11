@@ -2,9 +2,9 @@
 # This file is distributed under the same license as the Smart Custom Fields package.
 msgid ""
 msgstr ""
-"Project-Id-Version: Smart Custom Fields 1.3.0\n"
+"Project-Id-Version: Smart Custom Fields 1.3.1\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/smart-custom-fields\n"
-"POT-Creation-Date: 2015-03-20 06:46:56+00:00\n"
+"POT-Creation-Date: 2015-04-11 05:04:11+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -18,15 +18,15 @@ msgstr ""
 "X-Poedit-KeywordsList: __;_e\n"
 "X-Poedit-SearchPath-0: ..\n"
 
-#: classes/controller/class.editor.php:60
+#: classes/controller/class.editor.php:54
 msgid "Image setting"
 msgstr ""
 
-#: classes/controller/class.editor.php:61
+#: classes/controller/class.editor.php:55
 msgid "File setting"
 msgstr ""
 
-#: classes/controller/class.profile.php:47
+#: classes/controller/class.profile.php:41
 #: classes/controller/class.settings.php:76
 msgid "Custom Fields"
 msgstr ""
@@ -72,7 +72,7 @@ msgid "Add Field"
 msgstr ""
 
 #: classes/controller/class.settings.php:212
-#: classes/fields/class.field-relation.php:187
+#: classes/fields/class.field-relation.php:188
 msgid "Post Types"
 msgstr ""
 
@@ -84,16 +84,19 @@ msgstr ""
 msgid "Roles"
 msgstr ""
 
-#: classes/fields/class.field-check.php:21
-msgid "Check"
+#: classes/fields/class.field-boolean.php:24
+msgid "Boolean"
 msgstr ""
 
-#: classes/fields/class.field-check.php:81
-#: classes/fields/class.field-radio.php:79
-#: classes/fields/class.field-select.php:76
-msgid "Choices"
+#: classes/fields/class.field-boolean.php:38
+msgid "Yes"
 msgstr ""
 
+#: classes/fields/class.field-boolean.php:39
+msgid "No"
+msgstr ""
+
+#: classes/fields/class.field-boolean.php:83
 #: classes/fields/class.field-check.php:90
 #: classes/fields/class.field-colorpicker.php:102
 #: classes/fields/class.field-datepicker.php:124
@@ -105,18 +108,37 @@ msgstr ""
 msgid "Default"
 msgstr ""
 
+#: classes/fields/class.field-boolean.php:106
+msgid "TRUE Label"
+msgstr ""
+
+#: classes/fields/class.field-boolean.php:116
+msgid "FALSE Label"
+msgstr ""
+
+#: classes/fields/class.field-boolean.php:126
 #: classes/fields/class.field-check.php:99
 #: classes/fields/class.field-colorpicker.php:111
 #: classes/fields/class.field-datepicker.php:188
 #: classes/fields/class.field-file.php:92
 #: classes/fields/class.field-image.php:91
 #: classes/fields/class.field-radio.php:97
-#: classes/fields/class.field-relation.php:208
+#: classes/fields/class.field-relation.php:209
 #: classes/fields/class.field-select.php:94
 #: classes/fields/class.field-text.php:74
 #: classes/fields/class.field-textarea.php:74
 #: classes/fields/class.field-wysiwyg.php:116
 msgid "Notes"
+msgstr ""
+
+#: classes/fields/class.field-check.php:21
+msgid "Check"
+msgstr ""
+
+#: classes/fields/class.field-check.php:81
+#: classes/fields/class.field-radio.php:79
+#: classes/fields/class.field-select.php:76
+msgid "Choices"
 msgstr ""
 
 #: classes/fields/class.field-colorpicker.php:29
@@ -177,7 +199,7 @@ msgstr ""
 msgid "Relation"
 msgstr ""
 
-#: classes/fields/class.field-relation.php:169
+#: classes/fields/class.field-relation.php:170
 msgid "Load more"
 msgstr ""
 
@@ -218,44 +240,46 @@ msgstr ""
 msgid "Group name"
 msgstr ""
 
-#: smart-custom-fields.php:123 smart-custom-fields.php:124
-#: smart-custom-fields.php:163 smart-custom-fields.php:164
+#: classes/models/class.revisions.php:117 smart-custom-fields.php:123
+#: smart-custom-fields.php:124 smart-custom-fields.php:125
+msgid "Smart Custom Fields"
+msgstr ""
+
+#: smart-custom-fields.php:126 smart-custom-fields.php:127
+#: smart-custom-fields.php:166 smart-custom-fields.php:167
 msgid "Add New"
 msgstr ""
 
-#: smart-custom-fields.php:125
+#: smart-custom-fields.php:128
 msgid "New Field"
 msgstr ""
 
-#: smart-custom-fields.php:126
+#: smart-custom-fields.php:129
 msgid "Edit Field"
 msgstr ""
 
-#: smart-custom-fields.php:127
+#: smart-custom-fields.php:130
 msgid "View Field"
 msgstr ""
 
-#: smart-custom-fields.php:128
+#: smart-custom-fields.php:131
 msgid "All Fields"
 msgstr ""
 
-#: smart-custom-fields.php:129
+#: smart-custom-fields.php:132
 msgid "Search Fields"
 msgstr ""
 
-#: smart-custom-fields.php:130
+#: smart-custom-fields.php:133
 msgid "Parent Fields:"
 msgstr ""
 
-#: smart-custom-fields.php:131
+#: smart-custom-fields.php:134
 msgid "No Fields found."
 msgstr ""
 
-#: smart-custom-fields.php:132
+#: smart-custom-fields.php:135
 msgid "No Fields found in Trash."
-msgstr ""
-#. Plugin Name of the plugin/theme
-msgid "Smart Custom Fields"
 msgstr ""
 
 #. Plugin URI of the plugin/theme
