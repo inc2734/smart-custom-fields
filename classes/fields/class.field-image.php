@@ -31,6 +31,7 @@ class Smart_Custom_Fields_Field_Image extends Smart_Custom_Fields_Field_Base {
 	protected function options() {
 		return array(
 			'notes' => '',
+			'size'  => 'full',
 		);
 	}
 
@@ -53,7 +54,7 @@ class Smart_Custom_Fields_Field_Image extends Smart_Custom_Fields_Field_Base {
 		$hide_class = 'hide';
 		$image = $btn_remove;
 		if ( $value ) {
-			$image_src = wp_get_attachment_image_src( $value, 'full' );
+			$image_src = wp_get_attachment_image_src( $value, $this->get( 'size' ) );
 			if ( is_array( $image_src ) && isset( $image_src[0] ) ) {
 				$image_src = $image_src[0];
 				$image = sprintf(
@@ -67,11 +68,12 @@ class Smart_Custom_Fields_Field_Image extends Smart_Custom_Fields_Field_Base {
 
 		return sprintf(
 			'<span class="button btn-add-image">%s</span><br />
-			<span class="%s %s">%s</span>
+			<span class="%s %s" data-size="%s">%s</span>
 			<input type="hidden" name="%s" value="%s" %s />',
 			esc_html__( 'Image Select', 'smart-custom-fields' ),
 			esc_attr( SCF_Config::PREFIX . 'upload-image' ),
 			esc_attr( $hide_class ),
+			esc_attr( $this->get( 'size' ) ),
 			$image,
 			esc_attr( $name ),
 			esc_attr( $value ),
@@ -95,6 +97,17 @@ class Smart_Custom_Fields_Field_Image extends Smart_Custom_Fields_Field_Base {
 					class="widefat"
 					value="<?php echo esc_attr( $this->get( 'notes' ) ); ?>"
 				/>
+			</td>
+		</tr>
+		<tr>
+			<th><?php esc_html_e( 'Preview Size', 'smart-custom-fields' ); ?></th>
+			<td>
+				<select name="<?php echo esc_attr( $this->get_field_name_in_setting( $group_key, $field_key, 'size' ) ); ?>">
+					<option value="full" <?php selected( $this->get( 'size' ), 'full' );?> >full</option>
+					<?php foreach ( get_intermediate_image_sizes() as $size ) : ?>
+						<option value="<?php echo esc_attr( $size );?>" <?php selected( $this->get( 'size' ), $size );?>><?php echo esc_html( $size );?></option>
+					<?php endforeach;?>
+				</select>
 			</td>
 		</tr>
 		<?php
