@@ -110,10 +110,10 @@ jQuery( function( $ ) {
 			custom_uploader_image.on( 'select', function() {
 				var images = custom_uploader_image.state().get( 'selection' );
 				images.each( function( file ){
-                    var sizes = file.get('sizes');
+					var sizes = file.get('sizes');
 					var image_area = upload_button.parent().find( '.smart-cf-upload-image' );
-                    var sizename = image_area.data('size');
-                    var img = sizes[ sizename ] || sizes.full;
+					var sizename = image_area.data('size');
+					var img = sizes[ sizename ] || sizes.full;
 					image_area.find( 'img' ).remove();
 					image_area.prepend(
 						'<img src="' + img.url + '" />'
