@@ -33,6 +33,7 @@ https://www.youtube.com/watch?v=WxPZurn0yvI
 * Relation
 * Color picker
 * Date picker
+* Boolean
 
 = How to get meta data ? =
 
@@ -83,6 +84,7 @@ You can send your own language pack to me.
 
 = 1.3.2 =
 * Add preview size setting in the image field.
+* Add display direction setting in the checkbox and radio field.
 * Changed the upload field that displayed uploaded to this post first.
 
 = 1.3.1 =

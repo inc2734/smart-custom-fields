@@ -1,10 +1,10 @@
 <?php
 /**
  * Smart_Custom_Fields_Field_Radio
- * Version    : 1.1.0
+ * Version    : 1.2.0
  * Author     : Takashi Kitajima
  * Created    : October 7, 2014
- * Modified   : February 27, 2015
+ * Modified   : April 24, 2015
  * License    : GPLv2
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
  */
@@ -30,9 +30,10 @@ class Smart_Custom_Fields_Field_Radio extends Smart_Custom_Fields_Field_Base {
 	 */
 	protected function options() {
 		return array(
-			'choices' => '',
-			'default' => '',
-			'notes'   => '',
+			'choices'         => '',
+			'radio_direction' => 'horizontal', // or vertical
+			'default'         => '',
+			'notes'           => '',
 		);
 	}
 
@@ -44,9 +45,10 @@ class Smart_Custom_Fields_Field_Radio extends Smart_Custom_Fields_Field_Base {
 	 * @return string html
 	 */
 	public function get_field( $index, $value ) {
-		$name     = $this->get_field_name_in_editor( $index );
-		$disabled = $this->get_disable_attribute( $index );
-		$choices  = SCF::choices_eol_to_array( $this->get( 'choices' ) );
+		$name      = $this->get_field_name_in_editor( $index );
+		$disabled  = $this->get_disable_attribute( $index );
+		$choices   = SCF::choices_eol_to_array( $this->get( 'choices' ) );
+		$direction = $this->get( 'radio_direction' );
 
 		$form_field = sprintf(
 			'<input type="hidden" name="%s" value="" %s />',
@@ -56,7 +58,8 @@ class Smart_Custom_Fields_Field_Radio extends Smart_Custom_Fields_Field_Base {
 		foreach ( $choices as $choice ) {
 			$choice = trim( $choice );
 			$form_field .= sprintf(
-				'<label><input type="radio" name="%s" value="%s" %s %s /> %s</label>',
+				'<span class="%s"><label><input type="radio" name="%s" value="%s" %s %s /> %s</label></span>',
+				esc_attr( SCF_Config::PREFIX . 'item-' . $direction ),
 				esc_attr( $name ),
 				esc_attr( $choice ),
 				checked( $value, $choice, false ),
@@ -82,6 +85,26 @@ class Smart_Custom_Fields_Field_Radio extends Smart_Custom_Fields_Field_Base {
 					name="<?php echo esc_attr( $this->get_field_name_in_setting( $group_key, $field_key, 'choices' ) ); ?>"
 					class="widefat"
 					rows="5" /><?php echo esc_textarea( "\n" . $this->get( 'choices' ) ); ?></textarea>
+			</td>
+		</tr>
+		<tr>
+			<th><?php esc_html_e( 'Display Direction', 'smart-custom-fields' ); ?></th>
+			<td>
+				<?php
+				$directions = array(
+					'horizontal' => __( 'horizontal', 'smart-custom-fields' ),
+					'vertical'   => __( 'vertical'  , 'smart-custom-fields' ),
+				);
+				foreach ( $directions as $key => $value ) {
+					printf(
+						'<label><input type="radio" name="%s" value="%s" %s /> %s</label>&nbsp;&nbsp;&nbsp;',
+						esc_attr( $this->get_field_name_in_setting( $group_key, $field_key, 'radio_direction' ) ),
+						esc_attr( $key ),
+						checked( $this->get( 'radio_direction' ), $key, false ),
+						esc_html( $value )
+					);
+				}
+				?>
 			</td>
 		</tr>
 		<tr>
