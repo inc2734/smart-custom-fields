@@ -2,17 +2,17 @@
 # This file is distributed under the same license as the Smart Custom Fields package.
 msgid ""
 msgstr ""
-"Project-Id-Version: Smart Custom Fields 1.3.1\n"
+"Project-Id-Version: Smart Custom Fields 1.3.2\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/smart-custom-fields\n"
-"POT-Creation-Date: 2015-04-11 05:04:11+00:00\n"
-"PO-Revision-Date: 2015-04-11 14:09+0900\n"
+"POT-Creation-Date: 2015-04-24 00:45:02+00:00\n"
+"PO-Revision-Date: 2015-04-24 09:47+0900\n"
 "Last-Translator: Takashi Kitajima <inc@2inc.org>\n"
 "Language-Team: \n"
 "Language: ja\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.7.5\n"
+"X-Generator: Poedit 1.7.6\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Poedit-KeywordsList: __;_e\n"
 "X-Poedit-Basepath: .\n"
@@ -121,7 +121,7 @@ msgstr "FALSE ラベル"
 #: classes/fields/class.field-colorpicker.php:111
 #: classes/fields/class.field-datepicker.php:188
 #: classes/fields/class.field-file.php:92
-#: classes/fields/class.field-image.php:91
+#: classes/fields/class.field-image.php:93
 #: classes/fields/class.field-radio.php:97
 #: classes/fields/class.field-relation.php:209
 #: classes/fields/class.field-select.php:94
@@ -175,7 +175,7 @@ msgid "File"
 msgstr "ファイル"
 
 #: classes/fields/class.field-file.php:50
-#: classes/fields/class.field-image.php:50
+#: classes/fields/class.field-image.php:51
 msgid "Delete"
 msgstr "削除"
 
@@ -187,9 +187,13 @@ msgstr "ファイル選択"
 msgid "Image"
 msgstr "画像"
 
-#: classes/fields/class.field-image.php:72
+#: classes/fields/class.field-image.php:73
 msgid "Image Select"
 msgstr "画像選択"
+
+#: classes/fields/class.field-image.php:103
+msgid "Preview Size"
+msgstr "プレビューサイズ"
 
 #: classes/fields/class.field-radio.php:21
 msgid "Radio"
@@ -240,45 +244,46 @@ msgstr "繰り返し"
 msgid "Group name"
 msgstr "グループ名"
 
-#: classes/models/class.revisions.php:117 smart-custom-fields.php:123
-#: smart-custom-fields.php:124 smart-custom-fields.php:125
+#. Plugin Name of the plugin/theme
+#: classes/models/class.revisions.php:117 smart-custom-fields.php:130
+#: smart-custom-fields.php:131 smart-custom-fields.php:132
 msgid "Smart Custom Fields"
 msgstr "Smart Custom Fields"
 
-#: smart-custom-fields.php:126 smart-custom-fields.php:127
-#: smart-custom-fields.php:166 smart-custom-fields.php:167
+#: smart-custom-fields.php:133 smart-custom-fields.php:134
+#: smart-custom-fields.php:173 smart-custom-fields.php:174
 msgid "Add New"
 msgstr "新規追加"
 
-#: smart-custom-fields.php:128
+#: smart-custom-fields.php:135
 msgid "New Field"
 msgstr "新規フィールド"
 
-#: smart-custom-fields.php:129
+#: smart-custom-fields.php:136
 msgid "Edit Field"
 msgstr "フィールド編集"
 
-#: smart-custom-fields.php:130
+#: smart-custom-fields.php:137
 msgid "View Field"
 msgstr "フィールドを表示"
 
-#: smart-custom-fields.php:131
+#: smart-custom-fields.php:138
 msgid "All Fields"
 msgstr "すべてのフィールド"
 
-#: smart-custom-fields.php:132
+#: smart-custom-fields.php:139
 msgid "Search Fields"
 msgstr "フィールドを検索"
 
-#: smart-custom-fields.php:133
+#: smart-custom-fields.php:140
 msgid "Parent Fields:"
 msgstr "親フィールド:"
 
-#: smart-custom-fields.php:134
+#: smart-custom-fields.php:141
 msgid "No Fields found."
 msgstr "フィールドは見つかりませんでした。"
 
-#: smart-custom-fields.php:135
+#: smart-custom-fields.php:142
 msgid "No Fields found in Trash."
 msgstr "ゴミ箱にフィールドは見つかりませんでした"
 
