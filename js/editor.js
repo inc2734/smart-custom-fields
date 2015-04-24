@@ -1,9 +1,9 @@
 /**
  * editor.js
- * Version    : 1.1.0
+ * Version    : 1.1.1
  * Author     : Takashi Kitajima
  * Created    : September 23, 2014
- * Modified   : April 11, 2015
+ * Modified   : April 24, 2015
  * License    : GPLv2
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
  */
@@ -96,15 +96,27 @@ jQuery( function( $ ) {
 				custom_uploader_image.open();
 				return;
 			}
+
+			wp.media.view.Modal.prototype.on( 'ready', function(){
+				$( 'select.attachment-filters' )
+					.find( '[value="uploaded"]' )
+					.attr( 'selected', true )
+					.parent()
+					.trigger( 'change' );
+			} );
+
 			custom_uploader_image = wp.media( {
-				title  : smart_cf_uploader.image_uploader_title,
-				library: {
-					type: 'image'
-				},
 				button : {
 					text: smart_cf_uploader.image_uploader_title
 				},
-				multiple: false
+				states: [
+					new wp.media.controller.Library({
+						title     :  smart_cf_uploader.image_uploader_title,
+						library   :  wp.media.query( { type: 'image' } ),
+						multiple  :  false,
+						filterable: 'uploaded'
+					})
+				]
 			} );
 
 			custom_uploader_image.on( 'select', function() {
