@@ -110,10 +110,13 @@ jQuery( function( $ ) {
 			custom_uploader_image.on( 'select', function() {
 				var images = custom_uploader_image.state().get( 'selection' );
 				images.each( function( file ){
+					var sizes = file.get('sizes');
 					var image_area = upload_button.parent().find( '.smart-cf-upload-image' );
+					var sizename = image_area.data('size');
+					var img = sizes[ sizename ] || sizes.full;
 					image_area.find( 'img' ).remove();
 					image_area.prepend(
-						'<img src="' + file.toJSON().url + '" />'
+						'<img src="' + img.url + '" />'
 					);
 					image_area.removeClass( 'hide' );
 					upload_button.parent().find( 'input[type="hidden"]' ).val( file.toJSON().id );
