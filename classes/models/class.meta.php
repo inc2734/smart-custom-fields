@@ -131,6 +131,10 @@ class Smart_Custom_Fields_Meta {
 				}
 			}
 
+			if ( $key === '' && $option !== false ) {
+				return $option;
+			}
+
 			// get_metadata は存在しないとき空文字を返すので揃える
 			if ( $single ) {
 				return '';
@@ -173,6 +177,7 @@ class Smart_Custom_Fields_Meta {
 				} else {
 					$option[$key][] = $value;
 				}
+				$option = stripslashes_deep( $option );
 				$return = update_option( $option_name, $option, false );
 			}
 		}
@@ -200,6 +205,7 @@ class Smart_Custom_Fields_Meta {
 				$option = get_option( $option_name );
 				if ( !$unique || !isset( $option[$key] ) ) {
 					$option[$key][] = $value;
+					$option = stripslashes_deep( $option );
 					$return = update_option( $option_name, $option, false );
 				}
 			}
