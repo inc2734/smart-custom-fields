@@ -50,7 +50,7 @@ class Smart_Custom_Fields_Meta {
 			$this->type = $object->taxonomy;
 			$this->meta_type = 'term';
 		}
-		elseif( empty( $object ) ) {
+		elseif( empty( $object ) || is_wp_error( $object ) ) {
 			$this->id   = null;
 			$this->type = null;
 			$this->meta_type = null;
@@ -121,22 +121,21 @@ class Smart_Custom_Fields_Meta {
 			return get_metadata( $this->meta_type, $this->id, $key, $single );
 		} else {
 			$option = get_option( $this->get_option_name() );
-			if ( $key === '' ) {
-				return $option;
-			}
-			if ( isset( $option[$key] ) ) {
-				if ( $single && is_array( $option[$key]) ) {
-					return $option[$key][0];
+			if ( $key !=='' && isset( $option[$key] ) ) {
+				if ( $single && is_array( $option[$key] ) ) {
+					if ( isset( $option[$key][0] ) ) {
+						return $option[$key][0];
+					}
+				} else {
+					return $option[$key];
 				}
-				return $option[$key];
 			}
+
 			// get_metadata は存在しないとき空文字を返すので揃える
-			if ( $option === false || !isset( $option[$key] ) ) {
-				if ( $single ) {
-					return '';
-				}
-				return array();
+			if ( $single ) {
+				return '';
 			}
+			return array();
 		}
 	}
 
@@ -223,14 +222,26 @@ class Smart_Custom_Fields_Meta {
 			}
 		} else {
 			$option_name = $this->get_option_name();
-			if ( $key ) {
-				$option = get_option( $option_name );
-				if ( isset( $option[$key] ) ) {
-					unset( $option[$key] );
+
+			if ( !$key ) {
+				return delete_option( $option_name );
+			}
+
+			$option = get_option( $option_name );
+
+			if ( isset( $option[$key] ) && $value === '' ) {
+				unset( $option[$key] );
+				return update_option( $option_name, $option );
+			}
+
+			if ( isset( $option[$key] ) && $value !== '' ) {
+				foreach ( $option[$key] as $option_key => $option_value ) {
+					if ( $option_value === $value ) {
+						unset( $option[$key][$option_key] );
+					}
 				}
 				return update_option( $option_name, $option );
 			}
-			return delete_option( $option_name );
 		}
 	}
 
