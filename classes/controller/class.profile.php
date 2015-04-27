@@ -1,10 +1,10 @@
 <?php
 /**
  * Smart_Custom_Fields_Controller_Profile
- * Version    : 1.0.0
+ * Version    : 1.0.1
  * Author     : Takashi Kitajima
  * Created    : March 16, 2015
- * Modified   : 
+ * Modified   : April 26, 2015
  * License    : GPLv2
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
  */
@@ -35,7 +35,9 @@ class Smart_Custom_Fields_Controller_Profile extends Smart_Custom_Fields_Control
 	}
 
 	/**
-	 * user_profile
+	 * カスタムフィールドを表示
+	 *
+	 * @param WP_User $user
 	 */
 	public function user_profile( $user ) {
 		printf( '<h3>%s</h3>', esc_html__( 'Custom Fields', 'smart-custom-fields' ) );
@@ -66,7 +68,6 @@ class Smart_Custom_Fields_Controller_Profile extends Smart_Custom_Fields_Control
 			return;
 		}
 
-		$user_data = get_userdata( $user_id );
 		$this->save( $_POST, get_userdata( $user_id ) );
 	}
 

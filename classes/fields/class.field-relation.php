@@ -1,10 +1,10 @@
 <?php
 /**
  * Smart_Custom_Fields_Field_Relation
- * Version    : 1.1.1
+ * Version    : 1.2.0
  * Author     : Takashi Kitajima
  * Created    : October 7, 2014
- * Modified   : March 19, 2015
+ * Modified   : April 26, 2015
  * License    : GPLv2
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
  */
@@ -45,7 +45,7 @@ class Smart_Custom_Fields_Field_Relation extends Smart_Custom_Fields_Field_Base 
 	 * @param string $hook
 	 */
 	public function admin_enqueue_scripts( $hook ) {
-		if ( in_array( $hook, array( 'post-new.php', 'post.php', 'user-edit.php', 'profile.php' ) ) ) {
+		if ( in_array( $hook, array( 'post-new.php', 'post.php', 'user-edit.php', 'profile.php', 'edit-tags.php' ) ) ) {
 			wp_enqueue_script(
 				SCF_Config::PREFIX . 'editor-relation',
 				plugins_url( SCF_Config::NAME ) . '/js/editor-relation.js',

@@ -1,10 +1,10 @@
 <?php
 /**
  * Smart_Custom_Fields_Controller_Settings
- * Version    : 1.1.0
+ * Version    : 1.2.0
  * Author     : Takashi Kitajima
  * Created    : September 23, 2014
- * Modified   : February 27, 2015
+ * Modified   : April 26, 2015
  * License    : GPLv2
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
  */
@@ -88,6 +88,13 @@ class Smart_Custom_Fields_Controller_Settings {
 			SCF_Config::PREFIX . 'meta-box-condition-profile',
 			__( 'Display conditions ( Profile )', 'smart-custom-fields' ),
 			array( $this, 'display_meta_box_condition_profile' ),
+			SCF_Config::NAME,
+			'side'
+		);
+		add_meta_box(
+			SCF_Config::PREFIX . 'meta-box-condition-taxonomy',
+			__( 'Display conditions ( Taxonomy )', 'smart-custom-fields' ),
+			array( $this, 'display_meta_box_condition_taxonomy' ),
 			SCF_Config::NAME,
 			'side'
 		);
@@ -247,6 +254,32 @@ class Smart_Custom_Fields_Controller_Settings {
 	}
 
 	/**
+	 * メタボックスの表示条件を設定するメタボックス（タクソノミー用）を表示
+	 */
+	public function display_meta_box_condition_taxonomy() {
+		$taxonomies = get_taxonomies( array(
+			'show_ui' => true,
+		), 'objects' );
+		$conditions = get_post_meta( get_the_ID(), SCF_Config::PREFIX . 'taxonomies', true );
+		$taxonomy_field = '';
+		foreach ( $taxonomies as $name => $taxonomy ) {
+			$current = ( is_array( $conditions ) && in_array( $name, $conditions ) ) ? $name : false;
+			$taxonomy_field .= sprintf(
+				'<label><input type="checkbox" name="%s" value="%s" %s /> %s</label>',
+				esc_attr( SCF_Config::PREFIX . 'taxonomies[]' ),
+				esc_attr( $name ),
+				checked( $current, $name, false ),
+				esc_html__( $taxonomy->label, 'smart-custom-fields' )
+			);
+		}
+		printf(
+			'<p><b>%s</b>%s</p>',
+			esc_html__( 'Taxonomies', 'smart-custom-fields' ),
+			$taxonomy_field
+		);
+	}
+
+	/**
 	 * 設定を保存
 	 *
 	 * @param int $post_id
@@ -318,6 +351,12 @@ class Smart_Custom_Fields_Controller_Settings {
 			delete_post_meta( $post_id, SCF_Config::PREFIX . 'roles' );
 		} else {
 			update_post_meta( $post_id, SCF_Config::PREFIX . 'roles', $_POST[SCF_Config::PREFIX . 'roles'] );
+		}
+
+		if ( !isset( $_POST[SCF_Config::PREFIX . 'taxonomies'] ) ) {
+			delete_post_meta( $post_id, SCF_Config::PREFIX . 'taxonomies' );
+		} else {
+			update_post_meta( $post_id, SCF_Config::PREFIX . 'taxonomies', $_POST[SCF_Config::PREFIX . 'taxonomies'] );
 		}
 	}
 }

@@ -1,0 +1,17 @@
+/**
+ * taxonomy.css
+ * Version    : 1.0.0
+ * Author     : Takashi Kitajima
+ * Created    : April 26, 2014
+ * Modified   : 
+ * License    : GPLv2
+ * License URI: http://www.gnu.org/licenses/gpl-2.0.html
+ */
+
+/** ==================================================
+ * .smart-cf-meta-box-table
+ */
+.smart-cf-meta-box-table {
+	background: transparent;
+	border-bottom-color: #ddd;
+}

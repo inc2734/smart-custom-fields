@@ -1,9 +1,9 @@
 /**
  * settings.css
- * Version    : 1.0.2
+ * Version    : 1.0.3
  * Author     : Takashi Kitajima
  * Created    : September 23, 2014
- * Modified   : April 11, 2015
+ * Modified   : April 26, 2015
  * License    : GPLv2
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
  */
@@ -175,12 +175,14 @@
  * #smart-cf-meta-box-condition
  */
 #smart-cf-meta-box-condition-post b,
-#smart-cf-meta-box-condition-profile b {
+#smart-cf-meta-box-condition-profile b,
+#smart-cf-meta-box-condition-taxonomy b {
 	display: block;
 	margin: 0 0 5px;
 }
 #smart-cf-meta-box-condition-post label,
-#smart-cf-meta-box-condition-profile label {
+#smart-cf-meta-box-condition-profile label,
+#smart-cf-meta-box-condition-taxonomy label {
 	display: block;
 	margin: 0 0 5px;
 }
