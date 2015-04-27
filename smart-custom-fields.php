@@ -115,6 +115,7 @@ class Smart_Custom_Fields {
 			$Post->ID        = $post_id;
 			$Post->post_type = $screen->id;
 			if ( SCF::get_settings( new WP_Post( $Post ) ) ) {
+				require_once plugin_dir_path( __FILE__ ) . 'classes/controller/class.abstract-controller-base.php';
 				require_once plugin_dir_path( __FILE__ ) . 'classes/controller/class.editor.php';
 				new Smart_Custom_Fields_Revisions();
 				new Smart_Custom_Fields_Controller_Editor();
@@ -129,7 +130,7 @@ class Smart_Custom_Fields {
 				$roles = $user_data->roles;
 			}
 			if ( SCF::get_settings( get_userdata( $user_id ) ) ) {
-				require_once plugin_dir_path( __FILE__ ) . 'classes/controller/class.editor.php';
+				require_once plugin_dir_path( __FILE__ ) . 'classes/controller/class.abstract-controller-base.php';
 				require_once plugin_dir_path( __FILE__ ) . 'classes/controller/class.profile.php';
 				new Smart_Custom_Fields_Controller_Profile();
 			}
@@ -140,7 +141,7 @@ class Smart_Custom_Fields {
 			if ( $term_id ) {
 				$term = get_term( $term_id, $screen->taxonomy );
 				if ( SCF::get_settings( $term ) ) {
-					require_once plugin_dir_path( __FILE__ ) . 'classes/controller/class.editor.php';
+					require_once plugin_dir_path( __FILE__ ) . 'classes/controller/class.abstract-controller-base.php';
 					require_once plugin_dir_path( __FILE__ ) . 'classes/controller/class.taxonomy.php';
 					new Smart_Custom_Fields_Controller_Taxonomy();
 				}

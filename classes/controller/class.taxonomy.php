@@ -8,7 +8,7 @@
  * License    : GPLv2
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
  */
-class Smart_Custom_Fields_Controller_Taxonomy extends Smart_Custom_Fields_Controller_Editor {
+class Smart_Custom_Fields_Controller_Taxonomy extends Smart_Custom_Fields_Controller_Base {
 
 	/**
 	 * タクソノミーの名前
@@ -20,10 +20,10 @@ class Smart_Custom_Fields_Controller_Taxonomy extends Smart_Custom_Fields_Contro
 	 * __construct
 	 */
 	public function __construct() {
-		$this->taxonomy = $_REQUEST['taxonomy'];
+		parent::__construct();
 
+		$this->taxonomy = $_REQUEST['taxonomy'];
 		add_action( $this->taxonomy . '_edit_form_fields', array( $this, 'edit_form_fields' ) );
-		add_action( 'admin_enqueue_scripts'              , array( $this, 'admin_enqueue_scripts' ) );
 		add_action( 'edited_terms'                       , array( $this, 'update' ), 10, 2 );
 		add_action( 'delete_term'                        , array( $this, 'delete' ), 10, 4 );
 	}
@@ -79,6 +79,14 @@ class Smart_Custom_Fields_Controller_Taxonomy extends Smart_Custom_Fields_Contro
 		$this->save( $_POST, $term );
 	}
 
+	/**
+	 * メタデータの削除
+	 *
+	 * @param int $term_id
+	 * @param int $term_taxonomy_id
+	 * @param string $taxonomy
+	 * @param object $deleted_term
+	 */
 	public function delete( $term_id, $term_taxonomy_id, $taxonomy, $deleted_term ) {
 		$Meta = new Smart_Custom_Fields_Meta( $deleted_term );
 		$Meta->delete();
@@ -87,29 +95,15 @@ class Smart_Custom_Fields_Controller_Taxonomy extends Smart_Custom_Fields_Contro
 	/**
 	 * メタデータの取得
 	 * 
-	 * @param int $id 投稿ID or ユーザーID
+	 * @param int $term_id
 	 * @return array
 	 */
-	protected function get_all_meta( $id ) {
-		$meta_data = $this->meta_data;
+	protected function _get_all_meta( $term_id ) {
+		$Meta = new Smart_Custom_Fields_Meta( get_term( $term_id, $this->taxonomy ) );
+		$meta_data = $Meta->get();
 		if ( empty( $meta_data ) ) {
-			$Meta = new Smart_Custom_Fields_Meta( get_term( $id, $this->taxonomy ) );
-			$meta_data = $Meta->get();
-			if ( empty( $meta_data ) ) {
-				return array();
-			}
-			$this->meta_data = $meta_data;
+			return array();
 		}
-		return $this->meta_data;
-	}
-
-	/**
-	 * 投稿ステータスを返す（タームにステータスは無いので必ず 'auto-draft' を返すこと）
-	 *
-	 * @param int $user_id
-	 * @return string 'auto-draft'
-	 */
-	protected function get_post_status( $user_id ) {
-		return 'auto-draft';
+		return $meta_data;
 	}
 }
