@@ -35,6 +35,7 @@ class Smart_Custom_Fields_Revision_Test extends WP_UnitTestCase {
 	 * tearDown
 	 */
 	public function tearDown() {
+		parent::tearDown();
 		SCF::clear_all_cache();
 	}
 
