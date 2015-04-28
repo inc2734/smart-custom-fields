@@ -11,6 +11,11 @@
 class Smart_Custom_Fields_Meta {
 
 	/**
+	 * @var WP_Post|WP_User|object
+	 */
+	protected $object;
+
+	/**
 	 * 投稿のメタデータを扱うか、ユーザーのメタデータを扱うか
 	 * @var string post or user or term
 	 */
@@ -35,6 +40,7 @@ class Smart_Custom_Fields_Meta {
 		if ( !function_exists( 'get_editable_roles' ) ) {
 			require_once( ABSPATH . '/wp-admin/includes/user.php' );
 		}
+		$this->object = $object;
 		if ( is_a( $object, 'WP_Post' ) ) {
 			$this->id   = $object->ID;
 			$this->type = $object->post_type;
@@ -139,6 +145,29 @@ class Smart_Custom_Fields_Meta {
 	}
 
 	/**
+	 * $is_use_default_when_not_saved が true // 1.3.x までは false
+	 * $is_use_default_when_not_saved が false で meta_type が post 以外
+	 * $is_use_default_when_not_saved が false で meta_type が post で post_status が auto-draft
+	 *
+	 * @return bool
+	 */
+	public function is_use_default_when_not_saved() {
+		$use_default_when_not_saved = apply_filters( SCF_Config::PREFIX . 'is_use_default_when_not_saved', true );
+		if (
+			$use_default_when_not_saved !== false
+			||
+			$use_default_when_not_saved === false && (
+				$this->meta_type !== 'post'
+				||
+				$this->meta_type === 'post' && in_array( get_post_status( $this->object ), array( 'auto-draft' ) )
+			)
+		) {
+			return true;
+		}
+		return false;
+	}
+
+	/**
 	 * メタデータを取得
 	 *
 	 * @param string $key メタキー
@@ -146,6 +175,61 @@ class Smart_Custom_Fields_Meta {
 	 * @return string|array
 	 */
 	public function get( $key = '', $single = false ) {
+		$settings = SCF::get_settings( $this->object );
+		foreach ( $settings as $Setting ) {
+			$groups = $Setting->get_groups();
+			foreach ( $groups as $Group ) {
+				$fields = $Group->get_fields();
+				foreach ( $fields as $Field ) {
+					if ( $Field->get( 'name' ) !== $key ) {
+						continue;
+					}
+					if ( !$this->is_saved_by_key( $key ) ) {
+						$is_use_default_when_not_saved = $this->is_use_default_when_not_saved();
+						if ( $is_use_default_when_not_saved ) {
+							$default = $Field->get( 'default' );
+							// 文字列を返す
+							if ( $single ) {
+								if ( is_array( $default ) ) {
+									if ( $Field->get_attribute( 'allow-multiple-data' ) ) {
+										$default[0] = SCF::choices_eol_to_array( $default[0] );
+									}
+									return $default[0];
+								}
+								if ( $Field->get_attribute( 'allow-multiple-data' ) ) {
+									$default = SCF::choices_eol_to_array( $default );
+								}
+								return $default;
+							}
+							// 配列を返す
+							else {
+								if ( is_array( $default ) ) {
+									if ( $Field->get_attribute( 'allow-multiple-data' ) ) {
+										foreach ( $default as $key => $value ) {
+											$default[$key] = SCF::choices_eol_to_array( $value );
+										}
+									}
+									return $default;
+								} else {
+									if ( $default === '' || $default === false || $default === null ) {
+										return array();
+									} else {
+										if ( $Field->get_attribute( 'allow-multiple-data' ) ) {
+											$default = SCF::choices_eol_to_array( $default );
+										}
+										return ( array ) $default;
+									}
+								}
+							}
+						}
+					}
+					break;
+				}
+			}
+		}
+		return $this->_get( $key, $single );
+	}
+	protected function _get( $key = '', $single = false ) {
 		if ( _get_meta_table( $this->meta_type ) ) {
 			return get_metadata( $this->meta_type, $this->id, $key, $single );
 		} else {

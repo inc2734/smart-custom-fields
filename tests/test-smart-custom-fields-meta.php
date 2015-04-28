@@ -179,7 +179,7 @@ class Smart_Custom_Fields_Meta_Test extends WP_UnitTestCase {
 	/**
 	 * @group get
 	 */
-	public function test_get__メタテーブル無し_値未保存_singleがtrueでないときは空文字列を返す() {
+	public function test_get__メタテーブル無し_値未保存_singleがtrueのときは空文字列を返す() {
 		$this->assertSame( '', $this->Meta_term->get( 'text', true ) );
 	}
 

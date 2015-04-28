@@ -132,10 +132,12 @@ abstract class Smart_Custom_Fields_Controller_Base {
 						// 同名のカスタムフィールドが複数のとき（チェックボックス or ループ）
 						if ( $meta_count > 1 ) {
 							// チェックボックスの場合
-							if ( is_array( $repeat_multiple_data ) && isset( $repeat_multiple_data[$field_name] ) ) {
-								$repeat_multiple_data_count = count( $repeat_multiple_data[$field_name] );
-								if ( $loop_count < $repeat_multiple_data_count ) {
-									$loop_count = $repeat_multiple_data_count;
+							if ( $Field->get_attribute( 'allow-multiple-data' ) ) {
+								if ( is_array( $repeat_multiple_data ) && isset( $repeat_multiple_data[$field_name] ) ) {
+									$repeat_multiple_data_count = count( $repeat_multiple_data[$field_name] );
+									if ( $loop_count < $repeat_multiple_data_count ) {
+										$loop_count = $repeat_multiple_data_count;
+									}
 								}
 							}
 							// チェックボックス以外
@@ -210,7 +212,10 @@ abstract class Smart_Custom_Fields_Controller_Base {
 		$id     = $Meta->get_id();
 		$_value = $Meta->get( $field_name );
 		$value  = null;
-		if ( isset( $_value[$index] ) ) {
+		if ( is_null( $index ) ) {
+			$index = 0;
+		}
+		if ( is_array( $_value ) && isset( $_value[$index] ) ) {
 			$value = $_value[$index];
 		}
 		return $value;
@@ -261,16 +266,11 @@ abstract class Smart_Custom_Fields_Controller_Base {
 
 			// 複数値許可フィールドのとき
 			if ( $Field->get_attribute( 'allow-multiple-data' ) ) {
-				$value  = $this->get_default_value( $default, $index, $id, true );
-				$_value = $this->get_multiple_data_field_value( $object, $field_name, $index );
+				$value = $this->get_multiple_data_field_value( $object, $field_name, $index );
 			}
 			// 複数不値許可フィールドのとき
 			else {
-				$value  = $this->get_default_value( $default, $index, $id, false );
-				$_value = $this->get_single_data_field_value( $object, $field_name, $index );
-			}
-			if ( $Meta->is_saved_by_key( $field_name ) ) {
-				$value = $_value;
+				$value = $this->get_single_data_field_value( $object, $field_name, $index );
 			}
 
 			$notes = $Field->get( 'notes' );
@@ -290,45 +290,5 @@ abstract class Smart_Custom_Fields_Controller_Base {
 			);
 		}
 		echo '</table></div>';
-	}
-
-	/**
-	 * デフォルト値を取得
-	 *
-	 * @param mixed $default
-	 * @param int $index
-	 * @param int $id
-	 * @param bool $do_choices_eol_to_array
-	 * @return mixed
-	 */
-	protected function get_default_value( $default, $index, $id, $do_choices_eol_to_array ) {
-		if ( $do_choices_eol_to_array ) {
-			$value = array();
-		} else {
-			$value = '';
-		}
-		if ( $this->default_value_conditions( $default, $index, $id ) ) {
-			if ( $do_choices_eol_to_array ) {
-				$value = SCF::choices_eol_to_array( $default );
-			} else {
-				$value = $default;
-			}
-		}
-		return $value;
-	}
-
-	/**
-	 * デフォルト値を取得するための条件
-	 *
-	 * @param mixed $default
-	 * @param int $index
-	 * @param int $id
-	 * @return bool
-	 */
-	protected function default_value_conditions( $default, $index, $id ) {
-		if ( !SCF::is_empty( $default ) && is_null( $index ) ) {
-			return true;
-		}
-		return false;
 	}
 }

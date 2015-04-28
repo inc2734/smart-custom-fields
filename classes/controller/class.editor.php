@@ -1,10 +1,10 @@
 <?php
 /**
  * Smart_Custom_Fields_Controller_Editor
- * Version    : 1.0.2
+ * Version    : 1.1.0
  * Author     : Takashi Kitajima
  * Created    : September 23, 2014
- * Modified   : March 16, 2015
+ * Modified   : April 28, 2015
  * License    : GPLv2
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
  */
@@ -57,21 +57,5 @@ class Smart_Custom_Fields_Controller_Editor extends Smart_Custom_Fields_Controll
 		}
 
 		$this->save( $_POST, get_post( $post_id ) );
-	}
-
-	/**
-	 * デフォルト値を取得するための条件
-	 *
-	 * @param mixed $default
-	 * @param int $index
-	 * @param int $post_id
-	 * @return bool
-	 */
-	protected function default_value_conditions( $default, $index, $post_id ) {
-		$post_status = get_post_status( $post_id );
-		if ( !SCF::is_empty( $default ) && ( $post_status === 'auto-draft' || is_null( $index ) ) ) {
-			return true;
-		}
-		return false;
 	}
 }
