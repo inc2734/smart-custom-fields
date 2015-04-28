@@ -70,14 +70,4 @@ class Smart_Custom_Fields_Controller_Profile extends Smart_Custom_Fields_Control
 
 		$this->save( $_POST, get_userdata( $user_id ) );
 	}
-
-	/**
-	 * メタデータの取得
-	 * 
-	 * @param int $user_id
-	 * @return array
-	 */
-	protected function _get_all_meta( $user_id ) {
-		return get_user_meta( $user_id );
-	}
 }

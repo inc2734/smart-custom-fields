@@ -91,19 +91,4 @@ class Smart_Custom_Fields_Controller_Taxonomy extends Smart_Custom_Fields_Contro
 		$Meta = new Smart_Custom_Fields_Meta( $deleted_term );
 		$Meta->delete();
 	}
-
-	/**
-	 * メタデータの取得
-	 * 
-	 * @param int $term_id
-	 * @return array
-	 */
-	protected function _get_all_meta( $term_id ) {
-		$Meta = new Smart_Custom_Fields_Meta( get_term( $term_id, $this->taxonomy ) );
-		$meta_data = $Meta->get();
-		if ( empty( $meta_data ) ) {
-			return array();
-		}
-		return $meta_data;
-	}
 }

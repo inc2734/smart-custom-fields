@@ -11,12 +11,6 @@
 abstract class Smart_Custom_Fields_Controller_Base {
 
 	/**
-	 * meta_data 格納用。何度も関数呼び出ししなくて良いように保存
-	 * @var array
-	 */
-	protected $meta_data = array();
-
-	/**
 	 * 各フォーム部品のオブジェクトを格納する配列
 	 * @var array
 	 */
@@ -112,25 +106,6 @@ abstract class Smart_Custom_Fields_Controller_Base {
 	}
 
 	/**
-	 * メタデータの取得
-	 * 
-	 * @param int $id 投稿ID or ユーザーID or タームID
-	 * @return array
-	 */
-	protected function get_all_meta( $id ) {
-		$meta_data = $this->meta_data;
-		if ( empty( $meta_data ) ) {
-			$meta_data = $this->_get_all_meta( $id );
-			if ( empty( $meta_data ) ) {
-				return array();
-			}
-			$this->meta_data = $meta_data;
-		}
-		return $this->meta_data;
-	}
-	abstract protected function _get_all_meta( $id );
-
-	/**
 	 * カスタムフィールドを出力するための配列を生成
 	 * 
 	 * @param WP_Post|WP_User $object
@@ -141,7 +116,6 @@ abstract class Smart_Custom_Fields_Controller_Base {
 		$Meta = new Smart_Custom_Fields_Meta( $object );
 		$id   = $Meta->get_id();
 
-		$meta_data = $this->get_all_meta( $id );
 		$repeat_multiple_data = SCF::get_repeat_multiple_data( $object );
 		$tables = array();
 		foreach ( $groups as $Group ) {
@@ -152,16 +126,17 @@ abstract class Smart_Custom_Fields_Controller_Base {
 				$fields = $Group->get_fields();
 				foreach ( $fields as $Field ) {
 					$field_name = $Field->get( 'name' );
-					if ( isset( $meta_data[$field_name] ) && is_array( $meta_data[$field_name] ) ) {
-						$meta       = $meta_data[$field_name];
+					$meta = $Meta->get( $field_name );
+					if ( is_array( $meta ) ) {
 						$meta_count = count( $meta );
 						// 同名のカスタムフィールドが複数のとき（チェックボックス or ループ）
 						if ( $meta_count > 1 ) {
 							// チェックボックスの場合
 							if ( is_array( $repeat_multiple_data ) && isset( $repeat_multiple_data[$field_name] ) ) {
 								$repeat_multiple_data_count = count( $repeat_multiple_data[$field_name] );
-								if ( $loop_count < $repeat_multiple_data_count )
+								if ( $loop_count < $repeat_multiple_data_count ) {
 									$loop_count = $repeat_multiple_data_count;
+								}
 							}
 							// チェックボックス以外
 							else {
@@ -196,11 +171,11 @@ abstract class Smart_Custom_Fields_Controller_Base {
 		$Meta = new Smart_Custom_Fields_Meta( $object );
 		$id   = $Meta->get_id();
 
-		$meta_data = $this->get_all_meta( $id );
 		$repeat_multiple_data = SCF::get_repeat_multiple_data( $object );
-		$value = null;
-		if ( isset( $meta_data[$field_name] ) && is_array( $meta_data[$field_name] ) ) {
-			$value = $meta_data[$field_name];
+		$_value = $Meta->get( $field_name );
+		$value  = null;
+		if ( is_array( $_value ) ) {
+			$value = $_value;
 			// ループのとき
 			if ( is_array( $repeat_multiple_data ) && isset( $repeat_multiple_data[$field_name] ) ) {
 				$now_num = 0;
@@ -215,7 +190,7 @@ abstract class Smart_Custom_Fields_Controller_Base {
 
 				$value = null;
 				if ( $now_num ) {
-					$value = array_slice( $meta_data[$field_name], $start, $now_num );
+					$value = array_slice( $_value, $start, $now_num );
 				}
 			}
 		}
@@ -230,11 +205,13 @@ abstract class Smart_Custom_Fields_Controller_Base {
 	 * @param int $index
 	 * @return string or null
 	 */
-	protected function get_single_data_field_value( $id, $field_name, $index ) {
-		$meta_data = $this->get_all_meta( $id );
-		$value = null;
-		if ( isset( $meta_data[$field_name][$index] ) ) {
-			$value = $meta_data[$field_name][$index];
+	protected function get_single_data_field_value( $object, $field_name, $index ) {
+		$Meta   = new Smart_Custom_Fields_Meta( $object );
+		$id     = $Meta->get_id();
+		$_value = $Meta->get( $field_name );
+		$value  = null;
+		if ( isset( $_value[$index] ) ) {
+			$value = $_value[$index];
 		}
 		return $value;
 	}
@@ -290,9 +267,9 @@ abstract class Smart_Custom_Fields_Controller_Base {
 			// 複数不値許可フィールドのとき
 			else {
 				$value  = $this->get_default_value( $default, $index, $id, false );
-				$_value = $this->get_single_data_field_value( $id, $field_name, $index );
+				$_value = $this->get_single_data_field_value( $object, $field_name, $index );
 			}
-			if ( !is_null( $_value ) ) {
+			if ( $Meta->is_saved_by_key( $field_name ) ) {
 				$value = $_value;
 			}
 

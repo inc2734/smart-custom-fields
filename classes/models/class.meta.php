@@ -110,11 +110,40 @@ class Smart_Custom_Fields_Meta {
 	}
 
 	/**
+	 * 指定されたキーのカスタムフィールドが既に保存されているか
+	 *
+	 * @param string $key
+	 * @return bool
+	 */
+	public function is_saved_by_key( $key ) {
+		if ( _get_meta_table( $this->meta_type ) ) {
+			if ( $this->meta_type === 'post' ) {
+				$meta = get_post_custom_values( $key, $this->id );
+				if ( !is_null( $meta ) ) {
+					return true;
+				}
+			}
+			elseif ( $this->meta_type === 'user' ) {
+				$meta = get_user_option( $key, $this->id );
+				if ( $meta !== false ) {
+					return true;
+				}
+			}
+		} else {
+			$meta = get_option( $this->get_option_name() );
+			if ( isset( $meta[$key] ) ) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
 	 * メタデータを取得
 	 *
 	 * @param string $key メタキー
 	 * @param bool $single false だと配列で取得、true だと文字列で取得
-	 * @return mixed
+	 * @return string|array
 	 */
 	public function get( $key = '', $single = false ) {
 		if ( _get_meta_table( $this->meta_type ) ) {

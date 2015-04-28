@@ -60,16 +60,6 @@ class Smart_Custom_Fields_Controller_Editor extends Smart_Custom_Fields_Controll
 	}
 
 	/**
-	 * メタデータの取得
-	 * 
-	 * @param int $post_id
-	 * @return array
-	 */
-	protected function _get_all_meta( $post_id ) {
-		return get_post_meta( $post_id );
-	}
-
-	/**
 	 * デフォルト値を取得するための条件
 	 *
 	 * @param mixed $default
