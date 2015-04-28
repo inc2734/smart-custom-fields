@@ -165,35 +165,37 @@ abstract class Smart_Custom_Fields_Controller_Base {
 	 * 複数許可フィールドのメタデータを取得
 	 * 
 	 * @param WP_Post|WP_Post $object
-	 * @param string $field_name
+	 * @param Smart_Custom_Fields_Field_Base $Field
 	 * @param int $index
 	 * @return array or null
 	 */
-	protected function get_multiple_data_field_value( $object, $field_name, $index ) {
+	protected function get_multiple_data_field_value( $object, $Field, $index ) {
 		$Meta = new Smart_Custom_Fields_Meta( $object );
 		$id   = $Meta->get_id();
+		$field_name = $Field->get( 'name' );
 
 		$repeat_multiple_data = SCF::get_repeat_multiple_data( $object );
-		$_value = $Meta->get( $field_name );
-		$value  = null;
-		if ( is_array( $_value ) ) {
-			$value = $_value;
-			// ループのとき
-			if ( is_array( $repeat_multiple_data ) && isset( $repeat_multiple_data[$field_name] ) ) {
-				$now_num = 0;
-				if ( is_array( $repeat_multiple_data[$field_name] ) && isset( $repeat_multiple_data[$field_name][$index] ) ) {
-					$now_num = $repeat_multiple_data[$field_name][$index];
-				}
 
-				// 自分（$index）より前の個数の合計が指す index が start
-				$_temp = array_slice( $repeat_multiple_data[$field_name], 0, $index );
-				$sum   = array_sum( $_temp );
-				$start = $sum;
+		if ( $Meta->is_saved_by_key( $field_name ) || !$Meta->is_use_default_when_not_saved() ) {
+			$value = $Meta->get( $field_name );
+		} else {
+			$value = SCF::get_default_value( $Field );
+		}
 
-				$value = null;
-				if ( $now_num ) {
-					$value = array_slice( $_value, $start, $now_num );
-				}
+		// ループのとき
+		if ( is_array( $repeat_multiple_data ) && isset( $repeat_multiple_data[$field_name] ) ) {
+			$now_num = 0;
+			if ( is_array( $repeat_multiple_data[$field_name] ) && isset( $repeat_multiple_data[$field_name][$index] ) ) {
+				$now_num = $repeat_multiple_data[$field_name][$index];
+			}
+
+			// 自分（$index）より前の個数の合計が指す index が start
+			$_temp = array_slice( $repeat_multiple_data[$field_name], 0, $index );
+			$sum   = array_sum( $_temp );
+			$start = $sum;
+
+			if ( $now_num ) {
+				$value = array_slice( $value, $start, $now_num );
 			}
 		}
 		return $value;
@@ -203,22 +205,28 @@ abstract class Smart_Custom_Fields_Controller_Base {
 	 * 非複数許可フィールドのメタデータを取得
 	 * 
 	 * @param int $id 投稿ID or ユーザーID
-	 * @param string $field_name
+	 * @param Smart_Custom_Fields_Field_Base $Field
 	 * @param int $index
 	 * @return string or null
 	 */
-	protected function get_single_data_field_value( $object, $field_name, $index ) {
+	protected function get_single_data_field_value( $object, $Field, $index ) {
 		$Meta   = new Smart_Custom_Fields_Meta( $object );
 		$id     = $Meta->get_id();
-		$_value = $Meta->get( $field_name );
-		$value  = null;
+		$field_name = $Field->get( 'name' );
+
+		if ( $Meta->is_saved_by_key( $field_name ) || !$Meta->is_use_default_when_not_saved() ) {
+			$value = $Meta->get( $field_name );
+		} else {
+			$value = SCF::get_default_value( $Field );
+		}
+
 		if ( is_null( $index ) ) {
 			$index = 0;
 		}
-		if ( is_array( $_value ) && isset( $_value[$index] ) ) {
-			$value = $_value[$index];
+		if ( !isset( $value[$index] ) ) {
+			$value = null;
 		}
-		return $value;
+		return $value[$index];
 	}
 
 	/**
@@ -266,11 +274,11 @@ abstract class Smart_Custom_Fields_Controller_Base {
 
 			// 複数値許可フィールドのとき
 			if ( $Field->get_attribute( 'allow-multiple-data' ) ) {
-				$value = $this->get_multiple_data_field_value( $object, $field_name, $index );
+				$value = $this->get_multiple_data_field_value( $object, $Field, $index );
 			}
 			// 複数不値許可フィールドのとき
 			else {
-				$value = $this->get_single_data_field_value( $object, $field_name, $index );
+				$value = $this->get_single_data_field_value( $object, $Field, $index );
 			}
 
 			$notes = $Field->get( 'notes' );

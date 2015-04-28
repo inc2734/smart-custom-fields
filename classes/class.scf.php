@@ -336,7 +336,11 @@ class SCF {
 		$repeat_multiple_data = self::get_repeat_multiple_data( $object );
 		$is_use_default_when_not_saved = $Meta->is_use_default_when_not_saved();
 		if ( is_array( $repeat_multiple_data ) && isset( $repeat_multiple_data[$field_name] ) ) {
-			$_meta = $Meta->get( $field_name );
+			if ( $Meta->is_saved_by_key( $field_name ) || !$Meta->is_use_default_when_not_saved() ) {
+				$_meta = $Meta->get( $field_name );
+			} else {
+				$_meta = self::get_default_value( $Field );
+			}
 			$start = 0;
 			foreach ( $repeat_multiple_data[$field_name] as $repeat_multiple_key => $repeat_multiple_value ) {
 				if ( $repeat_multiple_value === 0 ) {
@@ -354,15 +358,69 @@ class SCF {
 		// それ以外
 		else {
 			if ( $Field->get_attribute( 'allow-multiple-data' ) || $is_repeatable ) {
-				$meta = $Meta->get( $field_name );
+				if ( $Meta->is_saved_by_key( $field_name ) || !$Meta->is_use_default_when_not_saved() ) {
+					$meta = $Meta->get( $field_name );
+				} else {
+					$meta = self::get_default_value( $Field );
+				}
 			} else {
-				$meta = $Meta->get( $field_name, true );
+				if ( $Meta->is_saved_by_key( $field_name ) || !$Meta->is_use_default_when_not_saved() ) {
+					$meta = $Meta->get( $field_name, true );
+				} else {
+					$meta = self::get_default_value( $Field, true );
+				}
 			}
 			if ( $is_use_default_when_not_saved || $Meta->is_saved_by_key( $field_name ) ) {
 				$meta = apply_filters( SCF_Config::PREFIX . 'validate-get-value', $meta, $field_type );
 			}
 		}
 		return $meta;
+	}
+
+	/**
+	 * 初期値を返す
+	 *
+	 * @param Smart_Custom_Fields_Field_Base $Field
+	 * @param bool $single
+	 * @return array|strings
+	 */
+	public static function get_default_value( $Field, $single = false ) {
+		$default = $Field->get( 'default' );
+
+		// 文字列を返す
+		if ( $single ) {
+			if ( is_array( $default ) && isset( $default[0] ) ) {
+				if ( $Field->get_attribute( 'allow-multiple-data' ) ) {
+					$default[0] = SCF::choices_eol_to_array( $default[0] );
+				}
+				return $default[0];
+			} else {
+				if ( $Field->get_attribute( 'allow-multiple-data' ) ) {
+					$default = SCF::choices_eol_to_array( $default );
+				}
+				return $default;
+			}
+		}
+		// 配列を返す
+		else {
+			if ( $Field->get_attribute( 'allow-multiple-data' ) ) {
+				if ( is_array( $default ) ) {
+					foreach ( $default as $key => $value ) {
+						$default[$key] = SCF::choices_eol_to_array( $value );
+					}
+				} else {
+					$default = SCF::choices_eol_to_array( $default );
+				}
+			}
+			if ( is_array( $default ) ) {
+				return $default;
+			} else {
+				if ( $default === '' || $default === false || $default === null ) {
+					return array();
+				}
+				return ( array ) $default;
+			}
+		}
 	}
 
 	/**
@@ -769,6 +827,9 @@ class SCF {
 	 */
 	public static function choices_eol_to_array( $choices ) {
 		if ( !is_array( $choices ) ) {
+			if ( $choices === '' || $choices === false || $choices === null ) {
+				return array();
+			}
 			$choices = str_replace( array( "\r\n", "\r", "\n" ), "\n", $choices );
 			return explode( "\n", $choices );
 		}

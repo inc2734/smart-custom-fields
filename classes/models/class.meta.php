@@ -152,7 +152,7 @@ class Smart_Custom_Fields_Meta {
 	 * @return bool
 	 */
 	public function is_use_default_when_not_saved() {
-		$use_default_when_not_saved = apply_filters( SCF_Config::PREFIX . 'is_use_default_when_not_saved', true );
+		$use_default_when_not_saved = apply_filters( SCF_Config::PREFIX . 'is_use_default_when_not_saved', false );
 		if (
 			$use_default_when_not_saved !== false
 			||
@@ -175,61 +175,6 @@ class Smart_Custom_Fields_Meta {
 	 * @return string|array
 	 */
 	public function get( $key = '', $single = false ) {
-		$settings = SCF::get_settings( $this->object );
-		foreach ( $settings as $Setting ) {
-			$groups = $Setting->get_groups();
-			foreach ( $groups as $Group ) {
-				$fields = $Group->get_fields();
-				foreach ( $fields as $Field ) {
-					if ( $Field->get( 'name' ) !== $key ) {
-						continue;
-					}
-					if ( !$this->is_saved_by_key( $key ) ) {
-						$is_use_default_when_not_saved = $this->is_use_default_when_not_saved();
-						if ( $is_use_default_when_not_saved ) {
-							$default = $Field->get( 'default' );
-							// 文字列を返す
-							if ( $single ) {
-								if ( is_array( $default ) ) {
-									if ( $Field->get_attribute( 'allow-multiple-data' ) ) {
-										$default[0] = SCF::choices_eol_to_array( $default[0] );
-									}
-									return $default[0];
-								}
-								if ( $Field->get_attribute( 'allow-multiple-data' ) ) {
-									$default = SCF::choices_eol_to_array( $default );
-								}
-								return $default;
-							}
-							// 配列を返す
-							else {
-								if ( is_array( $default ) ) {
-									if ( $Field->get_attribute( 'allow-multiple-data' ) ) {
-										foreach ( $default as $key => $value ) {
-											$default[$key] = SCF::choices_eol_to_array( $value );
-										}
-									}
-									return $default;
-								} else {
-									if ( $default === '' || $default === false || $default === null ) {
-										return array();
-									} else {
-										if ( $Field->get_attribute( 'allow-multiple-data' ) ) {
-											$default = SCF::choices_eol_to_array( $default );
-										}
-										return ( array ) $default;
-									}
-								}
-							}
-						}
-					}
-					break;
-				}
-			}
-		}
-		return $this->_get( $key, $single );
-	}
-	protected function _get( $key = '', $single = false ) {
 		if ( _get_meta_table( $this->meta_type ) ) {
 			return get_metadata( $this->meta_type, $this->id, $key, $single );
 		} else {
