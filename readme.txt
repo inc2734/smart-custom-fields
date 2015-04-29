@@ -89,6 +89,8 @@ You can send your own language pack to me.
 = 1.4.0 =
 * refactoring controllers.
 * Add term custom fields.
+* Add filter hook smart-cf-is_use_default_when_not_saved
+* Changed to the default value is used if the value has not been saved. If you want to revert to the previous behavior, return false in smart-cf-is_use_default_when_not_saved.
 
 = 1.3.2 =
 * Add preview size setting in the image field.
