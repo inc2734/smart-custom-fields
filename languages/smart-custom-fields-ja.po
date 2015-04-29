@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Smart Custom Fields 1.4.0\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/smart-custom-fields\n"
-"POT-Creation-Date: 2015-04-29 03:59:46+00:00\n"
-"PO-Revision-Date: 2015-04-29 13:00+0900\n"
+"POT-Creation-Date: 2015-04-29 04:43:41+00:00\n"
+"PO-Revision-Date: 2015-04-29 13:44+0900\n"
 "Last-Translator: Takashi Kitajima <inc@2inc.org>\n"
 "Language-Team: \n"
 "Language: ja\n"
@@ -18,11 +18,11 @@ msgstr ""
 "X-Poedit-Basepath: .\n"
 "X-Poedit-SearchPath-0: ..\n"
 
-#: classes/controller/class.abstract-controller-base.php:46
+#: classes/controller/class.controller-base.php:46
 msgid "Image setting"
 msgstr "画像設定"
 
-#: classes/controller/class.abstract-controller-base.php:47
+#: classes/controller/class.controller-base.php:47
 msgid "File setting"
 msgstr "ファイル設定"
 
