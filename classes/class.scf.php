@@ -334,7 +334,6 @@ class SCF {
 		// ループ内の複数値項目の場合
 		$field_type = $Field->get_attribute( 'type' );
 		$repeat_multiple_data = self::get_repeat_multiple_data( $object );
-		$is_use_default_when_not_saved = $Meta->is_use_default_when_not_saved();
 		if ( is_array( $repeat_multiple_data ) && isset( $repeat_multiple_data[$field_name] ) ) {
 			if ( $Meta->is_saved_by_key( $field_name ) || !$Meta->is_use_default_when_not_saved() ) {
 				$_meta = $Meta->get( $field_name );
@@ -349,7 +348,7 @@ class SCF {
 					$value  = array_slice( $_meta, $start, $repeat_multiple_value );
 					$start += $repeat_multiple_value;
 				}
-				if ( $is_use_default_when_not_saved || $Meta->is_saved_by_key( $field_name ) ) {
+				if ( $Meta->is_saved_by_key( $field_name ) || !$Meta->is_use_default_when_not_saved() ) {
 					$value = apply_filters( SCF_Config::PREFIX . 'validate-get-value', $value, $field_type );
 				}
 				$meta[$repeat_multiple_key] = $value;
@@ -370,7 +369,7 @@ class SCF {
 					$meta = self::get_default_value( $Field, true );
 				}
 			}
-			if ( $is_use_default_when_not_saved || $Meta->is_saved_by_key( $field_name ) ) {
+			if ( $Meta->is_saved_by_key( $field_name ) || !$Meta->is_use_default_when_not_saved() ) {
 				$meta = apply_filters( SCF_Config::PREFIX . 'validate-get-value', $meta, $field_type );
 			}
 		}
@@ -385,6 +384,13 @@ class SCF {
 	 * @return array|strings
 	 */
 	public static function get_default_value( $Field, $single = false ) {
+		if ( !is_a( $Field, 'Smart_Custom_Fields_Field_Base' ) ) {
+			if ( $single ) {
+				return '';
+			}
+			return array();
+		}
+
 		$default = $Field->get( 'default' );
 
 		// 文字列を返す
@@ -798,14 +804,14 @@ class SCF {
 
 	/**
 	 * 管理画面で保存されたフィールドを取得
-	 * 同じ投稿タイプで、同名のフィールド名を持つフィールドを複数定義しても一つしか返らないので注意
+	 * 同名のフィールド名を持つフィールドを複数定義しても一つしか返らないので注意
 	 * 
-	 * @param string $post_type
+	 * @param WP_Post|WP_User|object $object
 	 * @param string $field_name
-	 * @return Smart_Custom_Fields_Field_Base
+	 * @return Smart_Custom_Fields_Field_Base|null
 	 */
-	public static function get_field( $post_type, $field_name ) {
-		$settings = self::get_settings( get_post( get_the_ID() ) );
+	public static function get_field( $object, $field_name ) {
+		$settings = self::get_settings( $object );
 		foreach ( $settings as $Setting ) {
 			$groups = $Setting->get_groups();
 			foreach ( $groups as $Group ) {

@@ -152,7 +152,7 @@ class Smart_Custom_Fields_Meta {
 	 * @return bool
 	 */
 	public function is_use_default_when_not_saved() {
-		$use_default_when_not_saved = apply_filters( SCF_Config::PREFIX . 'is_use_default_when_not_saved', false );
+		$use_default_when_not_saved = apply_filters( SCF_Config::PREFIX . 'is_use_default_when_not_saved', true );
 		if (
 			$use_default_when_not_saved !== false
 			||

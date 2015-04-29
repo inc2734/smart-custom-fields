@@ -70,6 +70,10 @@ class SCF_Test extends WP_UnitTestCase {
 						'checkbox3' => array(),
 					),
 				),
+				'text-has-default'         => 'text default',
+				'text-has-not-default'     => '',
+				'checkbox-has-default'     => array( 'A', 'B', 'X' ),
+				'checkbox-has-not-default' => array(),
 			),
 			SCF::gets( $this->post_id )
 		);
@@ -118,6 +122,10 @@ class SCF_Test extends WP_UnitTestCase {
 						'checkbox3' => array(),
 					),
 				),
+				'text-has-default'         => 'text default',
+				'text-has-not-default'     => '',
+				'checkbox-has-default'     => array( 'A', 'B', 'X' ),
+				'checkbox-has-not-default' => array(),
 			),
 			SCF::get_user_meta( $this->user_id )
 		);
@@ -159,6 +167,10 @@ class SCF_Test extends WP_UnitTestCase {
 						'checkbox3' => array(),
 					),
 				),
+				'text-has-default'         => 'text default',
+				'text-has-not-default'     => '',
+				'checkbox-has-default'     => array( 'A', 'B', 'X' ),
+				'checkbox-has-not-default' => array(),
 			),
 			SCF::get_term_meta( $this->term_id, 'category' )
 		);
@@ -259,6 +271,10 @@ class SCF_Test extends WP_UnitTestCase {
 						'checkbox3' => array( 2, 3 ),
 					),
 				),
+				'text-has-default'         => 'text default',
+				'text-has-not-default'     => '',
+				'checkbox-has-default'     => array( 'A', 'B', 'X' ),
+				'checkbox-has-not-default' => array(),
 			),
 			SCF::gets( $this->post_id )
 		);
@@ -330,6 +346,10 @@ class SCF_Test extends WP_UnitTestCase {
 						'checkbox3' => array( 2, 3 ),
 					),
 				),
+				'text-has-default'         => 'text default',
+				'text-has-not-default'     => '',
+				'checkbox-has-default'     => array( 'A', 'B', 'X' ),
+				'checkbox-has-not-default' => array(),
 			),
 			SCF::get_user_meta( $this->user_id )
 		);
@@ -404,6 +424,10 @@ class SCF_Test extends WP_UnitTestCase {
 						'checkbox3' => array( 2, 3 ),
 					),
 				),
+				'text-has-default'         => 'text default',
+				'text-has-not-default'     => '',
+				'checkbox-has-default'     => array( 'A', 'B', 'X' ),
+				'checkbox-has-not-default' => array(),
 			),
 			SCF::get_term_meta( $this->term_id, 'category' )
 		);
@@ -414,7 +438,7 @@ class SCF_Test extends WP_UnitTestCase {
 	 */
 	public function test_get_field__フィールドが存在しないときはnull() {
 		$this->go_to( $this->post_id );
-		$Field = SCF::get_field( 'post', 'not_exist' );
+		$Field = SCF::get_field( get_post( $this->post_id ), 'not_exist' );
 		$this->assertNull( $Field );
 	}
 
@@ -423,7 +447,7 @@ class SCF_Test extends WP_UnitTestCase {
 	 */
 	public function test_get_field__フィールドが存在する() {
 		$this->go_to( $this->post_id );
-		$Field = SCF::get_field( get_post_type( $this->post_id ), 'text' );
+		$Field = SCF::get_field( get_post( $this->post_id ), 'text' );
 		$this->assertEquals( 'text', $Field->get( 'name' ) );
 	}
 
@@ -744,12 +768,106 @@ class SCF_Test extends WP_UnitTestCase {
 				$this->assertTrue(
 					in_array(
 						$Group->get_name(),
-						array( null, null, 'group-name-3' ),
+						array( null, null, 'group-name-3', 'group-name-4' ),
 						true
 					)
 				);
 			}
 		}
+	}
+
+	/**
+	 * @group get_default_value
+	 */
+	public function test_get_default_value__指定されたFieldのデフォルト値なし_singleがtrueのときは空文字列() {
+		$Field = SCF::get_field( get_post( $this->post_id ), 'text-has-not-default' );
+		$this->assertSame(
+			'',
+			SCF::get_default_value( $Field, true )
+		);
+	}
+
+	/**
+	 * @group get_default_value
+	 */
+	public function test_get_default_value__指定されたFieldのデフォルト値なし_singleがfalseのときは空配列() {
+		$Field = SCF::get_field( get_post( $this->post_id ), 'text-has-not-default' );
+		$this->assertSame(
+			array(),
+			SCF::get_default_value( $Field )
+		);
+	}
+
+	/**
+	 * @group get_default_value
+	 */
+	public function test_get_default_value__指定されたFieldのデフォルト値あり_singleがtrueのときは文字列() {
+		$Field = SCF::get_field( get_post( $this->post_id ), 'text-has-default' );
+		$this->assertSame(
+			'text default',
+			SCF::get_default_value( $Field, true )
+		);
+	}
+
+	/**
+	 * @group get_default_value
+	 */
+	public function test_get_default_value__指定されたFieldのデフォルト値あり_singleがfalseのときは配列() {
+		$Field = SCF::get_field( get_post( $this->post_id ), 'text-has-default' );
+		$this->assertSame(
+			array(
+				'text default',
+			),
+			SCF::get_default_value( $Field )
+		);
+	}
+
+	/**
+	 * @group get_default_value
+	 */
+	public function test_get_default_value__指定されたFieldのデフォルト値あり_複数値項目_singleがtrueのときは配列() {
+		$Field = SCF::get_field( get_post( $this->post_id ), 'checkbox-has-default' );
+		$this->assertSame(
+			array(
+				'A', 'B', 'X',
+			),
+			SCF::get_default_value( $Field, true )
+		);
+	}
+
+	/**
+	 * @group get_default_value
+	 */
+	public function test_get_default_value__指定されたFieldのデフォルト値あり_複数値項目_singleがfalseのときは配列() {
+		$Field = SCF::get_field( get_post( $this->post_id ), 'checkbox-has-default' );
+		$this->assertSame(
+			array(
+				'A', 'B', 'X',
+			),
+			SCF::get_default_value( $Field )
+		);
+	}
+
+	/**
+	 * @group get_default_value
+	 */
+	public function test_get_default_value__指定されたFieldのデフォルト値なし_複数値項目_singleがtrueのときは配列() {
+		$Field = SCF::get_field( get_post( $this->post_id ), 'checkbox-has-not-default' );
+		$this->assertSame(
+			array(),
+			SCF::get_default_value( $Field, true )
+		);
+	}
+
+	/**
+	 * @group get_default_value
+	 */
+	public function test_get_default_value__指定されたFieldのデフォルト値なし_複数値項目_singleがfalseのときは配列() {
+		$Field = SCF::get_field( get_post( $this->post_id ), 'checkbox-has-not-default' );
+		$this->assertSame(
+			array(),
+			SCF::get_default_value( $Field )
+		);
 	}
 
 	/**
@@ -792,6 +910,32 @@ class SCF_Test extends WP_UnitTestCase {
 					'label'   => 'checkbox field 3',
 					'type'    => 'check',
 					'choices' => array( 1, 2, 3 ),
+				),
+			) );
+			$Setting->add_group( 'group-name-4', false, array(
+				array(
+					'name'    => 'text-has-default',
+					'label'   => 'text has default',
+					'type'    => 'text',
+					'default' => 'text default',
+				),
+				array(
+					'name'    => 'text-has-not-default',
+					'label'   => 'text has not default',
+					'type'    => 'text',
+				),
+				array(
+					'name'    => 'checkbox-has-default',
+					'label'   => 'checkbox has default',
+					'type'    => 'check',
+					'choices' => array( 'A', 'B', 'C' ),
+					'default' => "A\nB\nX",
+				),
+				array(
+					'name'    => 'checkbox-has-not-default',
+					'label'   => 'checkbox has not default',
+					'type'    => 'check',
+					'choices' => array( 'A', 'B', 'C' ),
 				),
 			) );
 			$settings['id-1'] = $Setting;
