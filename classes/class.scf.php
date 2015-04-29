@@ -499,7 +499,7 @@ class SCF {
 					array(
 						'key'     => $key,
 						'compare' => 'LIKE',
-						'value'   => $type,
+						'value'   => sprintf( '"%s"', $type ),
 					),
 				),
 			) );
