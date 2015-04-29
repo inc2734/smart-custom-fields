@@ -179,7 +179,10 @@ abstract class Smart_Custom_Fields_Controller_Base {
 		if ( $Meta->is_saved_by_key( $field_name ) || !$Meta->is_use_default_when_not_saved() ) {
 			$value = $Meta->get( $field_name );
 		} else {
-			$value = SCF::get_default_value( $Field );
+			return SCF::get_default_value( $Field );
+		}
+		if ( !isset( $value[$index] ) ) {
+			return SCF::get_default_value( $Field );
 		}
 
 		// ループのとき
@@ -214,19 +217,19 @@ abstract class Smart_Custom_Fields_Controller_Base {
 		$id     = $Meta->get_id();
 		$field_name = $Field->get( 'name' );
 
-		if ( $Meta->is_saved_by_key( $field_name ) || !$Meta->is_use_default_when_not_saved() ) {
-			$value = $Meta->get( $field_name );
-		} else {
-			$value = SCF::get_default_value( $Field );
+		if ( is_null( $index ) ) {
+			return SCF::get_default_value( $Field );
 		}
 
-		if ( is_null( $index ) ) {
-			$index = 0;
+		if ( $Meta->is_saved_by_key( $field_name ) || !$Meta->is_use_default_when_not_saved() ) {
+			$value = $Meta->get( $field_name );
+			if ( !isset( $value[$index] ) ) {
+				return SCF::get_default_value( $Field );
+			}
+			return $value[$index];
+		} else {
+			return SCF::get_default_value( $Field );
 		}
-		if ( !isset( $value[$index] ) ) {
-			$value = null;
-		}
-		return $value[$index];
 	}
 
 	/**
@@ -265,7 +268,6 @@ abstract class Smart_Custom_Fields_Controller_Base {
 
 		foreach ( $fields as $Field ) {
 			$display_name = $Field->get_attribute( 'display-name' );
-			$default      = $Field->get( 'default' );
 			$field_name   = $Field->get( 'name' );
 			$field_label  = $Field->get( 'label' );
 			if ( !$field_label ) {
