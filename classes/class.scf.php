@@ -391,41 +391,34 @@ class SCF {
 			return array();
 		}
 
+		$choices = $Field->get( 'choices' );
 		$default = $Field->get( 'default' );
+
+		if ( $Field->get_attribute( 'allow-multiple-data' ) ) {
+			$choices = SCF::choices_eol_to_array( $choices );
+			$default = SCF::choices_eol_to_array( $default );
+			$default_sanitized = array();
+			foreach ( $default as $key => $value ) {
+				if ( in_array( $value, $choices ) ) {
+					$default_sanitized[$key] = $value;
+				}
+			}
+			$default = $default_sanitized;
+		}
 
 		// 文字列を返す
 		if ( $single ) {
-			if ( is_array( $default ) && isset( $default[0] ) ) {
-				if ( $Field->get_attribute( 'allow-multiple-data' ) ) {
-					$default[0] = SCF::choices_eol_to_array( $default[0] );
-				}
-				return $default[0];
-			} else {
-				if ( $Field->get_attribute( 'allow-multiple-data' ) ) {
-					$default = SCF::choices_eol_to_array( $default );
-				}
-				return $default;
-			}
+			return $default;
 		}
 		// 配列を返す
 		else {
-			if ( $Field->get_attribute( 'allow-multiple-data' ) ) {
-				if ( is_array( $default ) ) {
-					foreach ( $default as $key => $value ) {
-						$default[$key] = SCF::choices_eol_to_array( $value );
-					}
-				} else {
-					$default = SCF::choices_eol_to_array( $default );
-				}
-			}
 			if ( is_array( $default ) ) {
 				return $default;
-			} else {
-				if ( $default === '' || $default === false || $default === null ) {
-					return array();
-				}
-				return ( array ) $default;
 			}
+			if ( $default === '' || $default === false || $default === null ) {
+				return array();
+			}
+			return ( array ) $default;
 		}
 	}
 

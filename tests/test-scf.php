@@ -72,7 +72,7 @@ class SCF_Test extends WP_UnitTestCase {
 				),
 				'text-has-default'         => 'text default',
 				'text-has-not-default'     => '',
-				'checkbox-has-default'     => array( 'A', 'B', 'X' ),
+				'checkbox-has-default'     => array( 'A', 'B' ),
 				'checkbox-has-not-default' => array(),
 			),
 			SCF::gets( $this->post_id )
@@ -124,7 +124,7 @@ class SCF_Test extends WP_UnitTestCase {
 				),
 				'text-has-default'         => 'text default',
 				'text-has-not-default'     => '',
-				'checkbox-has-default'     => array( 'A', 'B', 'X' ),
+				'checkbox-has-default'     => array( 'A', 'B' ),
 				'checkbox-has-not-default' => array(),
 			),
 			SCF::get_user_meta( $this->user_id )
@@ -169,7 +169,7 @@ class SCF_Test extends WP_UnitTestCase {
 				),
 				'text-has-default'         => 'text default',
 				'text-has-not-default'     => '',
-				'checkbox-has-default'     => array( 'A', 'B', 'X' ),
+				'checkbox-has-default'     => array( 'A', 'B' ),
 				'checkbox-has-not-default' => array(),
 			),
 			SCF::get_term_meta( $this->term_id, 'category' )
@@ -273,7 +273,7 @@ class SCF_Test extends WP_UnitTestCase {
 				),
 				'text-has-default'         => 'text default',
 				'text-has-not-default'     => '',
-				'checkbox-has-default'     => array( 'A', 'B', 'X' ),
+				'checkbox-has-default'     => array( 'A', 'B' ),
 				'checkbox-has-not-default' => array(),
 			),
 			SCF::gets( $this->post_id )
@@ -348,7 +348,7 @@ class SCF_Test extends WP_UnitTestCase {
 				),
 				'text-has-default'         => 'text default',
 				'text-has-not-default'     => '',
-				'checkbox-has-default'     => array( 'A', 'B', 'X' ),
+				'checkbox-has-default'     => array( 'A', 'B' ),
 				'checkbox-has-not-default' => array(),
 			),
 			SCF::get_user_meta( $this->user_id )
@@ -426,7 +426,7 @@ class SCF_Test extends WP_UnitTestCase {
 				),
 				'text-has-default'         => 'text default',
 				'text-has-not-default'     => '',
-				'checkbox-has-default'     => array( 'A', 'B', 'X' ),
+				'checkbox-has-default'     => array( 'A', 'B' ),
 				'checkbox-has-not-default' => array(),
 			),
 			SCF::get_term_meta( $this->term_id, 'category' )
@@ -829,7 +829,7 @@ class SCF_Test extends WP_UnitTestCase {
 		$Field = SCF::get_field( get_post( $this->post_id ), 'checkbox-has-default' );
 		$this->assertSame(
 			array(
-				'A', 'B', 'X',
+				'A', 'B',
 			),
 			SCF::get_default_value( $Field, true )
 		);
@@ -842,7 +842,7 @@ class SCF_Test extends WP_UnitTestCase {
 		$Field = SCF::get_field( get_post( $this->post_id ), 'checkbox-has-default' );
 		$this->assertSame(
 			array(
-				'A', 'B', 'X',
+				'A', 'B',
 			),
 			SCF::get_default_value( $Field )
 		);
