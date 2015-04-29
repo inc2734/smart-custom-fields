@@ -145,9 +145,8 @@ class Smart_Custom_Fields_Meta {
 	}
 
 	/**
-	 * $is_use_default_when_not_saved が true // 1.3.x までは false
-	 * $is_use_default_when_not_saved が false で meta_type が post 以外
-	 * $is_use_default_when_not_saved が false で meta_type が post で post_status が auto-draft
+	 * $is_use_default_when_not_saved が true = true // 1.3.x までは false
+	 * $is_use_default_when_not_saved が false で meta_type が post で post_status が auto-draft = true
 	 *
 	 * @return bool
 	 */
@@ -156,11 +155,7 @@ class Smart_Custom_Fields_Meta {
 		if (
 			$use_default_when_not_saved !== false
 			||
-			$use_default_when_not_saved === false && (
-				$this->meta_type !== 'post'
-				||
-				$this->meta_type === 'post' && in_array( get_post_status( $this->object ), array( 'auto-draft' ) )
-			)
+			$use_default_when_not_saved === false && $this->meta_type === 'post' && in_array( get_post_status( $this->object ), array( 'auto-draft' ) )
 		) {
 			return true;
 		}

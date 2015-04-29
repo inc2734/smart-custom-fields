@@ -348,7 +348,7 @@ class SCF {
 					$value  = array_slice( $_meta, $start, $repeat_multiple_value );
 					$start += $repeat_multiple_value;
 				}
-				if ( $Meta->is_saved_by_key( $field_name ) || !$Meta->is_use_default_when_not_saved() ) {
+				if ( $Meta->is_saved_by_key( $field_name ) || $Meta->is_use_default_when_not_saved() ) {
 					$value = apply_filters( SCF_Config::PREFIX . 'validate-get-value', $value, $field_type );
 				}
 				$meta[$repeat_multiple_key] = $value;
@@ -369,7 +369,7 @@ class SCF {
 					$meta = self::get_default_value( $Field, true );
 				}
 			}
-			if ( $Meta->is_saved_by_key( $field_name ) || !$Meta->is_use_default_when_not_saved() ) {
+			if ( $Meta->is_saved_by_key( $field_name ) || $Meta->is_use_default_when_not_saved() ) {
 				$meta = apply_filters( SCF_Config::PREFIX . 'validate-get-value', $meta, $field_type );
 			}
 		}

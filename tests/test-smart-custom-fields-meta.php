@@ -562,10 +562,10 @@ class Smart_Custom_Fields_Meta_Test extends WP_UnitTestCase {
 	/**
 	 * @group is_use_default_when_not_saved
 	 */
-	public function test_is_use_default_when_not_saved__falseでmeta_typeがpost以外のときはtrue() {
+	public function test_is_use_default_when_not_saved__falseでmeta_typeがpost以外のときはfalse() {
 		add_filter( 'smart-cf-is_use_default_when_not_saved', '__return_false' );
-		$this->assertTrue( $this->Meta_user->is_use_default_when_not_saved() );
-		$this->assertTrue( $this->Meta_term->is_use_default_when_not_saved() );
+		$this->assertFalse( $this->Meta_user->is_use_default_when_not_saved() );
+		$this->assertFalse( $this->Meta_term->is_use_default_when_not_saved() );
 	}
 
 	/**
