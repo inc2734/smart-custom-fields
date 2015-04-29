@@ -403,7 +403,7 @@ class SCF {
 					$default_sanitized[$key] = $value;
 				}
 			}
-			$default = $default_sanitized;
+			return $default_sanitized;
 		}
 
 		// 文字列を返す

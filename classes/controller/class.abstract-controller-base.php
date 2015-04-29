@@ -170,18 +170,22 @@ abstract class Smart_Custom_Fields_Controller_Base {
 	 * @return array or null
 	 */
 	protected function get_multiple_data_field_value( $object, $Field, $index ) {
-		$Meta = new Smart_Custom_Fields_Meta( $object );
-		$id   = $Meta->get_id();
+		$Meta       = new Smart_Custom_Fields_Meta( $object );
+		$id         = $Meta->get_id();
 		$field_name = $Field->get( 'name' );
+
+		if ( is_null( $index ) ) {
+			return SCF::get_default_value( $Field );
+		}
 
 		$repeat_multiple_data = SCF::get_repeat_multiple_data( $object );
 
 		if ( $Meta->is_saved_by_key( $field_name ) || !$Meta->is_use_default_when_not_saved() ) {
 			$value = $Meta->get( $field_name );
+			if ( !isset( $value[$index] ) ) {
+				return SCF::get_default_value( $Field );
+			}
 		} else {
-			return SCF::get_default_value( $Field );
-		}
-		if ( !isset( $value[$index] ) ) {
 			return SCF::get_default_value( $Field );
 		}
 
@@ -213,23 +217,21 @@ abstract class Smart_Custom_Fields_Controller_Base {
 	 * @return string or null
 	 */
 	protected function get_single_data_field_value( $object, $Field, $index ) {
-		$Meta   = new Smart_Custom_Fields_Meta( $object );
-		$id     = $Meta->get_id();
+		$Meta       = new Smart_Custom_Fields_Meta( $object );
+		$id         = $Meta->get_id();
 		$field_name = $Field->get( 'name' );
 
 		if ( is_null( $index ) ) {
-			return SCF::get_default_value( $Field );
+			return SCF::get_default_value( $Field, true );
 		}
 
 		if ( $Meta->is_saved_by_key( $field_name ) || !$Meta->is_use_default_when_not_saved() ) {
 			$value = $Meta->get( $field_name );
-			if ( !isset( $value[$index] ) ) {
-				return SCF::get_default_value( $Field );
+			if ( isset( $value[$index] ) ) {
+				return $value[$index];
 			}
-			return $value[$index];
-		} else {
-			return SCF::get_default_value( $Field );
 		}
+		return SCF::get_default_value( $Field, true );
 	}
 
 	/**
