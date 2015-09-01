@@ -81,6 +81,10 @@ class Smart_Custom_Fields_Field_Wysiwyg extends Smart_Custom_Fields_Field_Base {
 	public function get_field( $index, $value ) {
 		$name     = $this->get_field_name_in_editor( $index );
 		$disabled = $this->get_disable_attribute( $index );
+		if ( function_exists( 'format_for_editor' ) )
+			$value = format_for_editor( $value );
+		else
+			$value = wp_richedit_pre( $value );
 		return sprintf(
 			'<div class="wp-editor-wrap">
 				<div class="wp-media-buttons">%s</div>
@@ -91,7 +95,7 @@ class Smart_Custom_Fields_Field_Wysiwyg extends Smart_Custom_Fields_Field_Base {
 			$this->media_buttons(),
 			esc_attr( $name ),
 			disabled( true, $disabled, false ),
-			wp_richedit_pre( $value )
+			$value
 		);
 	}
 
