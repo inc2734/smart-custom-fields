@@ -1,10 +1,10 @@
 <?php
 /**
  * Smart_Custom_Fields_Field_Wysiwyg
- * Version    : 1.1.1
+ * Version    : 1.1.2
  * Author     : Takashi Kitajima
  * Created    : October 7, 2014
- * Modified   : March 19, 2015
+ * Modified   : September 2, 2015
  * License    : GPLv2
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
  */
@@ -81,10 +81,11 @@ class Smart_Custom_Fields_Field_Wysiwyg extends Smart_Custom_Fields_Field_Base {
 	public function get_field( $index, $value ) {
 		$name     = $this->get_field_name_in_editor( $index );
 		$disabled = $this->get_disable_attribute( $index );
-		if ( function_exists( 'format_for_editor' ) )
+		if ( function_exists( 'format_for_editor' ) ) {
 			$value = format_for_editor( $value );
-		else
+		} else {
 			$value = wp_richedit_pre( $value );
+		}
 		return sprintf(
 			'<div class="wp-editor-wrap">
 				<div class="wp-media-buttons">%s</div>
@@ -128,7 +129,7 @@ class Smart_Custom_Fields_Field_Wysiwyg extends Smart_Custom_Fields_Field_Base {
 		</tr>
 		<?php
 	}
-	
+
 	/**
 	 * メディアボタンを返す
 	 *

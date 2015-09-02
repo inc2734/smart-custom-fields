@@ -1,9 +1,9 @@
 /**
  * editor.js
- * Version    : 1.1.1
+ * Version    : 1.2.0
  * Author     : Takashi Kitajima
  * Created    : September 23, 2014
- * Modified   : April 24, 2015
+ * Modified   : September 2, 2015
  * License    : GPLv2
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
  */
@@ -24,13 +24,23 @@ jQuery( function( $ ) {
 				$( this ).attr( 'id', 'smart-cf-wysiwyg-' + cnt + i );
 				var editor_id = $( this ).attr( 'id' );
 				$( this ).parents( '.wp-editor-wrap' ).find( 'a.add_media' ).attr( 'data-editor', editor_id );
-				tinymce.init( {
-					content_css: ['../wp-includes/js/tinymce/skins/wordpress/wp-content.css', '../wp-content/plugins/smart-custom-fields/css/wysiwyg.css'],
-					menubar: false,
-					plugins: "hr,wplink,fullscreen,wordpress,textcolor,paste,charmap",
-					toolbar1: "bold,italic,strikethrough,bullist,numlist,blockquote,hr,alignleft,aligncenter,alignright,link,unlink,wp_more,spellchecker,wp_adv,fullscreen",
-					toolbar2: "formatselect,underline,alignjustify,forecolor,pastetext,removeformat,charmap,outdent,indent,undo,redo,wp_help,code"
-				} );
+				var init;
+				console.log( tinyMCEPreInit.mceInit.content );
+				console.log( typeof tinyMCEPreInit.mceInit.content );
+				if ( typeof tinyMCEPreInit.mceInit.content !== 'undefined' ) {
+					init = tinyMCEPreInit.mceInit.content;
+				} else {
+					init = {
+						content_css: ['../wp-includes/js/tinymce/skins/wordpress/wp-content.css', '../wp-content/plugins/smart-custom-fields/css/wysiwyg.css'],
+						menubar: false,
+						plugins: "hr,wplink,fullscreen,wordpress,textcolor,paste,charmap",
+						toolbar1: "bold,italic,strikethrough,bullist,numlist,blockquote,hr,alignleft,aligncenter,alignright,link,unlink,wp_more,spellchecker,wp_adv,fullscreen",
+						toolbar2: "formatselect,underline,alignjustify,forecolor,pastetext,removeformat,charmap,outdent,indent,undo,redo,wp_help,code",
+						convert_urls: false
+					};
+				}
+				console.log( init );
+				tinymce.init( init );
 				tinymce.execCommand( 'mceAddEditor', false, editor_id );
 			}
 		} );
