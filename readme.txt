@@ -3,8 +3,8 @@ Contributors: inc2734, toro_unit, mimosafa
 Donate link: http://www.amazon.co.jp/registry/wishlist/39ANKRNSTNW40
 Tags: plugin, custom field, custom, field, meta, meta field, repeat, repeatable
 Requires at least: 3.9
-Tested up to: 4.2.1
-Stable tag: 1.5.0
+Tested up to: 4.3.0
+Stable tag: 1.5.1
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -85,6 +85,9 @@ You can send your own language pack to me.
 2. Post edit page.
 
 == Changelog ==
+
+= 1.5.1 =
+* Fixed a relation field bug.
 
 = 1.5.0 =
 * Update wysiwyg field.

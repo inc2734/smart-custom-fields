@@ -1,10 +1,10 @@
 <?php
 /**
  * Smart_Custom_Fields_Field_Relation
- * Version    : 1.2.0
+ * Version    : 1.2.1
  * Author     : Takashi Kitajima
  * Created    : October 7, 2014
- * Modified   : April 26, 2015
+ * Modified   : September 3, 2015
  * License    : GPLv2
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
  */
@@ -41,7 +41,7 @@ class Smart_Custom_Fields_Field_Relation extends Smart_Custom_Fields_Field_Base 
 
 	/**
 	 * JS の読み込み
-	 * 
+	 *
 	 * @param string $hook
 	 */
 	public function admin_enqueue_scripts( $hook ) {
@@ -136,7 +136,7 @@ class Smart_Custom_Fields_Field_Relation extends Smart_Custom_Fields_Field_Base 
 			$selected_li[] = sprintf(
 				'<li data-id="%d"><span class="%s"></span>%s<span class="relation-remove">-</li></li>',
 				$post_id,
-				esc_attr( SCF_Config::PREFIX . 'icon-handle' ),
+				esc_attr( SCF_Config::PREFIX . 'icon-handle dashicons dashicons-menu' ),
 				$post_title
 			);
 			$hidden[] = sprintf(

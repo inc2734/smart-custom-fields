@@ -1,9 +1,9 @@
 /**
  * editor.js
- * Version    : 1.0.1
+ * Version    : 1.0.2
  * Author     : Takashi Kitajima
  * Created    : September 30, 2014
- * Modified   : March 19, 2015
+ * Modified   : September 2, 2015
  * License    : GPLv2
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
  */
@@ -60,7 +60,7 @@ jQuery( function( $ ) {
 		if ( parent.find( '.smart-cf-relation-right li[data-id="' + id + '"]' ).length === 0 ) {
 			var clone = $( this ).clone();
 			clone
-				.prepend( $( '<span class="smart-cf-icon-handle"></span>' ) )
+				.prepend( $( '<span class="smart-cf-icon-handle dashicons dashicons-menu"></span>' ) )
 				.append(  $( '<span class="relation-remove">-</span>' ) );
 			parent.find( '.smart-cf-relation-right ul' ).append( clone );
 			update_relation_value( $( this ).closest( 'tr' ) );
