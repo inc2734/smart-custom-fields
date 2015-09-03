@@ -37,26 +37,26 @@ https://www.youtube.com/watch?v=WxPZurn0yvI
 
 = How to get meta data ? =
 
-* SCF::get( 'field-name' )
+* SCF::get( 'field-name' )  
 This method can get any meta data.
-* SCF::get( 'group-name' )
+* SCF::get( 'group-name' )  
 This method can get meta data of any group.
 
-* SCF::gets()
+* SCF::gets()  
 This method can get all meta data.
 
-* SCF::get_user_meta( $user_id, 'field-name' )
+* SCF::get_user_meta( $user_id, 'field-name' )  
 This method can get any user meta data.
-* SCF::get_user_meta( $user_id, 'group-name' )
+* SCF::get_user_meta( $user_id, 'group-name' )  
 This method can get user meta data of any group.
-* SCF::get_user_meta( $user_id )
+* SCF::get_user_meta( $user_id )  
 This method can get all user meta data.
 
-* SCF::get_term_meta( $term_id, $taxonomy 'field-name' )
+* SCF::get_term_meta( $term_id, $taxonomy 'field-name' )  
 This method can get any term meta data.
-* SCF::get_term_meta( $term_id, $taxonomy, 'group-name' )
+* SCF::get_term_meta( $term_id, $taxonomy, 'group-name' )  
 This method can get term meta data of any group.
-* SCF::get_term_meta( $term_id, $taxonomy )
+* SCF::get_term_meta( $term_id, $taxonomy )  
 This method can get all term meta data.
 
 = Register custom fields by the code. =
