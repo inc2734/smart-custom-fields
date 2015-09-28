@@ -1,10 +1,10 @@
 <?php
 /**
  * Smart_Custom_Fields_Field_Wysiwyg
- * Version    : 1.1.2
+ * Version    : 1.1.3
  * Author     : Takashi Kitajima
  * Created    : October 7, 2014
- * Modified   : September 2, 2015
+ * Modified   : September 28, 2015
  * License    : GPLv2
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
  */
@@ -88,7 +88,9 @@ class Smart_Custom_Fields_Field_Wysiwyg extends Smart_Custom_Fields_Field_Base {
 		}
 		return sprintf(
 			'<div class="wp-editor-wrap">
-				<div class="wp-media-buttons">%s</div>
+				<div class="wp-editor-tools hide-if-no-js">
+					<div class="wp-media-buttons">%s</div>
+				</div>
 				<div class="wp-editor-container">
 					<textarea name="%s" rows="8" class="widefat smart-cf-wp-editor" %s>%s</textarea>
 				</div>
