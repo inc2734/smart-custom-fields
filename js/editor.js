@@ -15,13 +15,14 @@ jQuery( function( $ ) {
 		var btn_remove_repeat_group = wrapper.find( '.btn-remove-repeat-group' );
 		var table_class             = '.smart-cf-meta-box-table';
 		var cnt                     = wrapper.find( table_class ).length;
+		var wrapper_index           = i;
 
 		/**
 		 * ロード時に wysiwyg エディター用のテキストエリアがあったら wysiwyg 化する。
 		 */
 		wrapper.find( '.smart-cf-wp-editor' ).each( function( i, e ) {
 			if ( $( this ).parents( table_class ).css( 'display' ) !== 'none' ) {
-				$( this ).attr( 'id', 'smart-cf-wysiwyg-' + cnt + i );
+				$( this ).attr( 'id', 'smart-cf-wysiwyg-' + wrapper_index + '-' + cnt + '-' + i );
 				var editor_id = $( this ).attr( 'id' );
 				$( this ).parents( '.wp-editor-wrap' ).find( 'a.add_media' ).attr( 'data-editor', editor_id );
 				
