@@ -1,9 +1,9 @@
 /**
  * editor.js
- * Version    : 1.3.0
+ * Version    : 1.3.1
  * Author     : Takashi Kitajima
  * Created    : September 23, 2014
- * Modified   : September 28, 2015
+ * Modified   : October 6, 2015
  * License    : GPLv2
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
  */
@@ -93,7 +93,7 @@ jQuery( function( $ ) {
 			} );
 
 			clone.find( '.smart-cf-wp-editor' ).each( function( i, e ) {
-				$( this ).attr( 'id', 'smart-cf-wysiwyg-' + cnt + i );
+				$( this ).attr( 'id', 'smart-cf-wysiwyg-' + wrapper_index + '-' + cnt + '-' + i );
 			} );
 
 			button.parent().after( clone.fadeIn( 'fast' ) );
