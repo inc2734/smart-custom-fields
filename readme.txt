@@ -87,6 +87,7 @@ You can send your own language pack to me.
 == Changelog ==
 
 = 1.6.0 =
+* Added search feature in the relation field.
 * Changed when the object isn't saved, default value is active.
 * Remove filter hook smart-cf-is_use_default_when_not_saved.
 

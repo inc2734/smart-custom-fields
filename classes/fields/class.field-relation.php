@@ -67,17 +67,36 @@ class Smart_Custom_Fields_Field_Relation extends Smart_Custom_Fields_Field_Base 
 	public function relational_posts_search() {
 		check_ajax_referer( SCF_Config::NAME . '-relation', 'nonce' );
 		$_posts = array();
-		if ( isset( $_POST['post_types'], $_POST['click_count' ] ) ) {
+		$args = array();
+		if ( isset( $_POST['post_types'] ) ) {
 			$post_type = explode( ',', $_POST['post_types'] );
-			$posts_per_page = get_option( 'posts_per_page' );
-			$offset = $_POST['click_count'] * $posts_per_page;
-			$_posts = get_posts( array(
-				'post_type'      => $post_type,
-				'offset'         => $offset,
-				'order'          => 'ASC',
-				'orderby'        => 'ID',
-				'posts_per_page' => $posts_per_page,
-			) );
+			$args = array(
+				'post_type' => $post_type,
+				'order'     => 'ASC',
+				'orderby'   => 'ID',
+			);
+			
+			if ( isset( $_POST['click_count' ] ) ) {
+				$posts_per_page = get_option( 'posts_per_page' );
+				$offset = $_POST['click_count'] * $posts_per_page;
+				$args = array_merge(
+					$args,
+					array(
+						'offset'         => $offset,
+						'posts_per_page' => $posts_per_page,
+					)
+				);
+			}
+			
+			if ( isset( $_POST['s'] ) ) {
+				$args = array_merge(
+					$args,
+					array(
+						's' => $_POST['s'],
+					)
+				);
+			}
+			$_posts = get_posts( $args );
 		}
 		header( 'Content-Type: application/json; charset=utf-8' );
 		echo json_encode( $_posts );
@@ -153,20 +172,25 @@ class Smart_Custom_Fields_Field_Relation extends Smart_Custom_Fields_Field_Base 
 		}
 
 		return sprintf(
-			'<div class="%s">
+			'<div class="%s" data-post-types="%s">
+				<div class="%s">
+					<input type="text" class="widefat search-input" name="search-input" placeholder="%s" />
+				</div>
 				<div class="%s">
 					<ul>%s</ul>
-					<p class="load-relation-posts %s" data-post-types="%s">%s</p>
+					<p class="load-relation-posts %s">%s</p>
 					<input type="hidden" name="%s" %s />
 					%s
 				</div>
 			</div>
 			<div class="%s"><ul>%s</ul></div>',
 			SCF_Config::PREFIX . 'relation-left',
+			implode( ',', $post_type ),
+			SCF_Config::PREFIX . 'search',
+			esc_attr__( 'Search...', 'smart-custom-fields' ),
 			SCF_Config::PREFIX . 'relation-children-select',
 			implode( '', $choices_li ),
 			$hide_class,
-			implode( ',', $post_type ),
 			esc_html__( 'Load more', 'smart-custom-fields' ),
 			esc_attr( $name ),
 			disabled( true, $disabled, false ),

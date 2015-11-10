@@ -10,6 +10,53 @@
 jQuery( function( $ ) {
 
 	var table_class = '.smart-cf-meta-box-table';
+	
+	/**
+	 * 検索ボタン
+	 */
+	var search_query;
+	var search_timer;
+	$( '.smart-cf-meta-box .search-input' ).keyup( function() {
+		$( '.smart-cf-meta-box .load-relation-posts' ).data( 'click_count', -1 );
+		clearTimeout( search_timer );
+		var parent = $( this ).closest( '.smart-cf-meta-box-table' );
+		parent.find( '.smart-cf-relation-children-select ul li' ).remove();
+		
+		var load_btn = parent.find( '.load-relation-posts' );
+		
+		search_query = $( this ).val();
+		if ( !search_query ) {
+			load_btn.show();
+		} else {
+			load_btn.hide();
+		}
+		
+		search_timer = setTimeout( function() {
+			if ( !search_query ) {
+				return false;
+			}
+			
+			var post_types = parent.find( '.smart-cf-relation-left' ).data( 'post-types' );
+
+			$.post( smart_cf_relation.endpoint, {
+					action     : smart_cf_relation.action,
+					nonce      : smart_cf_relation.nonce,
+					post_types : post_types,
+					s          : search_query
+				},
+				function( response ) {
+					$( response ).each( function( i, e ) {
+						parent.find( '.smart-cf-relation-children-select ul' ).append(
+							$( '<li />' )
+								.attr( 'data-id', this.ID )
+								.text( this.post_title )
+						);
+					} );
+				}
+			);
+		}, 2000 );
+		return false;
+	} );
 
 	/**
 	 * 読み込みボタン
@@ -19,7 +66,7 @@ jQuery( function( $ ) {
 		.click( function() {
 			var parent = $( this ).closest( '.smart-cf-meta-box-table' );
 			var click_count = $( this ).data( 'click_count' );
-			var post_types = $( this ).data( 'post-types' );
+			var post_types = parent.find( '.smart-cf-relation-left' ).data( 'post-types' );
 			var btn_load = $( this );
 			click_count ++;
 			btn_load.data( 'click_count', click_count );
