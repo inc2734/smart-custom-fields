@@ -114,52 +114,24 @@ class Smart_Custom_Fields_Meta {
 		}
 		return $this->type;
 	}
-
+	
 	/**
-	 * 指定されたキーのカスタムフィールドが既に保存されているか
-	 *
-	 * @param string $key
-	 * @return bool
-	 */
-	public function is_saved_by_key( $key ) {
-		if ( _get_meta_table( $this->meta_type ) ) {
-			if ( $this->meta_type === 'post' ) {
-				$meta = get_post_custom_values( $key, $this->id );
-				if ( !is_null( $meta ) ) {
-					return true;
-				}
-			}
-			elseif ( $this->meta_type === 'user' ) {
-				$meta = get_user_option( $key, $this->id );
-				if ( $meta !== false ) {
-					return true;
-				}
-			}
-		} else {
-			$meta = get_option( $this->get_option_name() );
-			if ( isset( $meta[$key] ) ) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	/**
-	 * $is_use_default_when_not_saved が true = true // 1.3.x までは false
-	 * $is_use_default_when_not_saved が false で meta_type が post で post_status が auto-draft = true
+	 * このメタデータを持つオブジェクトが保存済みかどうか
+	 * 投稿は auto-draft のときは保存されていない（新規投稿中）
+	 * タクソノミー・ユーザーのカスタムフィールドは保存後にしか表示されないので
+	 * そのままだとデフォルト値を表示できない
+	 * そこで、全てのメタデータが全く空の場合は保存されていないと判断する
 	 *
 	 * @return bool
 	 */
-	public function is_use_default_when_not_saved() {
-		$use_default_when_not_saved = apply_filters( SCF_Config::PREFIX . 'is_use_default_when_not_saved', true );
-		if (
-			$use_default_when_not_saved !== false
-			||
-			$use_default_when_not_saved === false && $this->meta_type === 'post' && in_array( get_post_status( $this->object ), array( 'auto-draft' ) )
-		) {
-			return true;
+	public function is_saved() {
+		if ( $this->meta_type === 'post' && get_post_status( $this->get_id() ) === 'auto-draft' ) {
+			return false;
 		}
-		return false;
+		if ( !$this->get() ) {
+			return false;
+		}
+		return true;
 	}
 
 	/**
@@ -170,7 +142,16 @@ class Smart_Custom_Fields_Meta {
 	 * @return string|array
 	 */
 	public function get( $key = '', $single = false ) {
-		if ( _get_meta_table( $this->meta_type ) ) {
+		// under WP 4.4 compatibility
+		$maybe_4_3_term_meta = false;
+		if ( $this->meta_type === 'term' ) {
+			$meta = get_metadata( $this->meta_type, $this->id );
+			if ( !$meta ) {
+				$maybe_4_3_term_meta = true;
+			}
+		}
+		
+		if ( _get_meta_table( $this->meta_type ) && !$maybe_4_3_term_meta ) {
 			return get_metadata( $this->meta_type, $this->id, $key, $single );
 		} else {
 			$option = get_option( $this->get_option_name() );

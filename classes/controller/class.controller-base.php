@@ -178,11 +178,8 @@ class Smart_Custom_Fields_Controller_Base {
 			return SCF::get_default_value( $Field );
 		}
 
-		if ( $Meta->is_saved_by_key( $field_name ) || !$Meta->is_use_default_when_not_saved() ) {
+		if ( $Meta->is_saved() ) {
 			$value = $Meta->get( $field_name );
-			if ( !isset( $value[$index] ) ) {
-				return SCF::get_default_value( $Field );
-			}
 		} else {
 			return SCF::get_default_value( $Field );
 		}
@@ -224,11 +221,12 @@ class Smart_Custom_Fields_Controller_Base {
 			return SCF::get_default_value( $Field, true );
 		}
 
-		if ( $Meta->is_saved_by_key( $field_name ) || !$Meta->is_use_default_when_not_saved() ) {
+		if ( $Meta->is_saved() ) {
 			$value = $Meta->get( $field_name );
 			if ( isset( $value[$index] ) ) {
 				return $value[$index];
 			}
+			return '';
 		}
 		return SCF::get_default_value( $Field, true );
 	}

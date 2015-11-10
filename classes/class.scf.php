@@ -335,7 +335,7 @@ class SCF {
 		$field_type = $Field->get_attribute( 'type' );
 		$repeat_multiple_data = self::get_repeat_multiple_data( $object );
 		if ( is_array( $repeat_multiple_data ) && isset( $repeat_multiple_data[$field_name] ) ) {
-			if ( $Meta->is_saved_by_key( $field_name ) || !$Meta->is_use_default_when_not_saved() ) {
+			if ( $Meta->is_saved() ) {
 				$_meta = $Meta->get( $field_name );
 			} else {
 				$_meta = self::get_default_value( $Field );
@@ -348,30 +348,26 @@ class SCF {
 					$value  = array_slice( $_meta, $start, $repeat_multiple_value );
 					$start += $repeat_multiple_value;
 				}
-				if ( $Meta->is_saved_by_key( $field_name ) || $Meta->is_use_default_when_not_saved() ) {
-					$value = apply_filters( SCF_Config::PREFIX . 'validate-get-value', $value, $field_type );
-				}
+				$value = apply_filters( SCF_Config::PREFIX . 'validate-get-value', $value, $field_type );
 				$meta[$repeat_multiple_key] = $value;
 			}
 		}
 		// それ以外
 		else {
 			if ( $Field->get_attribute( 'allow-multiple-data' ) || $is_repeatable ) {
-				if ( $Meta->is_saved_by_key( $field_name ) || !$Meta->is_use_default_when_not_saved() ) {
+				if ( $Meta->is_saved() ) {
 					$meta = $Meta->get( $field_name );
 				} else {
 					$meta = self::get_default_value( $Field );
 				}
 			} else {
-				if ( $Meta->is_saved_by_key( $field_name ) || !$Meta->is_use_default_when_not_saved() ) {
+				if ( $Meta->is_saved() ) {
 					$meta = $Meta->get( $field_name, true );
 				} else {
 					$meta = self::get_default_value( $Field, true );
 				}
 			}
-			if ( $Meta->is_saved_by_key( $field_name ) || $Meta->is_use_default_when_not_saved() ) {
-				$meta = apply_filters( SCF_Config::PREFIX . 'validate-get-value', $meta, $field_type );
-			}
+			$meta = apply_filters( SCF_Config::PREFIX . 'validate-get-value', $meta, $field_type );
 		}
 		return $meta;
 	}
