@@ -9,6 +9,11 @@ class SCF_Test extends WP_UnitTestCase {
 	/**
 	 * @var int
 	 */
+	protected $new_post_id;
+
+	/**
+	 * @var int
+	 */
 	protected $user_id;
 
 	/**
@@ -23,7 +28,13 @@ class SCF_Test extends WP_UnitTestCase {
 		parent::setUp();
 		// カスタムフィールドを設定するための投稿
 		$this->post_id = $this->factory->post->create( array(
-			'post_type' => 'post',
+			'post_type'   => 'post',
+			'post_status' => 'publish',
+		) );
+		// カスタムフィールドを設定するための投稿（新規投稿時）
+		$this->new_post_id = $this->factory->post->create( array(
+			'post_type'   => 'post',
+			'post_status' => 'auto-draft',
 		) );
 		// カスタムフィールドを設定するためのユーザー
 		$this->user_id = $this->factory->user->create( array( 'role' => 'editor' ) );
@@ -55,6 +66,33 @@ class SCF_Test extends WP_UnitTestCase {
 	/**
 	 * @group get
 	 */
+	public function test_get__未保存の投稿の場合はデフォルト値を返す() {
+		$this->assertSame( ''     , SCF::get( 'text'     , $this->new_post_id ) );
+		$this->assertSame( array(), SCF::get( 'text3'    , $this->new_post_id ) );
+		$this->assertSame( array(), SCF::get( 'checkbox' , $this->new_post_id ) );
+		$this->assertSame( array(), SCF::get( 'checkbox3', $this->new_post_id ) );
+		$this->assertSame(
+			array(
+				'text'         => '',
+				'checkbox'     => array(),
+				'group-name-3' => array(
+					array(
+						'text3'     => '',
+						'checkbox3' => array(),
+					),
+				),
+				'text-has-default'         => 'text default',
+				'text-has-not-default'     => '',
+				'checkbox-has-default'     => array( 'A', 'B' ),
+				'checkbox-has-not-default' => array(),
+			),
+			SCF::gets( $this->new_post_id )
+		);
+	}
+
+	/**
+	 * @group get
+	 */
 	public function test_get__メタデータが保存されていないときは空値() {
 		$this->assertSame( ''     , SCF::get( 'text'     , $this->post_id ) );
 		$this->assertSame( array(), SCF::get( 'text3'    , $this->post_id ) );
@@ -70,9 +108,9 @@ class SCF_Test extends WP_UnitTestCase {
 						'checkbox3' => array(),
 					),
 				),
-				'text-has-default'         => 'text default',
+				'text-has-default'         => '',
 				'text-has-not-default'     => '',
-				'checkbox-has-default'     => array( 'A', 'B' ),
+				'checkbox-has-default'     => array(),
 				'checkbox-has-not-default' => array(),
 			),
 			SCF::gets( $this->post_id )
@@ -122,9 +160,9 @@ class SCF_Test extends WP_UnitTestCase {
 						'checkbox3' => array(),
 					),
 				),
-				'text-has-default'         => 'text default',
+				'text-has-default'         => '',
 				'text-has-not-default'     => '',
-				'checkbox-has-default'     => array( 'A', 'B' ),
+				'checkbox-has-default'     => array(),
 				'checkbox-has-not-default' => array(),
 			),
 			SCF::get_user_meta( $this->user_id )
@@ -241,7 +279,30 @@ class SCF_Test extends WP_UnitTestCase {
 	/**
 	 * @group gets
 	 */
-	public function test_gets() {
+	public function test_gets__未保存の投稿の場合はデフォルト値を返す() {
+		$this->assertEquals(
+			array(
+				'text'     => '',
+				'checkbox' => array(),
+				'group-name-3' => array(
+					array(
+						'text3'     => '',
+						'checkbox3' => array(),
+					),
+				),
+				'text-has-default'         => 'text default',
+				'text-has-not-default'     => '',
+				'checkbox-has-default'     => array( 'A', 'B' ),
+				'checkbox-has-not-default' => array(),
+			),
+			SCF::gets( $this->new_post_id )
+		);
+	}
+
+	/**
+	 * @group gets
+	 */
+	public function test_gets__メタデータが保存されていないときは空値() {
 		update_post_meta( $this->post_id, 'text', 'hoge' );
 		add_post_meta( $this->post_id, 'checkbox', 1 );
 		add_post_meta( $this->post_id, 'checkbox', 2 );
@@ -271,9 +332,9 @@ class SCF_Test extends WP_UnitTestCase {
 						'checkbox3' => array( 2, 3 ),
 					),
 				),
-				'text-has-default'         => 'text default',
+				'text-has-default'         => '',
 				'text-has-not-default'     => '',
-				'checkbox-has-default'     => array( 'A', 'B' ),
+				'checkbox-has-default'     => array(),
 				'checkbox-has-not-default' => array(),
 			),
 			SCF::gets( $this->post_id )
@@ -346,9 +407,9 @@ class SCF_Test extends WP_UnitTestCase {
 						'checkbox3' => array( 2, 3 ),
 					),
 				),
-				'text-has-default'         => 'text default',
+				'text-has-default'         => '',
 				'text-has-not-default'     => '',
-				'checkbox-has-default'     => array( 'A', 'B' ),
+				'checkbox-has-default'     => array(),
 				'checkbox-has-not-default' => array(),
 			),
 			SCF::get_user_meta( $this->user_id )
@@ -424,9 +485,9 @@ class SCF_Test extends WP_UnitTestCase {
 						'checkbox3' => array( 2, 3 ),
 					),
 				),
-				'text-has-default'         => 'text default',
+				'text-has-default'         => '',
 				'text-has-not-default'     => '',
-				'checkbox-has-default'     => array( 'A', 'B' ),
+				'checkbox-has-default'     => array(),
 				'checkbox-has-not-default' => array(),
 			),
 			SCF::get_term_meta( $this->term_id, 'category' )
@@ -881,7 +942,12 @@ class SCF_Test extends WP_UnitTestCase {
 	 */
 	public function _register( $settings, $type, $id, $meta_type ) {
 		// SCF::add_setting( 'ユニークなID', 'メタボックスのタイトル' );
-		if ( ( $type === 'post' && $id === $this->post_id ) || ( $type === 'editor' ) || ( $type === 'category' ) ) {
+		if (
+			( $type === 'post' && $id === $this->post_id ) ||
+			( $type === 'post' && $id === $this->new_post_id ) ||
+			( $type === 'editor' ) ||
+			( $type === 'category' )
+		) {
 			$Setting = SCF::add_setting( 'id-1', 'Register Test' );
 			// $Setting->add_group( 'ユニークなID', 繰り返し可能か, カスタムフィールドの配列 );
 			$Setting->add_group( 0, false, array(

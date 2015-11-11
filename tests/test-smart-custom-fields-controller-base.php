@@ -1,14 +1,31 @@
 <?php
 class Smart_Custom_Fields_Controller_Base_Test extends WP_UnitTestCase {
+	
+	/**
+	 * @var int
+	 */
+	protected $new_post_id;
+	
+	/**
+	 * @var int
+	 */
+	protected $post_id;
 
 	/**
 	 * setUp
 	 */
 	public function setUp() {
 		parent::setUp();
+		// カスタムフィールドを設定するための投稿（未保存）
+		$this->new_post_id = $this->factory->post->create( array(
+			'post_type'   => 'post',
+			'post_status' => 'auto-draft',
+		) );
+		
 		// カスタムフィールドを設定するための投稿
 		$this->post_id = $this->factory->post->create( array(
-			'post_type' => 'post',
+			'post_type'   => 'post',
+			'post_status' => 'publish',
 		) );
 		// コードでカスタムフィールドを定義
 		add_filter( 'smart-cf-register-fields', array( $this, '_register' ), 10, 4 );
@@ -56,12 +73,25 @@ class Smart_Custom_Fields_Controller_Base_Test extends WP_UnitTestCase {
 	/**
 	 * @group get_multiple_data_field_value
 	 */
-	public function test_get_multiple_data_field_value__未保存_デフォルト値ありの場合はデフォルト値を返す() {
-		$object = get_post( $this->post_id );
+	public function test_get_multiple_data_field_value__投稿未保存_デフォルト値ありの場合はデフォルト値を返す() {
+		$object = get_post( $this->new_post_id );
 		$Field  = SCF::get_field( $object, 'checkbox-has-default' );
 		$index  = 0;
 		$this->assertEquals(
 			array( 'A', 'B', ),
+			$this->Controller->get_multiple_data_field_value( $object, $Field, $index )
+		);
+	}
+
+	/**
+	 * @group get_multiple_data_field_value
+	 */
+	public function test_get_multiple_data_field_value__投稿保存済_メタデータ未保存の場合は空値() {
+		$object = get_post( $this->post_id );
+		$Field  = SCF::get_field( $object, 'checkbox-has-default' );
+		$index  = 0;
+		$this->assertEquals(
+			array(),
 			$this->Controller->get_multiple_data_field_value( $object, $Field, $index )
 		);
 	}
@@ -125,12 +155,25 @@ class Smart_Custom_Fields_Controller_Base_Test extends WP_UnitTestCase {
 	/**
 	 * @group get_single_data_field_value
 	 */
-	public function test_get_single_data_field_value__未保存_デフォルト値ありの場合はデフォルト値を返す() {
-		$object = get_post( $this->post_id );
+	public function test_get_single_data_field_value__投稿未保存_デフォルト値ありの場合はデフォルト値を返す() {
+		$object = get_post( $this->new_post_id );
 		$Field  = SCF::get_field( $object, 'text-has-default' );
 		$index  = 0;
 		$this->assertEquals(
 			'text default',
+			$this->Controller->get_single_data_field_value( $object, $Field, $index )
+		);
+	}
+
+	/**
+	 * @group get_single_data_field_value
+	 */
+	public function test_get_single_data_field_value__投稿保存済み_メタデータ未保存の場合は空値() {
+		$object = get_post( $this->post_id );
+		$Field  = SCF::get_field( $object, 'text-has-default' );
+		$index  = 0;
+		$this->assertEquals(
+			'',
 			$this->Controller->get_single_data_field_value( $object, $Field, $index )
 		);
 	}
@@ -176,7 +219,12 @@ class Smart_Custom_Fields_Controller_Base_Test extends WP_UnitTestCase {
 	 */
 	public function _register( $settings, $type, $id, $meta_type ) {
 		// SCF::add_setting( 'ユニークなID', 'メタボックスのタイトル' );
-		if ( ( $type === 'post' && $id === $this->post_id ) || ( $type === 'editor' ) || ( $type === 'category' ) ) {
+		if (
+			( $type === 'post' && $id === $this->post_id ) ||
+			( $type === 'post' && $id === $this->new_post_id ) ||
+			( $type === 'editor' ) ||
+			( $type === 'category' )
+		) {
 			$Setting = SCF::add_setting( 'id-1', 'Register Test' );
 			// $Setting->add_group( 'ユニークなID', 繰り返し可能か, カスタムフィールドの配列 );
 			$Setting->add_group( 0, false, array(

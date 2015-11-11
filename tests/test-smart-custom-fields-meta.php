@@ -506,90 +506,28 @@ class Smart_Custom_Fields_Meta_Test extends WP_UnitTestCase {
 			SCF::get( 'checkbox3', $this->post_id )
 		);
 	}
-
+	
 	/**
-	 * @group is_saved_by_key
+	 * @group is_saved
 	 */
-	public function test_is_saved_by_key__投稿のメタデータが保存されていればtrue() {
-		$this->Meta_post->add( 'text', 'text' );
-		$this->assertTrue( $this->Meta_post->is_saved_by_key( 'text' ) );
+	public function test_is_saved__全てのメタデータが空ならfalse() {
+		$this->assertTrue( false );
 	}
-
+	
 	/**
-	 * @group is_saved_by_key
+	 * @group is_saved
 	 */
-	public function test_is_saved_by_key__投稿のメタデータが保存されていなければfalse() {
-		$this->assertFalse( $this->Meta_post->is_saved_by_key( 'text' ) );
+	public function test_is_saved__いずれからのメタデータが存在すればtrue() {
+		$this->assertTrue( false );
 	}
-
+	
 	/**
-	 * @group is_saved_by_key
+	 * @group is_saved
 	 */
-	public function test_is_saved_by_key__ユーザーのメタデータが保存されていればtrue() {
-		$this->Meta_user->add( 'text', 'text' );
-		$this->assertTrue( $this->Meta_user->is_saved_by_key( 'text' ) );
+	public function test_is_saved__投稿でautodraftのときはfalse() {
+		$this->assertTrue( false );
 	}
-
-	/**
-	 * @group is_saved_by_key
-	 */
-	public function test_is_saved_by_key__ユーザーのメタデータが保存されていなければfalse() {
-		$this->assertFalse( $this->Meta_user->is_saved_by_key( 'text' ) );
-	}
-
-	/**
-	 * @group is_saved_by_key
-	 */
-	public function test_is_saved_by_key__タームのメタデータが保存されていればtrue() {
-		$this->Meta_term->add( 'text', 'text' );
-		$this->assertTrue( $this->Meta_term->is_saved_by_key( 'text' ) );
-	}
-
-	/**
-	 * @group is_saved_by_key
-	 */
-	public function test_is_saved_by_key__タームのメタデータが保存されていなければfalse() {
-		$this->assertFalse( $this->Meta_term->is_saved_by_key( 'text' ) );
-	}
-
-	/**
-	 * @group is_use_default_when_not_saved
-	 */
-	public function test_is_use_default_when_not_saved__trueのときはtrue() {
-		$this->assertTrue( $this->Meta_post->is_use_default_when_not_saved() );
-	}
-
-	/**
-	 * @group is_use_default_when_not_saved
-	 */
-	public function test_is_use_default_when_not_saved__falseでmeta_typeがpost以外のときはfalse() {
-		add_filter( 'smart-cf-is_use_default_when_not_saved', '__return_false' );
-		$this->assertFalse( $this->Meta_user->is_use_default_when_not_saved() );
-		$this->assertFalse( $this->Meta_term->is_use_default_when_not_saved() );
-	}
-
-	/**
-	 * @group is_use_default_when_not_saved
-	 */
-	public function test_is_use_default_when_not_saved__falseでmeta_typeがpostでpost_statusがauto_draftのときはtrue() {
-		add_filter( 'smart-cf-is_use_default_when_not_saved', '__return_false' );
-		$post_id = $this->factory->post->create( array(
-			'post_type'   => 'post',
-			'post_status' => 'auto-draft',
-		) );
-		$Meta = new Smart_Custom_Fields_Meta( get_post( $post_id ) );
-
-		$this->assertTrue( $Meta->is_use_default_when_not_saved() );
-	}
-
-	/**
-	 * @group is_use_default_when_not_saved
-	 */
-	public function test_is_use_default_when_not_saved__falseでmeta_typeがpostでpost_statusがauto_draft以外のときはfalse() {
-		add_filter( 'smart-cf-is_use_default_when_not_saved', '__return_false' );
-		$this->assertFalse( $this->Meta_post->is_use_default_when_not_saved() );
-	}
-
+	
 	/**
 	 * フック経由でカスタムフィールドを設定
 	 *
