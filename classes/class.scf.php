@@ -176,7 +176,7 @@ class SCF {
 						$field_name = $Field->get( 'name' );
 						if ( $field_name === $name ) {
 							$value_by_field = self::get_value_by_field( $object, $Field, $is_repeatable );
-							self::save_cache( $object, $Field->get( 'name' ), $value_by_field );
+							self::save_cache( $object, $field_name, $value_by_field );
 							return $value_by_field;
 						}
 					}
@@ -209,7 +209,7 @@ class SCF {
 					foreach ( $fields as $Field ) {
 						$field_name = $Field->get( 'name' );
 						$value_by_field = self::get_value_by_field( $object, $Field, $is_repeatable );
-						self::save_cache( $object, $Field->get( 'name' ), $value_by_field );
+						self::save_cache( $object, $field_name, $value_by_field );
 						$post_meta[$field_name] = $value_by_field;
 					}
 				}
