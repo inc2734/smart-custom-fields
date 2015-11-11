@@ -354,18 +354,14 @@ class SCF {
 		}
 		// それ以外
 		else {
+			$single = true;
 			if ( $Field->get_attribute( 'allow-multiple-data' ) || $is_repeatable ) {
-				if ( $Meta->is_saved() ) {
-					$meta = $Meta->get( $field_name );
-				} else {
-					$meta = self::get_default_value( $Field );
-				}
+				$single = false;
+			}
+			if ( $Meta->is_saved() ) {
+				$meta = $Meta->get( $field_name, $single );
 			} else {
-				if ( $Meta->is_saved() ) {
-					$meta = $Meta->get( $field_name, true );
-				} else {
-					$meta = self::get_default_value( $Field, true );
-				}
+				$meta = self::get_default_value( $Field, $single );
 			}
 			$meta = apply_filters( SCF_Config::PREFIX . 'validate-get-value', $meta, $field_type );
 		}

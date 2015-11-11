@@ -175,12 +175,12 @@ class Smart_Custom_Fields_Controller_Base {
 		if ( is_null( $index ) ) {
 			return SCF::get_default_value( $Field );
 		}
-
-		if ( $Meta->is_saved() ) {
-			$value = $Meta->get( $field_name );
-		} else {
+		
+		if ( !$Meta->is_saved() ) {
 			return SCF::get_default_value( $Field );
 		}
+		
+		$value = $Meta->get( $field_name );
 
 		// ループのとき
 		$repeat_multiple_data = SCF::get_repeat_multiple_data( $object );
