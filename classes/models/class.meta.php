@@ -159,21 +159,24 @@ class Smart_Custom_Fields_Meta {
 			}
 
 			$settings = SCF::get_settings( $this->object );
-			foreach ( $settings as $Setting ) {
-				$groups = $Setting->get_groups();
-				foreach ( $groups as $Group ) {
-					$fields = $Group->get_fields();
-					foreach ( $fields as $Field ) {
-						$field_name = $Field->get( 'name' );
-						if ( $key ) {
-							if ( $field_name === $key ) {
-								return $meta;
-							}
-						} else {
-							if ( is_array( $meta ) && isset( $meta[$field_name] ) ) {
-								$metas[$field_name] = $meta[$field_name];
-								continue;
-							}
+			if ( $key ) {
+				foreach ( $settings as $Setting ) {
+					$groups = $Setting->get_groups();
+					foreach ( $groups as $Group ) {
+						$Field = $Group->get_field( $key );
+						if ( $Field ) {
+							return $meta;
+						}
+					}
+				}
+			} else {
+				if ( is_array( $meta ) ) {
+					foreach ( $settings as $Setting ) {
+						$fields = $Setting->get_fields();
+					}
+					foreach ( $meta as $meta_key => $meta_value ) {
+						if ( isset( $fields[$meta_key] ) ) {
+							$metas[$meta_key] = $meta[$meta_key];
 						}
 					}
 				}
@@ -427,29 +430,26 @@ class Smart_Custom_Fields_Meta {
 
 		$settings = SCF::get_settings( $object );
 		foreach ( $settings as $Setting ) {
-			$groups = $Setting->get_groups();
-			foreach ( $groups as $Group ) {
-				$fields = $Group->get_fields();
-				foreach ( $fields as $Field ) {
-					$field_name = $Field->get( 'name' );
-					$this->delete( $field_name );
-					$value = SCF::get( $field_name, $revision->ID );
-					if ( is_array( $value ) ) {
-						foreach ( $value as $val ) {
-							if ( is_array( $val ) ) {
-								foreach ( $val as $v ) {
-									// ループ内複数値項目
-									$this->add( $field_name, $v );
-								}
-							} else {
-								// ループ内単一項目 or ループ外複数値項目
-								$this->add( $field_name, $val );
+			$fields = $Setting->get_fields();
+			foreach ( $fields as $Field ) {
+				$field_name = $Field->get( 'name' );
+				$this->delete( $field_name );
+				$value = SCF::get( $field_name, $revision->ID );
+				if ( is_array( $value ) ) {
+					foreach ( $value as $val ) {
+						if ( is_array( $val ) ) {
+							foreach ( $val as $v ) {
+								// ループ内複数値項目
+								$this->add( $field_name, $v );
 							}
+						} else {
+							// ループ内単一項目 or ループ外複数値項目
+							$this->add( $field_name, $val );
 						}
-					} else {
-						// ループ外単一項目
-						$this->add( $field_name, $value );
 					}
+				} else {
+					// ループ外単一項目
+					$this->add( $field_name, $value );
 				}
 			}
 		}

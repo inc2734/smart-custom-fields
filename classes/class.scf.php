@@ -159,27 +159,23 @@ class SCF {
 
 		$settings = self::get_settings( $object );
 		foreach ( $settings as $Setting ) {
+			// グループ名と一致する場合はそのグループ内のフィールドを配列で返す
+			$Group = $Setting->get_group( $name );
+			if ( $Group ) {
+				$values_by_group = self::get_values_by_group( $object, $Group );
+				self::save_cache( $object, $name, $values_by_group );
+				return $values_by_group;
+			}
+			
+			// グループ名と一致しない場合は一致するフィールドを返す
 			$groups = $Setting->get_groups();
 			foreach ( $groups as $Group ) {
-				// グループ名と一致する場合はそのグループ内のフィールドを配列で返す
-				$is_repeatable = $Group->is_repeatable();
-				$group_name    = $Group->get_name();
-				if ( $is_repeatable && $group_name && $group_name === $name ) {
-					$values_by_group = self::get_values_by_group( $object, $Group );
-					self::save_cache( $object, $group_name, $values_by_group );
-					return $values_by_group;
-				}
-				// グループ名と一致しない場合は一致するフィールドを返す
-				else {
-					$fields = $Group->get_fields();
-					foreach ( $fields as $Field ) {
-						$field_name = $Field->get( 'name' );
-						if ( $field_name === $name ) {
-							$value_by_field = self::get_value_by_field( $object, $Field, $is_repeatable );
-							self::save_cache( $object, $field_name, $value_by_field );
-							return $value_by_field;
-						}
-					}
+				$Field = $Group->get_field( $name );
+				if ( $Field ) {
+					$is_repeatable = $Group->is_repeatable();
+					$value_by_field = self::get_value_by_field( $object, $Field, $is_repeatable );
+					self::save_cache( $object, $name, $value_by_field );
+					return $value_by_field;
 				}
 			}
 		}
@@ -800,11 +796,9 @@ class SCF {
 		foreach ( $settings as $Setting ) {
 			$groups = $Setting->get_groups();
 			foreach ( $groups as $Group ) {
-				$fields = $Group->get_fields();
-				foreach ( $fields as $Field ) {
-					if ( !is_null( $Field ) && $Field->get( 'name' ) === $field_name ) {
-						return $Field;
-					}
+				$Field = $Group->get_field( $field_name );
+				if ( $Field ) {
+					return $Field;
 				}
 			}
 		}
