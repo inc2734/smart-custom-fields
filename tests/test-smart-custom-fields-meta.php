@@ -399,7 +399,7 @@ class Smart_Custom_Fields_Meta_Test extends WP_UnitTestCase {
 		if ( !_get_meta_table( $this->Meta_term->get_meta_type() ) ) {
 			$this->Meta_term->add( 'text'    , 'text' );
 			$this->Meta_term->add( 'checkbox', 'checkbox-1' );
-			$this->Meta_term->delete();
+			$this->Meta_term->delete_term_meta_for_wp43();
 			$this->assertSame( array(), $this->Meta_term->get() );
 		}
 	}
