@@ -2,9 +2,10 @@
 # This file is distributed under the same license as the Smart Custom Fields package.
 msgid ""
 msgstr ""
-"Project-Id-Version: Smart Custom Fields 1.4.0\n"
-"Report-Msgid-Bugs-To: http://wordpress.org/tag/smart-custom-fields\n"
-"POT-Creation-Date: 2015-04-29 04:43:41+00:00\n"
+"Project-Id-Version: Smart Custom Fields 1.6.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/smart-custom-"
+"fields\n"
+"POT-Creation-Date: 2015-11-12 07:12:12+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -70,7 +71,7 @@ msgid "Add Field"
 msgstr ""
 
 #: classes/controller/class.settings.php:219
-#: classes/fields/class.field-relation.php:188
+#: classes/fields/class.field-relation.php:212
 msgid "Post Types"
 msgstr ""
 
@@ -106,7 +107,7 @@ msgstr ""
 #: classes/fields/class.field-select.php:85
 #: classes/fields/class.field-text.php:65
 #: classes/fields/class.field-textarea.php:65
-#: classes/fields/class.field-wysiwyg.php:107
+#: classes/fields/class.field-wysiwyg.php:114
 msgid "Default"
 msgstr ""
 
@@ -125,11 +126,11 @@ msgstr ""
 #: classes/fields/class.field-file.php:92
 #: classes/fields/class.field-image.php:93
 #: classes/fields/class.field-radio.php:120
-#: classes/fields/class.field-relation.php:209
+#: classes/fields/class.field-relation.php:233
 #: classes/fields/class.field-select.php:94
 #: classes/fields/class.field-text.php:74
 #: classes/fields/class.field-textarea.php:74
-#: classes/fields/class.field-wysiwyg.php:116
+#: classes/fields/class.field-wysiwyg.php:123
 msgid "Notes"
 msgstr ""
 
@@ -220,7 +221,11 @@ msgstr ""
 msgid "Relation"
 msgstr ""
 
-#: classes/fields/class.field-relation.php:170
+#: classes/fields/class.field-relation.php:190
+msgid "Search..."
+msgstr ""
+
+#: classes/fields/class.field-relation.php:194
 msgid "Load more"
 msgstr ""
 
@@ -240,8 +245,8 @@ msgstr ""
 msgid "Wysiwyg"
 msgstr ""
 
-#: classes/fields/class.field-wysiwyg.php:138
-#: classes/fields/class.field-wysiwyg.php:139
+#: classes/fields/class.field-wysiwyg.php:145
+#: classes/fields/class.field-wysiwyg.php:146
 msgid "Add Media"
 msgstr ""
 
@@ -261,7 +266,7 @@ msgstr ""
 msgid "Group name"
 msgstr ""
 
-#. #-#-#-#-#  smart-custom-fields.pot (Smart Custom Fields 1.4.0)  #-#-#-#-#
+#. #-#-#-#-#  smart-custom-fields.pot (Smart Custom Fields 1.6.0)  #-#-#-#-#
 #. Plugin Name of the plugin/theme
 #: classes/models/class.revisions.php:117 smart-custom-fields.php:157
 #: smart-custom-fields.php:158 smart-custom-fields.php:159

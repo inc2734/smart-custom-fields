@@ -2,19 +2,19 @@
 # This file is distributed under the same license as the Smart Custom Fields package.
 msgid ""
 msgstr ""
-"Project-Id-Version: Smart Custom Fields 1.4.0\n"
-"Report-Msgid-Bugs-To: http://wordpress.org/tag/smart-custom-fields\n"
-"POT-Creation-Date: 2015-04-29 04:43:41+00:00\n"
-"PO-Revision-Date: 2015-04-29 13:44+0900\n"
+"Project-Id-Version: Smart Custom Fields 1.6.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/smart-custom-fields\n"
+"POT-Creation-Date: 2015-11-12 16:13+0900\n"
+"PO-Revision-Date: 2015-11-12 16:13+0900\n"
 "Last-Translator: inc2734 <inc@2inc.org>\n"
 "Language-Team: \n"
 "Language: ja\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.7.6\n"
+"X-Generator: Poedit 1.8.4\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Poedit-KeywordsList: __;_e\n"
+"X-Poedit-KeywordsList: __;_e;esc_html__;esc_html_e;esc_attr__;esc_attr_e\n"
 "X-Poedit-Basepath: .\n"
 "X-Poedit-SearchPath-0: ..\n"
 
@@ -26,8 +26,7 @@ msgstr "画像設定"
 msgid "File setting"
 msgstr "ファイル設定"
 
-#: classes/controller/class.profile.php:43
-#: classes/controller/class.settings.php:76
+#: classes/controller/class.profile.php:43 classes/controller/class.settings.php:76
 msgid "Custom Fields"
 msgstr "カスタムフィールド"
 
@@ -76,7 +75,7 @@ msgid "Add Field"
 msgstr "フィールド追加"
 
 #: classes/controller/class.settings.php:219
-#: classes/fields/class.field-relation.php:188
+#: classes/fields/class.field-relation.php:212
 msgid "Post Types"
 msgstr "投稿タイプ"
 
@@ -104,15 +103,12 @@ msgstr "はい"
 msgid "No"
 msgstr "いいえ"
 
-#: classes/fields/class.field-boolean.php:83
-#: classes/fields/class.field-check.php:112
+#: classes/fields/class.field-boolean.php:83 classes/fields/class.field-check.php:112
 #: classes/fields/class.field-colorpicker.php:102
 #: classes/fields/class.field-datepicker.php:124
-#: classes/fields/class.field-radio.php:111
-#: classes/fields/class.field-select.php:85
-#: classes/fields/class.field-text.php:65
-#: classes/fields/class.field-textarea.php:65
-#: classes/fields/class.field-wysiwyg.php:107
+#: classes/fields/class.field-radio.php:111 classes/fields/class.field-select.php:85
+#: classes/fields/class.field-text.php:65 classes/fields/class.field-textarea.php:65
+#: classes/fields/class.field-wysiwyg.php:114
 msgid "Default"
 msgstr "デフォルト"
 
@@ -128,14 +124,12 @@ msgstr "FALSE ラベル"
 #: classes/fields/class.field-check.php:121
 #: classes/fields/class.field-colorpicker.php:111
 #: classes/fields/class.field-datepicker.php:188
-#: classes/fields/class.field-file.php:92
-#: classes/fields/class.field-image.php:93
+#: classes/fields/class.field-file.php:92 classes/fields/class.field-image.php:93
 #: classes/fields/class.field-radio.php:120
-#: classes/fields/class.field-relation.php:209
-#: classes/fields/class.field-select.php:94
-#: classes/fields/class.field-text.php:74
+#: classes/fields/class.field-relation.php:233
+#: classes/fields/class.field-select.php:94 classes/fields/class.field-text.php:74
 #: classes/fields/class.field-textarea.php:74
-#: classes/fields/class.field-wysiwyg.php:116
+#: classes/fields/class.field-wysiwyg.php:123
 msgid "Notes"
 msgstr "注記"
 
@@ -143,24 +137,20 @@ msgstr "注記"
 msgid "Check"
 msgstr "チェックボックス"
 
-#: classes/fields/class.field-check.php:83
-#: classes/fields/class.field-radio.php:82
+#: classes/fields/class.field-check.php:83 classes/fields/class.field-radio.php:82
 #: classes/fields/class.field-select.php:76
 msgid "Choices"
 msgstr "選択肢"
 
-#: classes/fields/class.field-check.php:92
-#: classes/fields/class.field-radio.php:91
+#: classes/fields/class.field-check.php:92 classes/fields/class.field-radio.php:91
 msgid "Display Direction"
 msgstr "表示方向"
 
-#: classes/fields/class.field-check.php:96
-#: classes/fields/class.field-radio.php:95
+#: classes/fields/class.field-check.php:96 classes/fields/class.field-radio.php:95
 msgid "horizontal"
 msgstr "水平方向"
 
-#: classes/fields/class.field-check.php:97
-#: classes/fields/class.field-radio.php:96
+#: classes/fields/class.field-check.php:97 classes/fields/class.field-radio.php:96
 msgid "vertical"
 msgstr "垂直方向"
 
@@ -197,8 +187,7 @@ msgstr "最小日付"
 msgid "File"
 msgstr "ファイル"
 
-#: classes/fields/class.field-file.php:50
-#: classes/fields/class.field-image.php:51
+#: classes/fields/class.field-file.php:50 classes/fields/class.field-image.php:51
 msgid "Delete"
 msgstr "削除"
 
@@ -226,7 +215,12 @@ msgstr "ラジオボタン"
 msgid "Relation"
 msgstr "リレーション"
 
-#: classes/fields/class.field-relation.php:170
+#: classes/fields/class.field-relation.php:190
+#, fuzzy
+msgid "Search..."
+msgstr "検索 …"
+
+#: classes/fields/class.field-relation.php:194
 msgid "Load more"
 msgstr "さらに読み込む"
 
@@ -246,8 +240,8 @@ msgstr "テキストエリア"
 msgid "Wysiwyg"
 msgstr "WYSIWYG"
 
-#: classes/fields/class.field-wysiwyg.php:138
-#: classes/fields/class.field-wysiwyg.php:139
+#: classes/fields/class.field-wysiwyg.php:145
+#: classes/fields/class.field-wysiwyg.php:146
 msgid "Add Media"
 msgstr "メディアを追加"
 
