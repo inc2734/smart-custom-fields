@@ -71,7 +71,6 @@ jQuery( function( $ ) {
 			click_count: click_count,
 			post_types : post_types
 		} );
-		console.log( args );
 		$.post(
 			smart_cf_relation.endpoint,
 			args,
