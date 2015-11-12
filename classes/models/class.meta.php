@@ -1,11 +1,11 @@
 <?php
 /**
  * Smart_Custom_Fields_Meta
- * Version    : 1.1.0
- * Author     : Takashi Kitajima
+ * Version    : 1.2.0
+ * Author     : inc2734
  * Created    : March 17, 2015
- * Modified   : April 26, 2015
- * License    : GPLv2
+ * Modified   : November 12, 2015
+ * License    : GPLv2 or later
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
  */
 class Smart_Custom_Fields_Meta {

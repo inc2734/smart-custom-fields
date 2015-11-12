@@ -3,10 +3,10 @@
 /**
  * Smart_Custom_Fields_Field_Boolean
  * Version    : 1.0.1
- * Author     : Toro_Unit, Takashi Kitajima
+ * Author     : Toro_Unit, inc2734
  * Created    : April 6, 2015
  * Modified   : April 11, 2015
- * License    : GPLv2
+ * License    : GPLv2 or later
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
  */
 

@@ -1,10 +1,10 @@
 /**
  * editor.js
- * Version    : 1.0.2
- * Author     : Takashi Kitajima
+ * Version    : 1.1.0
+ * Author     : inc2734
  * Created    : September 30, 2014
- * Modified   : September 2, 2015
- * License    : GPLv2
+ * Modified   : November 12, 2015
+ * License    : GPLv2 or later
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
  */
 jQuery( function( $ ) {

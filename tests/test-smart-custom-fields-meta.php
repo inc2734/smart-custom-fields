@@ -185,42 +185,42 @@ class Smart_Custom_Fields_Meta_Test extends WP_UnitTestCase {
 	/**
 	 * @group get
 	 */
-	public function test_get__メタテーブル無し_値未保存_singleがtrueでないときは空配列を返す() {
+	public function test_get__タームメタ_値未保存_singleがtrueでないときは空配列を返す() {
 		$this->assertSame( array(), $this->Meta_term->get( 'text' ) );
 	}
 
 	/**
 	 * @group get
 	 */
-	public function test_get__メタテーブル無し_値未保存_singleがtrueのときは空文字列を返す() {
+	public function test_get__タームメタ_値未保存_singleがtrueのときは空文字列を返す() {
 		$this->assertSame( '', $this->Meta_term->get( 'text', true ) );
 	}
 
 	/**
 	 * @group get
 	 */
-	public function test_get__メタテーブル無し_存在しないキー_singleがtrueのときは空配列を返す() {
+	public function test_get__タームメタ_存在しないキー_singleがtrueのときは空配列を返す() {
 		$this->assertSame( array(), $this->Meta_term->get( 'not_exist' ) );
 	}
 
 	/**
 	 * @group get
 	 */
-	public function test_get__メタテーブル無し_存在しないキー_singleがtrueのときは空文字列を返す() {
+	public function test_get__タームメタ_存在しないキー_singleがtrueのときは空文字列を返す() {
 		$this->assertSame( '', $this->Meta_term->get( 'not_exist', true ) );
 	}
 
 	/**
 	 * @group get
 	 */
-	public function test_get__メタテーブル無し_キー指定なし_singleがtrueでないときは空配列を返す() {
+	public function test_get__タームメタ_キー指定なし_singleがtrueでないときは空配列を返す() {
 		$this->assertSame( array(), $this->Meta_term->get() );
 	}
 
 	/**
 	 * @group get
 	 */
-	public function test_get__メタテーブル無し_キー指定なし_singleがtrueのときは空文字列を返す() {
+	public function test_get__タームメタ_キー指定なし_singleがtrueのときは空文字列を返す() {
 		$this->assertSame( '', $this->Meta_term->get( '', true ) );
 	}
 
@@ -261,7 +261,7 @@ class Smart_Custom_Fields_Meta_Test extends WP_UnitTestCase {
 	/**
 	 * @group update
 	 */
-	public function test_update__メタテーブル無し_prev_valueの指定がないときは更新() {
+	public function test_update__タームメタ_prev_valueの指定がないときは更新() {
 		$this->Meta_term->update( 'text', 'text' );
 		$this->assertEquals( 'text', $this->Meta_term->get( 'text', true ) );
 	}
@@ -269,7 +269,7 @@ class Smart_Custom_Fields_Meta_Test extends WP_UnitTestCase {
 	/**
 	 * @group update
 	 */
-	public function test_update__メタテーブル無し_prev_valueと値が同じときは上書き() {
+	public function test_update__タームメタ_prev_valueと値が同じときは上書き() {
 		$this->Meta_term->add( 'text', 'prev_value' );
 		$this->Meta_term->update( 'text', 'text2', 'prev_value' );
 		$this->assertEquals( 'text2', $this->Meta_term->get( 'text', true ) );
@@ -278,7 +278,7 @@ class Smart_Custom_Fields_Meta_Test extends WP_UnitTestCase {
 	/**
 	 * @group update
 	 */
-	public function test_update__メタテーブル無し_prev_valueと値が違うときは上書きしない() {
+	public function test_update__タームメタ_prev_valueと値が違うときは上書きしない() {
 		$this->Meta_term->add( 'text', 'text' );
 		$this->Meta_term->update( 'text', 'text2', 'prev_value' );
 		$this->assertEquals( 'text', $this->Meta_term->get( 'text', true ) );
@@ -287,7 +287,7 @@ class Smart_Custom_Fields_Meta_Test extends WP_UnitTestCase {
 	/**
 	 * @group update
 	 */
-	public function test_update_メタテーブル無し_prev_valueの指定あり_値未保存のときは更新() {
+	public function test_update_タームメタ_prev_valueの指定あり_値未保存のときは更新() {
 		$this->Meta_term->update( 'text', 'text2', 'prev_value' );
 		$this->assertEquals( 'text2', $this->Meta_term->get( 'text', true ) );
 	}
@@ -320,7 +320,7 @@ class Smart_Custom_Fields_Meta_Test extends WP_UnitTestCase {
 	/**
 	 * @group add
 	 */
-	public function test_add__メタテーブル無し_uniqueの指定がないときは追加() {
+	public function test_add__タームメタ_uniqueの指定がないときは追加() {
 		$this->Meta_term->add( 'text', 'text' );
 		$this->assertEquals( 'text', $this->Meta_term->get( 'text', true ) );
 	}
@@ -328,7 +328,7 @@ class Smart_Custom_Fields_Meta_Test extends WP_UnitTestCase {
 	/**
 	 * @group add
 	 */
-	public function test_add__メタテーブル無し_uniqueの指定あり_値未保存のときは追加() {
+	public function test_add__タームメタ_uniqueの指定あり_値未保存のときは追加() {
 		$this->Meta_term->add( 'text', 'text', true );
 		$this->assertEquals( array( 'text' ), $this->Meta_term->get( 'text' ) );
 	}
@@ -336,7 +336,7 @@ class Smart_Custom_Fields_Meta_Test extends WP_UnitTestCase {
 	/**
 	 * @group add
 	 */
-	public function test_add__メタテーブル無し_uniqueの指定あり_値があるときは追加しない() {
+	public function test_add__タームメタ_uniqueの指定あり_値があるときは追加しない() {
 		$this->Meta_term->add( 'text', 'text' );
 		$this->Meta_term->add( 'text', 'text2', true );
 		$this->assertEquals( array( 'text' ), $this->Meta_term->get( 'text' ) );
@@ -370,7 +370,7 @@ class Smart_Custom_Fields_Meta_Test extends WP_UnitTestCase {
 	/**
 	 * @group delete
 	 */
-	public function test_delete__メタテーブル無し_valueの指定がないときはそのキーを全て削除() {
+	public function test_delete__タームメタ_valueの指定がないときはそのキーを全て削除() {
 		$this->Meta_term->add( 'text', 'text' );
 		$this->Meta_term->add( 'text', 'text2' );
 		$this->Meta_term->delete( 'text' );
@@ -380,7 +380,7 @@ class Smart_Custom_Fields_Meta_Test extends WP_UnitTestCase {
 	/**
 	 * @group delete
 	 */
-	public function test_delete__メタテーブル無し_valueの指定あり_値が一致するキーだけ削除() {
+	public function test_delete__タームメタ_valueの指定あり_値が一致するキーだけ削除() {
 		$this->Meta_term->add( 'text', 'text' );
 		$this->Meta_term->add( 'text', 'text2' );
 		$this->Meta_term->delete( 'text', 'text2' );
@@ -395,7 +395,7 @@ class Smart_Custom_Fields_Meta_Test extends WP_UnitTestCase {
 	/**
 	 * @group delete
 	 */
-	public function test_delete__メタテーブル無し_キー指定が無いときは全メタデータ削除() {
+	public function test_delete__タームメタ_キー指定が無いときは全メタデータ削除() {
 		if ( !_get_meta_table( $this->Meta_term->get_meta_type() ) ) {
 			$this->Meta_term->add( 'text'    , 'text' );
 			$this->Meta_term->add( 'checkbox', 'checkbox-1' );

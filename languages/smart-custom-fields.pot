@@ -314,7 +314,7 @@ msgid "Smart Custom Fields is a simple plugin that management custom fields."
 msgstr ""
 
 #. Author of the plugin/theme
-msgid "Takashi Kitajima"
+msgid "inc2734"
 msgstr ""
 
 #. Author URI of the plugin/theme

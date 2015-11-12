@@ -1,11 +1,11 @@
 <?php
 /**
  * Smart_Custom_Fields_Field_Relation
- * Version    : 1.2.1
- * Author     : Takashi Kitajima
+ * Version    : 1.3.0
+ * Author     : inc2734
  * Created    : October 7, 2014
- * Modified   : September 3, 2015
- * License    : GPLv2
+ * Modified   : November 12, 2015
+ * License    : GPLv2 or later
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
  */
 class Smart_Custom_Fields_Field_Relation extends Smart_Custom_Fields_Field_Base {
