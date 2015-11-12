@@ -93,7 +93,7 @@ class SCF_Test extends WP_UnitTestCase {
 	/**
 	 * @group get
 	 */
-	public function test_get__メタデータが保存されていないときは空値() {
+	public function test_get__メタデータが保存されていないときはデフォルト値を返す() {
 		$this->assertSame( ''     , SCF::get( 'text'     , $this->post_id ) );
 		$this->assertSame( array(), SCF::get( 'text3'    , $this->post_id ) );
 		$this->assertSame( array(), SCF::get( 'checkbox' , $this->post_id ) );
@@ -108,9 +108,9 @@ class SCF_Test extends WP_UnitTestCase {
 						'checkbox3' => array(),
 					),
 				),
-				'text-has-default'         => '',
+				'text-has-default'         => 'text default',
 				'text-has-not-default'     => '',
-				'checkbox-has-default'     => array(),
+				'checkbox-has-default'     => array( 'A', 'B' ),
 				'checkbox-has-not-default' => array(),
 			),
 			SCF::gets( $this->post_id )
@@ -145,7 +145,7 @@ class SCF_Test extends WP_UnitTestCase {
 	/**
 	 * @group get_user_meta
 	 */
-	public function test_get_user_meta__メタデータが保存されていないときは空値() {
+	public function test_get_user_meta__メタデータが保存されていないときはデフォルト値を返す() {
 		$this->assertSame( ''     , SCF::get_user_meta( $this->user_id, 'text' ) );
 		$this->assertSame( array(), SCF::get_user_meta( $this->user_id, 'text3' ) );
 		$this->assertSame( array(), SCF::get_user_meta( $this->user_id, 'checkbox' ) );
@@ -160,9 +160,9 @@ class SCF_Test extends WP_UnitTestCase {
 						'checkbox3' => array(),
 					),
 				),
-				'text-has-default'         => '',
+				'text-has-default'         => 'text default',
 				'text-has-not-default'     => '',
-				'checkbox-has-default'     => array(),
+				'checkbox-has-default'     => array( 'A', 'B' ),
 				'checkbox-has-not-default' => array(),
 			),
 			SCF::get_user_meta( $this->user_id )

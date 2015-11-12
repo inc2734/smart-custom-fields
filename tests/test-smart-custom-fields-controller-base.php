@@ -86,12 +86,12 @@ class Smart_Custom_Fields_Controller_Base_Test extends WP_UnitTestCase {
 	/**
 	 * @group get_multiple_data_field_value
 	 */
-	public function test_get_multiple_data_field_value__投稿保存済_メタデータ未保存の場合は空値() {
+	public function test_get_multiple_data_field_value__投稿保存済_メタデータ未保存の場合はデフォルト値を返す() {
 		$object = get_post( $this->post_id );
 		$Field  = SCF::get_field( $object, 'checkbox-has-default' );
 		$index  = 0;
 		$this->assertEquals(
-			array(),
+			array( 'A', 'B', ),
 			$this->Controller->get_multiple_data_field_value( $object, $Field, $index )
 		);
 	}
@@ -168,12 +168,12 @@ class Smart_Custom_Fields_Controller_Base_Test extends WP_UnitTestCase {
 	/**
 	 * @group get_single_data_field_value
 	 */
-	public function test_get_single_data_field_value__投稿保存済み_メタデータ未保存の場合は空値() {
+	public function test_get_single_data_field_value__投稿保存済み_メタデータ未保存の場合はデフォルト値を返す() {
 		$object = get_post( $this->post_id );
 		$Field  = SCF::get_field( $object, 'text-has-default' );
 		$index  = 0;
 		$this->assertEquals(
-			'',
+			'text default',
 			$this->Controller->get_single_data_field_value( $object, $Field, $index )
 		);
 	}

@@ -4,6 +4,11 @@ class Smart_Custom_Fields_Meta_Test extends WP_UnitTestCase {
 	/**
 	 * @var int
 	 */
+	protected $new_post_id;
+
+	/**
+	 * @var int
+	 */
 	protected $post_id;
 
 	/**
@@ -26,9 +31,17 @@ class Smart_Custom_Fields_Meta_Test extends WP_UnitTestCase {
 	 */
 	public function setUp() {
 		parent::setUp();
+		// カスタムフィールドを設定するための投稿（未保存）
+		$this->new_post_id = $this->factory->post->create( array(
+			'post_type'   => 'post',
+			'post_status' => 'auto-draft',
+		) );
+		$this->Meta_new_post = new Smart_Custom_Fields_Meta( get_post( $this->new_post_id ) );
+		
 		// カスタムフィールドを設定するための投稿
 		$this->post_id = $this->factory->post->create( array(
-			'post_type' => 'post',
+			'post_type'   => 'post',
+			'post_status' => 'publish',
 		) );
 		$this->Meta_post = new Smart_Custom_Fields_Meta( get_post( $this->post_id ) );
 
@@ -383,10 +396,12 @@ class Smart_Custom_Fields_Meta_Test extends WP_UnitTestCase {
 	 * @group delete
 	 */
 	public function test_delete__メタテーブル無し_キー指定が無いときは全メタデータ削除() {
-		$this->Meta_term->add( 'text'    , 'text' );
-		$this->Meta_term->add( 'checkbox', 'checkbox-1' );
-		$this->Meta_term->delete();
-		$this->assertSame( array(), $this->Meta_term->get() );
+		if ( !_get_meta_table( $this->Meta_term->get_meta_type() ) ) {
+			$this->Meta_term->add( 'text'    , 'text' );
+			$this->Meta_term->add( 'checkbox', 'checkbox-1' );
+			$this->Meta_term->delete();
+			$this->assertSame( array(), $this->Meta_term->get() );
+		}
 	}
 
 	/**
@@ -511,21 +526,30 @@ class Smart_Custom_Fields_Meta_Test extends WP_UnitTestCase {
 	 * @group is_saved
 	 */
 	public function test_is_saved__全てのメタデータが空ならfalse() {
-		$this->assertTrue( false );
+		$this->assertFalse( $this->Meta_post->is_saved() );
+		$this->assertFalse( $this->Meta_term->is_saved() );
+		$this->assertFalse( $this->Meta_user->is_saved() );
 	}
 	
 	/**
 	 * @group is_saved
 	 */
-	public function test_is_saved__いずれからのメタデータが存在すればtrue() {
-		$this->assertTrue( false );
+	public function test_is_saved__いずれかのメタデータが存在すればtrue() {
+		$POST = $this->_return_post_data_for_save( SCF_Config::NAME );
+		$this->Meta_post->save( $POST );
+		$this->Meta_term->save( $POST );
+		$this->Meta_user->save( $POST );
+		
+		$this->assertTrue( $this->Meta_post->is_saved() );
+		$this->assertTrue( $this->Meta_term->is_saved() );
+		$this->assertTrue( $this->Meta_user->is_saved() );
 	}
 	
 	/**
 	 * @group is_saved
 	 */
 	public function test_is_saved__投稿でautodraftのときはfalse() {
-		$this->assertTrue( false );
+		$this->assertFalse( $this->Meta_new_post->is_saved() );
 	}
 	
 	/**
@@ -539,7 +563,14 @@ class Smart_Custom_Fields_Meta_Test extends WP_UnitTestCase {
 	 */
 	public function _register( $settings, $type, $id, $meta_type ) {
 		// SCF::add_setting( 'ユニークなID', 'メタボックスのタイトル' );
-		if ( ( $type === 'post' && ( $id === $this->post_id || $id === $this->revision_id ) ) || ( $type === 'editor' ) || ( $type === 'category' ) ) {
+		if (
+			(
+				$type === 'post' &&
+				( $id === $this->post_id || $id === $this->revision_id || $id === $this->new_post_id )
+			) ||
+			( $type === 'editor' ) ||
+			( $type === 'category' )
+		) {
 			$Setting = SCF::add_setting( 'id-1', 'Register Test' );
 			// $Setting->add_group( 'ユニークなID', 繰り返し可能か, カスタムフィールドの配列 );
 			$Setting->add_group( 0, false, array(

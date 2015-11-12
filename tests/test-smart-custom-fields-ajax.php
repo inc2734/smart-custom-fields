@@ -32,9 +32,12 @@ class Smart_Custom_Fields_Ajax_Test extends WP_UnitTestCase {
 		$term_id  = $this->factory->term->create( array( 'taxonomy' => $taxonomy ) );
 		$term     = get_term( $term_id, 'category' );
 		$Meta = new Smart_Custom_Fields_Meta( $term );
-		$Meta->add( 'text', 'text' );
-		$this->Ajax->delete_term( $term_id, '', $taxonomy, $term );
-		$this->assertSame( array(), $Meta->get( 'text' ) );
+		
+		if ( !_get_meta_table( $Meta->get_meta_type() ) ) {
+			$Meta->add( 'text', 'text' );
+			$this->Ajax->delete_term( $term_id, '', $taxonomy, $term );
+			$this->assertSame( array(), $Meta->get( 'text' ) );
+		}
 	}
 
 	/**
