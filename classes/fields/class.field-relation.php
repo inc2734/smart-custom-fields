@@ -74,9 +74,10 @@ class Smart_Custom_Fields_Field_Relation extends Smart_Custom_Fields_Field_Base 
 				'post_type' => $post_type,
 				'order'     => 'ASC',
 				'orderby'   => 'ID',
+				'posts_per_page' => -1,
 			);
 			
-			if ( isset( $_POST['click_count' ] ) ) {
+			if ( isset( $_POST['click_count'] ) ) {
 				$posts_per_page = get_option( 'posts_per_page' );
 				$offset = $_POST['click_count'] * $posts_per_page;
 				$args = array_merge(
