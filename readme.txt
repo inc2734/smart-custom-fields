@@ -90,6 +90,7 @@ You can send your own language pack to me.
 * Added search feature in the relation field.
 * Changed when the object isn't saved, default value is active.
 * Remove filter hook smart-cf-is_use_default_when_not_saved.
+* Fixed a bug that isn't displayed meta data in preview when using custom fields settings with post id.
 
 = 1.5.3 =
 * Fixed a wysiwyg field bug.

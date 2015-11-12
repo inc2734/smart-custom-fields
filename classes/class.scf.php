@@ -566,6 +566,13 @@ class SCF {
 		$id        = $Meta->get_id();
 		$type      = $Meta->get_type( false );
 		$meta_type = $Meta->get_meta_type();
+		
+		// 投稿IDで出し分けされているカスタムフィールド設定を持つ投稿の場合、
+		// プレビュー画面ではIDが変わって表示されなくなってしまうため、
+		// プレビュー画面の場合は元の投稿（プレビューの親）から設定の再取得が必要
+		if ( $meta_type === 'post' && $object->post_type === 'revision' ) {
+			$object = get_post( $object->post_parent );
+		}
 
 		$settings = array();
 		if ( !empty( $type ) ) {
