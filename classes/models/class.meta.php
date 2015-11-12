@@ -152,7 +152,40 @@ class Smart_Custom_Fields_Meta {
 		}
 		
 		if ( _get_meta_table( $this->meta_type ) && !$maybe_4_3_term_meta ) {
-			return get_metadata( $this->meta_type, $this->id, $key, $single );
+			$meta = get_metadata( $this->meta_type, $this->id, $key, $single );
+			
+			if ( $key === SCF_Config::PREFIX . 'repeat-multiple-data' ) {
+				return $meta;
+			}
+
+			$settings = SCF::get_settings( $this->object );
+			foreach ( $settings as $Setting ) {
+				$groups = $Setting->get_groups();
+				foreach ( $groups as $Group ) {
+					$fields = $Group->get_fields();
+					foreach ( $fields as $Field ) {
+						$field_name = $Field->get( 'name' );
+						if ( $key ) {
+							if ( $field_name === $key ) {
+								return $meta;
+							}
+						} else {
+							if ( is_array( $meta ) && isset( $meta[$field_name] ) ) {
+								$metas[$field_name] = $meta[$field_name];
+								continue;
+							}
+						}
+					}
+				}
+			}
+			
+			if ( isset( $metas ) ) {
+				return $metas;
+			}
+			if ( $single ) {
+				return '';
+			}
+			return array();
 		} else {
 			$option = get_option( $this->get_option_name() );
 			if ( $key !=='' && isset( $option[$key] ) ) {
@@ -261,12 +294,11 @@ class Smart_Custom_Fields_Meta {
 				return delete_metadata( $this->meta_type, $this->id, $key, $value );
 			}
 		} else {
-			$option_name = $this->get_option_name();
-
 			if ( !$key ) {
-				return delete_option( $option_name );
+				return false;
 			}
-
+			
+			$option_name = $this->get_option_name();
 			$option = get_option( $option_name );
 
 			if ( isset( $option[$key] ) && $value === '' ) {
@@ -283,6 +315,14 @@ class Smart_Custom_Fields_Meta {
 				return update_option( $option_name, $option );
 			}
 		}
+	}
+	
+	/**
+	 * Delete all term meta for less than WordPress 4.3
+	 */
+	public function delete_term_meta_for_wp43() {
+		$option_name = $this->get_option_name();
+		return delete_option( $option_name );
 	}
 
 	/**
