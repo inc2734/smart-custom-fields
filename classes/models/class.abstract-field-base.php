@@ -1,10 +1,10 @@
 <?php
 /**
  * Smart_Custom_Fields_Field_Base
- * Version    : 1.1.0
+ * Version    : 1.1.1
  * Author     : inc2734
  * Created    : October 7, 2014
- * Modified   : February 28, 2015
+ * Modified   : November 17, 2015
  * License    : GPLv2 or later
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
  */
@@ -195,7 +195,7 @@ abstract class Smart_Custom_Fields_Field_Base {
 	 */
 	public function get_field_name_in_setting( $group_key, $field_key, $name ) {
 		return sprintf(
-			'%s[%d][fields][%d][%s]',
+			'%s[%s][fields][%s][%s]',
 			SCF_Config::NAME,
 			$group_key,
 			$field_key,
