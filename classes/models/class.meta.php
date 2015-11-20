@@ -99,7 +99,7 @@ class Smart_Custom_Fields_Meta {
 
 	/**
 	 * Post ID がリビジョンのものでも良い感じに投稿タイプを取得
-	 * 
+	 *
 	 * @param int $post_id
 	 * @return string
 	 */
@@ -114,7 +114,7 @@ class Smart_Custom_Fields_Meta {
 		}
 		return $this->type;
 	}
-	
+
 	/**
 	 * このメタデータを持つオブジェクトが保存済みかどうか
 	 * 投稿は auto-draft のときは保存されていない（新規投稿中）
@@ -150,10 +150,10 @@ class Smart_Custom_Fields_Meta {
 				$maybe_4_3_term_meta = true;
 			}
 		}
-		
+
 		if ( _get_meta_table( $this->meta_type ) && !$maybe_4_3_term_meta ) {
 			$meta = get_metadata( $this->meta_type, $this->id, $key, $single );
-			
+
 			if ( $key === SCF_Config::PREFIX . 'repeat-multiple-data' ) {
 				return $meta;
 			}
@@ -173,15 +173,14 @@ class Smart_Custom_Fields_Meta {
 				if ( is_array( $meta ) ) {
 					foreach ( $settings as $Setting ) {
 						$fields = $Setting->get_fields();
-					}
-					foreach ( $meta as $meta_key => $meta_value ) {
-						if ( isset( $fields[$meta_key] ) ) {
-							$metas[$meta_key] = $meta[$meta_key];
+						foreach ( $meta as $meta_key => $meta_value ) {
+							if ( isset( $fields[$meta_key] ) ) {
+								$metas[$meta_key] = $meta[$meta_key];
+							}
 						}
 					}
 				}
 			}
-			
 			if ( isset( $metas ) ) {
 				return $metas;
 			}
@@ -300,7 +299,7 @@ class Smart_Custom_Fields_Meta {
 			if ( !$key ) {
 				return false;
 			}
-			
+
 			$option_name = $this->get_option_name();
 			$option = get_option( $option_name );
 
@@ -319,7 +318,7 @@ class Smart_Custom_Fields_Meta {
 			}
 		}
 	}
-	
+
 	/**
 	 * Delete all term meta for less than WordPress 4.3
 	 */
@@ -364,7 +363,7 @@ class Smart_Custom_Fields_Meta {
 		if ( !isset( $POST[SCF_Config::NAME] ) ) {
 			return;
 		}
-		
+
 		$settings = SCF::get_settings( $object );
 		foreach ( $settings as $Setting ) {
 			$groups = $Setting->get_groups();
