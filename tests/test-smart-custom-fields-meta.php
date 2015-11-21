@@ -602,6 +602,16 @@ class Smart_Custom_Fields_Meta_Test extends WP_UnitTestCase {
 				),
 			) );
 			$settings['id-1'] = $Setting;
+			
+			$Setting = SCF::add_setting( 'id-2', 'Register Test 2' );
+			$Setting->add_group( 0, false, array(
+				array(
+					'name'  => 'text2-1',
+					'label' => 'text field 2-1',
+					'type'  => 'text',
+				),
+			) );
+			$settings['id-2'] = $Setting;
 		}
 		return $settings;
 	}
