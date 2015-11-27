@@ -36,6 +36,11 @@ class SCF_Test extends WP_UnitTestCase {
 			'post_type'   => 'post',
 			'post_status' => 'auto-draft',
 		) );
+		// カスタムフィールドを設定するための投稿（下書き）
+		$this->draft_post_id = $this->factory->post->create( array(
+			'post_type'   => 'post',
+			'post_status' => 'draft',
+		) );
 		// カスタムフィールドを設定するためのユーザー
 		$this->user_id = $this->factory->user->create( array( 'role' => 'editor' ) );
 		// カスタムフィールドを設定するためのターム
@@ -929,6 +934,85 @@ class SCF_Test extends WP_UnitTestCase {
 			array(),
 			SCF::get_default_value( $Field )
 		);
+	}
+	
+	/**
+	 * @group get_post_meta
+	 */
+	public function test_get_post_meta__SCF以外のメタデータを取得できるか() {
+		update_post_meta( $this->post_id, '_get_post_meta', 'value' );
+		$this->assertSame(
+			'value',
+			get_post_meta( $this->post_id, '_get_post_meta', true )
+		);
+		
+		update_post_meta( $this->new_post_id, '_get_post_meta', 'value' );
+		$this->assertSame(
+			'value',
+			get_post_meta( $this->new_post_id, '_get_post_meta', true )
+		);
+		
+		update_post_meta( $this->draft_post_id, '_get_post_meta', 'value' );
+		$this->assertSame(
+			'value',
+			get_post_meta( $this->draft_post_id, '_get_post_meta', true )
+		);
+	}
+	
+	/**
+	 * @group get_post_meta
+	 */
+	public function test_get_post_meta__プレビュー時にSCF以外のメタデータを取得できるか() {
+		global $wp_query, $post;
+		
+		update_post_meta( $this->post_id, '_get_post_meta', 'value' );
+		$this->create_revision( $this->post_id );
+		
+		update_post_meta( $this->new_post_id, '_get_post_meta', 'value' );
+		$this->create_revision( $this->new_post_id );
+		
+		update_post_meta( $this->draft_post_id, '_get_post_meta', 'value' );
+		$this->create_revision( $this->draft_post_id );
+		
+		// プレビュー状態に設定
+		$backup_wp_query = clone $wp_query;
+		$wp_query->is_preview = true;
+		
+		$post = get_post( $this->post_id );
+		setup_postdata( $post );
+		$this->assertSame(
+			'value',
+			get_post_meta( $this->post_id, '_get_post_meta', true )
+		);
+		wp_reset_postdata();
+		
+		$post = get_post( $this->new_post_id );
+		setup_postdata( $post );
+		$this->assertSame(
+			'value',
+			get_post_meta( $this->new_post_id, '_get_post_meta', true )
+		);
+		wp_reset_postdata();
+		
+		$post = get_post( $this->draft_post_id );
+		setup_postdata( $post );
+		$this->assertSame(
+			'value',
+			get_post_meta( $this->draft_post_id, '_get_post_meta', true )
+		);
+		wp_reset_postdata();
+		
+		// プレビュー状態を解除
+		$wp_query = $backup_wp_query;
+	}
+	
+	protected function create_revision( $post_id ) {
+		return $this->factory->post->create( array(
+			'post_type'   => 'revision',
+			'post_parent' => $post_id,
+			'post_status' => 'inherit',
+			'post_name'   => $post_id . '-autosave',
+		) );
 	}
 
 	/**

@@ -4,7 +4,7 @@ Donate link: http://www.amazon.co.jp/registry/wishlist/39ANKRNSTNW40
 Tags: plugin, custom field, custom, field, meta, meta field, repeat, repeatable
 Requires at least: 3.9
 Tested up to: 4.4-beta3
-Stable tag: 1.6.2
+Stable tag: 1.6.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -85,6 +85,9 @@ You can send your own language pack to me.
 2. Post edit page.
 
 == Changelog ==
+
+= 1.6.3 =
+* Fixed a bug that metadata that isn't defined by Smart Custom Fields can't get in preview.
 
 = 1.6.2 =
 * Fixed a bug that sometimes can't get data when there are multiple Smart Custom Fields settings.
