@@ -59,6 +59,7 @@ class Smart_Custom_Fields_Field_Wysiwyg extends Smart_Custom_Fields_Field_Base {
 
 	/**
 	 * フィールド初期化直後に実行する処理
+	 * If not exec this, taxonomy and profile wysiwyg has js error.
 	 */
 	protected function after_loaded() {
 		add_action( 'admin_footer', array( $this, 'admin_footer' ) );

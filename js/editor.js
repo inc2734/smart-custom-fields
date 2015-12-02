@@ -1,9 +1,9 @@
 /**
  * editor.js
- * Version    : 1.3.1
+ * Version    : 1.3.2
  * Author     : inc2734
  * Created    : September 23, 2014
- * Modified   : October 6, 2015
+ * Modified   : December 2, 2015
  * License    : GPLv2 or later
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
  */
@@ -28,9 +28,11 @@ jQuery( function( $ ) {
 				
 				var init;
 				if ( typeof tinyMCEPreInit.mceInit.content !== 'undefined' ) {
+					console.log( 1 );
 					init = $.extend( true, {}, tinyMCEPreInit.mceInit.content );
 					init.selector = '#' + editor_id;
 				} else {
+					console.log( 2 );
 					init = {
 						content_css: ['../wp-includes/js/tinymce/skins/wordpress/wp-content.css', '../wp-content/plugins/smart-custom-fields/css/wysiwyg.css'],
 						menubar: false,
@@ -46,7 +48,8 @@ jQuery( function( $ ) {
 					};
 				}
 				tinyMCEPreInit.mceInit[editor_id] = init;
-				tinymce.execCommand( 'mceAddEditor', false, editor_id );
+				tinymce.init( init );
+				//tinymce.execCommand( 'mceAddEditor', false, editor_id );
 			}
 		} );
 
