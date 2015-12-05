@@ -11,7 +11,7 @@
 abstract class Smart_Custom_Fields_Field_Base {
 
 	/**
-	 * このフィールドの内部属性値
+	 * Internal attribute value of this field
 	 * @var array
 	 */
 	protected $attributes = array(
@@ -22,12 +22,12 @@ abstract class Smart_Custom_Fields_Field_Base {
 	);
 
 	/**
-	 * このフィールドの設定項目
+	 * Options of this field
 	 * @var array
 	 */
 	protected $options = array(
-		'name'  => '', // name 属性
-		'label' => '', // カスタムフィールド入力画面で表示するラベル
+		'name'  => '',
+		'label' => '',
 	);
 
 	/**
@@ -54,38 +54,38 @@ abstract class Smart_Custom_Fields_Field_Base {
 	}
 
 	/**
-	 * 必須項目の設定
+	 * Set the required items
 	 *
 	 * @return array
 	 */
 	abstract protected function init();
 
 	/**
-	 * 設定項目の設定
+	 * Set the non required items
 	 *
 	 * @return array
 	 */
 	abstract protected function options();
 
 	/**
-	 * フィールド初期化直後に実行する処理
+	 * Processing to be executed immediately after the field initialization
 	 */
 	protected function after_loaded() {
 	}
 
 	/**
-	 * 投稿画面にフィールドを表示
+	 * Getting the field
 	 *
-	 * @param int $index インデックス番号
-	 * @param mixed $value 保存されている値（check のときだけ配列）
+	 * @param int $index
+	 * @param mixed $value
 	 * @return string html
 	 */
 	abstract public function get_field( $index, $value );
 
 	/**
-	 * 設定画面でこのフィールドのタイプ選択にこのフィールドのタイプを追加
+	 * Adding the type of this field to fields selection in custom field settings page
 	 *
-	 * @param array $attributes その optgroup に属するフィールドのリスト
+	 * @param array $attributes List of fields that belong to the optgroup
 	 * @return array
 	 */
 	public function field_select( $attributes ) {
@@ -94,7 +94,7 @@ abstract class Smart_Custom_Fields_Field_Base {
 	}
 
 	/**
-	 * 設定画面にフィールドを表示（共通項目）
+	 * Displaying the option fields in custom field settings page ( Common )
 	 * 
 	 * @param int $group_key
 	 * @param int $field_key
@@ -136,7 +136,7 @@ abstract class Smart_Custom_Fields_Field_Base {
 	}
 
 	/**
-	 * 設定画面にフィールドを表示（オリジナル項目）
+	 * Displaying the option fields in custom field settings page ( original )
 	 *
 	 * @param int $group_key
 	 * @param int $field_key
@@ -155,10 +155,10 @@ abstract class Smart_Custom_Fields_Field_Base {
 	}
 
 	/**
-	 * 投稿画面で表示するカスタムフィールドの name 属性値を返す
+	 * Getting the name attribute in editor page
 	 * 
-	 * @param string $name 定義されたフィールドの name
-	 * @param string $index 添字
+	 * @param string $name
+	 * @param string $index
 	 * @return string
 	 */
 	protected function get_field_name_in_editor( $index ) {
@@ -171,10 +171,10 @@ abstract class Smart_Custom_Fields_Field_Base {
 	}
 
 	/**
-	 * 投稿画面で表示するカスタムフィールドを disabled にするかどうか
-	 * $index が null 以外のときは全てユーザーが保存したデータなので null のときのみ true を返すこと
+	 * Whether to disabled
+	 * Return true only when the null because data that all users have saved when $index is not null
 	 * 
-	 * @param string $index 添字
+	 * @param string $index
 	 * @return bool $disabled
 	 */
 	protected function get_disable_attribute( $index ) {
@@ -186,7 +186,7 @@ abstract class Smart_Custom_Fields_Field_Base {
 	}
 
 	/**
-	 * 設定画面で使用する name 属性値を返す
+	 * Getting the name attribute in custom field settings page
 	 * 
 	 * @param int $group_key
 	 * @param int $field_key
@@ -204,9 +204,9 @@ abstract class Smart_Custom_Fields_Field_Base {
 	}
 
 	/**
-	 * 設定値を返す
+	 * Getting saved option value
 	 *
-	 * @param string $key 取得したいデータのキー
+	 * @param string $key key of the data
 	 * @return mixed
 	 */
 	public function get( $key ) {
@@ -216,10 +216,10 @@ abstract class Smart_Custom_Fields_Field_Base {
 	}
 
 	/**
-	 * 設定値を設定
+	 * Set option value
 	 * 
-	 * @param string $key 取得したいデータのキー
-	 * @param mixed $value 取得したいデータ
+	 * @param string $key
+	 * @param mixed $value
 	 */
 	public function set( $key, $value ) {
 		if ( array_key_exists( $key, $this->options ) ) {
@@ -228,9 +228,9 @@ abstract class Smart_Custom_Fields_Field_Base {
 	}
 
 	/**
-	 * 属性値を返す
+	 * Getting the attribute value
 	 *
-	 * @param string $key 取得したいデータのキー
+	 * @param string $key
 	 * @return mixed
 	 */
 	public function get_attribute( $key ) {
