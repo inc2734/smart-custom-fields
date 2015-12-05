@@ -11,30 +11,30 @@
 class Smart_Custom_Fields_Meta {
 
 	/**
-	 * @var WP_Post|WP_User|object
+	 * @var WP_Post|WP_User|WP_Term
 	 */
 	protected $object;
 
 	/**
-	 * 投稿のメタデータを扱うか、ユーザーのメタデータを扱うか
+	 * What meta data
 	 * @var string post or user or term
 	 */
 	protected $meta_type = 'post';
 
 	/**
-	 * 投稿ID or ユーザーID or タームID
+	 * Post ID or User ID or Term ID
 	 * @var int
 	 */
 	protected $id;
 
 	/**
-	 * 投稿タイプ or ロール or タクソノミー
+	 * Post Type or Role or Taxonomy
 	 * @var string
 	 */
 	protected $type;
 
 	/**
-	 * @param WP_Post|WP_User|object $object
+	 * @param WP_Post|WP_User|WP_Term $object
 	 */
 	public function __construct( $object ) {
 		if ( !function_exists( 'get_editable_roles' ) ) {
@@ -67,7 +67,7 @@ class Smart_Custom_Fields_Meta {
 	}
 
 	/**
-	 * メタタイプを取得
+	 * Getting the meta type
 	 *
 	 * @return string post or user or term
 	 */
@@ -76,7 +76,7 @@ class Smart_Custom_Fields_Meta {
 	}
 
 	/**
-	 * 投稿ID or ユーザーID or タームIDを取得
+	 * Getting object ID
 	 *
 	 * @return int
 	 */
@@ -85,9 +85,9 @@ class Smart_Custom_Fields_Meta {
 	}
 
 	/**
-	 * 投稿タイプ or ロール or タクソノミーを取得
+	 * Getting type ( Post type or Role or Taxonomy )
 	 *
-	 * @param bool $accept_revision 投稿タイプだった場合に、投稿タイプ revision を許可
+	 * @param bool $accept_revision If post type, whether allow revision post type
 	 * @return string
 	 */
 	public function get_type( $accept_revision = true ) {
@@ -98,7 +98,8 @@ class Smart_Custom_Fields_Meta {
 	}
 
 	/**
-	 * Post ID がリビジョンのものでも良い感じに投稿タイプを取得
+	 * Getting post type
+	 * To feel good also Post ID of the revision
 	 *
 	 * @param int $post_id
 	 * @return string
@@ -116,11 +117,11 @@ class Smart_Custom_Fields_Meta {
 	}
 
 	/**
-	 * このメタデータを持つオブジェクトが保存済みかどうか
-	 * 投稿は auto-draft のときは保存されていない（新規投稿中）
-	 * タクソノミー・ユーザーのカスタムフィールドは保存後にしか表示されないので
-	 * そのままだとデフォルト値を表示できない
-	 * そこで、全てのメタデータが全く空の場合は保存されていないと判断する
+	 * Object with this meta data is whether saved
+	 * Post ... If auto-draft, not saved (new posts in)
+	 * Profile or Taxonomy ... Since not display only after saving.
+	 *                         So if all of meta data is empty,
+	 *                         It is determined that not saved
 	 *
 	 * @return bool
 	 */
@@ -135,10 +136,10 @@ class Smart_Custom_Fields_Meta {
 	}
 
 	/**
-	 * メタデータを取得
+	 * Getting the meta data
 	 *
-	 * @param string $key メタキー
-	 * @param bool $single false だと配列で取得、true だと文字列で取得
+	 * @param string $key
+	 * @param bool $single false ... return array, true ... return string
 	 * @return string|array
 	 */
 	public function get( $key = '', $single = false ) {
@@ -204,7 +205,7 @@ class Smart_Custom_Fields_Meta {
 				return $option;
 			}
 
-			// get_metadata は存在しないとき空文字を返すので揃える
+			// get_metadata() return entry string, so this method also same behavior
 			if ( $single ) {
 				return '';
 			}
@@ -213,11 +214,11 @@ class Smart_Custom_Fields_Meta {
 	}
 
 	/**
-	 * メタデータを更新。そのメタデータが存在しない場合は追加。
+	 * Updating meta data. If the meta data not exist, adding it.
 	 *
-	 * @param string $key メタキー
-	 * @param mixed $value 保存する値
-	 * @param mixed $prev_value 指定された場合、この値のものだけを上書き
+	 * @param string $key
+	 * @param mixed $value
+	 * @param mixed $prev_value If specified, it overwrites the only ones of this value
 	 * @return int|false Meta ID
 	 */
 	public function update( $key, $value, $prev_value = '' ) {
@@ -255,11 +256,11 @@ class Smart_Custom_Fields_Meta {
 	}
 
 	/**
-	 * メタデータを追加
+	 * Adding the meta data
 	 *
-	 * @param string $key メタキー
-	 * @param mixed $value 保存する値
-	 * @param bool $unique キーをユニークにするかどうか
+	 * @param string $key
+	 * @param mixed $value
+	 * @param bool $unique Whether the key to the unique
 	 * @return int|false Meta ID
 	 */
 	public function add( $key, $value, $unique = false ) {
@@ -284,10 +285,10 @@ class Smart_Custom_Fields_Meta {
 	}
 
 	/**
-	 * メタデータを削除
+	 * Deleting the meta data
 	 *
-	 * @param string $key メタキー
-	 * @param mixed $value 指定した場合、その値をもつメタデータのみ削除
+	 * @param string $key
+	 * @param mixed $value If specified, it deletes the only ones of this value
 	 * @return bool
 	 */
 	public function delete( $key = '', $value = '' ) {
@@ -328,16 +329,15 @@ class Smart_Custom_Fields_Meta {
 	}
 
 	/**
-	 * 送信されたデータをもとにメタデータを保存
+	 * Saving the meta data based on the posted data
 	 *
-	 * @param array $POST $_POST を渡すこと
+	 * @param array $POST
 	 */
 	public function save( array $POST ) {
-		// 繰り返しフィールドのチェックボックスは、普通のチェックボックスと混ざって
-		// 判別できなくなるのでわかるように保存しておく
+		// For repeated multi-value items identification
 		$repeat_multiple_data = array();
 
-		// チェックボックスが未入力のときは "" がくるので、それは保存しないように判別
+		// Retruning empty value when multi-value is empty, it doesn't save
 		$multiple_data_fields = array();
 
 		switch ( $this->meta_type ) {
@@ -410,7 +410,7 @@ class Smart_Custom_Fields_Meta {
 	}
 
 	/**
-	 * 渡されたリビジョンからデータをリストア
+	 * Restore the data from the revision
 	 *
 	 * @param WP_Post $revision
 	 */
@@ -438,16 +438,16 @@ class Smart_Custom_Fields_Meta {
 					foreach ( $value as $val ) {
 						if ( is_array( $val ) ) {
 							foreach ( $val as $v ) {
-								// ループ内複数値項目
+								// Repeated multi-value items
 								$this->add( $field_name, $v );
 							}
 						} else {
-							// ループ内単一項目 or ループ外複数値項目
+							// Repeated single-value items or Non repeated multi-value items
 							$this->add( $field_name, $val );
 						}
 					}
 				} else {
-					// ループ外単一項目
+					// Non repeated single-value item
 					$this->add( $field_name, $value );
 				}
 			}
@@ -460,7 +460,7 @@ class Smart_Custom_Fields_Meta {
 	}
 
 	/**
-	 * options テーブルに保存するためのオプション名を取得
+	 * Getting option name for saved options table
 	 */
 	protected function get_option_name() {
 		return sprintf(
