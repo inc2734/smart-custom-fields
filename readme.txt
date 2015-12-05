@@ -88,6 +88,7 @@ You can send your own language pack to me.
 
 = 1.6.4 =
 * Fixed a bug that wysiwyg fields became tinymce default format when content editor mode is text.
+* Change the comment in English.
 
 = 1.6.3 =
 * Fixed a bug that metadata that isn't defined by Smart Custom Fields can't get in preview.
