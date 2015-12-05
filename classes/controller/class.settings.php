@@ -11,7 +11,7 @@
 class Smart_Custom_Fields_Controller_Settings {
 
 	/**
-	 * フィールド選択のセレクトボックスの選択肢用
+	 * Selectbox choices of the field selection
 	 * @var array
 	 */
 	private $optgroups = array();
@@ -45,7 +45,7 @@ class Smart_Custom_Fields_Controller_Settings {
 	}
 
 	/**
-	 * CSS、JSの読み込み
+	 * Loading resources
 	 */
 	public function admin_enqueue_scripts() {
 		do_action( SCF_Config::PREFIX . 'before-settings-enqueue-scripts' );
@@ -68,7 +68,7 @@ class Smart_Custom_Fields_Controller_Settings {
 	}
 
 	/**
-	 * 投稿画面にカスタムフィールドを表示
+	 * Adding meta boxes
 	 */
 	public function add_meta_boxes() {
 		add_meta_box(
@@ -101,7 +101,7 @@ class Smart_Custom_Fields_Controller_Settings {
 	}
 
 	/**
-	 * $key が空でなければ hide を表示
+	 * Displaying "hide" if $key isn't empty
 	 * 
 	 * @param string $key
 	 */
@@ -112,7 +112,7 @@ class Smart_Custom_Fields_Controller_Settings {
 	}
 
 	/**
-	 * 投稿画面にカスタムフィールドを表示
+	 * Displaying custom fields
 	 */
 	public function display_meta_box() {
 		$Setting = SCF::add_setting( get_the_ID(), get_the_title() );
@@ -193,7 +193,7 @@ class Smart_Custom_Fields_Controller_Settings {
 	}
 
 	/**
-	 * メタボックスの表示条件を設定するメタボックス（投稿用）を表示
+	 * Displaying the meta box to set the display conditions for post edit page
 	 */
 	public function display_meta_box_condition_post() {
 		$post_types = get_post_types( array(
@@ -230,7 +230,7 @@ class Smart_Custom_Fields_Controller_Settings {
 	}
 
 	/**
-	 * メタボックスの表示条件を設定するメタボックス（プロフィール用）を表示
+	 *  Displaying the meta box to set the display conditions for profile edit page
 	 */
 	public function display_meta_box_condition_profile() {
 		$roles = get_editable_roles();
@@ -254,7 +254,7 @@ class Smart_Custom_Fields_Controller_Settings {
 	}
 
 	/**
-	 * メタボックスの表示条件を設定するメタボックス（タクソノミー用）を表示
+	 *  Displaying the meta box to set the display conditions for term edit page
 	 */
 	public function display_meta_box_condition_taxonomy() {
 		$taxonomies = get_taxonomies( array(
@@ -280,7 +280,7 @@ class Smart_Custom_Fields_Controller_Settings {
 	}
 
 	/**
-	 * 設定を保存
+	 * Saving settings
 	 *
 	 * @param int $post_id
 	 */
@@ -298,14 +298,14 @@ class Smart_Custom_Fields_Controller_Settings {
 
 		$data = array();
 		foreach ( $_POST[SCF_Config::NAME] as $group_key => $group_value ) {
-			// $group_key = 0 は隠しフィールドなので保存不要
+			// $group_key = 0 is hidden field so don't save
 			if ( $group_key === 0 ) {
 				continue;
 			}
 			if ( !empty( $group_value['fields'] ) && count( $group_value['fields'] ) > 1 ) {
 				$fields = array();
 				foreach ( $group_value['fields'] as $field_key => $field_value ) {
-					// $field_key = 0 は隠しフィールドなので保存不要
+					// $field_key = 0 is hidden field so don't save
 					if ( $field_key === 0 ) {
 						continue;
 					}
@@ -323,8 +323,8 @@ class Smart_Custom_Fields_Controller_Settings {
 					$group_value['repeat'] = false;
 				}
 
-				// repeat が true でないときは name を空に
-				// true のときで、name から空のときは index を代入
+				// If "repeat" isn't true, empty name
+				// If "repeat" is true and name is empty, assign index
 				if ( !( isset( $group_value['repeat'] ) && $group_value['repeat'] === true && !empty( $group_value['group-name'] ) ) ) {
 					$group_value['group-name'] = $group_key;
 				}
