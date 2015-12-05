@@ -11,41 +11,41 @@
 class SCF {
 
 	/**
-	 * Smart Custom Fields に登録されているフォームフィールド（field）のインスタンスの配列
+	 * Array of the registered fields ( Smart_Custom_Fields_Field_Base )
 	 * @var array
 	 */
 	protected static $fields = array();
 
 	/**
-	 * データ取得処理は重いので、一度取得したデータは cache に保存する。
-	 * キーに post_id を設定すること。
+	 * Getting data proccesses is heavy. So saved getted data to $cache.
+	 * Using post_id as key.
 	 * @var array
 	 */
 	protected static $cache = array();
 
 	/**
-	 * データ取得処理は重いので、一度取得した設定データは settings_posts_cache に保存する。
-	 * キーに post_type を設定すること。
+	 * Getting data proccesses is heavy. So saved getted data to $settings_posts_cache.
+	 * Using post_type as key.
 	 * @var array
 	 */
 	protected static $settings_posts_cache = array();
 
 	/**
-	 * データ取得処理は重いので、一度取得した設定データは cache に保存する。
-	 * キーに post_type を設定すること。
+	 * Getting data proccesses is heavy. So saved getted data to $settings_cache.
+	 * Using post_type as key.
 	 * @var array
 	 */
 	public static $settings_cache = array();
 
 	/**
-	 * データ取得処理は重いので、一度取得した設定データは cache に保存する。
-	 * キーに post_id を設定すること。
+	 * Getting data proccesses is heavy. So saved getted data to $repeat_multiple_data_cache.
+	 * Using post_id as key.
 	 * @var array
 	 */
 	protected static $repeat_multiple_data_cache = array();
 
 	/**
-	 * 全てのキャッシュをクリア
+	 * Clear all caches.
 	 */
 	public static function clear_all_cache() {
 		self::clear_cache();
@@ -55,7 +55,7 @@ class SCF {
 	}
 
 	/**
-	 * その投稿の全てのメタデータを良い感じに取得
+	 * Getting all of the post meta data to feel good
 	 * 
 	 * @param int $post_id
 	 * @return array
@@ -70,15 +70,15 @@ class SCF {
 			return null;
 		}
 
-		// 設定画面で未設定のメタデータは投稿が保持していても出力しないようにしないといけないので
-		// 設定データを取得して出力して良いか判別する
+		// Don't output meta data that not save in the SCF settings page
+		// Getting the settings data, judged to output meta data.
 		return self::get_all_meta( get_post( $post_id ) );
 	}
 
 	/**
-	 * その投稿の任意のメタデータを良い感じに取得
+	 * Getting the post meta data to feel good
 	 * 
-	 * @param string $name グループ名もしくはフィールド名
+	 * @param string $name group name or field name
 	 * @param int $post_id
 	 * @return mixed
 	 */
@@ -91,17 +91,17 @@ class SCF {
 		if ( empty( $post_id ) ) {
 			return;
 		}
-
-		// 設定画面で未設定のメタデータは投稿が保持していても出力しないようにしないといけないので
-		// 設定データを取得して出力して良いか判別する
+		
+		// Don't output meta data that not save in the SCF settings page
+		// Getting the settings data, judged to output meta data.
 		return self::get_meta( get_post( $post_id ), $name );
 	}
 
 	/**
-	 * そのユーザーの任意のメタデータを良い感じに取得
+ 	 * Getting the user meta data to feel good
 	 * 
 	 * @param int $user_id
-	 * @param string $name グループ名もしくはフィールド名
+	 * @param string $name group name or field name
 	 * @return mixed
 	 */
 	public static function get_user_meta( $user_id, $name = null ) {
@@ -109,22 +109,22 @@ class SCF {
 			return;
 		}
 
-		// $name が null のときは全てのメタデータを返す
+		// If $name is null, return the all meta data.
 		if ( $name === null ) {
 			return self::get_all_meta( get_userdata( $user_id ) );
 		}
-
-		// 設定画面で未設定のメタデータはユーザーが保持していても出力しないようにしないといけないので
-		// 設定データを取得して出力して良いか判別する
+		
+		// Don't output meta data that not save in the SCF settings page.
+		// Getting the settings data, judged to output meta data.
 		return self::get_meta( get_userdata( $user_id ), $name );
 	}
 
 	/**
-	 * そのタームの任意のメタデータを良い感じに取得
+  	 * Getting the term meta data to feel good
 	 * 
 	 * @param int $term_id
 	 * @param string $taxonomy_name
-	 * @param string $name グループ名もしくはフィールド名
+	 * @param string $name group name or field name
 	 * @return mixed
 	 */
 	public static function get_term_meta( $term_id, $taxonomy_name, $name = null ) {
@@ -132,21 +132,21 @@ class SCF {
 			return;
 		}
 
-		// $name が null のときは全てのメタデータを返す
+		// If $name is null, return the all meta data.
 		if ( $name === null ) {
 			return self::get_all_meta( get_term( $term_id, $taxonomy_name ) );
 		}
-
-		// 設定画面で未設定のメタデータはタームが保持していても出力しないようにしないといけないので
-		// 設定データを取得して出力して良いか判別する
+		
+		// Don't output meta data that not save in the SCF settings page
+		// Getting the settings data, judged to output meta data.
 		return self::get_meta( get_term( $term_id, $taxonomy_name ), $name );
 	}
 
 	/**
-	 * 任意のメタデータを良い感じに取得
+	 * Getting any meta data to feel good
 	 * 
 	 * @param WP_Post|WP_User|object $object
-	 * @param string $name グループ名もしくはフィールド名
+	 * @param string $name group name or field name
 	 * @return mixed
 	 */
 	protected static function get_meta( $object, $name ) {
@@ -159,7 +159,7 @@ class SCF {
 
 		$settings = self::get_settings( $object );
 		foreach ( $settings as $Setting ) {
-			// グループ名と一致する場合はそのグループ内のフィールドを配列で返す
+			// If $name matches the group name, returns fields in the group as array.
 			$Group = $Setting->get_group( $name );
 			if ( $Group ) {
 				$values_by_group = self::get_values_by_group( $object, $Group );
@@ -167,7 +167,7 @@ class SCF {
 				return $values_by_group;
 			}
 			
-			// グループ名と一致しない場合は一致するフィールドを返す
+			// If $name doesn't matche the group name, returns the field that matches.
 			$groups = $Setting->get_groups();
 			foreach ( $groups as $Group ) {
 				$Field = $Group->get_field( $name );
@@ -182,9 +182,9 @@ class SCF {
 	}
 
 	/**
-	 * 全てのメタデータを良い感じに取得
+ 	 * Getting all of any meta data to feel good
 	 * 
-	 * @param WP_Post|WP_User|object $object
+	 * @param WP_Post|WP_User|WP_Term $object
 	 * @return mixed
 	 */
 	protected static function get_all_meta( $object ) {
@@ -215,7 +215,7 @@ class SCF {
 	}
 
 	/**
-	 * プレビューのときはそのプレビューの Post ID を返す
+	 * If in preview, return the preview post ID
 	 *
 	 * @param int $post_id
 	 * @return int
@@ -231,9 +231,9 @@ class SCF {
 	}
 
 	/**
-	 * キャシュに保存
+	 * Saving to cache
 	 * 
-	 * @param WP_Post|WP_User|object $object
+	 * @param WP_Post|WP_User|WP_Term $object
 	 * @param string $name
 	 * @param mixed $data
 	 */
@@ -248,9 +248,9 @@ class SCF {
 	}
 
 	/**
-	 * キャッシュを取得
+	 * Getting the cache
 	 * 
-	 * @param WP_Post|WP_User|object $object
+	 * @param WP_Post|WP_User|WP_Term $object
 	 * @param string $name
 	 * @return mixed
 	 */
@@ -273,16 +273,17 @@ class SCF {
 	}
 
 	/**
-	 * キャッシュをクリア
+	 * Clear caches
 	 */
 	public static function clear_cache() {
 		self::$cache = array();
 	}
 
 	/**
-	 * そのグループのメタデータを取得。グループの場合は必ず繰り返しになっている点に注意
+	 * Getting the meta data of the group
+	 * When group, Note the point that returned data are repetition
 	 * 
-	 * @param WP_Post|WP_User|object $object
+	 * @param WP_Post|WP_User|WP_Term $object
 	 * @param Smart_Custom_Fields_Group $Group
 	 * @return mixed
 	 */
@@ -312,11 +313,11 @@ class SCF {
 	}
 
 	/**
-	 * そのフィールドのメタデータを取得
+	 * Getting the meta data of the field
 	 * 
-	 * @param WP_Post|WP_User|object $object
+	 * @param WP_Post|WP_User|WP_Term $object
 	 * @param array $field
-	 * @param bool $is_repeatable このフィールドが所属するグループが repeat かどうか
+	 * @param bool $is_repeatable Whether the group that this field belongs is repetition
 	 * @return mixed $post_meta
 	 */
 	protected static function get_value_by_field( $object, $Field, $is_repeatable ) {
@@ -327,7 +328,7 @@ class SCF {
 
 		$Meta = new Smart_Custom_Fields_Meta( $object );
 
-		// ループ内の複数値項目の場合
+		// In the case of multi-value items in the loop
 		$field_type = $Field->get_attribute( 'type' );
 		$repeat_multiple_data = self::get_repeat_multiple_data( $object );
 		if ( is_array( $repeat_multiple_data ) && isset( $repeat_multiple_data[$field_name] ) ) {
@@ -348,7 +349,7 @@ class SCF {
 				$meta[$repeat_multiple_key] = $value;
 			}
 		}
-		// それ以外
+		// Other than that
 		else {
 			$single = true;
 			if ( $Field->get_attribute( 'allow-multiple-data' ) || $is_repeatable ) {
@@ -365,7 +366,7 @@ class SCF {
 	}
 
 	/**
-	 * 初期値を返す
+	 * Return the default value
 	 *
 	 * @param Smart_Custom_Fields_Field_Base $Field
 	 * @param bool $single
@@ -394,11 +395,11 @@ class SCF {
 			return $default_sanitized;
 		}
 
-		// 文字列を返す
+		// Return string
 		if ( $single ) {
 			return $default;
 		}
-		// 配列を返す
+		// Return array
 		else {
 			if ( is_array( $default ) ) {
 				return $default;
@@ -411,9 +412,9 @@ class SCF {
 	}
 
 	/**
-	 * その投稿タイプ or ロール or タームで有効になっている SCF をキャッシュに保存
+	 * Saving to cache that enabled custom field settings in the post type or the role or the term.
 	 *
-	 * @param WP_Post|WP_User|object $object
+	 * @param WP_Post|WP_User|WP_Term $object
 	 * @param array $settings_posts
 	 */
 	protected static function save_settings_posts_cache( $object, $settings_posts ) {
@@ -424,9 +425,9 @@ class SCF {
 	}
 
 	/**
-	 * その投稿タイプ or ロール or タームで有効になっている SCF のキャッシュを取得
+ 	 * Getting cache that enabled custom field settings in the post type or the role or the term.
 	 *
-	 * @param WP_Post|WP_User|object $object
+	 * @param WP_Post|WP_User|WP_Term $object
 	 * @return array|null
 	 */
 	public static function get_settings_posts_cache( $object ) {
@@ -439,16 +440,16 @@ class SCF {
 	}
 
 	/**
-	 * SCF のキャッシュをクリア
+	 * Clear the $settings_posts_cache
 	 */
 	public static function clear_settings_posts_cache() {
 		self::$settings_posts_cache = array();
 	}
 
 	/**
-	 * その投稿タイプ or ロール or タームで有効になっている SCF を取得
+  	 * Getting enabled custom field settings in the post type or the role or the term.
 	 * 
-	 * @param WP_Post|WP_User|object $object
+	 * @param WP_Post|WP_User|WP_Term $object
 	 * @return array $settings
 	 */
 	public static function get_settings_posts( $object ) {
@@ -497,10 +498,10 @@ class SCF {
 	}
 
 	/**
-	 * Setting オブジェクトをキャッシュに保存
+	 * Saving the Setting object to cache
 	 *
 	 * @param int $settings_post_id
-	 * @param WP_post|WP_User|object $object
+	 * @param WP_post|WP_User|WP_term $object
 	 * @param Smart_Custom_Fields_Setting $Setting
 	 */
 	protected static function save_settings_cache( $settings_post_id, $Setting, $object = null ) {
@@ -517,16 +518,16 @@ class SCF {
 	}
 
 	/**
-	 * Setting オブジェクトキャッシュを取得
-	 * その SCF が存在しないとき ... null
-	 * その SCF が存在する
-	 *     指定した $meta_type + $id のものが無い
-	 *         全般のものがある ... Smart_Custom_Fields_Setting
-	 *         全般のものが無い ... false
-	 *     指定した $meta_type + $id のものがあるとき ... Smart_Custom_Fields_Setting
+	 * Getting the Setting object cache
+	 * If there isn't the custom field settings ... null
+	 * If there is custom field settings
+	 *     If there is no data for the specified $ meta_type + $id
+	 *         There is a thing of the General ... Smart_Custom_Fields_Setting
+	 *         There isn't a thing of the General ... false
+	 *     If there the data for the specified $meta_type + $id ... Smart_Custom_Fields_Setting
 	 *
 	 * @param int $settings_post_id
-	 * @param WP_post|WP_User $object|object
+	 * @param WP_post|WP_User|WP_Term $object
 	 * @return Smart_Custom_Fields_Setting|false|null
 	 */
 	public static function get_settings_cache( $settings_post_id, $object = null ) {
@@ -549,16 +550,16 @@ class SCF {
 	}
 
 	/**
-	 * Setting オブジェクトキャッシュをクリア
+	 * Clear the $settings_cache
 	 */
 	public static function clear_settings_cache() {
 		self::$settings_cache = array();
 	}
 
 	/**
-	 * Setting オブジェクトの配列を取得
+	 * Getting array of the Setting object
 	 *
-	 * @param WP_Post|WP_User|object $object
+	 * @param WP_Post|WP_User|WP_Term $object
 	 * @return array $settings
 	 */
 	public static function get_settings( $object ) {
@@ -570,6 +571,10 @@ class SCF {
 		// 投稿IDで出し分けされているカスタムフィールド設定を持つ投稿の場合、
 		// プレビュー画面ではIDが変わって表示されなくなってしまうため、
 		// プレビュー画面の場合は元の投稿（プレビューの親）から設定の再取得が必要
+		
+		// IF the post that has custom field settings according to post ID,
+		// don't display because the post ID would change in preview.
+		// So if in preview, re-getting post ID from original post (parent of the preview).
 		if ( $meta_type === 'post' && $object->post_type === 'revision' ) {
 			$object = get_post( $object->post_parent );
 		}
@@ -592,7 +597,7 @@ class SCF {
 	}
 
 	/**
-	 * Setting オブジェクトの配列を取得（投稿用）
+	 * Getting the Setting object for post
 	 *
 	 * @param WP_Post $object
 	 * @param array $settings_posts
@@ -641,7 +646,7 @@ class SCF {
 	}
 
 	/**
-	 * Setting オブジェクトの配列を取得（プロフィール用）
+ 	 * Getting the Setting object for user
 	 *
 	 * @param WP_User $object
 	 * @param array $settings_posts
@@ -664,9 +669,9 @@ class SCF {
 	}
 
 	/**
-	 * Setting オブジェクトの配列を取得（ターム用）
+  	 * Getting the Setting object for term
 	 *
-	 * @param WP_User $object
+	 * @param WP_Term $object
 	 * @param array $settings_posts
 	 * @return array
 	 */
@@ -675,9 +680,9 @@ class SCF {
 	}
 
 	/**
-	 * 繰り返しに設定された複数許可フィールドデータの区切り識別用データをキャッシュに保存
+	 * Saving the delimited identification data of the repeated multi-value items to cache
 	 *
-	 * @param WP_Post|WP_User|object $object
+	 * @param WP_Post|WP_User|WP_Term $object
 	 * @param mixed $repeat_multiple_data
 	 */
 	protected static function save_repeat_multiple_data_cache( $object, $repeat_multiple_data ) {
@@ -691,9 +696,9 @@ class SCF {
 	}
 
 	/**
-	 * 繰り返しに設定された複数許可フィールドデータの区切り識別用データをキャッシュから取得
+	 * Getting delimited identification data of the repeated multi-value items from cache
 	 *
-	 * @param WP_Post|WP_User|object $object
+	 * @param WP_Post|WP_User|WP_Term $object
 	 * @return mixed
 	 */
 	protected static function get_repeat_multiple_data_cache( $object ) {
@@ -709,16 +714,16 @@ class SCF {
 	}
 
 	/**
-	 * 繰り返しに設定された複数許可フィールドデータの区切り識別用データのキャッシュをクリア
+	 * Clear delimited identification data of the repeated multi-value items cache
 	 */
 	public static function clear_repeat_multiple_data_cache() {
 		self::$repeat_multiple_data_cache = array();
 	}
 
 	/**
-	 * 繰り返しに設定された複数許可フィールドデータの区切り識別用データを取得
+ 	 * Getting delimited identification data of the repeated multi-value items
 	 * 
-	 * @param WP_Post|WP_User|object $object
+	 * @param WP_Post|WP_User|WP_Term $object
 	 * @return array
 	 */
 	public static function get_repeat_multiple_data( $object ) {
@@ -738,7 +743,7 @@ class SCF {
 	}
 
 	/**
-	 * null もしくは空値の場合は true
+	 * Return true if null or empty value
 	 * 
 	 * @param mixed $value
 	 * @return bool
@@ -754,7 +759,7 @@ class SCF {
 	}
 
 	/**
-	 * 使用可能なフォームフィールドオブジェクトを追加
+	 * Adding the available form field object
 	 * 
 	 * @param Smart_Custom_Fields_Field_Base $instance
 	 */
@@ -766,9 +771,9 @@ class SCF {
 	}
 
 	/**
-	 * 使用可能なフォームフィールドオブジェクトを取得
+	 * Getting the available form field object
 	 * 
-	 * @param string $type フォームフィールドの type
+	 * @param string $type type of the form field
 	 * @param Smart_Custom_Fields_Field_Base
 	 */
 	public static function get_form_field_instance( $type ) {
@@ -778,7 +783,7 @@ class SCF {
 	}
 
 	/**
-	 * 全ての使用可能なフォームフィールドオブジェクトを取得
+	 * Getting all available form field object
 	 *
 	 * @return array
 	 */
@@ -791,10 +796,10 @@ class SCF {
 	}
 
 	/**
-	 * 管理画面で保存されたフィールドを取得
-	 * 同名のフィールド名を持つフィールドを複数定義しても一つしか返らないので注意
+	 * Getting custom fields that saved custo field settings page
+	 * Note that not return only one even define multiple fields with the same name of the field name
 	 * 
-	 * @param WP_Post|WP_User|object $object
+	 * @param WP_Post|WP_User|WP_Term $object
 	 * @param string $field_name
 	 * @return Smart_Custom_Fields_Field_Base|null
 	 */
@@ -812,7 +817,7 @@ class SCF {
 	}
 	
 	/**
-	 * 改行区切りの $choices を配列に変換
+	 * Convert to array from newline delimiter $choices
 	 * 
 	 * @param string $choices
 	 * @return array
@@ -829,17 +834,18 @@ class SCF {
 	}
 
 	/**
-	 * Setting を生成して返す
+	 * Return generated Setting object
 	 *
 	 * @param string $id
 	 * @param string $title
+	 * @return Smart_Custom_Fields_Setting
 	 */
 	public static function add_setting( $id, $title ) {
 		return new Smart_Custom_Fields_Setting( $id, $title );
 	}
 
 	/**
-	 * キャッシュの使用状況を画面に表示
+	 * Print cache usage
 	 */
 	protected static function debug_cache_message( $message ) {
 		if ( defined( 'SCF_DEBUG_CACHE' ) && SCF_DEBUG_CACHE === true ) {
