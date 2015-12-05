@@ -11,19 +11,19 @@
 class Smart_Custom_Fields_Group {
 
 	/**
-	 * グループ名
+	 * Group name
 	 * @var string
 	 */
 	protected $name = null;
 
 	/**
-	 * フィールドオブジェクトの配列
+	 * Array of field objects
 	 * @var array
 	 */
 	protected $fields = array();
 
 	/**
-	 * 繰り返しグループかどうか
+	 * Whether repeating group
 	 * @var bool
 	 */
 	protected $repeat = false;
@@ -31,9 +31,9 @@ class Smart_Custom_Fields_Group {
 	/**
 	 * __construct
 	 *
-	 * @param string $group_name グループ名
-	 * @param bool $repeat 繰り返しグループかどうか
-	 * @param array $_fields フィールドオブジェクトの配列
+	 * @param string $group_name
+	 * @param bool $repeat
+	 * @param array $_fields
 	 */
 	public function __construct( $group_name = null, $repeat = false, array $_fields = array() ) {
 		$this->name   = $group_name;
@@ -56,7 +56,7 @@ class Smart_Custom_Fields_Group {
 	}
 
 	/**
-	 * グループ名を返す
+	 * Getting group name
 	 * 
 	 * @return string
 	 */
@@ -68,7 +68,7 @@ class Smart_Custom_Fields_Group {
 	}
 
 	/**
-	 * この設定ページに保存されている各フィールドを取得
+	 * Getting fields that saved in this settings page
 	 *
 	 * @return array
 	 */
@@ -77,9 +77,9 @@ class Smart_Custom_Fields_Group {
 	}
 	
 	/**
-	 * フィールドを返す
+	 * Getting the field
 	 *
-	 * @param string $field_name フィールド名
+	 * @param string $field_name
 	 * @return Smart_Custom_Fields_Field_Base|null
 	 */
 	public function get_field( $field_name ) {
@@ -90,7 +90,7 @@ class Smart_Custom_Fields_Group {
 	}
 
 	/**
-	 * 繰り返しグループかどうか
+	 * Whether repeating group
 	 *
 	 * @return bool
 	 */
@@ -99,7 +99,7 @@ class Smart_Custom_Fields_Group {
 	}
 
 	/**
-	 * $key が空でなければ hide を表示
+	 *  Displaying "hide" if $key isn't empty
 	 * 
 	 * @param string $key
 	 */
@@ -110,7 +110,7 @@ class Smart_Custom_Fields_Group {
 	}
 
 	/**
-	 * 設定画面にグループの共通設定を表示
+	 * Displaying the option fields in custom field settings page ( Common )
 	 * 
 	 * @param int $group_key
 	 */
