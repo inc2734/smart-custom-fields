@@ -11,7 +11,7 @@
 class Smart_Custom_Fields_Controller_Base {
 
 	/**
-	 * 各フォーム部品のオブジェクトを格納する配列
+	 * Array of the form field objects
 	 * @var array
 	 */
 	protected $fields = array();
@@ -24,7 +24,7 @@ class Smart_Custom_Fields_Controller_Base {
 	}
 
 	/**
-	 * 投稿画面用の css、js、翻訳ファイルのロード
+	 * Loading resources for edit page.
 	 * 
 	 * @param string $hook
 	 */
@@ -50,10 +50,10 @@ class Smart_Custom_Fields_Controller_Base {
 	}
 
 	/**
-	 * 投稿画面にカスタムフィールドを表示
+	 * Display custom fields in edit page.
 	 * 
-	 * @param WP_Post|WP_User|object $object
-	 * @param array $callback_args カスタムフィールドの設定情報
+	 * @param WP_Post|WP_User|WP_Term $object
+	 * @param array $callback_args custom field setting information
 	 */
 	public function display_meta_box( $object, $callback_args ) {
 		$groups = $callback_args['args'];
@@ -72,8 +72,8 @@ class Smart_Custom_Fields_Controller_Base {
 			}
 			$this->display_tr( $object, $is_repeatable, $Group->get_fields(), $index );
 
-			// ループの場合は添字をカウントアップ
-			// ループを抜けたらカウントをもとに戻す
+			// If in the loop, count up the index.
+			// If exit the loop, reset the count.
 			if ( $is_repeatable &&
 				 isset( $tables[$group_key + 1 ] ) &&
 				 $tables[$group_key + 1 ]->get_name() === $Group->get_name() ) {
@@ -90,10 +90,10 @@ class Smart_Custom_Fields_Controller_Base {
 	}
 
 	/**
-	 * 送信されたデータを保存
+	 * Saving posted data
 	 *
 	 * @param array $data
-	 * @param WP_Post|WP_User|object $object
+	 * @param WP_Post|WP_User|WP_Term $object
 	 */
 	protected function save( $data, $object ) {
 		check_admin_referer(
@@ -106,11 +106,11 @@ class Smart_Custom_Fields_Controller_Base {
 	}
 
 	/**
-	 * カスタムフィールドを出力するための配列を生成
+	 * Generating array for displaying the custom fields
 	 * 
-	 * @param WP_Post|WP_User|object $object
-	 * @param array $groups カスタムフィールド設定ページで保存した設定
-	 * @return array $tables カスタムフィールド表示用のテーブルを出力するための配列
+	 * @param WP_Post|WP_User|WP_Term $object
+	 * @param array $groups Settings from custom field settings page
+	 * @return array $tables Array for displaying a table for custom fields
 	 */
 	protected function get_tables( $object, $groups ) {
 		$Meta = new Smart_Custom_Fields_Meta( $object );
@@ -118,8 +118,8 @@ class Smart_Custom_Fields_Controller_Base {
 		$repeat_multiple_data = SCF::get_repeat_multiple_data( $object );
 		$tables = array();
 		foreach ( $groups as $Group ) {
-			// ループのときは、ループの分だけグループを追加する
-			// ループだけどループがないとき（新規登録時とか）は1つだけ入れる
+			// If in the loop, Added groupgs by the amount of the loop.
+			// Added only one if setting is repetition but not loop (Ex, new registration)
 			if ( $Group->is_repeatable() === true ) {
 				$loop_count = 1;
 				$fields = $Group->get_fields();
@@ -128,9 +128,9 @@ class Smart_Custom_Fields_Controller_Base {
 					$meta = $Meta->get( $field_name );
 					if ( is_array( $meta ) ) {
 						$meta_count = count( $meta );
-						// 同名のカスタムフィールドが複数のとき（チェックボックス or ループ）
+						// When the same name of the custom field is a multiple (checbox or loop)
 						if ( $meta_count > 1 ) {
-							// チェックボックスの場合
+							// checkbox
 							if ( $Field->get_attribute( 'allow-multiple-data' ) ) {
 								if ( is_array( $repeat_multiple_data ) && isset( $repeat_multiple_data[$field_name] ) ) {
 									$repeat_multiple_data_count = count( $repeat_multiple_data[$field_name] );
@@ -139,7 +139,7 @@ class Smart_Custom_Fields_Controller_Base {
 									}
 								}
 							}
-							// チェックボックス以外
+							// other than checkbox
 							else {
 								if ( $loop_count < $meta_count ) {
 									$loop_count = $meta_count;
@@ -161,9 +161,9 @@ class Smart_Custom_Fields_Controller_Base {
 	}
 
 	/**
-	 * 複数許可フィールドのメタデータを取得
+	 * Getting the multi-value field meta data.
 	 * 
-	 * @param WP_Post|WP_User|object $object
+	 * @param WP_Post|WP_User|WP_Term $object
 	 * @param Smart_Custom_Fields_Field_Base $Field
 	 * @param int $index
 	 * @return array or null
@@ -182,7 +182,7 @@ class Smart_Custom_Fields_Controller_Base {
 		
 		$value = $Meta->get( $field_name );
 
-		// ループのとき
+		// in the loop
 		$repeat_multiple_data = SCF::get_repeat_multiple_data( $object );
 		if ( is_array( $repeat_multiple_data ) && isset( $repeat_multiple_data[$field_name] ) ) {
 			$now_num = 0;
@@ -190,7 +190,7 @@ class Smart_Custom_Fields_Controller_Base {
 				$now_num = $repeat_multiple_data[$field_name][$index];
 			}
 
-			// 自分（$index）より前の個数の合計が指す index が start
+			// The index is starting point to refer to the total of the previous number than me ($index)
 			$_temp = array_slice( $repeat_multiple_data[$field_name], 0, $index );
 			$sum   = array_sum( $_temp );
 			$start = $sum;
@@ -203,9 +203,9 @@ class Smart_Custom_Fields_Controller_Base {
 	}
 
 	/**
-	 * 非複数許可フィールドのメタデータを取得
+	 * Getting the non multi-value field meta data.
 	 * 
-	 * @param WP_Post|WP_User|object $object
+	 * @param WP_Post|WP_User|WP_Term $object
 	 * @param Smart_Custom_Fields_Field_Base $Field
 	 * @param int $index
 	 * @return string or null
@@ -229,9 +229,9 @@ class Smart_Custom_Fields_Controller_Base {
 	}
 
 	/**
-	 * カスタムフィールド表示 table で使用する各 tr を出力
+	 * Displaying tr element for table of custom fields
 	 * 
-	 * @param WP_Post|WP_User|object $object
+	 * @param WP_Post|WP_User|WP_Term $object
 	 * @param bool $is_repeat
 	 * @param array $fields
 	 * @param int, null $index
@@ -269,11 +269,11 @@ class Smart_Custom_Fields_Controller_Base {
 				$field_label = $field_name;
 			}
 
-			// 複数値許可フィールドのとき
+			// When multi-value field
 			if ( $Field->get_attribute( 'allow-multiple-data' ) ) {
 				$value = $this->get_multiple_data_field_value( $object, $Field, $index );
 			}
-			// 複数不値許可フィールドのとき
+			// When non multi-value field
 			else {
 				$value = $this->get_single_data_field_value( $object, $Field, $index );
 			}
