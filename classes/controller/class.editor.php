@@ -20,7 +20,7 @@ class Smart_Custom_Fields_Controller_Editor extends Smart_Custom_Fields_Controll
 	}
 
 	/**
-	 * Displaying custom fields in posst edit page
+	 * Displaying custom fields in post edit page
 	 *
 	 * @param string $post_type
 	 * @param WP_Post $post

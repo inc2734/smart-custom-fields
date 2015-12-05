@@ -11,7 +11,7 @@
 class Smart_Custom_Fields_Controller_Taxonomy extends Smart_Custom_Fields_Controller_Base {
 
 	/**
-	 * タクソノミーの名前
+	 * Taxonomy NAME
 	 * @var string
 	 */
 	protected $taxonomy;
@@ -29,7 +29,7 @@ class Smart_Custom_Fields_Controller_Taxonomy extends Smart_Custom_Fields_Contro
 	}
 
 	/**
-	 * 投稿画面用の css、js、翻訳ファイルのロード
+	 * Loading resources for term edit page
 	 * 
 	 * @param string $hook
 	 */
@@ -42,7 +42,7 @@ class Smart_Custom_Fields_Controller_Taxonomy extends Smart_Custom_Fields_Contro
 	}
 
 	/**
-	 * カスタムフィールドを表示
+	 * Displaying custom fields in term edit page
 	 *
 	 * @param object $term
 	 */
@@ -62,7 +62,7 @@ class Smart_Custom_Fields_Controller_Taxonomy extends Smart_Custom_Fields_Contro
 	}
 
 	/**
-	 * 投稿画面のカスタムフィールドからのメタデータを保存
+	 * Saving meta data from custom fields in term edit page
 	 * 
 	 * @param int $term_id
 	 * @param string $taxonomy
@@ -80,7 +80,7 @@ class Smart_Custom_Fields_Controller_Taxonomy extends Smart_Custom_Fields_Contro
 	}
 
 	/**
-	 * メタデータの削除
+	 * Delete meta data
 	 *
 	 * @param int $term_id
 	 * @param int $term_taxonomy_id
