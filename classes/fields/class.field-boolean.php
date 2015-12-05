@@ -13,7 +13,7 @@
 class Smart_Custom_Fields_Field_Boolean extends Smart_Custom_Fields_Field_Base {
 
 	/**
-	 * 必須項目の設定
+	 * Set the required items
 	 *
 	 * @return array
 	 */
@@ -27,7 +27,7 @@ class Smart_Custom_Fields_Field_Boolean extends Smart_Custom_Fields_Field_Base {
 	}
 
 	/**
-	 * 設定項目の設定
+	 * Set the non required items
 	 *
 	 * @return array
 	 */
@@ -41,11 +41,10 @@ class Smart_Custom_Fields_Field_Boolean extends Smart_Custom_Fields_Field_Base {
 	}
 
 	/**
-	 * 投稿画面にフィールドを表示
+	 * Getting the field
 	 *
-	 * @param int $index インデックス番号
-	 * @param mixed $value 保存されている値（check のときだけ配列）
-	 *
+	 * @param int $index
+	 * @param int $value
 	 * @return string html
 	 */
 	public function get_field( $index, $value ) {
@@ -72,7 +71,7 @@ class Smart_Custom_Fields_Field_Boolean extends Smart_Custom_Fields_Field_Base {
 	}
 
 	/**
-	 * 設定画面にフィールドを表示（オリジナル項目）
+	 * Displaying the option fields in custom field settings page
 	 *
 	 * @param int $group_key
 	 * @param int $field_key
@@ -86,16 +85,18 @@ class Smart_Custom_Fields_Field_Boolean extends Smart_Custom_Fields_Field_Base {
 
 					<label>
 						<input type="radio"
-						       name="<?php echo esc_attr( $this->get_field_name_in_setting( $group_key, $field_key, 'default' ) ); ?>"
-						       value="1"
-							<?php checked( 1, $this->get( 'default' ) ); ?> />
+							name="<?php echo esc_attr( $this->get_field_name_in_setting( $group_key, $field_key, 'default' ) ); ?>"
+							value="1"
+							<?php checked( 1, $this->get( 'default' ) ); ?>
+						/>
 						<span><?php echo esc_html( $this->get( 'true_label' ) ); ?> ( true )</span>
 					</label>&nbsp;
 					<label>
 						<input type="radio"
-						       name="<?php echo esc_attr( $this->get_field_name_in_setting( $group_key, $field_key, 'default' ) ); ?>"
-						       value="0"
-							<?php checked( 0, $this->get( 'default' ) ); ?> />
+							name="<?php echo esc_attr( $this->get_field_name_in_setting( $group_key, $field_key, 'default' ) ); ?>"
+							value="0"
+							<?php checked( 0, $this->get( 'default' ) ); ?>
+						/>
 						<span><?php echo esc_html( $this->get( 'false_label' ) ); ?> ( false )</span>
 					</label>
 
@@ -106,38 +107,37 @@ class Smart_Custom_Fields_Field_Boolean extends Smart_Custom_Fields_Field_Base {
 			<th><?php esc_html_e( 'TRUE Label', 'smart-custom-fields' ); ?></th>
 			<td>
 				<input type="text"
-				       name="<?php echo esc_attr( $this->get_field_name_in_setting( $group_key, $field_key, 'true_label' ) ); ?>"
-				       class="widefat"
-				       value="<?php echo esc_attr( $this->get( 'true_label' ) ); ?>"
-					/>
+					name="<?php echo esc_attr( $this->get_field_name_in_setting( $group_key, $field_key, 'true_label' ) ); ?>"
+					class="widefat"
+					value="<?php echo esc_attr( $this->get( 'true_label' ) ); ?>"
+				/>
 			</td>
 		</tr>
 		<tr>
 			<th><?php esc_html_e( 'FALSE Label', 'smart-custom-fields' ); ?></th>
 			<td>
 				<input type="text"
-				       name="<?php echo esc_attr( $this->get_field_name_in_setting( $group_key, $field_key, 'false_label' ) ); ?>"
-				       class="widefat"
-				       value="<?php echo esc_attr( $this->get( 'false_label' ) ); ?>"
-					/>
+					name="<?php echo esc_attr( $this->get_field_name_in_setting( $group_key, $field_key, 'false_label' ) ); ?>"
+					class="widefat"
+					value="<?php echo esc_attr( $this->get( 'false_label' ) ); ?>"
+				/>
 			</td>
 		</tr>
 		<tr>
 			<th><?php esc_html_e( 'Notes', 'smart-custom-fields' ); ?></th>
 			<td>
 				<input type="text"
-				       name="<?php echo esc_attr( $this->get_field_name_in_setting( $group_key, $field_key, 'notes' ) ); ?>"
-				       class="widefat"
-				       value="<?php echo esc_attr( $this->get( 'notes' ) ); ?>"
-					/>
+					name="<?php echo esc_attr( $this->get_field_name_in_setting( $group_key, $field_key, 'notes' ) ); ?>"
+					class="widefat"
+					value="<?php echo esc_attr( $this->get( 'notes' ) ); ?>"
+				/>
 			</td>
 		</tr>
 	<?php
 	}
 
-
 	/**
-	 * メタデータの表示時にバリデート
+	 * Validating when displaying meta data
 	 *
 	 * @param int|string $value
 	 * @param string $field_type

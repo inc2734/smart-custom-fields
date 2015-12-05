@@ -11,7 +11,7 @@
 class Smart_Custom_Fields_Field_Relation extends Smart_Custom_Fields_Field_Base {
 
 	/**
-	 * 必須項目の設定
+	 * Set the required items
 	 *
 	 * @return array
 	 */
@@ -28,7 +28,7 @@ class Smart_Custom_Fields_Field_Relation extends Smart_Custom_Fields_Field_Base 
 	}
 
 	/**
-	 * 設定項目の設定
+	 * Set the non required items
 	 *
 	 * @return array
 	 */
@@ -40,7 +40,7 @@ class Smart_Custom_Fields_Field_Relation extends Smart_Custom_Fields_Field_Base 
 	}
 
 	/**
-	 * JS の読み込み
+	 * Loading resources
 	 *
 	 * @param string $hook
 	 */
@@ -62,7 +62,7 @@ class Smart_Custom_Fields_Field_Relation extends Smart_Custom_Fields_Field_Base 
 	}
 
 	/**
-	 * 投稿読み込みボタンをクリックされたときに投稿を読み込む実処理
+	 * Process that loading post when clicking post load button
 	 */
 	public function relational_posts_search() {
 		check_ajax_referer( SCF_Config::NAME . '-relation', 'nonce' );
@@ -105,10 +105,10 @@ class Smart_Custom_Fields_Field_Relation extends Smart_Custom_Fields_Field_Base 
 	}
 
 	/**
-	 * 投稿画面にフィールドを表示
+	 * Getting the field
 	 *
-	 * @param int $index インデックス番号
-	 * @param mixed $value 保存されている値（check のときだけ配列）
+	 * @param int $index
+	 * @param array $value
 	 * @return string html
 	 */
 	public function get_field( $index, $value ) {
@@ -120,7 +120,7 @@ class Smart_Custom_Fields_Field_Relation extends Smart_Custom_Fields_Field_Base 
 		}
 		$posts_per_page = get_option( 'posts_per_page' );
 
-		// 選択肢
+		// choicse
 		$choices_posts = get_posts( array(
 			'post_type'      => $post_type,
 			'order'          => 'ASC',
@@ -136,7 +136,7 @@ class Smart_Custom_Fields_Field_Relation extends Smart_Custom_Fields_Field_Base 
 			$choices_li[] = sprintf( '<li data-id="%d">%s</li>', $_post->ID, $post_title );
 		}
 
-		// 選択済
+		// selected
 		$selected_posts = array();
 		if ( !empty( $value ) && is_array( $value ) ) {
 			foreach ( $value as $post_id ) {
@@ -202,7 +202,7 @@ class Smart_Custom_Fields_Field_Relation extends Smart_Custom_Fields_Field_Base 
 	}
 
 	/**
-	 * 設定画面にフィールドを表示（オリジナル項目）
+	 * Displaying the option fields in custom field settings page
 	 *
 	 * @param int $group_key
 	 * @param int $field_key
@@ -244,7 +244,7 @@ class Smart_Custom_Fields_Field_Relation extends Smart_Custom_Fields_Field_Base 
 	}
 
 	/**
-	 * メタデータの表示時にバリデート
+	 * Validating when displaying meta data
 	 *
 	 * @param array $value
 	 * @param string $field_type

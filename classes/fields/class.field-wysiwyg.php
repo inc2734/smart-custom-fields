@@ -11,7 +11,7 @@
 class Smart_Custom_Fields_Field_Wysiwyg extends Smart_Custom_Fields_Field_Base {
 
 	/**
-	 * 必須項目の設定
+	 * Set the required items
 	 *
 	 * @return array
 	 */
@@ -29,7 +29,7 @@ class Smart_Custom_Fields_Field_Wysiwyg extends Smart_Custom_Fields_Field_Base {
 	}
 
 	/**
-	 * 設定項目の設定
+	 * Set the non required items
 	 *
 	 * @return array
 	 */
@@ -41,15 +41,11 @@ class Smart_Custom_Fields_Field_Wysiwyg extends Smart_Custom_Fields_Field_Base {
 	}
 
 	/**
-	 * TinyMCE 読み込み後にオリジナルの JS を読み込み
+	 * Loading js after loading TinyMCE in editor page
 	 */
 	public function editor_enqueue_scripts() {
 		add_action( 'after_wp_tiny_mce', array( $this, 'after_wp_tiny_mce' ) );
 	}
-
-	/**
-	 * JS の読み込み
-	 */
 	public function after_wp_tiny_mce() {
 		printf(
 			'<script type="text/javascript" src="%s"></script>',
@@ -58,7 +54,7 @@ class Smart_Custom_Fields_Field_Wysiwyg extends Smart_Custom_Fields_Field_Base {
 	}
 
 	/**
-	 * フィールド初期化直後に実行する処理
+	 * Processing to be executed immediately after the field initialization
 	 * If not exec this, taxonomy and profile wysiwyg has js error.
 	 */
 	protected function after_loaded() {
@@ -73,10 +69,10 @@ class Smart_Custom_Fields_Field_Wysiwyg extends Smart_Custom_Fields_Field_Base {
 	}
 
 	/**
-	 * 投稿画面にフィールドを表示
+	 * Getting the field
 	 *
-	 * @param int $index インデックス番号
-	 * @param mixed $value 保存されている値（check のときだけ配列）
+	 * @param int $index
+	 * @param string $value
 	 * @return string html
 	 */
 	public function get_field( $index, $value ) {
@@ -104,7 +100,7 @@ class Smart_Custom_Fields_Field_Wysiwyg extends Smart_Custom_Fields_Field_Base {
 	}
 
 	/**
-	 * 設定画面にフィールドを表示（オリジナル項目）
+	 * Displaying the option fields in custom field settings page
 	 *
 	 * @param int $group_key
 	 * @param int $field_key
@@ -134,7 +130,7 @@ class Smart_Custom_Fields_Field_Wysiwyg extends Smart_Custom_Fields_Field_Base {
 	}
 
 	/**
-	 * メディアボタンを返す
+	 * Return the media button
 	 *
 	 * @param string $editor_id
 	 * @return string
@@ -149,7 +145,7 @@ class Smart_Custom_Fields_Field_Wysiwyg extends Smart_Custom_Fields_Field_Base {
 	}
 
 	/**
-	 * メタデータの表示時にバリデート
+	 * Validating when displaying meta data
 	 *
 	 * @param mixed $value
 	 * @param string $field_type
@@ -171,7 +167,7 @@ class Smart_Custom_Fields_Field_Wysiwyg extends Smart_Custom_Fields_Field_Base {
 	}
 
 	/**
-	 * デフォルトで the_content に適用される関数を適用
+	 * Hooking functions that is hooked to the_content
 	 *
 	 * @param string $value
 	 * @return string

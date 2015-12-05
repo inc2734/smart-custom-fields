@@ -11,7 +11,7 @@
 class Smart_Custom_Fields_Field_Select extends Smart_Custom_Fields_Field_Base {
 
 	/**
-	 * 必須項目の設定
+	 * Set the required items
 	 *
 	 * @return array
 	 */
@@ -24,7 +24,7 @@ class Smart_Custom_Fields_Field_Select extends Smart_Custom_Fields_Field_Base {
 	}
 
 	/**
-	 * 設定項目の設定
+	 * Set the non required items
 	 *
 	 * @return array
 	 */
@@ -37,10 +37,10 @@ class Smart_Custom_Fields_Field_Select extends Smart_Custom_Fields_Field_Base {
 	}
 
 	/**
-	 * 投稿画面にフィールドを表示
+	 * Getting the field
 	 *
-	 * @param int $index インデックス番号
-	 * @param mixed $value 保存されている値（check のときだけ配列）
+	 * @param int $index
+	 * @param string $value
 	 * @return string html
 	 */
 	public function get_field( $index, $value ) {
@@ -65,7 +65,7 @@ class Smart_Custom_Fields_Field_Select extends Smart_Custom_Fields_Field_Base {
 	}
 
 	/**
-	 * 設定画面にフィールドを表示（オリジナル項目）
+	 * Displaying the option fields in custom field settings page
 	 *
 	 * @param int $group_key
 	 * @param int $field_key

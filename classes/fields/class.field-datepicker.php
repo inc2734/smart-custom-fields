@@ -11,7 +11,7 @@
 class Smart_Custom_Fields_Field_Datepicker extends Smart_Custom_Fields_Field_Base {
 
 	/**
-	 * 必須項目の設定
+	 * Set the required items
 	 *
 	 * @return array
 	 */
@@ -32,7 +32,7 @@ class Smart_Custom_Fields_Field_Datepicker extends Smart_Custom_Fields_Field_Bas
 	}
 
 	/**
-	 * 設定項目の設定
+	 * Set the non required items
 	 *
 	 * @return array
 	 */
@@ -47,7 +47,7 @@ class Smart_Custom_Fields_Field_Datepicker extends Smart_Custom_Fields_Field_Bas
 	}
 
 	/**
-	 * CSS、JSの読み込み
+	 * Loading resources for editor
 	 */
 	public function editor_enqueue_scripts() {
 		global $wp_scripts;
@@ -69,7 +69,7 @@ class Smart_Custom_Fields_Field_Datepicker extends Smart_Custom_Fields_Field_Bas
 	}
 
 	/**
-	 * CSS、JSの読み込み
+	 * Loading resources for editor for custom field settings page
 	 */
 	public function settings_enqueue_scripts() {
 		global $wp_scripts;
@@ -91,10 +91,10 @@ class Smart_Custom_Fields_Field_Datepicker extends Smart_Custom_Fields_Field_Bas
 	}
 
 	/**
-	 * 投稿画面にフィールドを表示
+	 * Getting the field
 	 *
-	 * @param int $index インデックス番号
-	 * @param mixed $value 保存されている値（check のときだけ配列）
+	 * @param int $index
+	 * @param string $value
 	 * @return string html
 	 */
 	public function get_field( $index, $value ) {
@@ -113,7 +113,7 @@ class Smart_Custom_Fields_Field_Datepicker extends Smart_Custom_Fields_Field_Bas
 	}
 
 	/**
-	 * 設定画面にフィールドを表示（オリジナル項目）
+	 * Displaying the option fields in custom field settings page
 	 *
 	 * @param int $group_key
 	 * @param int $field_key
@@ -198,9 +198,9 @@ class Smart_Custom_Fields_Field_Datepicker extends Smart_Custom_Fields_Field_Bas
 	}
 
 	/**
-	 * 管理画面で設定された datepicker のオプションを json_encode して返す
+	 * Return datepicker option with json_encode
 	 *
-	 * @return string json_encode された設定
+	 * @return string option with json_encode
 	 */
 	protected function get_data_js() {
 		$js = array(
@@ -208,7 +208,8 @@ class Smart_Custom_Fields_Field_Datepicker extends Smart_Custom_Fields_Field_Bas
 			'changeYear'         => true,
 			'changeMonth'        => true,
 		);
-		// 日本語の場合は日本語表記に変更
+		
+		// If locale is Japanese, change in Japanese notation
 		if ( get_locale() === 'ja' ) {
 			$js = array_merge( $js, array(
 				'yearSuffix'      => '年',
@@ -230,15 +231,19 @@ class Smart_Custom_Fields_Field_Datepicker extends Smart_Custom_Fields_Field_Bas
 				)
 			) );
 		}
+		
 		if ( $this->get( 'date_format' ) ) {
 			$js['dateFormat'] = $this->get( 'date_format' );
 		}
+		
 		if ( $this->get( 'max_date' ) ) {
 			$js['maxDate'] = $this->get( 'max_date' );
 		}
+		
 		if ( $this->get( 'min_date' ) ) {
 			$js['minDate'] = $this->get( 'min_date' );
 		}
+		
 		return json_encode( $js );
 	}
 }
