@@ -11,7 +11,7 @@
 class Smart_Custom_Fields_Ajax {
 
 	/**
-	 * Ajax リクエストのときだけ発火させたい処理をフックさせる
+	 * Hooking the process that it want to fire when the ajax request.
 	 */
 	public function __construct() {
 		if ( defined( 'DOING_AJAX' ) && DOING_AJAX ) {
@@ -20,7 +20,7 @@ class Smart_Custom_Fields_Ajax {
 	}
 
 	/**
-	 * タームのメタ情報を削除
+	 * Deleting term meta
 	 *
 	 * @param int $term_id
 	 * @param int $term_taxonomy_id
