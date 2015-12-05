@@ -20,7 +20,7 @@ class Smart_Custom_Fields_Controller_Editor extends Smart_Custom_Fields_Controll
 	}
 
 	/**
-	 * 投稿画面にカスタムフィールドを表示
+	 * Displaying custom fields in posst edit page
 	 *
 	 * @param string $post_type
 	 * @param WP_Post $post
@@ -41,7 +41,7 @@ class Smart_Custom_Fields_Controller_Editor extends Smart_Custom_Fields_Controll
 	}
 
 	/**
-	 * 投稿画面のカスタムフィールドからのメタデータを保存
+	 * Saving meta data from custom fields in post edit page
 	 * 
 	 * @param int $post_id
 	 */
