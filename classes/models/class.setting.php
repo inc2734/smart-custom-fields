@@ -11,19 +11,19 @@
 class Smart_Custom_Fields_Setting {
 
 	/**
-	 * カスタムフィールド設定の Post ID
+	 * Post ID of custom field settings page
 	 * @var string
 	 */
 	protected $id;
 
 	/**
-	 * カスタムフィールド設定のタイトル
+	 * Title of custom field settings page
 	 * @var title
 	 */
 	protected $title;
 
 	/**
-	 * 保存されているグループオブジェクトの配列
+	 * Array of the saved group objects
 	 * @var array
 	 */
 	protected $groups = array();
@@ -58,7 +58,7 @@ class Smart_Custom_Fields_Setting {
 	}
 
 	/**
-	 * Post ID を取得
+	 * Getting the post ID
 	 * 
 	 * @return string
 	 */
@@ -67,7 +67,7 @@ class Smart_Custom_Fields_Setting {
 	}
 
 	/**
-	 * post_title を取得
+	 * Getting the post title
 	 *
 	 * @return string
 	 */
@@ -76,7 +76,7 @@ class Smart_Custom_Fields_Setting {
 	}
 
 	/**
-	 * この設定ページに保存されている各グループを取得
+	 * Getting the group objects
 	 * 
 	 * @return array
 	 */
@@ -85,7 +85,7 @@ class Smart_Custom_Fields_Setting {
 	}
 	
 	/**
-	 * この設定ページに保存されている各グループのフィールドをまとめて取得
+	 * Getting together the fields in each group
 	 *
 	 * @return array
 	 */
@@ -99,11 +99,12 @@ class Smart_Custom_Fields_Setting {
 	}
 
 	/**
-	 * グループを最後に追加。引数なしで空のグループを追加
+	 * Adding group to the tail
+	 * If the argument is not, adding an empty group
 	 * 
-	 * @param string グループ名
-	 * @param bool 繰り返し可能かどうか
-	 * @param array $_fields フィールドオブジェクトの配列
+	 * @param string $group_name
+	 * @param bool $repeat
+	 * @param array $_fields
 	 */
 	public function add_group( $group_name = null, $repeat = false, array $fields = array() ) {
 		$Group = $this->new_group( $group_name, $repeat, $fields );
@@ -116,9 +117,9 @@ class Smart_Custom_Fields_Setting {
 	}
 	
 	/**
-	 * グループを検索
+	 * Getting group
 	 *
-	 * @param string $group_name グループ名
+	 * @param string $group_name
 	 * @return Smart_Custom_Fields_Group|false
 	 */
 	public function get_group( $group_name ) {
@@ -129,11 +130,12 @@ class Smart_Custom_Fields_Setting {
 	}
 
 	/**
-	 * グループを先頭に追加。引数なしで空のグループを追加
+	 * Adding group to the head
+	 * If the argument is not, adding an empty group
 	 *
-	 * @param string グループ名
-	 * @param bool 繰り返し可能かどうか
-	 * @param array $_fields フィールドオブジェクトの配列
+	 * @param string $group_name
+	 * @param bool $repeat
+	 * @param array $_fields
 	 */
 	public function add_group_unshift( $group_name = null, $repeat = false, array $fields = array() ) {
 		$Group = $this->new_group( $group_name, $repeat, $fields );
@@ -141,11 +143,11 @@ class Smart_Custom_Fields_Setting {
 	}
 
 	/**
-	 * グループを生成して返す
+	 * Getting generated new group
 	 * 
-	 * @param string グループ名
-	 * @param bool 繰り返し可能かどうか
-	 * @param array $_fields フィールドオブジェクトの配列
+	 * @param string $group_name
+	 * @param bool $repeat
+	 * @param array $_fields
 	 */
 	protected function new_group( $group_name, $repeat, $fields ) {
 		return new Smart_Custom_Fields_Group( $group_name, $repeat, $fields );
