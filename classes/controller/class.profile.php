@@ -22,7 +22,7 @@ class Smart_Custom_Fields_Controller_Profile extends Smart_Custom_Fields_Control
 	}
 
 	/**
-	 * 投稿画面用の css、js、翻訳ファイルのロード
+	 * Loading resources for profile edit page
 	 * 
 	 * @param string $hook
 	 */
@@ -35,7 +35,7 @@ class Smart_Custom_Fields_Controller_Profile extends Smart_Custom_Fields_Control
 	}
 
 	/**
-	 * カスタムフィールドを表示
+	 * Displaying custom fields
 	 *
 	 * @param WP_User $user
 	 */
@@ -56,7 +56,7 @@ class Smart_Custom_Fields_Controller_Profile extends Smart_Custom_Fields_Control
 	}
 
 	/**
-	 * 投稿画面のカスタムフィールドからのメタデータを保存
+	 * Saving meta data from custom fields in profile edit page.
 	 * 
 	 * @param int $user_id
 	 */
