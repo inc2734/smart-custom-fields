@@ -25,7 +25,7 @@ class Smart_Custom_Fields {
 	}
 
 	/**
-	 * 翻訳ファイルの読み込み
+	 * Loading translation files
 	 */
 	public function plugins_loaded() {
 		load_plugin_textdomain (
@@ -38,7 +38,7 @@ class Smart_Custom_Fields {
 	}
 
 	/**
-	 * 各クラスの読み込み
+	 * Loading classes
 	 */
 	public function after_setup_theme() {
 		do_action( SCF_Config::PREFIX . 'load' );
@@ -68,7 +68,7 @@ class Smart_Custom_Fields {
 	}
 
 	/**
-	 * アンインストール時の処理
+	 * Uninstall proccesses
 	 */
 	public static function uninstall() {
 		$cf_posts = get_posts( array(
@@ -95,7 +95,7 @@ class Smart_Custom_Fields {
 	}
 
 	/**
-	 * 各管理画面の実行
+	 * Run management screens
 	 *
 	 * @param WP_Screen $screen
 	 */
@@ -150,7 +150,8 @@ class Smart_Custom_Fields {
 	}
 
 	/**
-	 * カスタム投稿タイプの登録。メニュー表示は別メソッドで実行
+	 * Registering custom post type.
+	 * Run the menu display in a different method.
 	 */
 	public function register_post_type() {
 		$labels = array(
@@ -183,14 +184,14 @@ class Smart_Custom_Fields {
 	}
 
 	/**
-	 * Ajax リクエストのときに発火させたい処理をフックさせる
+	 * Hooking the process that it want to fire when the ajax request.
 	 */
 	public function ajax_request() {
 		$Ajax = new Smart_Custom_Fields_Ajax();
 	}
 
 	/**
-	 * 管理画面にメニューを追加
+	 * Adding menus in management screen.
 	 */
 	public function admin_menu() {
 		add_menu_page(
@@ -212,7 +213,7 @@ class Smart_Custom_Fields {
 	}
 
 	/**
-	 * 編集画面でその投稿のIDを取得
+	 * Getting the post ID in post editing page.
 	 *
 	 * @return int
 	 */
@@ -227,7 +228,7 @@ class Smart_Custom_Fields {
 	}
 
 	/**
-	 * プロフィール、ユーザー編集画面でそのユーザーのIDを取得
+	 * Getting the user ID in profile and user editing pages.
 	 *
 	 * @return int
 	 */
@@ -246,7 +247,7 @@ class Smart_Custom_Fields {
 	}
 
 	/**
-	 * ターム編集画面でそのタームのIDを取得
+	 * Getting the term ID in term editing page.
 	 *
 	 * @return int
 	 */
