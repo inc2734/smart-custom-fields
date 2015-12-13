@@ -1,10 +1,10 @@
 <?php
 /**
  * SCF
- * Version    : 1.3.0
+ * Version    : 1.3.1
  * Author     : inc2734
  * Created    : September 23, 2014
- * Modified   : November 12, 2015
+ * Modified   : December 13, 2015
  * License    : GPLv2 or later
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
  */
@@ -806,12 +806,9 @@ class SCF {
 	public static function get_field( $object, $field_name ) {
 		$settings = self::get_settings( $object );
 		foreach ( $settings as $Setting ) {
-			$groups = $Setting->get_groups();
-			foreach ( $groups as $Group ) {
-				$Field = $Group->get_field( $field_name );
-				if ( $Field ) {
-					return $Field;
-				}
+			$fields = $Setting->get_fields();
+			if ( !empty( $fields[$field_name] ) ) {
+				return $fields[$field_name];
 			}
 		}
 	}

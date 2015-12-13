@@ -1,10 +1,10 @@
 <?php
 /**
  * Smart_Custom_Fields_Meta
- * Version    : 1.2.1
+ * Version    : 1.2.2
  * Author     : inc2734
  * Created    : March 17, 2015
- * Modified   : November 21, 2015
+ * Modified   : December 13, 2015
  * License    : GPLv2 or later
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
  */
@@ -162,12 +162,9 @@ class Smart_Custom_Fields_Meta {
 			$settings = SCF::get_settings( $this->object );
 			if ( $key ) {
 				foreach ( $settings as $Setting ) {
-					$groups = $Setting->get_groups();
-					foreach ( $groups as $Group ) {
-						$Field = $Group->get_field( $key );
-						if ( $Field ) {
-							return $meta;
-						}
+					$fields = $Setting->get_fields();
+					if ( !empty( $fields[$key] ) ) {
+						return $meta;
 					}
 				}
 			} else {
