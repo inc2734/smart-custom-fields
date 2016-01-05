@@ -3,8 +3,8 @@ Contributors: inc2734, toro_unit, mimosafa, hideokamoto
 Donate link: http://www.amazon.co.jp/registry/wishlist/39ANKRNSTNW40
 Tags: plugin, custom field, custom, field, meta, meta field, repeat, repeatable
 Requires at least: 3.9
-Tested up to: 4.4-beta3
-Stable tag: 1.6.4
+Tested up to: 4.4
+Stable tag: 1.6.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -37,26 +37,26 @@ https://www.youtube.com/watch?v=WxPZurn0yvI
 
 = How to get meta data ? =
 
-* SCF::get( 'field-name' )  
+* SCF::get( 'field-name' )
 This method can get any meta data.
-* SCF::get( 'group-name' )  
+* SCF::get( 'group-name' )
 This method can get meta data of any group.
 
-* SCF::gets()  
+* SCF::gets()
 This method can get all meta data.
 
-* SCF::get_user_meta( $user_id, 'field-name' )  
+* SCF::get_user_meta( $user_id, 'field-name' )
 This method can get any user meta data.
-* SCF::get_user_meta( $user_id, 'group-name' )  
+* SCF::get_user_meta( $user_id, 'group-name' )
 This method can get user meta data of any group.
-* SCF::get_user_meta( $user_id )  
+* SCF::get_user_meta( $user_id )
 This method can get all user meta data.
 
-* SCF::get_term_meta( $term_id, $taxonomy 'field-name' )  
+* SCF::get_term_meta( $term_id, $taxonomy 'field-name' )
 This method can get any term meta data.
-* SCF::get_term_meta( $term_id, $taxonomy, 'group-name' )  
+* SCF::get_term_meta( $term_id, $taxonomy, 'group-name' )
 This method can get term meta data of any group.
-* SCF::get_term_meta( $term_id, $taxonomy )  
+* SCF::get_term_meta( $term_id, $taxonomy )
 This method can get all term meta data.
 
 = Register custom fields by the code. =
@@ -85,6 +85,9 @@ You can send your own language pack to me.
 2. Post edit page.
 
 == Changelog ==
+
+= 1.6.5 =
+* Fixed a bug that multi value in the loop is broken.
 
 = 1.6.4 =
 * Fixed a bug that wysiwyg fields became tinymce default format when content editor mode is text.

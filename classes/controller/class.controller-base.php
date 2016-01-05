@@ -1,10 +1,10 @@
 <?php
 /**
  * Smart_Custom_Fields_Controller_Base
- * Version    : 1.2.0
+ * Version    : 1.2.1
  * Author     : inc2734
  * Created    : April 27, 2015
- * Modified   : November 12, 2015
+ * Modified   : January 5, 2016
  * License    : GPLv2 or later
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
  */
@@ -25,7 +25,7 @@ class Smart_Custom_Fields_Controller_Base {
 
 	/**
 	 * Loading resources for edit page.
-	 * 
+	 *
 	 * @param string $hook
 	 */
 	public function admin_enqueue_scripts( $hook ) {
@@ -51,7 +51,7 @@ class Smart_Custom_Fields_Controller_Base {
 
 	/**
 	 * Display custom fields in edit page.
-	 * 
+	 *
 	 * @param WP_Post|WP_User|WP_Term $object
 	 * @param array $callback_args custom field setting information
 	 */
@@ -107,7 +107,7 @@ class Smart_Custom_Fields_Controller_Base {
 
 	/**
 	 * Generating array for displaying the custom fields
-	 * 
+	 *
 	 * @param WP_Post|WP_User|WP_Term $object
 	 * @param array $groups Settings from custom field settings page
 	 * @return array $tables Array for displaying a table for custom fields
@@ -162,7 +162,7 @@ class Smart_Custom_Fields_Controller_Base {
 
 	/**
 	 * Getting the multi-value field meta data.
-	 * 
+	 *
 	 * @param WP_Post|WP_User|WP_Term $object
 	 * @param Smart_Custom_Fields_Field_Base $Field
 	 * @param int $index
@@ -197,6 +197,8 @@ class Smart_Custom_Fields_Controller_Base {
 
 			if ( $now_num ) {
 				$value = array_slice( $value, $start, $now_num );
+			} else {
+				$value = array();
 			}
 		}
 		return $value;
@@ -204,7 +206,7 @@ class Smart_Custom_Fields_Controller_Base {
 
 	/**
 	 * Getting the non multi-value field meta data.
-	 * 
+	 *
 	 * @param WP_Post|WP_User|WP_Term $object
 	 * @param Smart_Custom_Fields_Field_Base $Field
 	 * @param int $index
@@ -230,7 +232,7 @@ class Smart_Custom_Fields_Controller_Base {
 
 	/**
 	 * Displaying tr element for table of custom fields
-	 * 
+	 *
 	 * @param WP_Post|WP_User|WP_Term $object
 	 * @param bool $is_repeat
 	 * @param array $fields

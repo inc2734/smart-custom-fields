@@ -58,7 +58,6 @@ class SCF__No_Registerd_Test extends WP_UnitTestCase {
 
 	/**
 	 * @group get
-	 * @group temp
 	 */
 	public function test_get() {
 		$this->assertNull( SCF::get( 'text', false ) );
@@ -66,7 +65,6 @@ class SCF__No_Registerd_Test extends WP_UnitTestCase {
 
 	/**
 	 * @group get_term_meta
-	 * @group temp
 	 */
 	public function test_get_term_meta() {
 		$this->assertNull( SCF::get_term_meta( $this->term_id, 'category', 'text' ) );
@@ -74,7 +72,6 @@ class SCF__No_Registerd_Test extends WP_UnitTestCase {
 
 	/**
 	 * @group get_user_meta
-	 * @group temp
 	 */
 	public function test_get_user_meta() {
 		$this->assertNull( SCF::get_user_meta( $this->user_id, 'category', 'text' ) );

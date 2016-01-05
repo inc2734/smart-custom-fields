@@ -125,6 +125,32 @@ class Smart_Custom_Fields_Controller_Base_Test extends WP_UnitTestCase {
 			$this->Controller->get_multiple_data_field_value( $object, $Field, $index )
 		);
 	}
+	
+	/**
+	 * @group get_multiple_data_field_value
+	 */
+	public function test_get_multiple_data_field_value__空値を保存済みの場合は空配列を返す() {
+		$object = get_post( $this->post_id );
+		$Meta   = new Smart_Custom_Fields_Meta( $object );
+		$POST   = array(
+			SCF_Config::NAME => array(
+				'checkbox3' => array(
+					array(),
+					array( 1, 2 ),
+					array( 2, 3 ),
+				),
+			),
+		);
+		$Meta->save( $POST );
+		
+		$Field = SCF::get_field( $object, 'checkbox3' );
+		$index = 0; // 空配列が返るべきキー
+
+		$this->assertSame(
+			array(),
+			$this->Controller->get_multiple_data_field_value( $object, $Field, $index )
+		);
+	}
 
 	/**
 	 * @group get_single_data_field_value
