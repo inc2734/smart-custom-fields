@@ -56,7 +56,7 @@ class SCF {
 
 	/**
 	 * Getting all of the post meta data to feel good
-	 * 
+	 *
 	 * @param int $post_id
 	 * @return array
 	 */
@@ -77,7 +77,7 @@ class SCF {
 
 	/**
 	 * Getting the post meta data to feel good
-	 * 
+	 *
 	 * @param string $name group name or field name
 	 * @param int $post_id
 	 * @return mixed
@@ -99,7 +99,7 @@ class SCF {
 
 	/**
  	 * Getting the user meta data to feel good
-	 * 
+	 *
 	 * @param int $user_id
 	 * @param string $name group name or field name
 	 * @return mixed
@@ -121,7 +121,7 @@ class SCF {
 
 	/**
   	 * Getting the term meta data to feel good
-	 * 
+	 *
 	 * @param int $term_id
 	 * @param string $taxonomy_name
 	 * @param string $name group name or field name
@@ -144,7 +144,7 @@ class SCF {
 
 	/**
 	 * Getting any meta data to feel good
-	 * 
+	 *
 	 * @param WP_Post|WP_User|object $object
 	 * @param string $name group name or field name
 	 * @return mixed
@@ -183,7 +183,7 @@ class SCF {
 
 	/**
  	 * Getting all of any meta data to feel good
-	 * 
+	 *
 	 * @param WP_Post|WP_User|WP_Term $object
 	 * @return mixed
 	 */
@@ -232,7 +232,7 @@ class SCF {
 
 	/**
 	 * Saving to cache
-	 * 
+	 *
 	 * @param WP_Post|WP_User|WP_Term $object
 	 * @param string $name
 	 * @param mixed $data
@@ -249,7 +249,7 @@ class SCF {
 
 	/**
 	 * Getting the cache
-	 * 
+	 *
 	 * @param WP_Post|WP_User|WP_Term $object
 	 * @param string $name
 	 * @return mixed
@@ -282,7 +282,7 @@ class SCF {
 	/**
 	 * Getting the meta data of the group
 	 * When group, Note the point that returned data are repetition
-	 * 
+	 *
 	 * @param WP_Post|WP_User|WP_Term $object
 	 * @param Smart_Custom_Fields_Group $Group
 	 * @return mixed
@@ -314,7 +314,7 @@ class SCF {
 
 	/**
 	 * Getting the meta data of the field
-	 * 
+	 *
 	 * @param WP_Post|WP_User|WP_Term $object
 	 * @param array $field
 	 * @param bool $is_repeatable Whether the group that this field belongs is repetition
@@ -448,7 +448,7 @@ class SCF {
 
 	/**
   	 * Getting enabled custom field settings in the post type or the role or the term.
-	 * 
+	 *
 	 * @param WP_Post|WP_User|WP_Term $object
 	 * @return array $settings
 	 */
@@ -567,10 +567,6 @@ class SCF {
 		$id        = $Meta->get_id();
 		$type      = $Meta->get_type( false );
 		$meta_type = $Meta->get_meta_type();
-		
-		// 投稿IDで出し分けされているカスタムフィールド設定を持つ投稿の場合、
-		// プレビュー画面ではIDが変わって表示されなくなってしまうため、
-		// プレビュー画面の場合は元の投稿（プレビューの親）から設定の再取得が必要
 		
 		// IF the post that has custom field settings according to post ID,
 		// don't display because the post ID would change in preview.
@@ -722,7 +718,7 @@ class SCF {
 
 	/**
  	 * Getting delimited identification data of the repeated multi-value items
-	 * 
+	 *
 	 * @param WP_Post|WP_User|WP_Term $object
 	 * @return array
 	 */
@@ -744,7 +740,7 @@ class SCF {
 
 	/**
 	 * Return true if null or empty value
-	 * 
+	 *
 	 * @param mixed $value
 	 * @return bool
 	 */
@@ -760,7 +756,7 @@ class SCF {
 
 	/**
 	 * Adding the available form field object
-	 * 
+	 *
 	 * @param Smart_Custom_Fields_Field_Base $instance
 	 */
 	public static function add_form_field_instance( Smart_Custom_Fields_Field_Base $instance ) {
@@ -772,7 +768,7 @@ class SCF {
 
 	/**
 	 * Getting the available form field object
-	 * 
+	 *
 	 * @param string $type type of the form field
 	 * @param Smart_Custom_Fields_Field_Base
 	 */
@@ -798,7 +794,7 @@ class SCF {
 	/**
 	 * Getting custom fields that saved custo field settings page
 	 * Note that not return only one even define multiple fields with the same name of the field name
-	 * 
+	 *
 	 * @param WP_Post|WP_User|WP_Term $object
 	 * @param string $field_name
 	 * @return Smart_Custom_Fields_Field_Base|null
@@ -815,7 +811,7 @@ class SCF {
 	
 	/**
 	 * Convert to array from newline delimiter $choices
-	 * 
+	 *
 	 * @param string $choices
 	 * @return array
 	 */
