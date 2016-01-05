@@ -102,7 +102,7 @@ class Smart_Custom_Fields_Controller_Settings {
 
 	/**
 	 * Displaying "hide" if $key isn't empty
-	 * 
+	 *
 	 * @param string $key
 	 */
 	private function add_hide_class( $key ) {
@@ -134,9 +134,10 @@ class Smart_Custom_Fields_Controller_Settings {
 						<?php foreach ( $fields as $field_key => $Field ) : ?>
 						<div class="<?php echo esc_attr( SCF_Config::PREFIX . 'field' ); ?> <?php $this->add_hide_class( $field_key ); ?>">
 							<?php
+							$field_name  = $Field->get( 'name' );
 							$field_label = $Field->get( 'label' );
 							if ( !$field_label ) {
-								$field_label = $Field->get( 'name' );
+								$field_label = $field_name;
 								if ( !$field_label ) {
 									$field_label = "&nbsp;";
 								}
@@ -144,7 +145,7 @@ class Smart_Custom_Fields_Controller_Settings {
 							?>
 							<div class="<?php echo esc_attr( SCF_Config::PREFIX . 'icon-handle' ); ?>"></div>
 							<b class="btn-remove-field"><span class="dashicons dashicons-no-alt"></span></b>
-							<div class="field-label"><?php echo esc_html( $field_label ); ?></div>
+							<div class="field-label"><?php echo esc_html( $field_label ); ?> <small>[ <?php echo esc_html( $field_name ); ?> ]</small></div>
 							<table class="<?php $this->add_hide_class( !$Field->get( 'name' ) ); ?>">
 								<tr>
 									<th><?php esc_html_e( 'Type', 'smart-custom-fields' ); ?><span class="<?php echo esc_attr( SCF_Config::PREFIX . 'require' ); ?>">*</span></th>

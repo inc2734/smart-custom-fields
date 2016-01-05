@@ -156,6 +156,10 @@
 	overflow: hidden;
 	*zoom: 1;
 }
+.smart-cf-group .smart-cf-field .field-label small {
+	color: #999;
+	font-size: 90%;
+}
 
 /**
  * .btn-remove-field

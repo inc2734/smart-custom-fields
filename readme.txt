@@ -88,6 +88,7 @@ You can send your own language pack to me.
 
 = 1.6.5 =
 * Fixed a bug that multi value in the loop is broken.
+* In setting screen, if the field is closed, display the field name.
 
 = 1.6.4 =
 * Fixed a bug that wysiwyg fields became tinymce default format when content editor mode is text.
