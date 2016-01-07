@@ -1,10 +1,10 @@
 <?php
 /**
  * SCF
- * Version    : 1.3.1
+ * Version    : 1.3.2
  * Author     : inc2734
  * Created    : September 23, 2014
- * Modified   : December 13, 2015
+ * Modified   : January 7, 2016
  * License    : GPLv2 or later
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
  */
@@ -588,7 +588,16 @@ class SCF {
 				$settings = self::get_settings_for_term( $object, $settings_posts );
 			}
 		}
-		$settings = apply_filters( SCF_Config::PREFIX . 'register-fields', $settings, $type, $id, $meta_type );
+		$settings = apply_filters(
+			SCF_Config::PREFIX . 'register-fields',
+			$settings,
+			$type,
+			$id,
+			$meta_type
+		);
+		if ( !is_array( $settings ) ) {
+			$settings = array();
+		}
 		return $settings;
 	}
 
