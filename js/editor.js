@@ -28,11 +28,9 @@ jQuery( function( $ ) {
 				
 				var init;
 				if ( typeof tinyMCEPreInit.mceInit.content !== 'undefined' ) {
-					// console.log( 1 );
 					init = $.extend( true, {}, tinyMCEPreInit.mceInit.content );
 					init.selector = '#' + editor_id;
 				} else {
-					// console.log( 2 );
 					init = {
 						content_css: ['../wp-includes/js/tinymce/skins/wordpress/wp-content.css', '../wp-content/plugins/smart-custom-fields/css/wysiwyg.css'],
 						menubar: false,

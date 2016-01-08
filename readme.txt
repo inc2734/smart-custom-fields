@@ -1,10 +1,10 @@
 === Smart Custom Fields ===
-Contributors: inc2734, toro_unit, mimosafa, hideokamoto, hisako-isaka
+Contributors: inc2734, toro_unit, mimosafa, hideokamoto, hisako-isaka, kurudrive
 Donate link: http://www.amazon.co.jp/registry/wishlist/39ANKRNSTNW40
 Tags: plugin, custom field, custom, field, meta, meta field, repeat, repeatable
 Requires at least: 3.9
 Tested up to: 4.4
-Stable tag: 1.6.6
+Stable tag: 1.6.7
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -85,6 +85,9 @@ You can send your own language pack to me.
 2. Post edit page.
 
 == Changelog ==
+
+= 1.6.7 =
+* Removed console.log in a js file.
 
 = 1.6.6 =
 * Fixed a bug that warning is out when the array isn't returned in the smart-cf-register-fields.
