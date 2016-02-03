@@ -1,10 +1,10 @@
 <?php
 /**
  * Smart_Custom_Fields_Field_Textarea
- * Version    : 1.1.0
+ * Version    : 1.2.0
  * Author     : inc2734
  * Created    : October 7, 2014
- * Modified   : February 27, 2015
+ * Modified   : February 3, 2016
  * License    : GPLv2 or later
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
  */
@@ -30,6 +30,7 @@ class Smart_Custom_Fields_Field_Textarea extends Smart_Custom_Fields_Field_Base 
 	 */
 	protected function options() {
 		return array(
+			'rows'    => 5,
 			'default' => '',
 			'notes'   => '',
 		);
@@ -43,11 +44,13 @@ class Smart_Custom_Fields_Field_Textarea extends Smart_Custom_Fields_Field_Base 
 	 * @return string html
 	 */
 	public function get_field( $index, $value ) {
-		$name = $this->get_field_name_in_editor( $index );
+		$name     = $this->get_field_name_in_editor( $index );
 		$disabled = $this->get_disable_attribute( $index );
+		$rows     = $this->get( 'rows' );
 		return sprintf(
-			'<textarea name="%s" rows="5" class="widefat" %s>%s</textarea>',
+			'<textarea name="%s" rows="%d" class="widefat" %s>%s</textarea>',
 			esc_attr( $name ),
+			esc_attr( $rows ),
 			disabled( true, $disabled, false ),
 			$value
 		);
@@ -61,6 +64,16 @@ class Smart_Custom_Fields_Field_Textarea extends Smart_Custom_Fields_Field_Base 
 	 */
 	public function display_field_options( $group_key, $field_key ) {
 		?>
+		<tr>
+			<th><?php esc_html_e( 'Rows', 'smart-custom-fields' ); ?></th>
+			<td>
+				<input type="number"
+					name="<?php echo esc_attr( $this->get_field_name_in_setting( $group_key, $field_key, 'rows' ) ); ?>"
+					min="3"
+					value="<?php echo esc_attr( $this->get( 'rows' ) ); ?>"
+				/>
+			</td>
+		</tr>
 		<tr>
 			<th><?php esc_html_e( 'Default', 'smart-custom-fields' ); ?></th>
 			<td>

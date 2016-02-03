@@ -1,10 +1,10 @@
 <?php
 /**
  * Smart_Custom_Fields_Controller_Base
- * Version    : 1.2.1
+ * Version    : 1.3.0
  * Author     : inc2734
  * Created    : April 27, 2015
- * Modified   : January 5, 2016
+ * Modified   : February 3, 2016
  * License    : GPLv2 or later
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
  */
