@@ -89,6 +89,7 @@ You can send your own language pack to me.
 
 = 1.7.0 =
 * Added taxonomy relation field.
+* Fixed a bug that tinymce js error when disabled rich editing.
 
 = 1.6.7 =
 * Removed console.log in a js file.

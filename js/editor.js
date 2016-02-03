@@ -25,7 +25,7 @@ jQuery( function( $ ) {
 				$( this ).attr( 'id', 'smart-cf-wysiwyg-' + wrapper_index + '-' + cnt + '-' + i );
 				var editor_id = $( this ).attr( 'id' );
 				$( this ).parents( '.wp-editor-wrap' ).find( 'a.add_media' ).attr( 'data-editor', editor_id );
-				
+
 				var init;
 				if ( typeof tinyMCEPreInit.mceInit.content !== 'undefined' ) {
 					init = $.extend( true, {}, tinyMCEPreInit.mceInit.content );
@@ -46,7 +46,9 @@ jQuery( function( $ ) {
 					};
 				}
 				tinyMCEPreInit.mceInit[editor_id] = init;
-				tinymce.init( init );
+				if ( typeof tinymce !== 'undefined' ) {
+					tinymce.init( init );
+				}
 				//tinymce.execCommand( 'mceAddEditor', false, editor_id );
 			}
 		} );

@@ -47,6 +47,16 @@ class Smart_Custom_Fields_Controller_Base {
 			'file_uploader_title'  => esc_html__( 'File setting', 'smart-custom-fields' ),
 		) );
 		do_action( SCF_Config::PREFIX . 'after-editor-enqueue-scripts' );
+
+		if ( !user_can_richedit() ) {
+			wp_enqueue_script(
+				'tinymce',
+				includes_url( '/js/tinymce/tinymce.min.js' ),
+				array(),
+				null,
+				true
+			);
+		}
 	}
 
 	/**
@@ -175,11 +185,11 @@ class Smart_Custom_Fields_Controller_Base {
 		if ( is_null( $index ) ) {
 			return SCF::get_default_value( $Field );
 		}
-		
+
 		if ( !$Meta->is_saved() ) {
 			return SCF::get_default_value( $Field );
 		}
-		
+
 		$value = $Meta->get( $field_name );
 
 		// in the loop
