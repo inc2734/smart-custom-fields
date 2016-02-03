@@ -2,10 +2,10 @@
 # This file is distributed under the same license as the Smart Custom Fields package.
 msgid ""
 msgstr ""
-"Project-Id-Version: Smart Custom Fields 1.6.0\n"
+"Project-Id-Version: Smart Custom Fields 1.7.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/smart-custom-fields\n"
-"POT-Creation-Date: 2015-11-12 16:13+0900\n"
-"PO-Revision-Date: 2015-11-12 16:13+0900\n"
+"POT-Creation-Date: 2016-02-03 14:02+0900\n"
+"PO-Revision-Date: 2016-02-03 14:03+0900\n"
 "Last-Translator: inc2734 <inc@2inc.org>\n"
 "Language-Team: \n"
 "Language: ja\n"
@@ -62,32 +62,33 @@ msgstr "表示条件（プロフィール）"
 msgid "Display conditions ( Taxonomy )"
 msgstr "表示条件（タクソノミー）"
 
-#: classes/controller/class.settings.php:150
+#: classes/controller/class.settings.php:156
 msgid "Type"
 msgstr "タイプ"
 
-#: classes/controller/class.settings.php:185
+#: classes/controller/class.settings.php:191
 msgid "Add Sub field"
 msgstr "サブフィールドを追加"
 
-#: classes/controller/class.settings.php:189
+#: classes/controller/class.settings.php:195
 msgid "Add Field"
 msgstr "フィールド追加"
 
-#: classes/controller/class.settings.php:219
-#: classes/fields/class.field-relation.php:212
+#: classes/controller/class.settings.php:225
+#: classes/fields/class.field-relation.php:213
 msgid "Post Types"
 msgstr "投稿タイプ"
 
-#: classes/controller/class.settings.php:226
+#: classes/controller/class.settings.php:232
 msgid "Post Ids ( Comma separated )"
 msgstr "投稿 ID (カンマ区切り)"
 
-#: classes/controller/class.settings.php:251
+#: classes/controller/class.settings.php:257
 msgid "Roles"
 msgstr "権限"
 
-#: classes/controller/class.settings.php:277
+#: classes/controller/class.settings.php:283
+#: classes/fields/class.field-taxonomy.php:216
 msgid "Taxonomies"
 msgstr "タクソノミー"
 
@@ -103,33 +104,34 @@ msgstr "はい"
 msgid "No"
 msgstr "いいえ"
 
-#: classes/fields/class.field-boolean.php:83 classes/fields/class.field-check.php:112
+#: classes/fields/class.field-boolean.php:82 classes/fields/class.field-check.php:112
 #: classes/fields/class.field-colorpicker.php:102
 #: classes/fields/class.field-datepicker.php:124
 #: classes/fields/class.field-radio.php:111 classes/fields/class.field-select.php:85
-#: classes/fields/class.field-text.php:65 classes/fields/class.field-textarea.php:65
-#: classes/fields/class.field-wysiwyg.php:114
+#: classes/fields/class.field-text.php:65 classes/fields/class.field-textarea.php:78
+#: classes/fields/class.field-wysiwyg.php:111
 msgid "Default"
 msgstr "デフォルト"
 
-#: classes/fields/class.field-boolean.php:106
+#: classes/fields/class.field-boolean.php:107
 msgid "TRUE Label"
 msgstr "TRUE ラベル"
 
-#: classes/fields/class.field-boolean.php:116
+#: classes/fields/class.field-boolean.php:117
 msgid "FALSE Label"
 msgstr "FALSE ラベル"
 
-#: classes/fields/class.field-boolean.php:126
+#: classes/fields/class.field-boolean.php:127
 #: classes/fields/class.field-check.php:121
 #: classes/fields/class.field-colorpicker.php:111
 #: classes/fields/class.field-datepicker.php:188
 #: classes/fields/class.field-file.php:92 classes/fields/class.field-image.php:93
 #: classes/fields/class.field-radio.php:120
-#: classes/fields/class.field-relation.php:233
-#: classes/fields/class.field-select.php:94 classes/fields/class.field-text.php:74
-#: classes/fields/class.field-textarea.php:74
-#: classes/fields/class.field-wysiwyg.php:123
+#: classes/fields/class.field-relation.php:234
+#: classes/fields/class.field-select.php:94
+#: classes/fields/class.field-taxonomy.php:235 classes/fields/class.field-text.php:74
+#: classes/fields/class.field-textarea.php:87
+#: classes/fields/class.field-wysiwyg.php:120
 msgid "Notes"
 msgstr "注記"
 
@@ -212,21 +214,27 @@ msgid "Radio"
 msgstr "ラジオボタン"
 
 #: classes/fields/class.field-relation.php:24
-msgid "Relation"
-msgstr "リレーション"
+msgid "Relation ( Post Types )"
+msgstr "関連（投稿タイプ）"
 
-#: classes/fields/class.field-relation.php:190
+#: classes/fields/class.field-relation.php:191
+#: classes/fields/class.field-taxonomy.php:194
 #, fuzzy
 msgid "Search..."
 msgstr "検索 …"
 
-#: classes/fields/class.field-relation.php:194
+#: classes/fields/class.field-relation.php:195
+#: classes/fields/class.field-taxonomy.php:198
 msgid "Load more"
 msgstr "さらに読み込む"
 
 #: classes/fields/class.field-select.php:21
 msgid "Select"
 msgstr "セレクトボックス"
+
+#: classes/fields/class.field-taxonomy.php:24
+msgid "Relation ( Taxonomies )"
+msgstr "関連（タクソノミー）"
 
 #: classes/fields/class.field-text.php:21
 msgid "Text"
@@ -236,12 +244,16 @@ msgstr "テキスト"
 msgid "Textarea"
 msgstr "テキストエリア"
 
+#: classes/fields/class.field-textarea.php:68
+msgid "Rows"
+msgstr "行数"
+
 #: classes/fields/class.field-wysiwyg.php:26
 msgid "Wysiwyg"
 msgstr "WYSIWYG"
 
-#: classes/fields/class.field-wysiwyg.php:145
-#: classes/fields/class.field-wysiwyg.php:146
+#: classes/fields/class.field-wysiwyg.php:142
+#: classes/fields/class.field-wysiwyg.php:143
 msgid "Add Media"
 msgstr "メディアを追加"
 
@@ -253,54 +265,54 @@ msgstr "名前"
 msgid "Label"
 msgstr "ラベル"
 
-#: classes/models/class.group.php:114
+#: classes/models/class.group.php:127
 msgid "Repeat"
 msgstr "繰り返し"
 
-#: classes/models/class.group.php:119
+#: classes/models/class.group.php:132
 msgid "Group name"
 msgstr "グループ名"
 
 #. Plugin Name of the plugin/theme
-#: classes/models/class.revisions.php:117 smart-custom-fields.php:157
-#: smart-custom-fields.php:158 smart-custom-fields.php:159
+#: classes/models/class.revisions.php:124 smart-custom-fields.php:158
+#: smart-custom-fields.php:159 smart-custom-fields.php:160
 msgid "Smart Custom Fields"
 msgstr "Smart Custom Fields"
 
-#: smart-custom-fields.php:160 smart-custom-fields.php:161
-#: smart-custom-fields.php:207 smart-custom-fields.php:208
+#: smart-custom-fields.php:161 smart-custom-fields.php:162
+#: smart-custom-fields.php:208 smart-custom-fields.php:209
 msgid "Add New"
 msgstr "新規追加"
 
-#: smart-custom-fields.php:162
+#: smart-custom-fields.php:163
 msgid "New Field"
 msgstr "新規フィールド"
 
-#: smart-custom-fields.php:163
+#: smart-custom-fields.php:164
 msgid "Edit Field"
 msgstr "フィールド編集"
 
-#: smart-custom-fields.php:164
+#: smart-custom-fields.php:165
 msgid "View Field"
 msgstr "フィールドを表示"
 
-#: smart-custom-fields.php:165
+#: smart-custom-fields.php:166
 msgid "All Fields"
 msgstr "すべてのフィールド"
 
-#: smart-custom-fields.php:166
+#: smart-custom-fields.php:167
 msgid "Search Fields"
 msgstr "フィールドを検索"
 
-#: smart-custom-fields.php:167
+#: smart-custom-fields.php:168
 msgid "Parent Fields:"
 msgstr "親フィールド:"
 
-#: smart-custom-fields.php:168
+#: smart-custom-fields.php:169
 msgid "No Fields found."
 msgstr "フィールドは見つかりませんでした。"
 
-#: smart-custom-fields.php:169
+#: smart-custom-fields.php:170
 msgid "No Fields found in Trash."
 msgstr "ゴミ箱にフィールドは見つかりませんでした"
 
@@ -319,3 +331,6 @@ msgstr "inc2734"
 #. Author URI of the plugin/theme
 msgid "http://2inc.org"
 msgstr "http://2inc.org"
+
+#~ msgid "Relation"
+#~ msgstr "リレーション"
