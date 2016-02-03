@@ -1,9 +1,9 @@
 /**
  * editor.css
- * Version    : 1.2.0
+ * Version    : 1.3.0
  * Author     : inc2734
  * Created    : September 23, 2014
- * Modified   : November 12, 2015
+ * Modified   : February 1, 2016
  * License    : GPLv2 or later
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
  */
@@ -122,14 +122,14 @@
 .smart-cf-meta-box-table .smart-cf-relation-left ul li:hover {
 	background: #e4f6fd;
 }
-.smart-cf-meta-box-table .smart-cf-relation-left .load-relation-posts {
+.smart-cf-meta-box-table .smart-cf-relation-left .load-relation-items {
 	background: #e4f6fd;
 	cursor: pointer;
 	margin: 0;
 	padding: 6px 10px;
 	text-align: center;
 }
-.smart-cf-meta-box-table .smart-cf-relation-left .load-relation-posts:hover {
+.smart-cf-meta-box-table .smart-cf-relation-left .load-relation-items:hover {
 	background: #c1ebfc;
 }
 .smart-cf-meta-box-table .smart-cf-relation-right {
@@ -184,7 +184,7 @@
 .smart-cf-upload-file.hide,
 .smart-cf-upload-image .btn-remove-image.hide,
 .smart-cf-upload-file .btn-remove-file.hide,
-.load-relation-posts.hide {
+.load-relation-items.hide {
 	display: none;
 }
 

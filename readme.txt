@@ -4,7 +4,7 @@ Donate link: http://www.amazon.co.jp/registry/wishlist/39ANKRNSTNW40
 Tags: plugin, custom field, custom, field, meta, meta field, repeat, repeatable
 Requires at least: 3.9
 Tested up to: 4.4
-Stable tag: 1.6.7
+Stable tag: 1.7.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -30,7 +30,8 @@ https://www.youtube.com/watch?v=WxPZurn0yvI
 * Wysiwyg editor
 * Image
 * File
-* Relation
+* Relation ( Post Types )
+* Relation ( Taxonomies )
 * Color picker
 * Date picker
 * Boolean
@@ -85,6 +86,9 @@ You can send your own language pack to me.
 2. Post edit page.
 
 == Changelog ==
+
+= 1.7.0 =
+* Added taxonomy relation field.
 
 = 1.6.7 =
 * Removed console.log in a js file.
