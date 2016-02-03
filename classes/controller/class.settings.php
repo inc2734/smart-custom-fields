@@ -145,7 +145,12 @@ class Smart_Custom_Fields_Controller_Settings {
 							?>
 							<div class="<?php echo esc_attr( SCF_Config::PREFIX . 'icon-handle' ); ?>"></div>
 							<b class="btn-remove-field"><span class="dashicons dashicons-no-alt"></span></b>
-							<div class="field-label"><?php echo esc_html( $field_label ); ?> <small>[ <?php echo esc_html( $field_name ); ?> ]</small></div>
+							<div class="field-label">
+								<?php echo esc_html( $field_label ); ?>
+								<?php if ( $field_name ) : ?>
+									<small>[ <?php echo esc_html( $field_name ); ?> ]</small>
+								<?php endif; ?>
+							</div>
 							<table class="<?php $this->add_hide_class( !$Field->get( 'name' ) ); ?>">
 								<tr>
 									<th><?php esc_html_e( 'Type', 'smart-custom-fields' ); ?><span class="<?php echo esc_attr( SCF_Config::PREFIX . 'require' ); ?>">*</span></th>
