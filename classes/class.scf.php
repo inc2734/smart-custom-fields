@@ -691,13 +691,12 @@ class SCF {
 	 * @param string $menu_slug
 	 * @param string $icon_url
 	 * @param int $position
+	 * @return $menu_slug
 	 */
 	public static function add_options_page( $page_title, $menu_title, $capability, $menu_slug, $icon_url = '', $position = null ) {
-		if ( !current_user_can( $capability ) ) {
-			return;
-		}
 		self::$options_pages[$menu_slug] = $menu_title;
 		new Smart_Custom_Fields_Options_Page( $page_title, $menu_title, $capability, $menu_slug, $icon_url = '', $position = null );
+		return $menu_slug;
 	}
 
 	/**

@@ -22,6 +22,11 @@ class SCF_Test extends WP_UnitTestCase {
 	protected $term_id;
 
 	/**
+	 * @var string
+	 */
+	protected $menu_slug;
+
+	/**
 	 * setUp
 	 */
 	public function setUp() {
@@ -45,6 +50,8 @@ class SCF_Test extends WP_UnitTestCase {
 		$this->user_id = $this->factory->user->create( array( 'role' => 'editor' ) );
 		// カスタムフィールドを設定するためのターム
 		$this->term_id = $this->factory->term->create( array( 'taxonomy' => 'category' ) );
+		// カスタムフィールドを設定するためのオプションページ
+		$this->menu_slug = SCF::add_options_page( 'page title', 'menu title', 'manage_options', 'menu-slug' );
 		// コードでカスタムフィールドを定義
 		add_filter( 'smart-cf-register-fields', array( $this, '_register' ), 10, 4 );
 
@@ -227,6 +234,51 @@ class SCF_Test extends WP_UnitTestCase {
 	 */
 	public function test_get_term_meta__存在しないカスタムフィールドの場合はnull() {
 		$this->assertNull( SCF::get_term_meta( $this->term_id, 'category', 'not_exist' ) );
+	}
+
+	/**
+	 * @group get_option_meta
+	 */
+	public function test_get_option_meta__menu_slugが取得できないときはnull() {
+		$this->assertNull( SCF::get_option_meta( false, 'text' ) );
+		$this->assertNull( SCF::get_option_meta( false, 'checkbox' ) );
+		$this->assertNull( SCF::get_option_meta( false, 'text3' ) );
+		$this->assertNull( SCF::get_option_meta( false, 'checkbox3' ) );
+		$this->assertNull( SCF::get_option_meta( false ) );
+	}
+
+	/**
+	 * @group get_option_meta
+	 */
+	public function test_get_option_meta__メタデータが保存されていないときはデフォルト値を返す() {
+		$this->assertSame( ''     , SCF::get_option_meta( $this->menu_slug, 'text' ) );
+		$this->assertSame( array(), SCF::get_option_meta( $this->menu_slug, 'text3' ) );
+		$this->assertSame( array(), SCF::get_option_meta( $this->menu_slug, 'checkbox' ) );
+		$this->assertSame( array(), SCF::get_option_meta( $this->menu_slug, 'checkbox3' ) );
+		$this->assertSame(
+			array(
+				'text'         => '',
+				'checkbox'     => array(),
+				'group-name-3' => array(
+					array(
+						'text3'     => '',
+						'checkbox3' => array(),
+					),
+				),
+				'text-has-default'         => 'text default',
+				'text-has-not-default'     => '',
+				'checkbox-has-default'     => array( 'A', 'B' ),
+				'checkbox-has-not-default' => array(),
+			),
+			SCF::get_user_meta( $this->user_id )
+		);
+	}
+
+	/**
+	 * @group get_option_meta
+	 */
+	public function test_get_option_meta__存在しないカスタムフィールドの場合はnull() {
+		$this->assertNull( SCF::get_user_meta( $this->menu_slug, 'not_exist' ) );
 	}
 
 	/**
@@ -859,9 +911,9 @@ class SCF_Test extends WP_UnitTestCase {
 	 * フック経由でカスタムフィールドを設定
 	 *
 	 * @param array $settings 管理画面で設定された Smart_Custom_Fields_Setting の配列
-	 * @param string $type 投稿タイプ or ロール or タクソノミー
-	 * @param int $id 投稿ID or ユーザーID or タームID
-	 * @param string $meta_type メタデータのタイプ。post or user or term
+	 * @param string $type 投稿タイプ or ロール or タクソノミー or menu-slug
+	 * @param int $id 投稿ID or ユーザーID or タームID or menu-slug
+	 * @param string $meta_type メタデータのタイプ。post or user or term or option
 	 * @return array
 	 */
 	public function _register( $settings, $type, $id, $meta_type ) {
@@ -870,7 +922,8 @@ class SCF_Test extends WP_UnitTestCase {
 			( $type === 'post' && $id === $this->post_id ) ||
 			( $type === 'post' && $id === $this->new_post_id ) ||
 			( $type === 'editor' ) ||
-			( $type === 'category' )
+			( $type === 'category' ) ||
+			( $meta_type === 'option' && $id === 'menu-slug' )
 		) {
 			$Setting = SCF::add_setting( 'id-1', 'Register Test' );
 			// $Setting->add_group( 'ユニークなID', 繰り返し可能か, カスタムフィールドの配列 );

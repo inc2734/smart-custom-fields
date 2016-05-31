@@ -11,24 +11,24 @@
 class Smart_Custom_Fields_Meta {
 
 	/**
-	 * @var WP_Post|WP_User|WP_Term
+	 * @var WP_Post|WP_User|WP_Term|stdClass
 	 */
 	protected $object;
 
 	/**
 	 * What meta data
-	 * @var string post or user or term
+	 * @var string post or user or term or option
 	 */
 	protected $meta_type = 'post';
 
 	/**
-	 * Post ID or User ID or Term ID
+	 * Post ID or User ID or Term ID or Menu slug
 	 * @var int
 	 */
 	protected $id;
 
 	/**
-	 * Post Type or Role or Taxonomy
+	 * Post Type or Role or Taxonomy or Menu slug
 	 * @var string
 	 */
 	protected $type;
