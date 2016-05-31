@@ -1,20 +1,14 @@
 <?php
 /**
  * Smart_Custom_Fields_Controller_Taxonomy
- * Version    : 1.0.0
+ * Version    : 1.0.1
  * Author     : inc2734
  * Created    : April 26, 2015
- * Modified   : 
+ * Modified   : May 31, 2016
  * License    : GPLv2 or later
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
  */
 class Smart_Custom_Fields_Controller_Taxonomy extends Smart_Custom_Fields_Controller_Base {
-
-	/**
-	 * Taxonomy NAME
-	 * @var string
-	 */
-	protected $taxonomy;
 
 	/**
 	 * __construct
@@ -22,15 +16,14 @@ class Smart_Custom_Fields_Controller_Taxonomy extends Smart_Custom_Fields_Contro
 	public function __construct() {
 		parent::__construct();
 
-		$this->taxonomy = $_REQUEST['taxonomy'];
-		add_action( $this->taxonomy . '_edit_form_fields', array( $this, 'edit_form_fields' ) );
+		add_action( $_REQUEST['taxonomy'] . '_edit_form_fields', array( $this, 'edit_form_fields' ) );
 		add_action( 'edited_terms'                       , array( $this, 'update' ), 10, 2 );
 		add_action( 'delete_term'                        , array( $this, 'delete' ), 10, 4 );
 	}
 
 	/**
 	 * Loading resources for term edit page
-	 * 
+	 *
 	 * @param string $hook
 	 */
 	public function admin_enqueue_scripts( $hook ) {
@@ -63,7 +56,7 @@ class Smart_Custom_Fields_Controller_Taxonomy extends Smart_Custom_Fields_Contro
 
 	/**
 	 * Saving meta data from custom fields in term edit page
-	 * 
+	 *
 	 * @param int $term_id
 	 * @param string $taxonomy
 	 */
