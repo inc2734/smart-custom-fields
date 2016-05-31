@@ -164,9 +164,7 @@ class SCF {
 			return;
 		}
 
-		$Option = new stdClass();
-		$Option->menu_slug  = $menu_slug;
-		$Option->menu_title = self::$options_pages[$menu_slug];
+		$Option = self::generate_option_object( $menu_slug );
 
 		// If $name is null, return the all meta data.
 		if ( $name === null ) {
@@ -677,9 +675,7 @@ class SCF {
 					}
 					$Post = get_post( $condition_post_id );
 					if ( empty( $Post ) ) {
-						$Post = new stdClass();
-						$Post->ID = $condition_post_id;
-						$Post = new WP_Post( $Post );
+						$Post = self::generate_post_object( $condition_post_id );
 					}
 					self::save_settings_cache( $settings_post->ID, $Setting, $Post );
 				}
@@ -925,6 +921,34 @@ class SCF {
 	 */
 	public static function get_options_pages() {
 		return self::$options_pages;
+	}
+
+	/**
+	 * Generate WP_Post object
+	 *
+	 * @param int $post_id
+	 * @param string $post_type
+	 * @return WP_Post
+	 */
+	public static function generate_post_object( $post_id, $post_type = null ) {
+		$Post = new stdClass();
+		$Post->ID        = $post_id;
+		$Post->post_type = $post_type;
+		return new WP_Post( $Post );
+	}
+
+	/**
+	 * Generate option object
+	 *
+	 * @param string $menu_slug
+	 * @return stdClass
+	 */
+	public static function generate_option_object( $menu_slug ) {
+		$options_pages = SCF::get_options_pages();
+		$Option = new stdClass();
+		$Option->menu_slug  = $menu_slug;
+		$Option->menu_title = $options_pages[$menu_title];
+		return $Option;
 	}
 
 	/**

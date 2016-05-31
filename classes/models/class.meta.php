@@ -353,10 +353,7 @@ class Smart_Custom_Fields_Meta {
 				$object = get_term( $this->id, $this->type );
 				break;
 			case 'option' :
-				$options_pages = SCF::get_options_pages();
-				$object = new stdClass();
-				$object->menu_slug  = $this->id;
-				$object->menu_title = $options_pages[$object->menu_slug];
+				$object = SCF::generate_option_object( $this->id );
 				break;
 			default :
 				$object = null;

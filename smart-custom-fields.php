@@ -105,10 +105,7 @@ class Smart_Custom_Fields {
 		// その他の新規作成・編集画面
 		elseif ( in_array( $screen->id, get_post_types() ) ) {
 			$post_id = $this->get_post_id_in_admin();
-			$Post = new stdClass();
-			$Post->ID        = $post_id;
-			$Post->post_type = $screen->id;
-			if ( SCF::get_settings( new WP_Post( $Post ) ) ) {
+			if ( SCF::get_settings( SCF::generate_post_object( $post_id, $screen->id ) ) ) {
 				require_once plugin_dir_path( __FILE__ ) . 'classes/controller/class.controller-base.php';
 				require_once plugin_dir_path( __FILE__ ) . 'classes/controller/class.editor.php';
 				new Smart_Custom_Fields_Revisions();
@@ -118,11 +115,6 @@ class Smart_Custom_Fields {
 		// プロフィール編集画面
 		elseif ( in_array( $screen->id, array( 'profile', 'user-edit' ) ) ) {
 			$user_id = $this->get_user_id_in_admin();
-			$user_data = get_userdata( $user_id );
-			$roles[0]  = false;
-			if ( $user_data ) {
-				$roles = $user_data->roles;
-			}
 			if ( SCF::get_settings( get_userdata( $user_id ) ) ) {
 				require_once plugin_dir_path( __FILE__ ) . 'classes/controller/class.controller-base.php';
 				require_once plugin_dir_path( __FILE__ ) . 'classes/controller/class.profile.php';
@@ -147,9 +139,7 @@ class Smart_Custom_Fields {
 			$options_pages = SCF::get_options_pages();
 
 			if ( array_key_exists( $menu_slug, $options_pages ) ) {
-				$Option = new stdClass();
-				$Option->menu_slug  = $menu_slug;
-				$Option->menu_title = $options_pages[$menu_slug];
+				$Option = SCF::generate_option_object( $menu_slug );
 				if ( SCF::get_settings( $Option ) ) {
 					require_once plugin_dir_path( __FILE__ ) . 'classes/controller/class.controller-base.php';
 					require_once plugin_dir_path( __FILE__ ) . 'classes/controller/class.option.php';
