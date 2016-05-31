@@ -3,7 +3,7 @@ Contributors: inc2734, toro_unit, mimosafa, hideokamoto, hisako-isaka, kurudrive
 Donate link: http://www.amazon.co.jp/registry/wishlist/39ANKRNSTNW40
 Tags: plugin, custom field, custom, field, meta, meta field, repeat, repeatable
 Requires at least: 3.9
-Tested up to: 4.4
+Tested up to: 4.5.2
 Stable tag: 2.0.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -122,6 +122,7 @@ You can send your own language pack to me.
 == Changelog ==
 
 = 2.0.0 =
+* Refactoring
 * Added meta data of custom options page.
 
 = 1.7.0 =
