@@ -267,7 +267,7 @@ class SCF {
 	/**
 	 * Saving to cache
 	 *
-	 * @param WP_Post|WP_User|WP_Term $object
+	 * @param WP_Post|WP_User|WP_Term|stdClass $object
 	 * @param string $name
 	 * @param mixed $data
 	 */
@@ -284,7 +284,7 @@ class SCF {
 	/**
 	 * Getting the cache
 	 *
-	 * @param WP_Post|WP_User|WP_Term $object
+	 * @param WP_Post|WP_User|WP_Term|stdClass $object
 	 * @param string $name
 	 * @return mixed
 	 */
@@ -317,7 +317,7 @@ class SCF {
 	 * Getting the meta data of the group
 	 * When group, Note the point that returned data are repetition
 	 *
-	 * @param WP_Post|WP_User|WP_Term $object
+	 * @param WP_Post|WP_User|WP_Term|stdClass $object
 	 * @param Smart_Custom_Fields_Group $Group
 	 * @return mixed
 	 */
@@ -349,7 +349,7 @@ class SCF {
 	/**
 	 * Getting the meta data of the field
 	 *
-	 * @param WP_Post|WP_User|WP_Term $object
+	 * @param WP_Post|WP_User|WP_Term|stdClass $object
 	 * @param array $field
 	 * @param bool $is_repeatable Whether the group that this field belongs is repetition
 	 * @return mixed $post_meta
@@ -448,7 +448,7 @@ class SCF {
 	/**
 	 * Saving to cache that enabled custom field settings in the post type or the role or the term.
 	 *
-	 * @param WP_Post|WP_User|WP_Term $object
+	 * @param WP_Post|WP_User|WP_Term|stdClass $object
 	 * @param array $settings_posts
 	 */
 	protected static function save_settings_posts_cache( $object, $settings_posts ) {
@@ -461,7 +461,7 @@ class SCF {
 	/**
  	 * Getting cache that enabled custom field settings in the post type or the role or the term.
 	 *
-	 * @param WP_Post|WP_User|WP_Term $object
+	 * @param WP_Post|WP_User|WP_Term|stdClass $object
 	 * @return array|null
 	 */
 	public static function get_settings_posts_cache( $object ) {
@@ -538,7 +538,7 @@ class SCF {
 	 * Saving the Setting object to cache
 	 *
 	 * @param int $settings_post_id
-	 * @param WP_post|WP_User|WP_term $object
+	 * @param WP_Post|WP_User|WP_Term|stdClass $object
 	 * @param Smart_Custom_Fields_Setting $Setting
 	 */
 	protected static function save_settings_cache( $settings_post_id, $Setting, $object = null ) {
@@ -564,7 +564,7 @@ class SCF {
 	 *     If there the data for the specified $meta_type + $id ... Smart_Custom_Fields_Setting
 	 *
 	 * @param int $settings_post_id
-	 * @param WP_post|WP_User|WP_Term $object
+	 * @param WP_Post|WP_User|WP_Term|stdClass $object
 	 * @return Smart_Custom_Fields_Setting|false|null
 	 */
 	public static function get_settings_cache( $settings_post_id, $object = null ) {
@@ -736,7 +736,7 @@ class SCF {
 	/**
 	 * Saving the delimited identification data of the repeated multi-value items to cache
 	 *
-	 * @param WP_Post|WP_User|WP_Term $object
+	 * @param WP_Post|WP_User|WP_Term|stdClass $object
 	 * @param mixed $repeat_multiple_data
 	 */
 	protected static function save_repeat_multiple_data_cache( $object, $repeat_multiple_data ) {
@@ -752,7 +752,7 @@ class SCF {
 	/**
 	 * Getting delimited identification data of the repeated multi-value items from cache
 	 *
-	 * @param WP_Post|WP_User|WP_Term $object
+	 * @param WP_Post|WP_User|WP_Term|stdClass $object
 	 * @return mixed
 	 */
 	protected static function get_repeat_multiple_data_cache( $object ) {
@@ -777,7 +777,7 @@ class SCF {
 	/**
  	 * Getting delimited identification data of the repeated multi-value items
 	 *
-	 * @param WP_Post|WP_User|WP_Term $object
+	 * @param WP_Post|WP_User|WP_Term|stdClass $object
 	 * @return array
 	 */
 	public static function get_repeat_multiple_data( $object ) {
@@ -853,7 +853,7 @@ class SCF {
 	 * Getting custom fields that saved custo field settings page
 	 * Note that not return only one even define multiple fields with the same name of the field name
 	 *
-	 * @param WP_Post|WP_User|WP_Term $object
+	 * @param WP_Post|WP_User|WP_Term|stdClass $object
 	 * @param string $field_name
 	 * @return Smart_Custom_Fields_Field_Base|null
 	 */

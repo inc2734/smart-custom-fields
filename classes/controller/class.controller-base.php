@@ -62,7 +62,7 @@ class Smart_Custom_Fields_Controller_Base {
 	/**
 	 * Display custom fields in edit page.
 	 *
-	 * @param WP_Post|WP_User|WP_Term $object
+	 * @param WP_Post|WP_User|WP_Term|stdClass $object
 	 * @param array $callback_args custom field setting information
 	 */
 	public function display_meta_box( $object, $callback_args ) {
@@ -103,7 +103,7 @@ class Smart_Custom_Fields_Controller_Base {
 	 * Saving posted data
 	 *
 	 * @param array $data
-	 * @param WP_Post|WP_User|WP_Term $object
+	 * @param WP_Post|WP_User|WP_Term|stdClass $object
 	 */
 	protected function save( $data, $object ) {
 		check_admin_referer(
@@ -118,7 +118,7 @@ class Smart_Custom_Fields_Controller_Base {
 	/**
 	 * Generating array for displaying the custom fields
 	 *
-	 * @param WP_Post|WP_User|WP_Term $object
+	 * @param WP_Post|WP_User|WP_Term|stdClass $object
 	 * @param array $groups Settings from custom field settings page
 	 * @return array $tables Array for displaying a table for custom fields
 	 */
@@ -173,7 +173,7 @@ class Smart_Custom_Fields_Controller_Base {
 	/**
 	 * Getting the multi-value field meta data.
 	 *
-	 * @param WP_Post|WP_User|WP_Term $object
+	 * @param WP_Post|WP_User|WP_Term|stdClass $object
 	 * @param Smart_Custom_Fields_Field_Base $Field
 	 * @param int $index
 	 * @return array or null
@@ -217,7 +217,7 @@ class Smart_Custom_Fields_Controller_Base {
 	/**
 	 * Getting the non multi-value field meta data.
 	 *
-	 * @param WP_Post|WP_User|WP_Term $object
+	 * @param WP_Post|WP_User|WP_Term|stdClass $object
 	 * @param Smart_Custom_Fields_Field_Base $Field
 	 * @param int $index
 	 * @return string or null
@@ -243,7 +243,7 @@ class Smart_Custom_Fields_Controller_Base {
 	/**
 	 * Displaying tr element for table of custom fields
 	 *
-	 * @param WP_Post|WP_User|WP_Term $object
+	 * @param WP_Post|WP_User|WP_Term|stdClass $object
 	 * @param bool $is_repeat
 	 * @param array $fields
 	 * @param int, null $index
