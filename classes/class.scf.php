@@ -147,9 +147,9 @@ class SCF {
 	 */
 	protected static function get_meta( $object, $name ) {
 		$Cache = Smart_Custom_Fields_Cache::getInstance();
-		if ( $Cache->get_cache( $object, $name ) ) {
+		if ( $Cache->get_meta( $object, $name ) ) {
 			self::debug_cache_message( "use get cache. [name: {$name}]" );
-			return $Cache->get_cache( $object, $name );
+			return $Cache->get_meta( $object, $name );
 		} else {
 			self::debug_cache_message( "dont use get cache... [name: {$name}]" );
 		}
@@ -160,7 +160,7 @@ class SCF {
 			$Group = $Setting->get_group( $name );
 			if ( $Group ) {
 				$values_by_group = self::get_values_by_group( $object, $Group );
-				$Cache->save_cache( $object, $name, $values_by_group );
+				$Cache->save_meta( $object, $name, $values_by_group );
 				return $values_by_group;
 			}
 
@@ -171,7 +171,7 @@ class SCF {
 				if ( $Field ) {
 					$is_repeatable = $Group->is_repeatable();
 					$value_by_field = self::get_value_by_field( $object, $Field, $is_repeatable );
-					$Cache->save_cache( $object, $name, $value_by_field );
+					$Cache->save_meta( $object, $name, $value_by_field );
 					return $value_by_field;
 				}
 			}
@@ -195,7 +195,7 @@ class SCF {
 				$group_name    = $Group->get_name();
 				if ( $is_repeatable && $group_name ) {
 					$values_by_group = self::get_values_by_group( $object, $Group );
-					$Cache->save_cache( $object, $group_name, $values_by_group );
+					$Cache->save_meta( $object, $group_name, $values_by_group );
 					$post_meta[$group_name] = $values_by_group;
 				}
 				else {
@@ -203,7 +203,7 @@ class SCF {
 					foreach ( $fields as $Field ) {
 						$field_name = $Field->get( 'name' );
 						$value_by_field = self::get_value_by_field( $object, $Field, $is_repeatable );
-						$Cache->save_cache( $object, $field_name, $value_by_field );
+						$Cache->save_meta( $object, $field_name, $value_by_field );
 						$post_meta[$field_name] = $value_by_field;
 					}
 				}
@@ -369,9 +369,9 @@ class SCF {
 	public static function get_settings_posts( $object ) {
 		$Cache = Smart_Custom_Fields_Cache::getInstance();
 		$settings_posts = array();
-		if ( $Cache->get_settings_posts_cache( $object ) !== null ) {
+		if ( $Cache->get_settings_posts( $object ) !== null ) {
 			self::debug_cache_message( "use settings posts cache." );
-			return $Cache->get_settings_posts_cache( $object );
+			return $Cache->get_settings_posts( $object );
 		} else {
 			self::debug_cache_message( "dont use settings posts cache..." );
 		}
@@ -413,7 +413,7 @@ class SCF {
 		}
 
 		$Cache = Smart_Custom_Fields_Cache::getInstance();
-		$Cache->save_settings_posts_cache( $object, $settings_posts );
+		$Cache->save_settings_posts( $object, $settings_posts );
 		return $settings_posts;
 	}
 
@@ -476,9 +476,9 @@ class SCF {
 		$Cache = Smart_Custom_Fields_Cache::getInstance();
 		$settings = array();
 		foreach ( $settings_posts as $settings_post ) {
-			if ( $Cache->get_settings_cache( $settings_post->ID ) !== null ) {
+			if ( $Cache->get_settings( $settings_post->ID ) !== null ) {
 				self::debug_cache_message( "use settings cache. [id: {$settings_post->ID}]" );
-				$Setting = $Cache->get_settings_cache( $settings_post->ID, $object );
+				$Setting = $Cache->get_settings( $settings_post->ID, $object );
 				if ( $Setting ) {
 					$settings[$settings_post->ID] = $Setting;
 				}
@@ -502,12 +502,12 @@ class SCF {
 					if ( empty( $Post ) ) {
 						$Post = self::generate_post_object( $condition_post_id );
 					}
-					$Cache->save_settings_cache( $settings_post->ID, $Setting, $Post );
+					$Cache->save_settings( $settings_post->ID, $Setting, $Post );
 				}
 			} else {
 				$Setting = SCF::add_setting( $settings_post->ID, $settings_post->post_title );
 				$settings[$settings_post->ID] = $Setting;
-				$Cache->save_settings_cache( $settings_post->ID, $Setting );
+				$Cache->save_settings( $settings_post->ID, $Setting );
 			}
 		}
 		return $settings;
@@ -524,15 +524,15 @@ class SCF {
 		$Cache = Smart_Custom_Fields_Cache::getInstance();
 		$settings = array();
 		foreach ( $settings_posts as $settings_post ) {
-			if ( $Cache->get_settings_cache( $settings_post->ID ) !== null ) {
+			if ( $Cache->get_settings( $settings_post->ID ) !== null ) {
 				self::debug_cache_message( "use settings cache. [id: {$settings_post->ID}]" );
-				$settings[] = self::get_settings_cache( $settings_post->ID );
+				$settings[] = self::get_settings( $settings_post->ID );
 				continue;
 			}
 			self::debug_cache_message( "dont use settings cache... [id: {$settings_post->ID}]" );
 			$Setting    = SCF::add_setting( $settings_post->ID, $settings_post->post_title );
 			$settings[] = $Setting;
-			$Cache->save_settings_cache( $settings_post->ID, $Setting );
+			$Cache->save_settings( $settings_post->ID, $Setting );
 		}
 		return $settings;
 	}
@@ -568,8 +568,8 @@ class SCF {
 	public static function get_repeat_multiple_data( $object ) {
 		$Cache = Smart_Custom_Fields_Cache::getInstance();
 		$repeat_multiple_data = array();
-		if ( $Cache->get_repeat_multiple_data_cache( $object ) ) {
-			return $Cache->get_repeat_multiple_data_cache( $object );
+		if ( $Cache->get_repeat_multiple_data( $object ) ) {
+			return $Cache->get_repeat_multiple_data( $object );
 		}
 
 		$Meta = new Smart_Custom_Fields_Meta( $object );
@@ -578,7 +578,7 @@ class SCF {
 			$repeat_multiple_data = $_repeat_multiple_data;
 		}
 
-		$Cache->save_repeat_multiple_data_cache( $object, $repeat_multiple_data );
+		$Cache->save_repeat_multiple_data( $object, $repeat_multiple_data );
 		return $repeat_multiple_data;
 	}
 

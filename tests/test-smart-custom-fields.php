@@ -23,7 +23,7 @@ class Smart_Custom_Fields_Test extends WP_UnitTestCase {
 		}
 
 		$Cache = Smart_Custom_Fields_Cache::getInstance();
-		$Cache->clear_all_cache();
+		$Cache->flush();
 	}
 
 	/**
@@ -32,7 +32,7 @@ class Smart_Custom_Fields_Test extends WP_UnitTestCase {
 	public function tearDown() {
 		parent::tearDown();
 		$Cache = Smart_Custom_Fields_Cache::getInstance();
-		$Cache->clear_all_cache();
+		$Cache->flush();
 	}
 
 	/**

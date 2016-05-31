@@ -34,7 +34,7 @@ class Smart_Custom_Fields_Controller_Base_Test extends WP_UnitTestCase {
 		$this->Controller = new Smart_Custom_Fields_Controller_Base();
 
 		$Cache = Smart_Custom_Fields_Cache::getInstance();
-		$Cache->clear_all_cache();
+		$Cache->flush();
 	}
 
 	/**
@@ -43,7 +43,7 @@ class Smart_Custom_Fields_Controller_Base_Test extends WP_UnitTestCase {
 	public function tearDown() {
 		parent::tearDown();
 		$Cache = Smart_Custom_Fields_Cache::getInstance();
-		$Cache->clear_all_cache();
+		$Cache->flush();
 	}
 
 	/**

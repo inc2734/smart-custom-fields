@@ -29,7 +29,7 @@ class Smart_Custom_Fields_Revision_Test extends WP_UnitTestCase {
 		add_filter( 'smart-cf-register-fields', array( $this, '_register' ), 10, 4 );
 
 		$Cache = Smart_Custom_Fields_Cache::getInstance();
-		$Cache->clear_all_cache();
+		$Cache->flush();
 	}
 
 	/**
@@ -38,7 +38,7 @@ class Smart_Custom_Fields_Revision_Test extends WP_UnitTestCase {
 	public function tearDown() {
 		parent::tearDown();
 		$Cache = Smart_Custom_Fields_Cache::getInstance();
-		$Cache->clear_all_cache();
+		$Cache->flush();
 	}
 
 	/**

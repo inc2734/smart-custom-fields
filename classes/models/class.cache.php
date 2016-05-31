@@ -17,32 +17,32 @@ class Smart_Custom_Fields_Cache {
 	private static $instance;
 
 	/**
-	 * Getting data proccesses is heavy. So saved getted data to $cache.
+	 * Getting data proccesses is heavy. So saved getted data to $meta.
 	 * Using post_id as key.
 	 * @var array
 	 */
-	protected $cache = array();
+	protected $meta = array();
 
 	/**
-	 * Getting data proccesses is heavy. So saved getted data to $settings_posts_cache.
+	 * Getting data proccesses is heavy. So saved getted data to $settings_posts.
 	 * Using post_type as key.
 	 * @var array
 	 */
-	protected $settings_posts_cache = array();
+	protected $settings_posts = array();
 
 	/**
-	 * Getting data proccesses is heavy. So saved getted data to $settings_cache.
+	 * Getting data proccesses is heavy. So saved getted data to $settings.
 	 * Using post_type as key.
 	 * @var array
 	 */
-	public $settings_cache = array();
+	public $settings = array();
 
 	/**
-	 * Getting data proccesses is heavy. So saved getted data to $repeat_multiple_data_cache.
+	 * Getting data proccesses is heavy. So saved getted data to $repeat_multiple_data.
 	 * Using post_id as key.
 	 * @var array
 	 */
-	protected $repeat_multiple_data_cache = array();
+	protected $repeat_multiple_data = array();
 
 	private function __construct() {}
 
@@ -56,11 +56,11 @@ class Smart_Custom_Fields_Cache {
 	/**
 	 * Clear all caches.
 	 */
-	public function clear_all_cache() {
-		$this->clear_cache();
-		$this->clear_settings_posts_cache();
-		$this->clear_settings_cache();
-		$this->clear_repeat_multiple_data_cache();
+	public function flush() {
+		$this->clear_meta();
+		$this->clear_settings_posts();
+		$this->clear_settings();
+		$this->clear_repeat_multiple_data();
 	}
 
 	/**
@@ -70,13 +70,13 @@ class Smart_Custom_Fields_Cache {
 	 * @param string $name
 	 * @param mixed $data
 	 */
-	public function save_cache( $object, $name, $data ) {
+	public function save_meta( $object, $name, $data ) {
 		$Meta      = new Smart_Custom_Fields_Meta( $object );
 		$id        = $Meta->get_id();
 		$type      = $Meta->get_type();
 		$meta_type = $Meta->get_meta_type();
 		if ( !empty( $id ) && !empty( $type ) && !empty( $meta_type ) ) {
-			$this->cache[$meta_type . '_' . $type . '_' . $id][$name] = $data;
+			$this->meta[$meta_type . '_' . $type . '_' . $id][$name] = $data;
 		}
 	}
 
@@ -87,19 +87,19 @@ class Smart_Custom_Fields_Cache {
 	 * @param string $name
 	 * @return mixed
 	 */
-	public function get_cache( $object, $name = null ) {
+	public function get_meta( $object, $name = null ) {
 		$Meta      = new Smart_Custom_Fields_Meta( $object );
 		$id        = $Meta->get_id();
 		$type      = $Meta->get_type();
 		$meta_type = $Meta->get_meta_type();
 		if ( !empty( $id ) && !empty( $type ) && !empty( $meta_type ) ) {
 			if ( is_null( $name ) ) {
-				if ( isset( $this->cache[$meta_type . '_' . $type . '_' . $id] ) ) {
-					return $this->cache[$meta_type . '_' . $type . '_' . $id];
+				if ( isset( $this->meta[$meta_type . '_' . $type . '_' . $id] ) ) {
+					return $this->meta[$meta_type . '_' . $type . '_' . $id];
 				}
 			} else {
-				if ( isset( $this->cache[$meta_type . '_' . $type . '_' . $id][$name] ) ) {
-					return $this->cache[$meta_type . '_' . $type . '_' . $id][$name];
+				if ( isset( $this->meta[$meta_type . '_' . $type . '_' . $id][$name] ) ) {
+					return $this->meta[$meta_type . '_' . $type . '_' . $id][$name];
 				}
 			}
 		}
@@ -108,8 +108,8 @@ class Smart_Custom_Fields_Cache {
 	/**
 	 * Clear caches
 	 */
-	public function clear_cache() {
-		$this->cache = array();
+	public function clear_meta() {
+		$this->meta = array();
 	}
 
 	/**
@@ -118,11 +118,11 @@ class Smart_Custom_Fields_Cache {
 	 * @param WP_Post|WP_User|WP_Term|stdClass $object
 	 * @param array $settings_posts
 	 */
-	public function save_settings_posts_cache( $object, $settings_posts ) {
+	public function save_settings_posts( $object, $settings_posts ) {
 		$Meta      = new Smart_Custom_Fields_Meta( $object );
 		$type      = $Meta->get_type( false );
 		$meta_type = $Meta->get_meta_type();
-		$this->settings_posts_cache[$meta_type . '_' . $type] = $settings_posts;
+		$this->settings_posts[$meta_type . '_' . $type] = $settings_posts;
 	}
 
 	/**
@@ -131,20 +131,20 @@ class Smart_Custom_Fields_Cache {
 	 * @param WP_Post|WP_User|WP_Term|stdClass $object
 	 * @return array|null
 	 */
-	public function get_settings_posts_cache( $object ) {
+	public function get_settings_posts( $object ) {
 		$Meta      = new Smart_Custom_Fields_Meta( $object );
 		$type      = $Meta->get_type( false );
 		$meta_type = $Meta->get_meta_type();
-		if ( isset( $this->settings_posts_cache[$meta_type . '_' . $type] ) ) {
-			return $this->settings_posts_cache[$meta_type . '_' . $type];
+		if ( isset( $this->settings_posts[$meta_type . '_' . $type] ) ) {
+			return $this->settings_posts[$meta_type . '_' . $type];
 		}
 	}
 
 	/**
-	 * Clear the $settings_posts_cache
+	 * Clear the $settings_posts
 	 */
-	public function clear_settings_posts_cache() {
-		$this->settings_posts_cache = array();
+	public function clear_settings_posts() {
+		$this->settings_posts = array();
 	}
 
 	/**
@@ -154,16 +154,16 @@ class Smart_Custom_Fields_Cache {
 	 * @param WP_Post|WP_User|WP_Term|stdClass $object
 	 * @param Smart_Custom_Fields_Setting $Setting
 	 */
-	public function save_settings_cache( $settings_post_id, $Setting, $object = null ) {
+	public function save_settings( $settings_post_id, $Setting, $object = null ) {
 		if ( !is_null( $object ) ) {
 			$Meta      = new Smart_Custom_Fields_Meta( $object );
 			$id        = $Meta->get_id();
 			$meta_type = $Meta->get_meta_type();
 		}
 		if ( !empty( $meta_type ) && !empty( $id ) ) {
-			$this->settings_cache[$settings_post_id][$meta_type . '_' . $id] = $Setting;
+			$this->settings[$settings_post_id][$meta_type . '_' . $id] = $Setting;
 		} else {
-			$this->settings_cache[$settings_post_id][0] = $Setting;
+			$this->settings[$settings_post_id][0] = $Setting;
 		}
 	}
 
@@ -180,30 +180,30 @@ class Smart_Custom_Fields_Cache {
 	 * @param WP_Post|WP_User|WP_Term|stdClass $object
 	 * @return Smart_Custom_Fields_Setting|false|null
 	 */
-	public function get_settings_cache( $settings_post_id, $object = null ) {
+	public function get_settings( $settings_post_id, $object = null ) {
 		if ( !is_null( $object ) ) {
 			$Meta      = new Smart_Custom_Fields_Meta( $object );
 			$id        = $Meta->get_id();
 			$meta_type = $Meta->get_meta_type();
 		}
 
-		if ( isset( $this->settings_cache[$settings_post_id] ) ) {
-			$settings_cache = $this->settings_cache[$settings_post_id];
-			if ( !empty( $id ) && !empty( $meta_type ) && isset( $settings_cache[$meta_type . '_' . $id] ) ) {
-				return $settings_cache[$meta_type . '_' . $id];
+		if ( isset( $this->settings[$settings_post_id] ) ) {
+			$settings = $this->settings[$settings_post_id];
+			if ( !empty( $id ) && !empty( $meta_type ) && isset( $settings[$meta_type . '_' . $id] ) ) {
+				return $settings[$meta_type . '_' . $id];
 			}
-			if ( isset( $settings_cache[0] ) ) {
-				return $settings_cache[0];
+			if ( isset( $settings[0] ) ) {
+				return $settings[0];
 			}
 			return false;
 		}
 	}
 
 	/**
-	 * Clear the $settings_cache
+	 * Clear the $settings
 	 */
-	public function clear_settings_cache() {
-		$this->settings_cache = array();
+	public function clear_settings() {
+		$this->settings = array();
 	}
 
 	/**
@@ -212,13 +212,13 @@ class Smart_Custom_Fields_Cache {
 	 * @param WP_Post|WP_User|WP_Term|stdClass $object
 	 * @param mixed $repeat_multiple_data
 	 */
-	public function save_repeat_multiple_data_cache( $object, $repeat_multiple_data ) {
+	public function save_repeat_multiple_data( $object, $repeat_multiple_data ) {
 		$Meta      = new Smart_Custom_Fields_Meta( $object );
 		$id        = $Meta->get_id();
 		$type      = $Meta->get_type();
 		$meta_type = $Meta->get_meta_type();
 		if ( !empty( $id ) && !empty( $type ) && !empty( $meta_type ) ) {
-			$this->repeat_multiple_data_cache[$meta_type . '_' . $type . '_' . $id] = $repeat_multiple_data;
+			$this->repeat_multiple_data[$meta_type . '_' . $type . '_' . $id] = $repeat_multiple_data;
 		}
 	}
 
@@ -228,14 +228,14 @@ class Smart_Custom_Fields_Cache {
 	 * @param WP_Post|WP_User|WP_Term|stdClass $object
 	 * @return mixed
 	 */
-	public function get_repeat_multiple_data_cache( $object ) {
+	public function get_repeat_multiple_data( $object ) {
 		$Meta      = new Smart_Custom_Fields_Meta( $object );
 		$id        = $Meta->get_id();
 		$type      = $Meta->get_type();
 		$meta_type = $Meta->get_meta_type();
 		if ( !empty( $id ) && !empty( $type ) ) {
-			if ( isset( $this->repeat_multiple_data_cache[$meta_type . '_' . $type . '_' . $id] ) ) {
-				return $this->repeat_multiple_data_cache[$meta_type . '_' . $type . '_' . $id];
+			if ( isset( $this->repeat_multiple_data[$meta_type . '_' . $type . '_' . $id] ) ) {
+				return $this->repeat_multiple_data[$meta_type . '_' . $type . '_' . $id];
 			}
 		}
 	}
@@ -243,7 +243,7 @@ class Smart_Custom_Fields_Cache {
 	/**
 	 * Clear delimited identification data of the repeated multi-value items cache
 	 */
-	public function clear_repeat_multiple_data_cache() {
-		$this->repeat_multiple_data_cache = array();
+	public function clear_repeat_multiple_data() {
+		$this->repeat_multiple_data = array();
 	}
 }
