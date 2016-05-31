@@ -46,14 +46,17 @@ class SCF__No_Registerd_Test extends WP_UnitTestCase {
 		// カスタムフィールドを設定するためのターム
 		$this->term_id = $this->factory->term->create( array( 'taxonomy' => 'category' ) );
 
-		SCF::clear_all_cache();
+		$Cache = Smart_Custom_Fields_Cache::getInstance();
+		$Cache->clear_all_cache();
 	}
 
 	/**
 	 * tearDown
 	 */
 	public function tearDown() {
-		SCF::clear_all_cache();
+		parent::tearDown();
+		$Cache = Smart_Custom_Fields_Cache::getInstance();
+		$Cache->clear_all_cache();
 	}
 
 	/**
@@ -76,7 +79,7 @@ class SCF__No_Registerd_Test extends WP_UnitTestCase {
 	public function test_get_user_meta() {
 		$this->assertNull( SCF::get_user_meta( $this->user_id, 'category', 'text' ) );
 	}
-	
+
 	protected function create_revision( $post_id ) {
 		return $this->factory->post->create( array(
 			'post_type'   => 'revision',

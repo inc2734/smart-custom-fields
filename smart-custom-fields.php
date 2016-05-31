@@ -42,6 +42,7 @@ class Smart_Custom_Fields {
 		require_once plugin_dir_path( __FILE__ ) . 'classes/models/class.revisions.php';
 		require_once plugin_dir_path( __FILE__ ) . 'classes/models/class.ajax.php';
 		require_once plugin_dir_path( __FILE__ ) . 'classes/models/class.options-page.php';
+		require_once plugin_dir_path( __FILE__ ) . 'classes/models/class.cache.php';
 		require_once plugin_dir_path( __FILE__ ) . 'classes/class.scf.php';
 		new Smart_Custom_Fields_Revisions();
 

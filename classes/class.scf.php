@@ -17,48 +17,10 @@ class SCF {
 	protected static $fields = array();
 
 	/**
-	 * Getting data proccesses is heavy. So saved getted data to $cache.
-	 * Using post_id as key.
-	 * @var array
-	 */
-	protected static $cache = array();
-
-	/**
-	 * Getting data proccesses is heavy. So saved getted data to $settings_posts_cache.
-	 * Using post_type as key.
-	 * @var array
-	 */
-	protected static $settings_posts_cache = array();
-
-	/**
-	 * Getting data proccesses is heavy. So saved getted data to $settings_cache.
-	 * Using post_type as key.
-	 * @var array
-	 */
-	public static $settings_cache = array();
-
-	/**
-	 * Getting data proccesses is heavy. So saved getted data to $repeat_multiple_data_cache.
-	 * Using post_id as key.
-	 * @var array
-	 */
-	protected static $repeat_multiple_data_cache = array();
-
-	/**
 	 * Array of the custom options pages.
 	 * @var array
 	 */
 	protected static $options_pages = array();
-
-	/**
-	 * Clear all caches.
-	 */
-	public static function clear_all_cache() {
-		self::clear_cache();
-		self::clear_settings_posts_cache();
-		self::clear_settings_cache();
-		self::clear_repeat_multiple_data_cache();
-	}
 
 	/**
 	 * Getting all of the post meta data to feel good
@@ -184,9 +146,10 @@ class SCF {
 	 * @return mixed
 	 */
 	protected static function get_meta( $object, $name ) {
-		if ( self::get_cache( $object, $name ) ) {
+		$Cache = Smart_Custom_Fields_Cache::getInstance();
+		if ( $Cache->get_cache( $object, $name ) ) {
 			self::debug_cache_message( "use get cache. [name: {$name}]" );
-			return self::get_cache( $object, $name );
+			return $Cache->get_cache( $object, $name );
 		} else {
 			self::debug_cache_message( "dont use get cache... [name: {$name}]" );
 		}
@@ -197,7 +160,7 @@ class SCF {
 			$Group = $Setting->get_group( $name );
 			if ( $Group ) {
 				$values_by_group = self::get_values_by_group( $object, $Group );
-				self::save_cache( $object, $name, $values_by_group );
+				$Cache->save_cache( $object, $name, $values_by_group );
 				return $values_by_group;
 			}
 
@@ -208,7 +171,7 @@ class SCF {
 				if ( $Field ) {
 					$is_repeatable = $Group->is_repeatable();
 					$value_by_field = self::get_value_by_field( $object, $Field, $is_repeatable );
-					self::save_cache( $object, $name, $value_by_field );
+					$Cache->save_cache( $object, $name, $value_by_field );
 					return $value_by_field;
 				}
 			}
@@ -222,6 +185,7 @@ class SCF {
 	 * @return mixed
 	 */
 	protected static function get_all_meta( $object ) {
+		$Cache = Smart_Custom_Fields_Cache::getInstance();
 		$settings  = self::get_settings( $object );
 		$post_meta = array();
 		foreach ( $settings as $Setting ) {
@@ -231,7 +195,7 @@ class SCF {
 				$group_name    = $Group->get_name();
 				if ( $is_repeatable && $group_name ) {
 					$values_by_group = self::get_values_by_group( $object, $Group );
-					self::save_cache( $object, $group_name, $values_by_group );
+					$Cache->save_cache( $object, $group_name, $values_by_group );
 					$post_meta[$group_name] = $values_by_group;
 				}
 				else {
@@ -239,7 +203,7 @@ class SCF {
 					foreach ( $fields as $Field ) {
 						$field_name = $Field->get( 'name' );
 						$value_by_field = self::get_value_by_field( $object, $Field, $is_repeatable );
-						self::save_cache( $object, $field_name, $value_by_field );
+						$Cache->save_cache( $object, $field_name, $value_by_field );
 						$post_meta[$field_name] = $value_by_field;
 					}
 				}
@@ -262,55 +226,6 @@ class SCF {
 			}
 		}
 		return $post_id;
-	}
-
-	/**
-	 * Saving to cache
-	 *
-	 * @param WP_Post|WP_User|WP_Term|stdClass $object
-	 * @param string $name
-	 * @param mixed $data
-	 */
-	protected static function save_cache( $object, $name, $data ) {
-		$Meta      = new Smart_Custom_Fields_Meta( $object );
-		$id        = $Meta->get_id();
-		$type      = $Meta->get_type();
-		$meta_type = $Meta->get_meta_type();
-		if ( !empty( $id ) && !empty( $type ) && !empty( $meta_type ) ) {
-			self::$cache[$meta_type . '_' . $type . '_' . $id][$name] = $data;
-		}
-	}
-
-	/**
-	 * Getting the cache
-	 *
-	 * @param WP_Post|WP_User|WP_Term|stdClass $object
-	 * @param string $name
-	 * @return mixed
-	 */
-	protected static function get_cache( $object, $name = null ) {
-		$Meta      = new Smart_Custom_Fields_Meta( $object );
-		$id        = $Meta->get_id();
-		$type      = $Meta->get_type();
-		$meta_type = $Meta->get_meta_type();
-		if ( !empty( $id ) && !empty( $type ) && !empty( $meta_type ) ) {
-			if ( is_null( $name ) ) {
-				if ( isset( self::$cache[$meta_type . '_' . $type . '_' . $id] ) ) {
-					return self::$cache[$meta_type . '_' . $type . '_' . $id];
-				}
-			} else {
-				if ( isset( self::$cache[$meta_type . '_' . $type . '_' . $id][$name] ) ) {
-					return self::$cache[$meta_type . '_' . $type . '_' . $id][$name];
-				}
-			}
-		}
-	}
-
-	/**
-	 * Clear caches
-	 */
-	public static function clear_cache() {
-		self::$cache = array();
 	}
 
 	/**
@@ -446,51 +361,17 @@ class SCF {
 	}
 
 	/**
-	 * Saving to cache that enabled custom field settings in the post type or the role or the term.
-	 *
-	 * @param WP_Post|WP_User|WP_Term|stdClass $object
-	 * @param array $settings_posts
-	 */
-	protected static function save_settings_posts_cache( $object, $settings_posts ) {
-		$Meta      = new Smart_Custom_Fields_Meta( $object );
-		$type      = $Meta->get_type( false );
-		$meta_type = $Meta->get_meta_type();
-		self::$settings_posts_cache[$meta_type . '_' . $type] = $settings_posts;
-	}
-
-	/**
- 	 * Getting cache that enabled custom field settings in the post type or the role or the term.
-	 *
-	 * @param WP_Post|WP_User|WP_Term|stdClass $object
-	 * @return array|null
-	 */
-	public static function get_settings_posts_cache( $object ) {
-		$Meta      = new Smart_Custom_Fields_Meta( $object );
-		$type      = $Meta->get_type( false );
-		$meta_type = $Meta->get_meta_type();
-		if ( isset( self::$settings_posts_cache[$meta_type . '_' . $type] ) ) {
-			return self::$settings_posts_cache[$meta_type . '_' . $type];
-		}
-	}
-
-	/**
-	 * Clear the $settings_posts_cache
-	 */
-	public static function clear_settings_posts_cache() {
-		self::$settings_posts_cache = array();
-	}
-
-	/**
 	 * Getting enabled custom field settings in the post type or the role or the term.
 	 *
 	 * @param WP_Post|WP_User|WP_Term|stdClass $object
 	 * @return array $settings
 	 */
 	public static function get_settings_posts( $object ) {
+		$Cache = Smart_Custom_Fields_Cache::getInstance();
 		$settings_posts = array();
-		if ( self::get_settings_posts_cache( $object ) !== null ) {
+		if ( $Cache->get_settings_posts_cache( $object ) !== null ) {
 			self::debug_cache_message( "use settings posts cache." );
-			return self::get_settings_posts_cache( $object );
+			return $Cache->get_settings_posts_cache( $object );
 		} else {
 			self::debug_cache_message( "dont use settings posts cache..." );
 		}
@@ -530,67 +411,10 @@ class SCF {
 				),
 			) );
 		}
-		self::save_settings_posts_cache( $object, $settings_posts );
+
+		$Cache = Smart_Custom_Fields_Cache::getInstance();
+		$Cache->save_settings_posts_cache( $object, $settings_posts );
 		return $settings_posts;
-	}
-
-	/**
-	 * Saving the Setting object to cache
-	 *
-	 * @param int $settings_post_id
-	 * @param WP_Post|WP_User|WP_Term|stdClass $object
-	 * @param Smart_Custom_Fields_Setting $Setting
-	 */
-	protected static function save_settings_cache( $settings_post_id, $Setting, $object = null ) {
-		if ( !is_null( $object ) ) {
-			$Meta      = new Smart_Custom_Fields_Meta( $object );
-			$id        = $Meta->get_id();
-			$meta_type = $Meta->get_meta_type();
-		}
-		if ( !empty( $meta_type ) && !empty( $id ) ) {
-			self::$settings_cache[$settings_post_id][$meta_type . '_' . $id] = $Setting;
-		} else {
-			self::$settings_cache[$settings_post_id][0] = $Setting;
-		}
-	}
-
-	/**
-	 * Getting the Setting object cache
-	 * If there isn't the custom field settings ... null
-	 * If there is custom field settings
-	 *     If there is no data for the specified $ meta_type + $id
-	 *         There is a thing of the General ... Smart_Custom_Fields_Setting
-	 *         There isn't a thing of the General ... false
-	 *     If there the data for the specified $meta_type + $id ... Smart_Custom_Fields_Setting
-	 *
-	 * @param int $settings_post_id
-	 * @param WP_Post|WP_User|WP_Term|stdClass $object
-	 * @return Smart_Custom_Fields_Setting|false|null
-	 */
-	public static function get_settings_cache( $settings_post_id, $object = null ) {
-		if ( !is_null( $object ) ) {
-			$Meta      = new Smart_Custom_Fields_Meta( $object );
-			$id        = $Meta->get_id();
-			$meta_type = $Meta->get_meta_type();
-		}
-
-		if ( isset( self::$settings_cache[$settings_post_id] ) ) {
-			$settings_cache = self::$settings_cache[$settings_post_id];
-			if ( !empty( $id ) && !empty( $meta_type ) && isset( $settings_cache[$meta_type . '_' . $id] ) ) {
-				return $settings_cache[$meta_type . '_' . $id];
-			}
-			if ( isset( $settings_cache[0] ) ) {
-				return $settings_cache[0];
-			}
-			return false;
-		}
-	}
-
-	/**
-	 * Clear the $settings_cache
-	 */
-	public static function clear_settings_cache() {
-		self::$settings_cache = array();
 	}
 
 	/**
@@ -649,11 +473,12 @@ class SCF {
 	 * @return array
 	 */
 	protected static function get_settings_for_post( $object, $settings_posts ) {
+		$Cache = Smart_Custom_Fields_Cache::getInstance();
 		$settings = array();
 		foreach ( $settings_posts as $settings_post ) {
-			if ( self::get_settings_cache( $settings_post->ID ) !== null ) {
+			if ( $Cache->get_settings_cache( $settings_post->ID ) !== null ) {
 				self::debug_cache_message( "use settings cache. [id: {$settings_post->ID}]" );
-				$Setting = self::get_settings_cache( $settings_post->ID, $object );
+				$Setting = $Cache->get_settings_cache( $settings_post->ID, $object );
 				if ( $Setting ) {
 					$settings[$settings_post->ID] = $Setting;
 				}
@@ -677,12 +502,12 @@ class SCF {
 					if ( empty( $Post ) ) {
 						$Post = self::generate_post_object( $condition_post_id );
 					}
-					self::save_settings_cache( $settings_post->ID, $Setting, $Post );
+					$Cache->save_settings_cache( $settings_post->ID, $Setting, $Post );
 				}
 			} else {
 				$Setting = SCF::add_setting( $settings_post->ID, $settings_post->post_title );
 				$settings[$settings_post->ID] = $Setting;
-				self::save_settings_cache( $settings_post->ID, $Setting );
+				$Cache->save_settings_cache( $settings_post->ID, $Setting );
 			}
 		}
 		return $settings;
@@ -696,9 +521,10 @@ class SCF {
 	 * @return array
 	 */
 	protected static function get_settings_for_profile( $object, $settings_posts ) {
+		$Cache = Smart_Custom_Fields_Cache::getInstance();
 		$settings = array();
 		foreach ( $settings_posts as $settings_post ) {
-			if ( self::get_settings_cache( $settings_post->ID ) !== null ) {
+			if ( $Cache->get_settings_cache( $settings_post->ID ) !== null ) {
 				self::debug_cache_message( "use settings cache. [id: {$settings_post->ID}]" );
 				$settings[] = self::get_settings_cache( $settings_post->ID );
 				continue;
@@ -706,7 +532,7 @@ class SCF {
 			self::debug_cache_message( "dont use settings cache... [id: {$settings_post->ID}]" );
 			$Setting    = SCF::add_setting( $settings_post->ID, $settings_post->post_title );
 			$settings[] = $Setting;
-			self::save_settings_cache( $settings_post->ID, $Setting );
+			$Cache->save_settings_cache( $settings_post->ID, $Setting );
 		}
 		return $settings;
 	}
@@ -734,56 +560,16 @@ class SCF {
 	}
 
 	/**
-	 * Saving the delimited identification data of the repeated multi-value items to cache
-	 *
-	 * @param WP_Post|WP_User|WP_Term|stdClass $object
-	 * @param mixed $repeat_multiple_data
-	 */
-	protected static function save_repeat_multiple_data_cache( $object, $repeat_multiple_data ) {
-		$Meta      = new Smart_Custom_Fields_Meta( $object );
-		$id        = $Meta->get_id();
-		$type      = $Meta->get_type();
-		$meta_type = $Meta->get_meta_type();
-		if ( !empty( $id ) && !empty( $type ) && !empty( $meta_type ) ) {
-			self::$repeat_multiple_data_cache[$meta_type . '_' . $type . '_' . $id] = $repeat_multiple_data;
-		}
-	}
-
-	/**
-	 * Getting delimited identification data of the repeated multi-value items from cache
-	 *
-	 * @param WP_Post|WP_User|WP_Term|stdClass $object
-	 * @return mixed
-	 */
-	protected static function get_repeat_multiple_data_cache( $object ) {
-		$Meta      = new Smart_Custom_Fields_Meta( $object );
-		$id        = $Meta->get_id();
-		$type      = $Meta->get_type();
-		$meta_type = $Meta->get_meta_type();
-		if ( !empty( $id ) && !empty( $type ) ) {
-			if ( isset( self::$repeat_multiple_data_cache[$meta_type . '_' . $type . '_' . $id] ) ) {
-				return self::$repeat_multiple_data_cache[$meta_type . '_' . $type . '_' . $id];
-			}
-		}
-	}
-
-	/**
-	 * Clear delimited identification data of the repeated multi-value items cache
-	 */
-	public static function clear_repeat_multiple_data_cache() {
-		self::$repeat_multiple_data_cache = array();
-	}
-
-	/**
- 	 * Getting delimited identification data of the repeated multi-value items
+	 * Getting delimited identification data of the repeated multi-value items
 	 *
 	 * @param WP_Post|WP_User|WP_Term|stdClass $object
 	 * @return array
 	 */
 	public static function get_repeat_multiple_data( $object ) {
+		$Cache = Smart_Custom_Fields_Cache::getInstance();
 		$repeat_multiple_data = array();
-		if ( self::get_repeat_multiple_data_cache( $object ) ) {
-			return self::get_repeat_multiple_data_cache( $object );
+		if ( $Cache->get_repeat_multiple_data_cache( $object ) ) {
+			return $Cache->get_repeat_multiple_data_cache( $object );
 		}
 
 		$Meta = new Smart_Custom_Fields_Meta( $object );
@@ -792,7 +578,7 @@ class SCF {
 			$repeat_multiple_data = $_repeat_multiple_data;
 		}
 
-		self::save_repeat_multiple_data_cache( $object, $repeat_multiple_data );
+		$Cache->save_repeat_multiple_data_cache( $object, $repeat_multiple_data );
 		return $repeat_multiple_data;
 	}
 

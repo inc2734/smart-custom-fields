@@ -37,7 +37,7 @@ class Smart_Custom_Fields_Meta_Test extends WP_UnitTestCase {
 			'post_status' => 'auto-draft',
 		) );
 		$this->Meta_new_post = new Smart_Custom_Fields_Meta( get_post( $this->new_post_id ) );
-		
+
 		// カスタムフィールドを設定するための投稿
 		$this->post_id = $this->factory->post->create( array(
 			'post_type'   => 'post',
@@ -63,7 +63,8 @@ class Smart_Custom_Fields_Meta_Test extends WP_UnitTestCase {
 		// コードでカスタムフィールドを定義
 		add_filter( 'smart-cf-register-fields', array( $this, '_register' ), 10, 4 );
 
-		SCF::clear_all_cache();
+		$Cache = Smart_Custom_Fields_Cache::getInstance();
+		$Cache->clear_all_cache();
 	}
 
 	/**
@@ -71,7 +72,8 @@ class Smart_Custom_Fields_Meta_Test extends WP_UnitTestCase {
 	 */
 	public function tearDown() {
 		parent::tearDown();
-		SCF::clear_all_cache();
+		$Cache = Smart_Custom_Fields_Cache::getInstance();
+		$Cache->clear_all_cache();
 	}
 
 	/**
@@ -521,7 +523,7 @@ class Smart_Custom_Fields_Meta_Test extends WP_UnitTestCase {
 			SCF::get( 'checkbox3', $this->post_id )
 		);
 	}
-	
+
 	/**
 	 * @group is_saved
 	 */
@@ -530,7 +532,7 @@ class Smart_Custom_Fields_Meta_Test extends WP_UnitTestCase {
 		$this->assertFalse( $this->Meta_term->is_saved() );
 		$this->assertFalse( $this->Meta_user->is_saved() );
 	}
-	
+
 	/**
 	 * @group is_saved
 	 */
@@ -539,19 +541,19 @@ class Smart_Custom_Fields_Meta_Test extends WP_UnitTestCase {
 		$this->Meta_post->save( $POST );
 		$this->Meta_term->save( $POST );
 		$this->Meta_user->save( $POST );
-		
+
 		$this->assertTrue( $this->Meta_post->is_saved() );
 		$this->assertTrue( $this->Meta_term->is_saved() );
 		$this->assertTrue( $this->Meta_user->is_saved() );
 	}
-	
+
 	/**
 	 * @group is_saved
 	 */
 	public function test_is_saved__投稿でautodraftのときはfalse() {
 		$this->assertFalse( $this->Meta_new_post->is_saved() );
 	}
-	
+
 	/**
 	 * フック経由でカスタムフィールドを設定
 	 *
@@ -602,7 +604,7 @@ class Smart_Custom_Fields_Meta_Test extends WP_UnitTestCase {
 				),
 			) );
 			$settings['id-1'] = $Setting;
-			
+
 			$Setting = SCF::add_setting( 'id-2', 'Register Test 2' );
 			$Setting->add_group( 0, false, array(
 				array(

@@ -21,7 +21,9 @@ class Smart_Custom_Fields_Test extends WP_UnitTestCase {
 			// 本来の名前とは異なるので注意
 			update_option( SCF_Config::PREFIX . $i, 'dummy' );
 		}
-		SCF::clear_all_cache();
+
+		$Cache = Smart_Custom_Fields_Cache::getInstance();
+		$Cache->clear_all_cache();
 	}
 
 	/**
@@ -29,7 +31,8 @@ class Smart_Custom_Fields_Test extends WP_UnitTestCase {
 	 */
 	public function tearDown() {
 		parent::tearDown();
-		SCF::clear_all_cache();
+		$Cache = Smart_Custom_Fields_Cache::getInstance();
+		$Cache->clear_all_cache();
 	}
 
 	/**

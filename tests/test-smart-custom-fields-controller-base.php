@@ -1,11 +1,11 @@
 <?php
 class Smart_Custom_Fields_Controller_Base_Test extends WP_UnitTestCase {
-	
+
 	/**
 	 * @var int
 	 */
 	protected $new_post_id;
-	
+
 	/**
 	 * @var int
 	 */
@@ -21,7 +21,7 @@ class Smart_Custom_Fields_Controller_Base_Test extends WP_UnitTestCase {
 			'post_type'   => 'post',
 			'post_status' => 'auto-draft',
 		) );
-		
+
 		// カスタムフィールドを設定するための投稿
 		$this->post_id = $this->factory->post->create( array(
 			'post_type'   => 'post',
@@ -33,14 +33,17 @@ class Smart_Custom_Fields_Controller_Base_Test extends WP_UnitTestCase {
 		require_once plugin_dir_path( __FILE__ ) . '../classes/controller/class.controller-base.php';
 		$this->Controller = new Smart_Custom_Fields_Controller_Base();
 
-		SCF::clear_all_cache();
+		$Cache = Smart_Custom_Fields_Cache::getInstance();
+		$Cache->clear_all_cache();
 	}
 
 	/**
 	 * tearDown
 	 */
 	public function tearDown() {
-		SCF::clear_all_cache();
+		parent::tearDown();
+		$Cache = Smart_Custom_Fields_Cache::getInstance();
+		$Cache->clear_all_cache();
 	}
 
 	/**
@@ -125,7 +128,7 @@ class Smart_Custom_Fields_Controller_Base_Test extends WP_UnitTestCase {
 			$this->Controller->get_multiple_data_field_value( $object, $Field, $index )
 		);
 	}
-	
+
 	/**
 	 * @group get_multiple_data_field_value
 	 */
@@ -142,7 +145,7 @@ class Smart_Custom_Fields_Controller_Base_Test extends WP_UnitTestCase {
 			),
 		);
 		$Meta->save( $POST );
-		
+
 		$Field = SCF::get_field( $object, 'checkbox3' );
 		$index = 0; // 空配列が返るべきキー
 
@@ -308,7 +311,7 @@ class Smart_Custom_Fields_Controller_Base_Test extends WP_UnitTestCase {
 				),
 			) );
 			$settings['id-1'] = $Setting;
-			
+
 			$Setting = SCF::add_setting( 'id-2', 'Register Test 2' );
 			$Setting->add_group( 0, false, array(
 				array(

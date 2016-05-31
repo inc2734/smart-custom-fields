@@ -28,7 +28,8 @@ class Smart_Custom_Fields_Revision_Test extends WP_UnitTestCase {
 		// コードでカスタムフィールドを定義
 		add_filter( 'smart-cf-register-fields', array( $this, '_register' ), 10, 4 );
 
-		SCF::clear_all_cache();
+		$Cache = Smart_Custom_Fields_Cache::getInstance();
+		$Cache->clear_all_cache();
 	}
 
 	/**
@@ -36,7 +37,8 @@ class Smart_Custom_Fields_Revision_Test extends WP_UnitTestCase {
 	 */
 	public function tearDown() {
 		parent::tearDown();
-		SCF::clear_all_cache();
+		$Cache = Smart_Custom_Fields_Cache::getInstance();
+		$Cache->clear_all_cache();
 	}
 
 	/**
@@ -128,7 +130,7 @@ class Smart_Custom_Fields_Revision_Test extends WP_UnitTestCase {
 				),
 			) );
 			$settings['id-1'] = $Setting;
-			
+
 			$Setting = SCF::add_setting( 'id-2', 'Register Test 2' );
 			$Setting->add_group( 0, false, array(
 				array(

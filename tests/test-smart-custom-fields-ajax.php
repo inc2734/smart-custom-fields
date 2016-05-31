@@ -13,7 +13,8 @@ class Smart_Custom_Fields_Ajax_Test extends WP_UnitTestCase {
 		parent::setUp();
 		$this->Ajax = new Smart_Custom_Fields_Ajax();
 
-		SCF::clear_all_cache();
+		$Cache = Smart_Custom_Fields_Cache::getInstance();
+		$Cache->clear_all_cache();
 	}
 
 	/**
@@ -21,7 +22,8 @@ class Smart_Custom_Fields_Ajax_Test extends WP_UnitTestCase {
 	 */
 	public function tearDown() {
 		parent::tearDown();
-		SCF::clear_all_cache();
+		$Cache = Smart_Custom_Fields_Cache::getInstance();
+		$Cache->clear_all_cache();
 	}
 
 	/**
@@ -32,7 +34,7 @@ class Smart_Custom_Fields_Ajax_Test extends WP_UnitTestCase {
 		$term_id  = $this->factory->term->create( array( 'taxonomy' => $taxonomy ) );
 		$term     = get_term( $term_id, 'category' );
 		$Meta = new Smart_Custom_Fields_Meta( $term );
-		
+
 		if ( !_get_meta_table( $Meta->get_meta_type() ) ) {
 			$Meta->add( 'text', 'text' );
 			$this->Ajax->delete_term( $term_id, '', $taxonomy, $term );
@@ -83,7 +85,7 @@ class Smart_Custom_Fields_Ajax_Test extends WP_UnitTestCase {
 				),
 			) );
 			$settings['id-1'] = $Setting;
-			
+
 			$Setting = SCF::add_setting( 'id-2', 'Register Test 2' );
 			$Setting->add_group( 0, false, array(
 				array(
