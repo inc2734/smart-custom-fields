@@ -74,7 +74,7 @@ class Smart_Custom_Fields_Meta {
 	/**
 	 * Getting the meta type
 	 *
-	 * @return string post or user or term
+	 * @return string post or user or term or option
 	 */
 	public function get_meta_type() {
 		return $this->meta_type;

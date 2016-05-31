@@ -225,7 +225,7 @@ class Smart_Custom_Fields_Cache_Test extends WP_UnitTestCase {
 	 * @param array $settings 管理画面で設定された Smart_Custom_Fields_Setting の配列
 	 * @param string $type 投稿タイプ or ロール or タクソノミー
 	 * @param int $id 投稿ID or ユーザーID or タームID
-	 * @param string $meta_type メタデータのタイプ。post or user or term
+	 * @param string $meta_type メタデータのタイプ。post or user or term or option
 	 * @return array
 	 */
 	public function _register( $settings, $type, $id, $meta_type ) {
