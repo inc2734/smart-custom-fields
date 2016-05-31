@@ -1,10 +1,10 @@
 <?php
 /**
  * SCF
- * Version    : 1.3.2
+ * Version    : 1.4.0
  * Author     : inc2734
  * Created    : September 23, 2014
- * Modified   : January 7, 2016
+ * Modified   : Mau 31, 2016
  * License    : GPLv2 or later
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
  */
@@ -43,6 +43,12 @@ class SCF {
 	 * @var array
 	 */
 	protected static $repeat_multiple_data_cache = array();
+
+	/**
+	 * Array of the custom options pages.
+	 * @var array
+	 */
+	protected static $options_pages = array();
 
 	/**
 	 * Clear all caches.
@@ -91,14 +97,14 @@ class SCF {
 		if ( empty( $post_id ) ) {
 			return;
 		}
-		
+
 		// Don't output meta data that not save in the SCF settings page
 		// Getting the settings data, judged to output meta data.
 		return self::get_meta( get_post( $post_id ), $name );
 	}
 
 	/**
- 	 * Getting the user meta data to feel good
+	 * Getting the user meta data to feel good
 	 *
 	 * @param int $user_id
 	 * @param string $name group name or field name
@@ -113,14 +119,14 @@ class SCF {
 		if ( $name === null ) {
 			return self::get_all_meta( get_userdata( $user_id ) );
 		}
-		
+
 		// Don't output meta data that not save in the SCF settings page.
 		// Getting the settings data, judged to output meta data.
 		return self::get_meta( get_userdata( $user_id ), $name );
 	}
 
 	/**
-  	 * Getting the term meta data to feel good
+	 * Getting the term meta data to feel good
 	 *
 	 * @param int $term_id
 	 * @param string $taxonomy_name
@@ -136,16 +142,46 @@ class SCF {
 		if ( $name === null ) {
 			return self::get_all_meta( get_term( $term_id, $taxonomy_name ) );
 		}
-		
+
 		// Don't output meta data that not save in the SCF settings page
 		// Getting the settings data, judged to output meta data.
 		return self::get_meta( get_term( $term_id, $taxonomy_name ), $name );
 	}
 
 	/**
+	 * Getting the custom options page meta data to feel good
+	 *
+	 * @param string $menu_slug custom options page slug
+	 * @param string $name group name or field name
+	 * @return mixed
+	 */
+	public static function get_option_meta( $menu_slug, $name = null ) {
+		if ( empty( $menu_slug ) ) {
+			return;
+		}
+
+		if ( !isset( self::$options_pages[$menu_slug] ) ) {
+			return;
+		}
+
+		$Option = new stdClass();
+		$Option->menu_slug  = $menu_slug;
+		$Option->menu_title = self::$options_pages[$menu_slug];
+
+		// If $name is null, return the all meta data.
+		if ( $name === null ) {
+			return self::get_all_meta( $Option );
+		}
+
+		// Don't output meta data that not save in the SCF settings page
+		// Getting the settings data, judged to output meta data.
+		return self::get_meta( $Option, $name );
+	}
+
+	/**
 	 * Getting any meta data to feel good
 	 *
-	 * @param WP_Post|WP_User|object $object
+	 * @param WP_Post|WP_User|WP_Term|stdClass $object
 	 * @param string $name group name or field name
 	 * @return mixed
 	 */
@@ -166,7 +202,7 @@ class SCF {
 				self::save_cache( $object, $name, $values_by_group );
 				return $values_by_group;
 			}
-			
+
 			// If $name doesn't matche the group name, returns the field that matches.
 			$groups = $Setting->get_groups();
 			foreach ( $groups as $Group ) {
@@ -184,7 +220,7 @@ class SCF {
 	/**
  	 * Getting all of any meta data to feel good
 	 *
-	 * @param WP_Post|WP_User|WP_Term $object
+	 * @param WP_Post|WP_User|WP_Term|stdClass $object
 	 * @return mixed
 	 */
 	protected static function get_all_meta( $object ) {
@@ -447,9 +483,9 @@ class SCF {
 	}
 
 	/**
-  	 * Getting enabled custom field settings in the post type or the role or the term.
+	 * Getting enabled custom field settings in the post type or the role or the term.
 	 *
-	 * @param WP_Post|WP_User|WP_Term $object
+	 * @param WP_Post|WP_User|WP_Term|stdClass $object
 	 * @return array $settings
 	 */
 	public static function get_settings_posts( $object ) {
@@ -473,6 +509,9 @@ class SCF {
 				break;
 			case 'term' :
 				$key = SCF_Config::PREFIX . 'taxonomies';
+				break;
+			case 'option' :
+				$key = SCF_Config::PREFIX . 'options-pages';
 				break;
 			default :
 				$key = '';
@@ -559,7 +598,7 @@ class SCF {
 	/**
 	 * Getting array of the Setting object
 	 *
-	 * @param WP_Post|WP_User|WP_Term $object
+	 * @param WP_Post|WP_User|WP_Term|Smart_Custom_Fields_Options_Mock $object
 	 * @return array $settings
 	 */
 	public static function get_settings( $object ) {
@@ -567,7 +606,7 @@ class SCF {
 		$id        = $Meta->get_id();
 		$type      = $Meta->get_type( false );
 		$meta_type = $Meta->get_meta_type();
-		
+
 		// IF the post that has custom field settings according to post ID,
 		// don't display because the post ID would change in preview.
 		// So if in preview, re-getting post ID from original post (parent of the preview).
@@ -586,6 +625,9 @@ class SCF {
 			}
 			elseif ( $meta_type === 'term' ) {
 				$settings = self::get_settings_for_term( $object, $settings_posts );
+			}
+			elseif ( $meta_type === 'option' ) {
+				$settings = self::get_settings_for_option( $object, $settings_posts );
 			}
 		}
 		$settings = apply_filters(
@@ -651,7 +693,7 @@ class SCF {
 	}
 
 	/**
- 	 * Getting the Setting object for user
+	 * Getting the Setting object for user
 	 *
 	 * @param WP_User $object
 	 * @param array $settings_posts
@@ -674,13 +716,24 @@ class SCF {
 	}
 
 	/**
-  	 * Getting the Setting object for term
+	 * Getting the Setting object for term
 	 *
 	 * @param WP_Term $object
 	 * @param array $settings_posts
 	 * @return array
 	 */
 	protected static function get_settings_for_term( $object, $settings_posts ) {
+		return self::get_settings_for_profile( $object, $settings_posts );
+	}
+
+	/**
+	 * Getting the Setting object for option
+	 *
+	 * @param WP_Term $object
+	 * @param array $settings_posts
+	 * @return array
+	 */
+	protected static function get_settings_for_option( $object, $settings_posts ) {
 		return self::get_settings_for_profile( $object, $settings_posts );
 	}
 
@@ -817,7 +870,7 @@ class SCF {
 			}
 		}
 	}
-	
+
 	/**
 	 * Convert to array from newline delimiter $choices
 	 *
@@ -844,6 +897,34 @@ class SCF {
 	 */
 	public static function add_setting( $id, $title ) {
 		return new Smart_Custom_Fields_Setting( $id, $title );
+	}
+
+	/**
+	 * Adding custom options page
+	 *
+	 * @see https://developer.wordpress.org/reference/functions/add_menu_page/
+	 * @param string $page_title
+	 * @param string $menu_title
+	 * @param string $capability
+	 * @param string $menu_slug
+	 * @param string $icon_url
+	 * @param int $position
+	 */
+	public static function add_options_page( $page_title, $menu_title, $capability, $menu_slug, $icon_url = '', $position = null ) {
+		if ( !current_user_can( $capability ) ) {
+			return;
+		}
+		self::$options_pages[$menu_slug] = $menu_title;
+		new Smart_Custom_Fields_Options_Page( $page_title, $menu_title, $capability, $menu_slug, $icon_url = '', $position = null );
+	}
+
+	/**
+	 * Return array of custom options pages
+	 *
+	 * @return array
+	 */
+	public static function get_options_pages() {
+		return self::$options_pages;
 	}
 
 	/**

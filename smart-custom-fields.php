@@ -3,11 +3,11 @@
  * Plugin name: Smart Custom Fields
  * Plugin URI: https://github.com/inc2734/smart-custom-fields/
  * Description: Smart Custom Fields is a simple plugin that management custom fields.
- * Version: 1.7.0
+ * Version: 2.0.0
  * Author: inc2734
  * Author URI: http://2inc.org
  * Created: October 9, 2014
- * Modified: February 1, 2016
+ * Modified: May 31, 2016
  * Text Domain: smart-custom-fields
  * Domain Path: /languages
  * License: GPLv2 or later
@@ -34,13 +34,6 @@ class Smart_Custom_Fields {
 			dirname( plugin_basename( __FILE__ ) ) . '/languages'
 		);
 
-		add_action( 'after_setup_theme', array( $this, 'after_setup_theme' ) );
-	}
-
-	/**
-	 * Loading classes
-	 */
-	public function after_setup_theme() {
 		do_action( SCF_Config::PREFIX . 'load' );
 		require_once plugin_dir_path( __FILE__ ) . 'classes/models/class.meta.php';
 		require_once plugin_dir_path( __FILE__ ) . 'classes/models/class.setting.php';
@@ -48,6 +41,7 @@ class Smart_Custom_Fields {
 		require_once plugin_dir_path( __FILE__ ) . 'classes/models/class.abstract-field-base.php';
 		require_once plugin_dir_path( __FILE__ ) . 'classes/models/class.revisions.php';
 		require_once plugin_dir_path( __FILE__ ) . 'classes/models/class.ajax.php';
+		require_once plugin_dir_path( __FILE__ ) . 'classes/models/class.options-page.php';
 		require_once plugin_dir_path( __FILE__ ) . 'classes/class.scf.php';
 		new Smart_Custom_Fields_Revisions();
 
@@ -144,6 +138,22 @@ class Smart_Custom_Fields {
 					require_once plugin_dir_path( __FILE__ ) . 'classes/controller/class.controller-base.php';
 					require_once plugin_dir_path( __FILE__ ) . 'classes/controller/class.taxonomy.php';
 					new Smart_Custom_Fields_Controller_Taxonomy();
+				}
+			}
+		}
+		// オプションページ
+		else {
+			$menu_slug = preg_replace( '/^toplevel_page_(.+)$/', '$1', $screen->id );
+			$options_pages = SCF::get_options_pages();
+
+			if ( array_key_exists( $menu_slug, $options_pages ) ) {
+				$Option = new stdClass();
+				$Option->menu_slug  = $menu_slug;
+				$Option->menu_title = $options_pages[$menu_slug];
+				if ( SCF::get_settings( $Option ) ) {
+					require_once plugin_dir_path( __FILE__ ) . 'classes/controller/class.controller-base.php';
+					require_once plugin_dir_path( __FILE__ ) . 'classes/controller/class.option.php';
+					new Smart_Custom_Fields_Controller_Option();
 				}
 			}
 		}

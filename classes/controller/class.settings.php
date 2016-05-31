@@ -1,10 +1,10 @@
 <?php
 /**
  * Smart_Custom_Fields_Controller_Settings
- * Version    : 1.2.0
+ * Version    : 1.3.0
  * Author     : inc2734
  * Created    : September 23, 2014
- * Modified   : April 26, 2015
+ * Modified   : May 31, 2016
  * License    : GPLv2 or later
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
  */
@@ -95,6 +95,13 @@ class Smart_Custom_Fields_Controller_Settings {
 			SCF_Config::PREFIX . 'meta-box-condition-taxonomy',
 			__( 'Display conditions ( Taxonomy )', 'smart-custom-fields' ),
 			array( $this, 'display_meta_box_condition_taxonomy' ),
+			SCF_Config::NAME,
+			'side'
+		);
+		add_meta_box(
+			SCF_Config::PREFIX . 'meta-box-condition-options-page',
+			__( 'Display conditions ( Options page )', 'smart-custom-fields' ),
+			array( $this, 'display_meta_box_condition_options_page' ),
 			SCF_Config::NAME,
 			'side'
 		);
@@ -286,6 +293,30 @@ class Smart_Custom_Fields_Controller_Settings {
 	}
 
 	/**
+	 *  Displaying the meta box to set the display conditions for custom options page
+	 */
+	public function display_meta_box_condition_options_page() {
+		$optinos_pages = SCF::get_options_pages();
+		$conditions = get_post_meta( get_the_ID(), SCF_Config::PREFIX . 'options-pages', true );
+		$options_page_field = '';
+		foreach ( $optinos_pages as $name => $optinos_page ) {
+			$current = ( is_array( $conditions ) && in_array( $name, $conditions ) ) ? $name : false;
+			$options_page_field .= sprintf(
+				'<label><input type="checkbox" name="%s" value="%s" %s /> %s</label>',
+				esc_attr( SCF_Config::PREFIX . 'options-pages[]' ),
+				esc_attr( $name ),
+				checked( $current, $name, false ),
+				esc_html( $optinos_page )
+			);
+		}
+		printf(
+			'<p><b>%s</b>%s</p>',
+			esc_html__( 'Options pages', 'smart-custom-fields' ),
+			$options_page_field
+		);
+	}
+
+	/**
 	 * Saving settings
 	 *
 	 * @param int $post_id
@@ -363,6 +394,12 @@ class Smart_Custom_Fields_Controller_Settings {
 			delete_post_meta( $post_id, SCF_Config::PREFIX . 'taxonomies' );
 		} else {
 			update_post_meta( $post_id, SCF_Config::PREFIX . 'taxonomies', $_POST[SCF_Config::PREFIX . 'taxonomies'] );
+		}
+
+		if ( !isset( $_POST[SCF_Config::PREFIX . 'options-pages'] ) ) {
+			delete_post_meta( $post_id, SCF_Config::PREFIX . 'options-pages' );
+		} else {
+			update_post_meta( $post_id, SCF_Config::PREFIX . 'options-pages', $_POST[SCF_Config::PREFIX . 'options-pages'] );
 		}
 	}
 }

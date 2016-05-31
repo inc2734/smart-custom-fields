@@ -1,10 +1,10 @@
 <?php
 /**
  * Smart_Custom_Fields_Meta
- * Version    : 1.2.2
+ * Version    : 1.3.0
  * Author     : inc2734
  * Created    : March 17, 2015
- * Modified   : December 13, 2015
+ * Modified   : May 31, 2015
  * License    : GPLv2 or later
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
  */
@@ -34,7 +34,7 @@ class Smart_Custom_Fields_Meta {
 	protected $type;
 
 	/**
-	 * @param WP_Post|WP_User|WP_Term $object
+	 * @param WP_Post|WP_User|WP_Term|stdClass $object
 	 */
 	public function __construct( $object ) {
 		if ( !function_exists( 'get_editable_roles' ) ) {
@@ -55,6 +55,11 @@ class Smart_Custom_Fields_Meta {
 			$this->id   = $object->term_id;
 			$this->type = $object->taxonomy;
 			$this->meta_type = 'term';
+		}
+		elseif ( isset( $object->menu_slug ) ) {
+			$this->id   = $object->menu_slug;
+			$this->type = $object->menu_slug;
+			$this->meta_type = 'option';
 		}
 		elseif( empty( $object ) || is_wp_error( $object ) ) {
 			$this->id   = null;
@@ -346,6 +351,12 @@ class Smart_Custom_Fields_Meta {
 				break;
 			case 'term' :
 				$object = get_term( $this->id, $this->type );
+				break;
+			case 'option' :
+				$options_pages = SCF::get_options_pages();
+				$object = new stdClass();
+				$object->menu_slug  = $this->id;
+				$object->menu_title = $options_pages[$object->menu_slug];
 				break;
 			default :
 				$object = null;

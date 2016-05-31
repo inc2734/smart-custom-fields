@@ -4,7 +4,7 @@ Donate link: http://www.amazon.co.jp/registry/wishlist/39ANKRNSTNW40
 Tags: plugin, custom field, custom, field, meta, meta field, repeat, repeatable
 Requires at least: 3.9
 Tested up to: 4.4
-Stable tag: 1.7.0
+Stable tag: 2.0.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -38,27 +38,61 @@ https://www.youtube.com/watch?v=WxPZurn0yvI
 
 = How to get meta data ? =
 
-* SCF::get( 'field-name' )
+== Post meta data ==
+
 This method can get any meta data.
-* SCF::get( 'group-name' )
+
+`SCF::get( 'field-name' )`
+
 This method can get meta data of any group.
 
-* SCF::gets()
+`SCF::get( 'group-name' )`
+
 This method can get all meta data.
 
-* SCF::get_user_meta( $user_id, 'field-name' )
+`SCF::gets()`
+
 This method can get any user meta data.
-* SCF::get_user_meta( $user_id, 'group-name' )
+
+== User meta data ==
+
+`SCF::get_user_meta( $user_id, 'field-name' )`
+
 This method can get user meta data of any group.
-* SCF::get_user_meta( $user_id )
+
+`SCF::get_user_meta( $user_id, 'group-name' )`
+
 This method can get all user meta data.
 
-* SCF::get_term_meta( $term_id, $taxonomy 'field-name' )
+`SCF::get_user_meta( $user_id )`
+
+== Term meta data ==
+
 This method can get any term meta data.
-* SCF::get_term_meta( $term_id, $taxonomy, 'group-name' )
+
+`SCF::get_term_meta( $term_id, $taxonomy 'field-name' )`
+
 This method can get term meta data of any group.
-* SCF::get_term_meta( $term_id, $taxonomy )
+
+`SCF::get_term_meta( $term_id, $taxonomy, 'group-name' )`
+
 This method can get all term meta data.
+
+`SCF::get_term_meta( $term_id, $taxonomy )`
+
+== Custom options page meta data ==
+
+This method can get any custom options page meta data.
+
+`SCF::get_option_meta( $menu_slug 'field-name' )`
+
+This method can get custom options page meta data of any group.
+
+`SCF::get_option_meta( $menu_slug, 'group-name' )`
+
+This method can get all custom options page meta data.
+
+`SCF::get_option_meta( $menu_slug )`
 
 = Register custom fields by the code. =
 
@@ -86,6 +120,9 @@ You can send your own language pack to me.
 2. Post edit page.
 
 == Changelog ==
+
+= 2.0.0 =
+* Added meta data of custom options page.
 
 = 1.7.0 =
 * Added taxonomy relation field.
