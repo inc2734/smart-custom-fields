@@ -73,8 +73,12 @@ class Smart_Custom_Fields_Options_Page {
 
 	public function display() {
 		$Option = SCF::generate_option_object( $_GET['page'] );
+		if ( !$Option ) {
+			return;
+		}
 		?>
 		<div class="wrap">
+			<h3><?php echo esc_html( $Option->menu_title ); ?></h3>
 			<?php do_action( SCF_Config::PREFIX . 'custom-options-page', $Option ); ?>
 		</div>
 		<?php

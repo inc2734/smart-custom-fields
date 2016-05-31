@@ -23,7 +23,7 @@ class Smart_Custom_Fields_Controller_Profile extends Smart_Custom_Fields_Control
 
 	/**
 	 * Loading resources for profile edit page
-	 * 
+	 *
 	 * @param string $hook
 	 */
 	public function admin_enqueue_scripts( $hook ) {
@@ -57,7 +57,7 @@ class Smart_Custom_Fields_Controller_Profile extends Smart_Custom_Fields_Control
 
 	/**
 	 * Saving meta data from custom fields in profile edit page.
-	 * 
+	 *
 	 * @param int $user_id
 	 */
 	public function update( $user_id ) {

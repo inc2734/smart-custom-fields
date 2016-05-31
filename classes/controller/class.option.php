@@ -38,7 +38,6 @@ class Smart_Custom_Fields_Controller_Option extends Smart_Custom_Fields_Controll
 	 * @param stdClass $Option
 	 */
 	public function custom_options_page( $Option ) {
-		printf( '<h3>%s</h3>', esc_html( $Option->menu_title ) );
 		$settings = SCF::get_settings( $Option );
 		if ( !$settings ) {
 			return;

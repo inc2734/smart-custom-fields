@@ -526,7 +526,7 @@ class SCF {
 		foreach ( $settings_posts as $settings_post ) {
 			if ( $Cache->get_settings( $settings_post->ID ) !== null ) {
 				self::debug_cache_message( "use settings cache. [id: {$settings_post->ID}]" );
-				$settings[] = self::get_settings( $settings_post->ID );
+				$settings[] = $Cache->get_settings( $settings_post->ID );
 				continue;
 			}
 			self::debug_cache_message( "dont use settings cache... [id: {$settings_post->ID}]" );
@@ -731,9 +731,12 @@ class SCF {
 	 */
 	public static function generate_option_object( $menu_slug ) {
 		$options_pages = SCF::get_options_pages();
+		if ( !isset( $options_pages[$menu_slug] ) ) {
+			return;
+		}
 		$Option = new stdClass();
 		$Option->menu_slug  = $menu_slug;
-		$Option->menu_title = $options_pages[$menu_title];
+		$Option->menu_title = $options_pages[$menu_slug];
 		return $Option;
 	}
 
