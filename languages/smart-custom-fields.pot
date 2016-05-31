@@ -2,10 +2,9 @@
 # This file is distributed under the same license as the Smart Custom Fields package.
 msgid ""
 msgstr ""
-"Project-Id-Version: Smart Custom Fields 1.7.0\n"
-"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/smart-custom-"
-"fields\n"
-"POT-Creation-Date: 2016-02-03 05:01:33+00:00\n"
+"Project-Id-Version: Smart Custom Fields 2.0.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/smart-custom-fields\n"
+"POT-Creation-Date: 2016-05-31 09:52:10+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -19,6 +18,10 @@ msgstr ""
 
 #: classes/controller/class.controller-base.php:47
 msgid "File setting"
+msgstr ""
+
+#: classes/controller/class.option.php:57
+msgid "Save settings"
 msgstr ""
 
 #: classes/controller/class.profile.php:43
@@ -58,34 +61,42 @@ msgstr ""
 msgid "Display conditions ( Taxonomy )"
 msgstr ""
 
-#: classes/controller/class.settings.php:156
+#: classes/controller/class.settings.php:103
+msgid "Display conditions ( Options page )"
+msgstr ""
+
+#: classes/controller/class.settings.php:163
 msgid "Type"
 msgstr ""
 
-#: classes/controller/class.settings.php:191
+#: classes/controller/class.settings.php:198
 msgid "Add Sub field"
 msgstr ""
 
-#: classes/controller/class.settings.php:195
+#: classes/controller/class.settings.php:202
 msgid "Add Field"
 msgstr ""
 
-#: classes/controller/class.settings.php:225
+#: classes/controller/class.settings.php:232
 #: classes/fields/class.field-relation.php:213
 msgid "Post Types"
 msgstr ""
 
-#: classes/controller/class.settings.php:232
+#: classes/controller/class.settings.php:239
 msgid "Post Ids ( Comma separated )"
 msgstr ""
 
-#: classes/controller/class.settings.php:257
+#: classes/controller/class.settings.php:264
 msgid "Roles"
 msgstr ""
 
-#: classes/controller/class.settings.php:283
+#: classes/controller/class.settings.php:290
 #: classes/fields/class.field-taxonomy.php:216
 msgid "Taxonomies"
+msgstr ""
+
+#: classes/controller/class.settings.php:314
+msgid "Options pages"
 msgstr ""
 
 #: classes/fields/class.field-boolean.php:24
@@ -278,47 +289,45 @@ msgstr ""
 msgid "Group name"
 msgstr ""
 
-#. #-#-#-#-#  smart-custom-fields.pot (Smart Custom Fields 1.7.0)  #-#-#-#-#
-#. Plugin Name of the plugin/theme
-#: classes/models/class.revisions.php:124 smart-custom-fields.php:158
-#: smart-custom-fields.php:159 smart-custom-fields.php:160
+#: classes/models/class.revisions.php:124 smart-custom-fields.php:159
+#: smart-custom-fields.php:160 smart-custom-fields.php:161
 msgid "Smart Custom Fields"
 msgstr ""
 
-#: smart-custom-fields.php:161 smart-custom-fields.php:162
-#: smart-custom-fields.php:208 smart-custom-fields.php:209
+#: smart-custom-fields.php:162 smart-custom-fields.php:163
+#: smart-custom-fields.php:209 smart-custom-fields.php:210
 msgid "Add New"
 msgstr ""
 
-#: smart-custom-fields.php:163
+#: smart-custom-fields.php:164
 msgid "New Field"
 msgstr ""
 
-#: smart-custom-fields.php:164
+#: smart-custom-fields.php:165
 msgid "Edit Field"
 msgstr ""
 
-#: smart-custom-fields.php:165
+#: smart-custom-fields.php:166
 msgid "View Field"
 msgstr ""
 
-#: smart-custom-fields.php:166
+#: smart-custom-fields.php:167
 msgid "All Fields"
 msgstr ""
 
-#: smart-custom-fields.php:167
+#: smart-custom-fields.php:168
 msgid "Search Fields"
 msgstr ""
 
-#: smart-custom-fields.php:168
+#: smart-custom-fields.php:169
 msgid "Parent Fields:"
 msgstr ""
 
-#: smart-custom-fields.php:169
+#: smart-custom-fields.php:170
 msgid "No Fields found."
 msgstr ""
 
-#: smart-custom-fields.php:170
+#: smart-custom-fields.php:171
 msgid "No Fields found in Trash."
 msgstr ""
 

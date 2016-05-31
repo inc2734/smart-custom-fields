@@ -54,7 +54,7 @@ class Smart_Custom_Fields_Controller_Option extends Smart_Custom_Fields_Controll
 				</table>
 			<?php endforeach; ?>
 			<p class="submit">
-				<input type="submit" name="submit" id="submit" class="button button-primary" value="<?php esc_attr_e( 'Save setting', 'smart-custom-fields'); ?>">
+				<input type="submit" name="submit" id="submit" class="button button-primary" value="<?php esc_attr_e( 'Save settings', 'smart-custom-fields' ); ?>">
 			</p>
 		</form>
 		<?php
