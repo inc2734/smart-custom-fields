@@ -94,6 +94,10 @@ This method can get all custom options page meta data.
 
 `SCF::get_option_meta( $menu_slug )`
 
+= Create custom options page =
+
+`SCF::add_options_page( $page_title, $menu_title, $capability, $menu_slug, $icon_url = '', $position = null );`
+
 = Register custom fields by the code. =
 
 https://gist.github.com/inc2734/9f6d65c7473d060d0fd6
