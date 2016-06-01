@@ -4,7 +4,7 @@ Donate link: http://www.amazon.co.jp/registry/wishlist/39ANKRNSTNW40
 Tags: plugin, custom field, custom, field, meta, meta field, repeat, repeatable
 Requires at least: 3.9
 Tested up to: 4.5.2
-Stable tag: 2.0.0
+Stable tag: 2.0.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -38,7 +38,7 @@ https://www.youtube.com/watch?v=WxPZurn0yvI
 
 = How to get meta data ? =
 
-== Post meta data ==
+**Post meta data**
 
 This method can get any meta data.
 
@@ -54,7 +54,7 @@ This method can get all meta data.
 
 This method can get any user meta data.
 
-== User meta data ==
+**User meta data**
 
 `SCF::get_user_meta( $user_id, 'field-name' )`
 
@@ -66,7 +66,7 @@ This method can get all user meta data.
 
 `SCF::get_user_meta( $user_id )`
 
-== Term meta data ==
+**Term meta data**
 
 This method can get any term meta data.
 
@@ -80,7 +80,7 @@ This method can get all term meta data.
 
 `SCF::get_term_meta( $term_id, $taxonomy )`
 
-== Custom options page meta data ==
+**Custom options page meta data**
 
 This method can get any custom options page meta data.
 
