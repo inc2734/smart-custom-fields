@@ -698,8 +698,17 @@ class SCF {
 			if ( $choices === '' || $choices === false || $choices === null ) {
 				return array();
 			}
-			$choices = str_replace( array( "\r\n", "\r", "\n" ), "\n", $choices );
-			return explode( "\n", $choices );
+			$_choices = str_replace( array( "\r\n", "\r", "\n" ), "\n", $choices );
+			$_choices = explode( "\n", $_choices );
+			$choices = array();
+			foreach ( $_choices as $_choice ) {
+				$_choice = array_map( 'trim', explode( '=>', $_choice ) );
+				if ( count( $_choice ) === 2 ) {
+					$choices[$_choice[0]] = $_choice[1];
+				} else {
+					$choices = array_merge( $choices, $_choice );
+				}
+			}
 		}
 		return $choices;
 	}

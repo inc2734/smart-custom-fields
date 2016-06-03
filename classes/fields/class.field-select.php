@@ -83,6 +83,7 @@ class Smart_Custom_Fields_Field_Select extends Smart_Custom_Fields_Field_Base {
 					name="<?php echo esc_attr( $this->get_field_name_in_setting( $group_key, $field_key, 'choices' ) ); ?>"
 					class="widefat"
 					rows="5" /><?php echo esc_textarea( "\n" . $this->get( 'choices' ) ); ?></textarea>
+				<?php esc_html_e( 'If you want to separate the key and the value, enter as follows: key => value', 'smart-custom-fields' ); ?>
 			</td>
 		</tr>
 		<tr>

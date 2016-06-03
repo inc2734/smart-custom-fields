@@ -915,6 +915,23 @@ class SCF_Test extends WP_UnitTestCase {
 		$wp_query = $backup_wp_query;
 	}
 
+	/**
+	 * @group choices_eol_to_array
+	 */
+	public function test__choices_eol_to_array() {
+		$this->assertSame( array(), SCF::choices_eol_to_array( '' ) );
+		$this->assertSame( array(), SCF::choices_eol_to_array( false ) );
+		$this->assertSame( array(), SCF::choices_eol_to_array( null ) );
+		$this->assertSame( array(), SCF::choices_eol_to_array( array() ) );
+		$this->assertSame( array( 'A', 'B', 'C' ), SCF::choices_eol_to_array( array( 'A', 'B', 'C' ) ) );
+		$this->assertSame( array( 'A', 'B', 'C' ), SCF::choices_eol_to_array( "A\r\nB\r\nC" ) );
+		$this->assertSame( array( 'A', 'B', 'C' ), SCF::choices_eol_to_array( "A\rB\rC" ) );
+		$this->assertSame( array( 'A', 'B', 'C' ), SCF::choices_eol_to_array( "A\nB\nC" ) );
+		$this->assertSame( array( 'a' => 'AAA', 'b' => 'BBB' ), SCF::choices_eol_to_array( array( 'a' => 'AAA', 'b' => 'BBB' ) ) );
+		$this->assertSame( array( 'a' => 'AAA', 'b' => 'BBB' ), SCF::choices_eol_to_array( "a => AAA\nb => BBB" ) );
+		$this->assertSame( array( 'a' => 'AAA', 0 => 'BBB' ), SCF::choices_eol_to_array( "a => AAA\nBBB" ) );
+	}
+
 	protected function create_revision( $post_id ) {
 		return $this->factory->post->create( array(
 			'post_type'   => 'revision',
