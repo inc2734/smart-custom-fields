@@ -55,14 +55,17 @@ class Smart_Custom_Fields_Field_Radio extends Smart_Custom_Fields_Field_Base {
 			esc_attr( $name ),
 			disabled( true, $disabled, false )
 		);
-		foreach ( $choices as $choice ) {
+		foreach ( $choices as $key => $choice ) {
 			$choice = trim( $choice );
+			if ( !SCF::is_assoc( $choices ) ) {
+				$key = $choice;
+			}
 			$form_field .= sprintf(
-				'<span class="%s"><label><input type="radio" name="%s" value="%s" %s %s /> %s</label></span>',
+				'<span class="%1$s"><label><input type="radio" name="%2$s" value="%3$s" %4$s %5$s /> %6$s</label></span>',
 				esc_attr( SCF_Config::PREFIX . 'item-' . $direction ),
 				esc_attr( $name ),
-				esc_attr( $choice ),
-				checked( $value, $choice, false ),
+				esc_attr( $key ),
+				checked( $value, $key, false ),
 				disabled( true, $disabled, false ),
 				esc_html( $choice )
 			);

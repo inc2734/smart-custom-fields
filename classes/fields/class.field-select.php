@@ -49,11 +49,15 @@ class Smart_Custom_Fields_Field_Select extends Smart_Custom_Fields_Field_Base {
 		$choices = SCF::choices_eol_to_array( $this->get( 'choices' ) );
 
 		$form_field = '';
-		foreach ( $choices as $choice ) {
+		foreach ( $choices as $key => $choice ) {
 			$choice = trim( $choice );
-			$form_field .= sprintf( '<option value="%1$s" %2$s>%1$s</option>',
-				esc_html( $choice ),
-				selected( $value, $choice, false )
+			if ( !SCF::is_assoc( $choices ) ) {
+				$key = $choice;
+			}
+			$form_field .= sprintf( '<option value="%1$s" %2$s>%3$s</option>',
+				esc_attr( $key ),
+				selected( $value, $key, false ),
+				esc_html( $choice )
 			);
 		}
 		return sprintf(

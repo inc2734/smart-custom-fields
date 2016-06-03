@@ -56,14 +56,17 @@ class Smart_Custom_Fields_Field_Check extends Smart_Custom_Fields_Field_Base {
 			esc_attr( $name ),
 			disabled( true, $disabled, false )
 		);
-		foreach ( $choices as $choice ) {
+		foreach ( $choices as $key => $choice ) {
 			$choice = trim( $choice );
+			if ( !SCF::is_assoc( $choices ) ) {
+				$key = $choice;
+			}
 			$form_field .= sprintf(
-				'<span class="%s"><label><input type="checkbox" name="%s" value="%s" %s %s /> %s</label></span>',
+				'<span class="%1$s"><label><input type="checkbox" name="%2$s" value="%3$s" %4$s %5$s /> %6$s</label></span>',
 				esc_attr( SCF_Config::PREFIX . 'item-' . $direction ),
 				esc_attr( $name . '[]' ),
-				esc_attr( $choice ),
-				checked( true, ( is_array( $value ) && in_array( $choice, $value ) ), false ),
+				esc_attr( $key ),
+				checked( true, ( is_array( $value ) && in_array( $key, $value ) ), false ),
 				disabled( true, $disabled, false ),
 				esc_html( $choice )
 			);
