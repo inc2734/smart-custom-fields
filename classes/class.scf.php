@@ -337,11 +337,10 @@ class SCF {
 			$default = SCF::choices_eol_to_array( $default );
 			$default_sanitized = array();
 
-			// The first key = 0, regereded as "array". not 0, regereded as "hash"
-			if ( key( $choices ) === 0 ) {
-				$_choices = $choices;
-			} else {
+			if ( SCF::is_assoc( $choices ) ) {
 				$_choices = array_flip( $choices );
+			} else {
+				$_choices = $choices;
 			}
 			foreach ( $default as $key => $value ) {
 				if ( in_array( $value, $_choices ) ) {
@@ -606,6 +605,31 @@ class SCF {
 			return false;
 		}
 		return true;
+	}
+
+	/**
+	 * Whether the associative array or not
+	 *
+	 * @see http://qiita.com/ka215/items/a14e53547e717d2a564f
+	 * @param array $data This argument should be expected an array
+	 * @param boolean $multidimensional True if a multidimensional array is inclusion into associative array, the default value is false
+	 * @return boolean
+	 */
+	public static function is_assoc( $data, $multidimensional=false ) {
+		if ( !is_array( $data ) || empty( $data ) ) {
+			return false;
+		}
+		$has_array = false;
+		foreach ( $data as $key => $value ) {
+			if ( is_array( $value ) ) {
+				$has_array = true;
+			}
+
+			if ( !is_int( $key ) )  {
+				return true;
+			}
+		}
+		return $multidimensional && $has_array ? true : false;
 	}
 
 	/**
