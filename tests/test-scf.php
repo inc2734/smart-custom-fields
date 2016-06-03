@@ -86,6 +86,7 @@ class SCF_Test extends WP_UnitTestCase {
 		$this->assertSame( array(), SCF::get( 'text3'    , $this->new_post_id ) );
 		$this->assertSame( array(), SCF::get( 'checkbox' , $this->new_post_id ) );
 		$this->assertSame( array(), SCF::get( 'checkbox3', $this->new_post_id ) );
+		$this->assertSame( array( 1, 2, 3 ), SCF::get( 'checkbox-key-value', $this->new_post_id ) );
 		$this->assertSame(
 			array(
 				'text'         => '',
@@ -100,6 +101,7 @@ class SCF_Test extends WP_UnitTestCase {
 				'text-has-not-default'     => '',
 				'checkbox-has-default'     => array( 'A', 'B' ),
 				'checkbox-has-not-default' => array(),
+				'checkbox-key-value'       => array( 1, 2, 3 ),
 			),
 			SCF::gets( $this->new_post_id )
 		);
@@ -113,6 +115,7 @@ class SCF_Test extends WP_UnitTestCase {
 		$this->assertSame( array(), SCF::get( 'text3'    , $this->post_id ) );
 		$this->assertSame( array(), SCF::get( 'checkbox' , $this->post_id ) );
 		$this->assertSame( array(), SCF::get( 'checkbox3', $this->post_id ) );
+		$this->assertSame( array( 1, 2, 3 ), SCF::get( 'checkbox-key-value', $this->new_post_id ) );
 		$this->assertSame(
 			array(
 				'text'         => '',
@@ -127,6 +130,7 @@ class SCF_Test extends WP_UnitTestCase {
 				'text-has-not-default'     => '',
 				'checkbox-has-default'     => array( 'A', 'B' ),
 				'checkbox-has-not-default' => array(),
+				'checkbox-key-value'       => array( 1, 2, 3 ),
 			),
 			SCF::gets( $this->post_id )
 		);
@@ -154,6 +158,7 @@ class SCF_Test extends WP_UnitTestCase {
 		$this->assertNull( SCF::get_user_meta( false, 'checkbox' ) );
 		$this->assertNull( SCF::get_user_meta( false, 'text3' ) );
 		$this->assertNull( SCF::get_user_meta( false, 'checkbox3' ) );
+		$this->assertNull( SCF::get_user_meta( false, 'checkbox-key-value' ) );
 		$this->assertNull( SCF::get_user_meta( false ) );
 	}
 
@@ -165,6 +170,7 @@ class SCF_Test extends WP_UnitTestCase {
 		$this->assertSame( array(), SCF::get_user_meta( $this->user_id, 'text3' ) );
 		$this->assertSame( array(), SCF::get_user_meta( $this->user_id, 'checkbox' ) );
 		$this->assertSame( array(), SCF::get_user_meta( $this->user_id, 'checkbox3' ) );
+		$this->assertSame( array( 1, 2, 3 ), SCF::get_user_meta( $this->user_id, 'checkbox-key-value' ) );
 		$this->assertSame(
 			array(
 				'text'         => '',
@@ -179,6 +185,7 @@ class SCF_Test extends WP_UnitTestCase {
 				'text-has-not-default'     => '',
 				'checkbox-has-default'     => array( 'A', 'B' ),
 				'checkbox-has-not-default' => array(),
+				'checkbox-key-value'       => array( 1, 2, 3 ),
 			),
 			SCF::get_user_meta( $this->user_id )
 		);
@@ -199,17 +206,19 @@ class SCF_Test extends WP_UnitTestCase {
 		$this->assertNull( SCF::get_term_meta( false, 'category', 'checkbox' ) );
 		$this->assertNull( SCF::get_term_meta( false, 'category', 'text3' ) );
 		$this->assertNull( SCF::get_term_meta( false, 'category', 'checkbox3' ) );
+		$this->assertNull( SCF::get_term_meta( false, 'category', 'checkbox-key-value' ) );
 		$this->assertNull( SCF::get_term_meta( false, 'category' ) );
 	}
 
 	/**
 	 * @group get_term_meta
 	 */
-	public function test_get_term_meta__メタデータが保存されていないときは空値() {
+	public function test_get_term_meta__メタデータが保存されていないときはデフォルト値を返す() {
 		$this->assertSame( ''     , SCF::get_term_meta( $this->term_id, 'category', 'text' ) );
 		$this->assertSame( array(), SCF::get_term_meta( $this->term_id, 'category', 'text3' ) );
 		$this->assertSame( array(), SCF::get_term_meta( $this->term_id, 'category', 'checkbox' ) );
 		$this->assertSame( array(), SCF::get_term_meta( $this->term_id, 'category', 'checkbox3' ) );
+		$this->assertSame( array( 1, 2, 3 ), SCF::get_term_meta( $this->term_id, 'category', 'checkbox-key-value' ) );
 		$this->assertSame(
 			array(
 				'text'         => '',
@@ -224,6 +233,7 @@ class SCF_Test extends WP_UnitTestCase {
 				'text-has-not-default'     => '',
 				'checkbox-has-default'     => array( 'A', 'B' ),
 				'checkbox-has-not-default' => array(),
+				'checkbox-key-value'       => array( 1, 2, 3 ),
 			),
 			SCF::get_term_meta( $this->term_id, 'category' )
 		);
@@ -244,6 +254,7 @@ class SCF_Test extends WP_UnitTestCase {
 		$this->assertNull( SCF::get_option_meta( false, 'checkbox' ) );
 		$this->assertNull( SCF::get_option_meta( false, 'text3' ) );
 		$this->assertNull( SCF::get_option_meta( false, 'checkbox3' ) );
+		$this->assertNull( SCF::get_option_meta( false, 'checkbox-key-value' ) );
 		$this->assertNull( SCF::get_option_meta( false ) );
 	}
 
@@ -255,6 +266,7 @@ class SCF_Test extends WP_UnitTestCase {
 		$this->assertSame( array(), SCF::get_option_meta( $this->menu_slug, 'text3' ) );
 		$this->assertSame( array(), SCF::get_option_meta( $this->menu_slug, 'checkbox' ) );
 		$this->assertSame( array(), SCF::get_option_meta( $this->menu_slug, 'checkbox3' ) );
+		$this->assertSame( array( 1, 2, 3 ), SCF::get_option_meta( $this->menu_slug, 'checkbox-key-value' ) );
 		$this->assertSame(
 			array(
 				'text'         => '',
@@ -269,6 +281,7 @@ class SCF_Test extends WP_UnitTestCase {
 				'text-has-not-default'     => '',
 				'checkbox-has-default'     => array( 'A', 'B' ),
 				'checkbox-has-not-default' => array(),
+				'checkbox-key-value'       => array( 1, 2, 3 ),
 			),
 			SCF::get_user_meta( $this->user_id )
 		);
@@ -354,6 +367,7 @@ class SCF_Test extends WP_UnitTestCase {
 				'text-has-not-default'     => '',
 				'checkbox-has-default'     => array( 'A', 'B' ),
 				'checkbox-has-not-default' => array(),
+				'checkbox-key-value'       => array( 1, 2, 3 ),
 			),
 			SCF::gets( $this->new_post_id )
 		);
@@ -396,6 +410,7 @@ class SCF_Test extends WP_UnitTestCase {
 				'text-has-not-default'     => '',
 				'checkbox-has-default'     => array(),
 				'checkbox-has-not-default' => array(),
+				'checkbox-key-value'       => array(),
 			),
 			SCF::gets( $this->post_id )
 		);
@@ -471,6 +486,7 @@ class SCF_Test extends WP_UnitTestCase {
 				'text-has-not-default'     => '',
 				'checkbox-has-default'     => array(),
 				'checkbox-has-not-default' => array(),
+				'checkbox-key-value'       => array(),
 			),
 			SCF::get_user_meta( $this->user_id )
 		);
@@ -549,6 +565,7 @@ class SCF_Test extends WP_UnitTestCase {
 				'text-has-not-default'     => '',
 				'checkbox-has-default'     => array(),
 				'checkbox-has-not-default' => array(),
+				'checkbox-key-value'       => array(),
 			),
 			SCF::get_term_meta( $this->term_id, 'category' )
 		);
@@ -726,7 +743,7 @@ class SCF_Test extends WP_UnitTestCase {
 				$this->assertTrue(
 					in_array(
 						$Group->get_name(),
-						array( null, null, 'group-name-3', 'group-name-4' ),
+						array( null, null, 'group-name-3', 'group-name-4', 'group-name-5' ),
 						true
 					)
 				);
@@ -979,6 +996,15 @@ class SCF_Test extends WP_UnitTestCase {
 					'label'   => 'checkbox has not default',
 					'type'    => 'check',
 					'choices' => array( 'A', 'B', 'C' ),
+				),
+			) );
+			$Setting->add_group( 'group-name-5', false, array(
+				array(
+					'name'    => 'checkbox-key-value',
+					'label'   => 'checkbox has key value',
+					'type'    => 'check',
+					'choices' => array( 1 => 'A', 2 => 'B', 3 => 'C' ),
+					'default' => "1\n2\n3",
 				),
 			) );
 			$settings['id-1'] = $Setting;
