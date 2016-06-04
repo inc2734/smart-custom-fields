@@ -2,10 +2,10 @@
 
 /**
  * Smart_Custom_Fields_Field_Boolean
- * Version    : 1.0.1
+ * Version    : 1.1.0
  * Author     : Toro_Unit, inc2734
  * Created    : April 6, 2015
- * Modified   : April 11, 2015
+ * Modified   : June 4, 2016
  * License    : GPLv2 or later
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
  */
@@ -34,6 +34,7 @@ class Smart_Custom_Fields_Field_Boolean extends Smart_Custom_Fields_Field_Base {
 	protected function options() {
 		return array(
 			'default'     => 0,
+			'instruction' => '',
 			'notes'       => '',
 			'true_label'  => __( 'Yes', 'smart-custom-fields' ),
 			'false_label' => __( 'No', 'smart-custom-fields' ),
@@ -121,6 +122,13 @@ class Smart_Custom_Fields_Field_Boolean extends Smart_Custom_Fields_Field_Base {
 					class="widefat"
 					value="<?php echo esc_attr( $this->get( 'false_label' ) ); ?>"
 				/>
+			</td>
+		</tr>
+		<tr>
+			<th><?php esc_html_e( 'Instruction', 'smart-custom-fields' ); ?></th>
+			<td>
+				<textarea name="<?php echo esc_attr( $this->get_field_name_in_setting( $group_key, $field_key, 'instruction' ) ); ?>"
+					class="widefat" rows="5"><?php echo esc_attr( $this->get( 'instruction' ) ); ?></textarea>
 			</td>
 		</tr>
 		<tr>

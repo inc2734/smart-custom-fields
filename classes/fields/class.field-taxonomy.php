@@ -1,10 +1,10 @@
 <?php
 /**
  * Smart_Custom_Fields_Field_Taxonomy
- * Version    : 1.3.0
+ * Version    : 1.4.0
  * Author     : inc2734
  * Created    : October 7, 2014
- * Modified   : November 12, 2015
+ * Modified   : June 4, 2016
  * License    : GPLv2 or later
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
  */
@@ -34,8 +34,9 @@ class Smart_Custom_Fields_Field_Taxonomy extends Smart_Custom_Fields_Field_Base 
 	 */
 	protected function options() {
 		return array(
-			'taxonomy' => '',
-			'notes'    => '',
+			'taxonomy'    => '',
+			'instruction' => '',
+			'notes'       => '',
 		);
 	}
 
@@ -229,6 +230,13 @@ class Smart_Custom_Fields_Field_Taxonomy extends Smart_Custom_Fields_Field_Base 
 					value="<?php echo esc_attr( $taxonomy ); ?>"
 					 <?php echo $checked; ?> /><?php echo esc_html( $taxonomy_object->labels->singular_name ); ?>
 				<?php endforeach; ?>
+			</td>
+		</tr>
+		<tr>
+			<th><?php esc_html_e( 'Instruction', 'smart-custom-fields' ); ?></th>
+			<td>
+				<textarea name="<?php echo esc_attr( $this->get_field_name_in_setting( $group_key, $field_key, 'instruction' ) ); ?>"
+					class="widefat" rows="5"><?php echo esc_attr( $this->get( 'instruction' ) ); ?></textarea>
 			</td>
 		</tr>
 		<tr>

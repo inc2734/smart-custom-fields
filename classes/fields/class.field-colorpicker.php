@@ -1,10 +1,10 @@
 <?php
 /**
  * Smart_Custom_Fields_Field_Colorpicker
- * Version    : 1.1.0
+ * Version    : 1.2.0
  * Author     : inc2734
  * Created    : October 21, 2014
- * Modified   : February 27, 2015
+ * Modified   : June 4, 2016
  * License    : GPLv2 or later
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
  */
@@ -38,8 +38,9 @@ class Smart_Custom_Fields_Field_Colorpicker extends Smart_Custom_Fields_Field_Ba
 	 */
 	protected function options() {
 		return array(
-			'default' => '',
-			'notes'   => '',
+			'default'     => '',
+			'instruction' => '',
+			'notes'       => '',
 		);
 	}
 
@@ -105,6 +106,13 @@ class Smart_Custom_Fields_Field_Colorpicker extends Smart_Custom_Fields_Field_Ba
 					name="<?php echo esc_attr( $this->get_field_name_in_setting( $group_key, $field_key, 'default' ) ); ?>"
 					class="widefat default-option"
 					value="<?php echo esc_attr( $this->get( 'default' ) ); ?>" />
+			</td>
+		</tr>
+		<tr>
+			<th><?php esc_html_e( 'Instruction', 'smart-custom-fields' ); ?></th>
+			<td>
+				<textarea name="<?php echo esc_attr( $this->get_field_name_in_setting( $group_key, $field_key, 'instruction' ) ); ?>"
+					class="widefat" rows="5"><?php echo esc_attr( $this->get( 'instruction' ) ); ?></textarea>
 			</td>
 		</tr>
 		<tr>

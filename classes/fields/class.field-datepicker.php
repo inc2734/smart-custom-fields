@@ -1,10 +1,10 @@
 <?php
 /**
  * Smart_Custom_Fields_Field_Datepicker
- * Version    : 1.1.0
+ * Version    : 1.2.0
  * Author     : inc2734
  * Created    : January 17, 2015
- * Modified   : February 27, 2015
+ * Modified   : June 4, 2016
  * License    : GPLv2 or later
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
  */
@@ -42,6 +42,7 @@ class Smart_Custom_Fields_Field_Datepicker extends Smart_Custom_Fields_Field_Bas
 			'max_date'    => '',
 			'min_date'    => '',
 			'default'     => '',
+			'instruction' => '',
 			'notes'       => '',
 		);
 	}
@@ -185,6 +186,13 @@ class Smart_Custom_Fields_Field_Datepicker extends Smart_Custom_Fields_Field_Bas
 			</td>
 		</tr>
 		<tr>
+			<th><?php esc_html_e( 'Instruction', 'smart-custom-fields' ); ?></th>
+			<td>
+				<textarea name="<?php echo esc_attr( $this->get_field_name_in_setting( $group_key, $field_key, 'instruction' ) ); ?>"
+					class="widefat" rows="5"><?php echo esc_attr( $this->get( 'instruction' ) ); ?></textarea>
+			</td>
+		</tr>
+		<tr>
 			<th><?php esc_html_e( 'Notes', 'smart-custom-fields' ); ?></th>
 			<td>
 				<input type="text"
@@ -208,7 +216,7 @@ class Smart_Custom_Fields_Field_Datepicker extends Smart_Custom_Fields_Field_Bas
 			'changeYear'         => true,
 			'changeMonth'        => true,
 		);
-		
+
 		// If locale is Japanese, change in Japanese notation
 		if ( get_locale() === 'ja' ) {
 			$js = array_merge( $js, array(
@@ -231,19 +239,19 @@ class Smart_Custom_Fields_Field_Datepicker extends Smart_Custom_Fields_Field_Bas
 				)
 			) );
 		}
-		
+
 		if ( $this->get( 'date_format' ) ) {
 			$js['dateFormat'] = $this->get( 'date_format' );
 		}
-		
+
 		if ( $this->get( 'max_date' ) ) {
 			$js['maxDate'] = $this->get( 'max_date' );
 		}
-		
+
 		if ( $this->get( 'min_date' ) ) {
 			$js['minDate'] = $this->get( 'min_date' );
 		}
-		
+
 		return json_encode( $js );
 	}
 }

@@ -1,10 +1,10 @@
 <?php
 /**
  * Smart_Custom_Fields_Controller_Base
- * Version    : 1.3.0
+ * Version    : 1.4.0
  * Author     : inc2734
  * Created    : April 27, 2015
- * Modified   : February 3, 2016
+ * Modified   : June 4, 2016
  * License    : GPLv2 or later
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
  */
@@ -290,6 +290,19 @@ class Smart_Custom_Fields_Controller_Base {
 				$value = $this->get_single_data_field_value( $object, $Field, $index );
 			}
 
+			$instruction = $Field->get( 'instruction' );
+			if ( !empty( $instruction ) ) {
+				if ( apply_filters( SCF_Config::PREFIX . 'instruction-apply-html', false ) === true ) {
+					$instruction_html = $instruction;
+				} else {
+					$instruction_html = esc_html( $instruction );
+				}
+				$instruction = sprintf(
+					'<div class="instruction">%s</div>',
+					$instruction_html
+				);
+			}
+
 			$notes = $Field->get( 'notes' );
 			if ( !empty( $notes ) ) {
 				$notes = sprintf(
@@ -300,8 +313,16 @@ class Smart_Custom_Fields_Controller_Base {
 
 			$form_field = $Field->get_field( $index, $value );
 			printf(
-				'<tr><th>%s</th><td>%s%s</td></tr>',
+				'<tr>
+					<th>%1$s</th>
+					<td>
+						%2$s
+						%3$s
+						%4$s
+					</td>
+				</tr>',
 				esc_html( $field_label ),
+				$instruction,
 				$form_field,
 				$notes
 			);

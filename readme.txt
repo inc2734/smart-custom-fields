@@ -128,6 +128,7 @@ You can send your own language pack to me.
 = 2.1.0 =
 * Support separated key and value in select, checkbox, radio.
 * Added switching editor mode tab in wysiwyg field.
+* Added instruction of field option.
 
 = 2.0.0 =
 * Refactoring

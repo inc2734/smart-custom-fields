@@ -30,9 +30,10 @@ class Smart_Custom_Fields_Field_Select extends Smart_Custom_Fields_Field_Base {
 	 */
 	protected function options() {
 		return array(
-			'choices' => '',
-			'default' => '',
-			'notes'   => '',
+			'choices'     => '',
+			'default'     => '',
+			'instruction' => '',
+			'notes'       => '',
 		);
 	}
 
@@ -93,6 +94,13 @@ class Smart_Custom_Fields_Field_Select extends Smart_Custom_Fields_Field_Base {
 					name="<?php echo esc_attr( $this->get_field_name_in_setting( $group_key, $field_key, 'default' ) ); ?>"
 					class="widefat"
 					value="<?php echo esc_attr( $this->get( 'default' ) ); ?>" />
+			</td>
+		</tr>
+		<tr>
+			<th><?php esc_html_e( 'Instruction', 'smart-custom-fields' ); ?></th>
+			<td>
+				<textarea name="<?php echo esc_attr( $this->get_field_name_in_setting( $group_key, $field_key, 'instruction' ) ); ?>"
+					class="widefat" rows="5"><?php echo esc_attr( $this->get( 'instruction' ) ); ?></textarea>
 			</td>
 		</tr>
 		<tr>

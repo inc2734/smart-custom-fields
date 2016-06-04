@@ -45,9 +45,14 @@
 .smart-cf-meta-box-table .wp-editor-container {
 	clear: both;
 }
+.smart-cf-meta-box-table td .instruction {
+	font-size: 14px;
+	margin: 0 0 10px;
+}
 .smart-cf-meta-box-table td .description {
 	font-size: 12px;
 	margin: 10px 0 0;
+	color: #888;
 }
 
 /** ==================================================
