@@ -76,23 +76,30 @@ class Smart_Custom_Fields_Field_Wysiwyg extends Smart_Custom_Fields_Field_Base {
 	 * @return string html
 	 */
 	public function get_field( $index, $value ) {
-		$name     = $this->get_field_name_in_editor( $index );
-		$disabled = $this->get_disable_attribute( $index );
+		$name       = $this->get_field_name_in_editor( $index );
+		$wysiwyg_id = str_replace( array( '[', ']', '-' ), '_', $name );
+		$disabled   = $this->get_disable_attribute( $index );
 		if ( function_exists( 'format_for_editor' ) ) {
 			$value = format_for_editor( $value );
 		} else {
 			$value = wp_richedit_pre( $value );
 		}
 		return sprintf(
-			'<div class="wp-editor-wrap">
+			'<div class="wp-core-ui wp-editor-wrap tmce-active">
 				<div class="wp-editor-tools hide-if-no-js">
-					<div class="wp-media-buttons">%s</div>
+					<div class="wp-media-buttons">%1$s</div>
+					<div class="wp-editor-tabs">
+						<button type="button" id="%2$s-tmce" class="smart-cf-switch-editor wp-switch-editor switch-tmce" data-wp-editor-id="%2$s">ビジュアル</button>
+						<button type="button" id="%2$s-html" class="smart-cf-switch-editor wp-switch-editor switch-html" data-wp-editor-id="%2$s">テキスト</button>
+					</div>
 				</div>
 				<div class="wp-editor-container">
-					<textarea name="%s" rows="8" class="widefat smart-cf-wp-editor" %s>%s</textarea>
+					<div id="qt_%2$s_toolbar" class="quicktags-toolbar"></div>
+					<textarea name="%3$s" rows="8" class="widefat wp-editor-area smart-cf-wp-editor" %4$s>%5$s</textarea>
 				</div>
 			</div>',
-			$this->media_buttons(),
+			$this->media_buttons( $wysiwyg_id ),
+			esc_attr( $wysiwyg_id ),
 			esc_attr( $name ),
 			disabled( true, $disabled, false ),
 			$value

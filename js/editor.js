@@ -1,9 +1,9 @@
 /**
  * editor.js
- * Version    : 1.3.2
+ * Version    : 2.0.0
  * Author     : inc2734
  * Created    : September 23, 2014
- * Modified   : December 2, 2015
+ * Modified   : June 4, 2016
  * License    : GPLv2 or later
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
  */
@@ -15,43 +15,6 @@ jQuery( function( $ ) {
 		var btn_remove_repeat_group = wrapper.find( '.btn-remove-repeat-group' );
 		var table_class             = '.smart-cf-meta-box-table';
 		var cnt                     = wrapper.find( table_class ).length;
-		var wrapper_index           = i;
-
-		/**
-		 * ロード時に wysiwyg エディター用のテキストエリアがあったら wysiwyg 化する。
-		 */
-		wrapper.find( '.smart-cf-wp-editor' ).each( function( i, e ) {
-			if ( $( this ).parents( table_class ).css( 'display' ) !== 'none' ) {
-				$( this ).attr( 'id', 'smart-cf-wysiwyg-' + wrapper_index + '-' + cnt + '-' + i );
-				var editor_id = $( this ).attr( 'id' );
-				$( this ).parents( '.wp-editor-wrap' ).find( 'a.add_media' ).attr( 'data-editor', editor_id );
-
-				var init;
-				if ( typeof tinyMCEPreInit.mceInit.content !== 'undefined' ) {
-					init = $.extend( true, {}, tinyMCEPreInit.mceInit.content );
-					init.selector = '#' + editor_id;
-				} else {
-					init = {
-						content_css: ['../wp-includes/js/tinymce/skins/wordpress/wp-content.css', '../wp-content/plugins/smart-custom-fields/css/wysiwyg.css'],
-						menubar: false,
-						plugins: "hr,wplink,fullscreen,wordpress,textcolor,paste,charmap",
-						toolbar1: "bold,italic,strikethrough,bullist,numlist,blockquote,hr,alignleft,aligncenter,alignright,link,unlink,wp_more,spellchecker,wp_adv,fullscreen",
-						toolbar2: "formatselect,underline,alignjustify,forecolor,pastetext,removeformat,charmap,outdent,indent,undo,redo,wp_help,code",
-						convert_urls: false,
-						theme: "modern",
-						skin: "lightgray",
-						wp_autoresize_on: true,
-						wpautop: true,
-						selector: '#' + editor_id
-					};
-				}
-				tinyMCEPreInit.mceInit[editor_id] = init;
-				if ( typeof tinymce !== 'undefined' ) {
-					tinymce.init( init );
-				}
-				//tinymce.execCommand( 'mceAddEditor', false, editor_id );
-			}
-		} );
 
 		/**
 		 * グループ追加ボタン
@@ -95,12 +58,8 @@ jQuery( function( $ ) {
 				}
 			} );
 
-			clone.find( '.smart-cf-wp-editor' ).each( function( i, e ) {
-				$( this ).attr( 'id', 'smart-cf-wysiwyg-' + wrapper_index + '-' + cnt + '-' + i );
-			} );
-
 			button.parent().after( clone.fadeIn( 'fast' ) );
-			button.trigger( 'smart-cf-after-add-group', button );
+			button.trigger( 'smart-cf-after-add-group', { button: button, clone: clone} );
 		}
 
 		/**
