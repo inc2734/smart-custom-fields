@@ -165,7 +165,7 @@ class Smart_Custom_Fields_Revisions {
 					$output .= sprintf( "[%s]\n", implode( ', ', $value ) );
 				}
 			} else {
-				$output .= $output .= sprintf( "%s\n", $value );
+				$output .= sprintf( "%s\n", $value );
 			}
 		}
 		return $output;
