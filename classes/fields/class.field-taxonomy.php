@@ -1,10 +1,10 @@
 <?php
 /**
  * Smart_Custom_Fields_Field_Taxonomy
- * Version    : 1.4.0
+ * Version    : 1.4.1
  * Author     : inc2734
  * Created    : October 7, 2014
- * Modified   : June 4, 2016
+ * Modified   : June 22, 2016
  * License    : GPLv2 or later
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
  */
@@ -46,20 +46,18 @@ class Smart_Custom_Fields_Field_Taxonomy extends Smart_Custom_Fields_Field_Base 
 	 * @param string $hook
 	 */
 	public function admin_enqueue_scripts( $hook ) {
-		if ( in_array( $hook, array( 'post-new.php', 'post.php', 'user-edit.php', 'profile.php', 'edit-tags.php' ) ) ) {
-			wp_enqueue_script(
-				SCF_Config::PREFIX . 'editor-relation-taxonomies',
-				plugins_url( SCF_Config::NAME ) . '/js/editor-relation-taxonomies.js',
-				array( 'jquery' ),
-				null,
-				true
-			);
-			wp_localize_script( SCF_Config::PREFIX . 'editor-relation-taxonomies', 'smart_cf_relation_taxonomies', array(
-				'endpoint' => admin_url( 'admin-ajax.php' ),
-				'action'   => SCF_Config::PREFIX . 'relational-terms-search',
-				'nonce'    => wp_create_nonce( SCF_Config::NAME . '-relation-taxonomies' )
-			) );
-		}
+		wp_enqueue_script(
+			SCF_Config::PREFIX . 'editor-relation-taxonomies',
+			plugins_url( SCF_Config::NAME ) . '/js/editor-relation-taxonomies.js',
+			array( 'jquery' ),
+			null,
+			true
+		);
+		wp_localize_script( SCF_Config::PREFIX . 'editor-relation-taxonomies', 'smart_cf_relation_taxonomies', array(
+			'endpoint' => admin_url( 'admin-ajax.php' ),
+			'action'   => SCF_Config::PREFIX . 'relational-terms-search',
+			'nonce'    => wp_create_nonce( SCF_Config::NAME . '-relation-taxonomies' )
+		) );
 	}
 
 	/**

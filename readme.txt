@@ -127,6 +127,7 @@ You can send your own language pack to me.
 
 = 2.1.1 =
 * Fix revision lines duplication (by [@hanamura](https://github.com/hanamura))
+* Fixed a bug that relation felds don't work in options page.
 
 = 2.1.0 =
 * Support separated key and value in select, checkbox, radio.

@@ -1,10 +1,10 @@
 <?php
 /**
  * Smart_Custom_Fields_Field_Relation
- * Version    : 1.3.1
+ * Version    : 1.3.2
  * Author     : inc2734
  * Created    : October 7, 2014
- * Modified   : February 1, 2016
+ * Modified   : June 22, 2016
  * License    : GPLv2 or later
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
  */
@@ -46,20 +46,18 @@ class Smart_Custom_Fields_Field_Relation extends Smart_Custom_Fields_Field_Base 
 	 * @param string $hook
 	 */
 	public function admin_enqueue_scripts( $hook ) {
-		if ( in_array( $hook, array( 'post-new.php', 'post.php', 'user-edit.php', 'profile.php', 'edit-tags.php' ) ) ) {
-			wp_enqueue_script(
-				SCF_Config::PREFIX . 'editor-relation-post-types',
-				plugins_url( SCF_Config::NAME ) . '/js/editor-relation-post-types.js',
-				array( 'jquery' ),
-				null,
-				true
-			);
-			wp_localize_script( SCF_Config::PREFIX . 'editor-relation-post-types', 'smart_cf_relation_post_types', array(
-				'endpoint' => admin_url( 'admin-ajax.php' ),
-				'action'   => SCF_Config::PREFIX . 'relational-posts-search',
-				'nonce'    => wp_create_nonce( SCF_Config::NAME . '-relation-post-types' )
-			) );
-		}
+		wp_enqueue_script(
+			SCF_Config::PREFIX . 'editor-relation-post-types',
+			plugins_url( SCF_Config::NAME ) . '/js/editor-relation-post-types.js',
+			array( 'jquery' ),
+			null,
+			true
+		);
+		wp_localize_script( SCF_Config::PREFIX . 'editor-relation-post-types', 'smart_cf_relation_post_types', array(
+			'endpoint' => admin_url( 'admin-ajax.php' ),
+			'action'   => SCF_Config::PREFIX . 'relational-posts-search',
+			'nonce'    => wp_create_nonce( SCF_Config::NAME . '-relation-post-types' )
+		) );
 	}
 
 	/**
