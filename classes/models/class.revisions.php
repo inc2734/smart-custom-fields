@@ -1,10 +1,10 @@
 <?php
 /**
  * Smart_Custom_Fields_Revisions
- * Version    : 1.1.3
+ * Version    : 1.1.4
  * Author     : inc2734
  * Created    : September 23, 2014
- * Modified   : November 27, 2015
+ * Modified   : June 22, 2016
  * License    : GPLv2 or later
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
  */
@@ -76,7 +76,7 @@ class Smart_Custom_Fields_Revisions {
 
 	/**
 	 * プレビューのときはプレビューのメタデータを返す。ただし、アイキャッチはリビジョンが無いので除外する
-	 * 
+	 *
 	 * @param mixed $value
 	 * @param int $post_id
 	 * @param string $meta_key
@@ -88,7 +88,7 @@ class Smart_Custom_Fields_Revisions {
 		if ( is_null( SCF::get_field( get_post( $post_id ), $meta_key ) ) ) {
 			return $value;
 		}
-		
+
 		if ( $preview_id = $this->get_preview_id( $post_id ) && $meta_key !== '_thumbnail_id' ) {
 			if ( $post_id !== $preview_id ) {
 				$value = get_post_meta( $preview_id, $meta_key, $single );
@@ -99,7 +99,7 @@ class Smart_Custom_Fields_Revisions {
 
 	/**
 	 * プレビューの Post ID を返す
-	 * 
+	 *
 	 * @param int $post_id
 	 * @return int $preview_id
 	 */
@@ -116,7 +116,7 @@ class Smart_Custom_Fields_Revisions {
 
 	/**
 	 * リビジョン比較画面でメタデータを表示させるためにキーを追加する
-	 * 
+	 *
 	 * @param array $fields
 	 * @return array $fields
 	 */
@@ -137,7 +137,7 @@ class Smart_Custom_Fields_Revisions {
 
 	/**
 	 * リビジョン比較画面にメタデータを表示
-	 * 
+	 *
 	 * @param $value
 	 * @param $column
 	 * @param array $post
@@ -173,7 +173,7 @@ class Smart_Custom_Fields_Revisions {
 
 	/**
 	 * false ならリビジョンとして保存される
-	 * 
+	 *
 	 * @param bool $check_for_changes
 	 * @param WP_Post $last_revision 最新のリビジョン
 	 * @param WP_Post $post 現在の投稿
