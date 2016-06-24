@@ -750,7 +750,6 @@ class SCF_Test extends WP_UnitTestCase {
 	 * Register custom fields using filter hook
 	 */
 	public function _register( $settings, $type, $id, $meta_type ) {
-		// SCF::add_setting( 'ユニークなID', 'メタボックスのタイトル' );
 		if (
 			( $type === 'post' && $id === $this->post_id ) ||
 			( $type === 'post' && $id === $this->new_post_id ) ||
