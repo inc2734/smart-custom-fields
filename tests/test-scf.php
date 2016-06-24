@@ -691,9 +691,39 @@ class SCF_Test extends WP_UnitTestCase {
 	}
 
 	/**
+	 * @group is_empty
+	 */
+	public function test_is_empty() {
+		$this->assertTrue( SCF::is_empty( $value ) );
+
+		$value = null;
+		$this->assertTrue( SCF::is_empty( $value ) );
+
+		$value = 'a';
+		$this->assertFalse( SCF::is_empty( $value ) );
+
+		$value = 0;
+		$this->assertFalse( SCF::is_empty( $value ) );
+
+		$value = array( 'a' );
+		$this->assertFalse( SCF::is_empty( $value ) );
+	}
+
+	/**
+	 * @group is_assoc
+	 */
+	public function test_is_assoc() {
+		$this->assertFalse( SCF::is_assoc( 0 ) );
+		$this->assertFalse( SCF::is_assoc( 'a' ) );
+		$this->assertFalse( SCF::is_assoc( array( 'a' ) ) );
+		$this->assertTrue( SCF::is_assoc( array( 'a' => 'a' ) ) );
+		$this->assertTrue( SCF::is_assoc( array( 'a' => 'a', 'b' ) ) );
+	}
+
+	/**
 	 * @group choices_eol_to_array
 	 */
-	public function test__choices_eol_to_array() {
+	public function test_choices_eol_to_array() {
 		$this->assertSame( array(), SCF::choices_eol_to_array( '' ) );
 		$this->assertSame( array(), SCF::choices_eol_to_array( false ) );
 		$this->assertSame( array(), SCF::choices_eol_to_array( null ) );

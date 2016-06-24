@@ -615,7 +615,7 @@ class SCF {
 	 * @param boolean $multidimensional True if a multidimensional array is inclusion into associative array, the default value is false
 	 * @return boolean
 	 */
-	public static function is_assoc( $data, $multidimensional=false ) {
+	public static function is_assoc( $data, $multidimensional = false ) {
 		if ( !is_array( $data ) || empty( $data ) ) {
 			return false;
 		}
