@@ -332,29 +332,31 @@ class SCF_Test extends WP_UnitTestCase {
 	 * @group get_term_meta
 	 */
 	public function test_get_term_meta__meta_data_saved() {
-		update_term_meta( $this->term_id, 'text', 'text' );
+		$Meta = new Smart_Custom_Fields_Meta( get_term( $this->term_id, 'category' ) );
+
+		$Meta->update( 'text', 'text' );
 		$this->assertSame( 'text', SCF::get_term_meta( $this->term_id, 'category', 'text' ) );
-		update_term_meta( $this->term_id, 'checkbox', 'not-exist-key' );
+		$Meta->update( 'checkbox', 'not-exist-key' );
 		$this->assertSame( array( 'not-exist-key' ), SCF::get_term_meta( $this->term_id, 'category', 'checkbox' ) );
 		$this->assertSame( '', SCF::get_term_meta( $this->term_id, 'category', 'text-has-default' ) );
 		$this->assertSame( array(), SCF::get_term_meta( $this->term_id, 'category', 'checkbox-has-default' ) );
 		$this->assertSame( array(), SCF::get_term_meta( $this->term_id, 'category', 'checkbox-key-value' ) );
 
 		// In repeatable group, non multi-value field
-		add_term_meta( $this->term_id, 'repeat-text', 'a' );
-		add_term_meta( $this->term_id, 'repeat-text', 'b' );
+		$Meta->add( 'repeat-text', 'a' );
+		$Meta->add( 'repeat-text', 'b' );
 		$this->assertEquals(
 			array( 'a', 'b' ),
 			SCF::get_term_meta( $this->term_id, 'category', 'repeat-text' )
 		);
 
 		// In repeatable group, multi-value field
-		update_term_meta( $this->term_id, SCF_Config::PREFIX . 'repeat-multiple-data', array(
+		$Meta->update( SCF_Config::PREFIX . 'repeat-multiple-data', array(
 			'repeat-checkbox' => array( 1, 2 ),
 		) );
-		add_term_meta( $this->term_id, 'repeat-checkbox', 'a' );
-		add_term_meta( $this->term_id, 'repeat-checkbox', 'b' );
-		add_term_meta( $this->term_id, 'repeat-checkbox', 'c' );
+		$Meta->add( 'repeat-checkbox', 'a' );
+		$Meta->add( 'repeat-checkbox', 'b' );
+		$Meta->add( 'repeat-checkbox', 'c' );
 		$this->assertEquals(
 			array(
 				array( 'a' ),
