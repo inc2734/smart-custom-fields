@@ -31,28 +31,33 @@ class SCF_Test extends WP_UnitTestCase {
 	 */
 	public function setUp() {
 		parent::setUp();
-		// カスタムフィールドを設定するための投稿
+		// The post for custom fields
 		$this->post_id = $this->factory->post->create( array(
 			'post_type'   => 'post',
 			'post_status' => 'publish',
 		) );
-		// カスタムフィールドを設定するための投稿（新規投稿時）
+
+		// The auto draft post for custom fields
 		$this->new_post_id = $this->factory->post->create( array(
 			'post_type'   => 'post',
 			'post_status' => 'auto-draft',
 		) );
-		// カスタムフィールドを設定するための投稿（下書き）
+
+		// The draft post for custom fields
 		$this->draft_post_id = $this->factory->post->create( array(
 			'post_type'   => 'post',
 			'post_status' => 'draft',
 		) );
-		// カスタムフィールドを設定するためのユーザー
+
+		// The user for custom fields
 		$this->user_id = $this->factory->user->create( array( 'role' => 'editor' ) );
-		// カスタムフィールドを設定するためのターム
+
+		// The term for custom fields
 		$this->term_id = $this->factory->term->create( array( 'taxonomy' => 'category' ) );
-		// カスタムフィールドを設定するためのオプションページ
+
+		// The option page for custom fields
 		$this->menu_slug = SCF::add_options_page( 'page title', 'menu title', 'manage_options', 'menu-slug' );
-		// コードでカスタムフィールドを定義
+
 		add_filter( 'smart-cf-register-fields', array( $this, '_register' ), 10, 4 );
 
 		$Cache = Smart_Custom_Fields_Cache::getInstance();
@@ -71,520 +76,409 @@ class SCF_Test extends WP_UnitTestCase {
 	/**
 	 * @group get
 	 */
-	public function test_get__Post_IDが取得できないときはnull() {
-		$this->assertNull( SCF::get( 'text'     , false ) );
-		$this->assertNull( SCF::get( 'text3'    , false ) );
-		$this->assertNull( SCF::get( 'checkbox' , false ) );
-		$this->assertNull( SCF::get( 'checkbox3', false ) );
-	}
+	public function test_get() {
+		// When the post id isn't get
+		$this->assertNull( SCF::get( 'text', false ) );
 
-	/**
-	 * @group get
-	 */
-	public function test_get__未保存の投稿の場合はデフォルト値を返す() {
-		$this->assertSame( ''     , SCF::get( 'text'     , $this->new_post_id ) );
-		$this->assertSame( array(), SCF::get( 'text3'    , $this->new_post_id ) );
+		// When post isn't saved, return the default value.
+		$this->assertSame( '', SCF::get( 'text', $this->new_post_id ) );
 		$this->assertSame( array(), SCF::get( 'checkbox' , $this->new_post_id ) );
-		$this->assertSame( array(), SCF::get( 'checkbox3', $this->new_post_id ) );
-		$this->assertSame( array( 'a', 'b', 'c' ), SCF::get( 'checkbox-key-value', $this->new_post_id ) );
-		$this->assertSame(
-			array(
-				'text'         => '',
-				'checkbox'     => array(),
-				'group-name-3' => array(
-					array(
-						'text3'     => '',
-						'checkbox3' => array(),
-					),
-				),
-				'text-has-default'         => 'text default',
-				'text-has-not-default'     => '',
-				'checkbox-has-default'     => array( 'A', 'B' ),
-				'checkbox-has-not-default' => array(),
-				'checkbox-key-value'       => array( 'a', 'b', 'c' ),
-			),
-			SCF::gets( $this->new_post_id )
-		);
-	}
+		$this->assertSame( 'a', SCF::get( 'text-has-default', $this->new_post_id ) );
+		$this->assertSame( array( 'a' ), SCF::get( 'checkbox-has-default', $this->new_post_id ) );
+		$this->assertSame( array( 'a' ), SCF::get( 'checkbox-key-value', $this->new_post_id ) );
 
-	/**
-	 * @group get
-	 */
-	public function test_get__メタデータが保存されていないときはデフォルト値を返す() {
-		$this->assertSame( ''     , SCF::get( 'text'     , $this->post_id ) );
-		$this->assertSame( array(), SCF::get( 'text3'    , $this->post_id ) );
+		// When meta data isn't saved, return the default value.
+		$this->assertSame( '', SCF::get( 'text', $this->post_id ) );
 		$this->assertSame( array(), SCF::get( 'checkbox' , $this->post_id ) );
-		$this->assertSame( array(), SCF::get( 'checkbox3', $this->post_id ) );
-		$this->assertSame( array( 'a', 'b', 'c' ), SCF::get( 'checkbox-key-value', $this->new_post_id ) );
-		$this->assertSame(
-			array(
-				'text'         => '',
-				'checkbox'     => array(),
-				'group-name-3' => array(
-					array(
-						'text3'     => '',
-						'checkbox3' => array(),
-					),
-				),
-				'text-has-default'         => 'text default',
-				'text-has-not-default'     => '',
-				'checkbox-has-default'     => array( 'A', 'B' ),
-				'checkbox-has-not-default' => array(),
-				'checkbox-key-value'       => array( 'a', 'b', 'c' ),
-			),
-			SCF::gets( $this->post_id )
-		);
+		$this->assertSame( 'a', SCF::get( 'text-has-default', $this->post_id ) );
+		$this->assertSame( array( 'a' ), SCF::get( 'checkbox-has-default', $this->post_id ) );
+		$this->assertSame( array( 'a' ), SCF::get( 'checkbox-key-value', $this->post_id ) );
+
+		// When non exist fields
+		$this->assertNull( SCF::get( 'not-exist', $this->post_id ) );
 	}
 
 	/**
 	 * @group get
 	 */
-	public function test_get__存在しないカスタムフィールドの場合はnull() {
-		$this->assertNull( SCF::get( 'not_exist', $this->post_id ) );
+	public function test_get__meta_data_saved() {
+		update_post_meta( $this->post_id, 'text', 'text' );
+		$this->assertSame( 'text', SCF::get( 'text', $this->post_id ) );
+		update_post_meta( $this->post_id, 'checkbox', 'not-exist-key' );
+		$this->assertSame( array( 'not-exist-key' ), SCF::get( 'checkbox', $this->post_id ) );
+		$this->assertSame( '', SCF::get( 'text-has-default', $this->post_id ) );
+		$this->assertSame( array(), SCF::get( 'checkbox-has-default', $this->post_id ) );
+		$this->assertSame( array(), SCF::get( 'checkbox-key-value', $this->post_id ) );
+
+		// In repeatable group, non multi-value field
+		add_post_meta( $this->post_id, 'repeat-text', 'a' );
+		add_post_meta( $this->post_id, 'repeat-text', 'b' );
+		$this->assertEquals(
+			array( 'a', 'b' ),
+			SCF::get( 'repeat-text', $this->post_id )
+		);
+
+		// In repeatable group, multi-value field
+		update_post_meta( $this->post_id, SCF_Config::PREFIX . 'repeat-multiple-data', array(
+			'repeat-checkbox' => array( 1, 2 ),
+		) );
+		add_post_meta( $this->post_id, 'repeat-checkbox', 'a' );
+		add_post_meta( $this->post_id, 'repeat-checkbox', 'b' );
+		add_post_meta( $this->post_id, 'repeat-checkbox', 'c' );
+		$this->assertEquals(
+			array(
+				array( 'a' ),
+				array( 'b', 'c' ),
+			),
+			SCF::get( 'repeat-checkbox', $this->post_id )
+		);
 	}
 
 	/**
 	 * @group gets
 	 */
-	public function test_gets__Post_IDが取得できないときはnull() {
+	public function test_gets() {
+		// When the post id isn't get
 		$this->assertNull( SCF::gets( false ) );
+
+		// When post isn't saved, return the default value.
+		$this->assertSame( array(
+			'text'                 => '',
+			'text-has-default'     => 'a',
+			'checkbox'             => array(),
+			'checkbox-has-default' => array( 'a' ),
+			'checkbox-key-value'   => array( 'a' ),
+			'group'                => array(
+				array(
+					'repeat-text'     => '',
+					'repeat-checkbox' => array(),
+				),
+			),
+		), SCF::gets( $this->new_post_id ) );
+
+		// When meta data isn't saved, return the default value.
+		$this->assertSame( array(
+			'text'                 => '',
+			'text-has-default'     => 'a',
+			'checkbox'             => array(),
+			'checkbox-has-default' => array( 'a' ),
+			'checkbox-key-value'   => array( 'a' ),
+			'group'                => array(
+				array(
+					'repeat-text'     => '',
+					'repeat-checkbox' => array(),
+				),
+			),
+		), SCF::gets( $this->post_id ) );
+	}
+
+	/**
+	 * @group gets
+	 */
+	public function test_gets__meta_data_saved() {
+		update_post_meta( $this->post_id, 'text', 'text' );
+		update_post_meta( $this->post_id, 'checkbox', 'not-exist-key' );
+		add_post_meta( $this->post_id, 'repeat-text', 'a' );
+		add_post_meta( $this->post_id, 'repeat-text', 'b' );
+		update_post_meta( $this->post_id, SCF_Config::PREFIX . 'repeat-multiple-data', array(
+			'repeat-checkbox' => array( 1, 2 ),
+		) );
+		add_post_meta( $this->post_id, 'repeat-checkbox', 'a' );
+		add_post_meta( $this->post_id, 'repeat-checkbox', 'b' );
+		add_post_meta( $this->post_id, 'repeat-checkbox', 'c' );
+
+		$this->assertSame( array(
+			'text'                 => 'text',
+			'text-has-default'     => '',
+			'checkbox'             => array( 'not-exist-key' ),
+			'checkbox-has-default' => array(),
+			'checkbox-key-value'   => array(),
+			'group'                => array(
+				array(
+					'repeat-text'     => 'a',
+					'repeat-checkbox' => array( 'a' ),
+				),
+				array(
+					'repeat-text'     => 'b',
+					'repeat-checkbox' => array( 'b', 'c' ),
+				),
+			),
+		), SCF::gets( $this->post_id ) );
 	}
 
 	/**
 	 * @group get_user_meta
 	 */
-	public function test_get_user_meta__User_IDが取得できないときはnull() {
+	public function test_get_user_meta() {
+		// When the user id isn't get
 		$this->assertNull( SCF::get_user_meta( false, 'text' ) );
-		$this->assertNull( SCF::get_user_meta( false, 'checkbox' ) );
-		$this->assertNull( SCF::get_user_meta( false, 'text3' ) );
-		$this->assertNull( SCF::get_user_meta( false, 'checkbox3' ) );
-		$this->assertNull( SCF::get_user_meta( false, 'checkbox-key-value' ) );
 		$this->assertNull( SCF::get_user_meta( false ) );
-	}
 
-	/**
-	 * @group get_user_meta
-	 */
-	public function test_get_user_meta__メタデータが保存されていないときはデフォルト値を返す() {
-		$this->assertSame( ''     , SCF::get_user_meta( $this->user_id, 'text' ) );
-		$this->assertSame( array(), SCF::get_user_meta( $this->user_id, 'text3' ) );
+		// When meta data isn't saved, return the default value.
+		$this->assertSame( '', SCF::get_user_meta( $this->user_id, 'text' ) );
 		$this->assertSame( array(), SCF::get_user_meta( $this->user_id, 'checkbox' ) );
-		$this->assertSame( array(), SCF::get_user_meta( $this->user_id, 'checkbox3' ) );
-		$this->assertSame( array( 'a', 'b', 'c' ), SCF::get_user_meta( $this->user_id, 'checkbox-key-value' ) );
-		$this->assertSame(
-			array(
-				'text'         => '',
-				'checkbox'     => array(),
-				'group-name-3' => array(
-					array(
-						'text3'     => '',
-						'checkbox3' => array(),
-					),
+		$this->assertSame( 'a', SCF::get_user_meta( $this->user_id, 'text-has-default' ) );
+		$this->assertSame( array( 'a' ), SCF::get_user_meta( $this->user_id, 'checkbox-has-default' ) );
+		$this->assertSame( array( 'a' ), SCF::get_user_meta( $this->user_id, 'checkbox-key-value' ) );
+		$this->assertSame( array(
+			'text'                 => '',
+			'text-has-default'     => 'a',
+			'checkbox'             => array(),
+			'checkbox-has-default' => array( 'a' ),
+			'checkbox-key-value'   => array( 'a' ),
+			'group'                => array(
+				array(
+					'repeat-text'     => '',
+					'repeat-checkbox' => array(),
 				),
-				'text-has-default'         => 'text default',
-				'text-has-not-default'     => '',
-				'checkbox-has-default'     => array( 'A', 'B' ),
-				'checkbox-has-not-default' => array(),
-				'checkbox-key-value'       => array( 'a', 'b', 'c' ),
 			),
-			SCF::get_user_meta( $this->user_id )
-		);
+		), SCF::get_user_meta( $this->user_id ) );
+
+		// When non exist fields
+		$this->assertNull( SCF::get_user_meta( $this->user_id, 'not-exist' ) );
 	}
 
 	/**
 	 * @group get_user_meta
 	 */
-	public function test_get_user_meta__存在しないカスタムフィールドの場合はnull() {
-		$this->assertNull( SCF::get_user_meta( $this->user_id, 'not_exist' ) );
+	public function test_get_user_meta__meta_data_saved() {
+		update_user_meta( $this->user_id, 'text', 'text' );
+		$this->assertSame( 'text', SCF::get_user_meta( $this->user_id, 'text' ) );
+		update_user_meta( $this->user_id, 'checkbox', 'not-exist-key' );
+		$this->assertSame( array( 'not-exist-key' ), SCF::get_user_meta( $this->user_id, 'checkbox' ) );
+		$this->assertSame( '', SCF::get_user_meta( $this->user_id, 'text-has-default' ) );
+		$this->assertSame( array(), SCF::get_user_meta( $this->user_id, 'checkbox-has-default' ) );
+		$this->assertSame( array(), SCF::get_user_meta( $this->user_id, 'checkbox-key-value' ) );
+
+		// In repeatable group, non multi-value field
+		add_user_meta( $this->user_id, 'repeat-text', 'a' );
+		add_user_meta( $this->user_id, 'repeat-text', 'b' );
+		$this->assertEquals(
+			array( 'a', 'b' ),
+			SCF::get_user_meta( $this->user_id, 'repeat-text' )
+		);
+
+		// In repeatable group, multi-value field
+		update_user_meta( $this->user_id, SCF_Config::PREFIX . 'repeat-multiple-data', array(
+			'repeat-checkbox' => array( 1, 2 ),
+		) );
+		add_user_meta( $this->user_id, 'repeat-checkbox', 'a' );
+		add_user_meta( $this->user_id, 'repeat-checkbox', 'b' );
+		add_user_meta( $this->user_id, 'repeat-checkbox', 'c' );
+		$this->assertEquals(
+			array(
+				array( 'a' ),
+				array( 'b', 'c' ),
+			),
+			SCF::get_user_meta( $this->user_id, 'repeat-checkbox' )
+		);
+
+		$this->assertSame( array(
+			'text'                 => 'text',
+			'text-has-default'     => '',
+			'checkbox'             => array( 'not-exist-key' ),
+			'checkbox-has-default' => array(),
+			'checkbox-key-value'   => array(),
+			'group'                => array(
+				array(
+					'repeat-text'     => 'a',
+					'repeat-checkbox' => array( 'a' ),
+				),
+				array(
+					'repeat-text'     => 'b',
+					'repeat-checkbox' => array( 'b', 'c' ),
+				),
+			),
+		), SCF::get_user_meta( $this->user_id ) );
 	}
 
 	/**
 	 * @group get_term_meta
 	 */
-	public function test_get_term_meta__User_IDが取得できないときはnull() {
+	public function test_get_term_meta() {
+		// When the term id isn't get
 		$this->assertNull( SCF::get_term_meta( false, 'category', 'text' ) );
-		$this->assertNull( SCF::get_term_meta( false, 'category', 'checkbox' ) );
-		$this->assertNull( SCF::get_term_meta( false, 'category', 'text3' ) );
-		$this->assertNull( SCF::get_term_meta( false, 'category', 'checkbox3' ) );
-		$this->assertNull( SCF::get_term_meta( false, 'category', 'checkbox-key-value' ) );
 		$this->assertNull( SCF::get_term_meta( false, 'category' ) );
-	}
 
-	/**
-	 * @group get_term_meta
-	 */
-	public function test_get_term_meta__メタデータが保存されていないときはデフォルト値を返す() {
-		$this->assertSame( ''     , SCF::get_term_meta( $this->term_id, 'category', 'text' ) );
-		$this->assertSame( array(), SCF::get_term_meta( $this->term_id, 'category', 'text3' ) );
+		// When the taxonomy slug isn't get
+		$this->assertNull( SCF::get_term_meta( $this->term_id, false, 'text' ) );
+		$this->assertNull( SCF::get_term_meta( $this->term_id, false ) );
+
+		// When meta data isn't saved, return the default value.
+		$this->assertSame( '', SCF::get_term_meta( $this->term_id, 'category', 'text' ) );
 		$this->assertSame( array(), SCF::get_term_meta( $this->term_id, 'category', 'checkbox' ) );
-		$this->assertSame( array(), SCF::get_term_meta( $this->term_id, 'category', 'checkbox3' ) );
-		$this->assertSame( array( 'a', 'b', 'c' ), SCF::get_term_meta( $this->term_id, 'category', 'checkbox-key-value' ) );
-		$this->assertSame(
-			array(
-				'text'         => '',
-				'checkbox'     => array(),
-				'group-name-3' => array(
-					array(
-						'text3'     => '',
-						'checkbox3' => array(),
-					),
+		$this->assertSame( 'a', SCF::get_term_meta( $this->term_id, 'category', 'text-has-default' ) );
+		$this->assertSame( array( 'a' ), SCF::get_term_meta( $this->term_id, 'category', 'checkbox-has-default' ) );
+		$this->assertSame( array( 'a' ), SCF::get_term_meta( $this->term_id, 'category', 'checkbox-key-value' ) );
+		$this->assertSame( array(
+			'text'                 => '',
+			'text-has-default'     => 'a',
+			'checkbox'             => array(),
+			'checkbox-has-default' => array( 'a' ),
+			'checkbox-key-value'   => array( 'a' ),
+			'group'                => array(
+				array(
+					'repeat-text'     => '',
+					'repeat-checkbox' => array(),
 				),
-				'text-has-default'         => 'text default',
-				'text-has-not-default'     => '',
-				'checkbox-has-default'     => array( 'A', 'B' ),
-				'checkbox-has-not-default' => array(),
-				'checkbox-key-value'       => array( 'a', 'b', 'c' ),
 			),
-			SCF::get_term_meta( $this->term_id, 'category' )
-		);
+		), SCF::get_term_meta( $this->term_id, 'category' ) );
+
+		// When non exist fields
+		$this->assertNull( SCF::get_term_meta( $this->term_id, 'category', 'not-exist' ) );
 	}
 
 	/**
 	 * @group get_term_meta
 	 */
-	public function test_get_term_meta__存在しないカスタムフィールドの場合はnull() {
-		$this->assertNull( SCF::get_term_meta( $this->term_id, 'category', 'not_exist' ) );
+	public function test_get_term_meta__meta_data_saved() {
+		update_term_meta( $this->term_id, 'text', 'text' );
+		$this->assertSame( 'text', SCF::get_term_meta( $this->term_id, 'category', 'text' ) );
+		update_term_meta( $this->term_id, 'checkbox', 'not-exist-key' );
+		$this->assertSame( array( 'not-exist-key' ), SCF::get_term_meta( $this->term_id, 'category', 'checkbox' ) );
+		$this->assertSame( '', SCF::get_term_meta( $this->term_id, 'category', 'text-has-default' ) );
+		$this->assertSame( array(), SCF::get_term_meta( $this->term_id, 'category', 'checkbox-has-default' ) );
+		$this->assertSame( array(), SCF::get_term_meta( $this->term_id, 'category', 'checkbox-key-value' ) );
+
+		// In repeatable group, non multi-value field
+		add_term_meta( $this->term_id, 'repeat-text', 'a' );
+		add_term_meta( $this->term_id, 'repeat-text', 'b' );
+		$this->assertEquals(
+			array( 'a', 'b' ),
+			SCF::get_term_meta( $this->term_id, 'category', 'repeat-text' )
+		);
+
+		// In repeatable group, multi-value field
+		update_term_meta( $this->term_id, SCF_Config::PREFIX . 'repeat-multiple-data', array(
+			'repeat-checkbox' => array( 1, 2 ),
+		) );
+		add_term_meta( $this->term_id, 'repeat-checkbox', 'a' );
+		add_term_meta( $this->term_id, 'repeat-checkbox', 'b' );
+		add_term_meta( $this->term_id, 'repeat-checkbox', 'c' );
+		$this->assertEquals(
+			array(
+				array( 'a' ),
+				array( 'b', 'c' ),
+			),
+			SCF::get_term_meta( $this->term_id, 'category', 'repeat-checkbox' )
+		);
+
+		$this->assertSame( array(
+			'text'                 => 'text',
+			'text-has-default'     => '',
+			'checkbox'             => array( 'not-exist-key' ),
+			'checkbox-has-default' => array(),
+			'checkbox-key-value'   => array(),
+			'group'                => array(
+				array(
+					'repeat-text'     => 'a',
+					'repeat-checkbox' => array( 'a' ),
+				),
+				array(
+					'repeat-text'     => 'b',
+					'repeat-checkbox' => array( 'b', 'c' ),
+				),
+			),
+		), SCF::get_term_meta( $this->term_id, 'category' ) );
 	}
 
 	/**
 	 * @group get_option_meta
 	 */
-	public function test_get_option_meta__menu_slugが取得できないときはnull() {
+	public function test_get_option_meta() {
+		// When the term id isn't get
 		$this->assertNull( SCF::get_option_meta( false, 'text' ) );
-		$this->assertNull( SCF::get_option_meta( false, 'checkbox' ) );
-		$this->assertNull( SCF::get_option_meta( false, 'text3' ) );
-		$this->assertNull( SCF::get_option_meta( false, 'checkbox3' ) );
-		$this->assertNull( SCF::get_option_meta( false, 'checkbox-key-value' ) );
 		$this->assertNull( SCF::get_option_meta( false ) );
-	}
 
-	/**
-	 * @group get_option_meta
-	 */
-	public function test_get_option_meta__メタデータが保存されていないときはデフォルト値を返す() {
-		$this->assertSame( ''     , SCF::get_option_meta( $this->menu_slug, 'text' ) );
-		$this->assertSame( array(), SCF::get_option_meta( $this->menu_slug, 'text3' ) );
+		// When meta data isn't saved, return the default value.
+		$this->assertSame( '', SCF::get_option_meta( $this->menu_slug, 'text' ) );
 		$this->assertSame( array(), SCF::get_option_meta( $this->menu_slug, 'checkbox' ) );
-		$this->assertSame( array(), SCF::get_option_meta( $this->menu_slug, 'checkbox3' ) );
-		$this->assertSame( array( 'a', 'b', 'c' ), SCF::get_option_meta( $this->menu_slug, 'checkbox-key-value' ) );
-		$this->assertSame(
-			array(
-				'text'         => '',
-				'checkbox'     => array(),
-				'group-name-3' => array(
-					array(
-						'text3'     => '',
-						'checkbox3' => array(),
-					),
+		$this->assertSame( 'a', SCF::get_option_meta( $this->menu_slug, 'text-has-default' ) );
+		$this->assertSame( array( 'a' ), SCF::get_option_meta( $this->menu_slug, 'checkbox-has-default' ) );
+		$this->assertSame( array( 'a' ), SCF::get_option_meta( $this->menu_slug, 'checkbox-key-value' ) );
+		$this->assertSame( array(
+			'text'                 => '',
+			'text-has-default'     => 'a',
+			'checkbox'             => array(),
+			'checkbox-has-default' => array( 'a' ),
+			'checkbox-key-value'   => array( 'a' ),
+			'group'                => array(
+				array(
+					'repeat-text'     => '',
+					'repeat-checkbox' => array(),
 				),
-				'text-has-default'         => 'text default',
-				'text-has-not-default'     => '',
-				'checkbox-has-default'     => array( 'A', 'B' ),
-				'checkbox-has-not-default' => array(),
-				'checkbox-key-value'       => array( 'a', 'b', 'c' ),
 			),
-			SCF::get_user_meta( $this->user_id )
-		);
+		), SCF::get_option_meta( $this->menu_slug ) );
+
+		// When non exist fields
+		$this->assertNull( SCF::get_option_meta( $this->menu_slug, 'not-exist' ) );
 	}
 
 	/**
 	 * @group get_option_meta
 	 */
-	public function test_get_option_meta__存在しないカスタムフィールドの場合はnull() {
-		$this->assertNull( SCF::get_user_meta( $this->menu_slug, 'not_exist' ) );
-	}
+	public function test_get_option_meta__meta_data_saved() {
+		$Option = SCF::generate_option_object( $this->menu_slug );
+		$Meta   = new Smart_Custom_Fields_Meta( $Option );
 
-	/**
-	 * @group get
-	 */
-	public function test_get__非繰り返し内の単一値項目() {
-		update_post_meta( $this->post_id, 'text', 'hoge' );
-		$this->assertEquals( 'hoge', SCF::get( 'text', $this->post_id ) );
-	}
+		$Meta->update( 'text', 'text' );
+		$this->assertSame( 'text', SCF::get_option_meta( $this->menu_slug, 'text' ) );
+		$Meta->update( 'checkbox', 'not-exist-key' );
+		$this->assertSame( array( 'not-exist-key' ), SCF::get_option_meta( $this->menu_slug, 'checkbox' ) );
+		$this->assertSame( '', SCF::get_option_meta( $this->menu_slug, 'text-has-default' ) );
+		$this->assertSame( array(), SCF::get_option_meta( $this->menu_slug, 'checkbox-has-default' ) );
+		$this->assertSame( array(), SCF::get_option_meta( $this->menu_slug, 'checkbox-key-value' ) );
 
-	/**
-	 * @group get
-	 */
-	public function test_get__非繰り返し内の複数値項目() {
-		add_post_meta( $this->post_id, 'checkbox', 1 );
-		add_post_meta( $this->post_id, 'checkbox', 2 );
-		add_post_meta( $this->post_id, 'checkbox', 3 );
-		add_post_meta( $this->post_id, 'checkbox', 4 );
+		// In repeatable group, non multi-value field
+		$Meta->add( 'repeat-text', 'a' );
+		$Meta->add( 'repeat-text', 'b' );
 		$this->assertEquals(
-			array( 1, 2, 3, 4 ),
-			SCF::get( 'checkbox', $this->post_id )
+			array( 'a', 'b' ),
+			SCF::get_option_meta( $this->menu_slug, 'repeat-text' )
 		);
-	}
 
-	/**
-	 * @group get
-	 */
-	public function test_get__繰り返し内の単一値項目() {
-		add_post_meta( $this->post_id, 'text3', 1 );
-		add_post_meta( $this->post_id, 'text3', 2 );
-		$this->assertEquals(
-			array( 1, 2 ),
-			SCF::get( 'text3', $this->post_id )
-		);
-	}
-
-	/**
-	 * @group get
-	 */
-	public function test_get__繰り返し内の複数値項目() {
-		// ループ内のチェックボックス（複数値項目）は必ずこのメタデータを持つ
-		update_post_meta( $this->post_id, SCF_Config::PREFIX . 'repeat-multiple-data', array(
-			'checkbox3' => array( 1, 2 ),
-		) );
-
-		add_post_meta( $this->post_id, 'checkbox3', 1 );
-		add_post_meta( $this->post_id, 'checkbox3', 2 );
-		add_post_meta( $this->post_id, 'checkbox3', 3 );
+		// In repeatable group, multi-value field
+		$Meta->update( SCF_Config::PREFIX . 'repeat-multiple-data', array( 'repeat-checkbox' => array( 1, 2 ) ) );
+		$Meta->add( 'repeat-checkbox', 'a' );
+		$Meta->add( 'repeat-checkbox', 'b' );
+		$Meta->add( 'repeat-checkbox', 'c' );
 		$this->assertEquals(
 			array(
-				array( 1 ),
-				array( 2, 3 ),
+				array( 'a' ),
+				array( 'b', 'c' ),
 			),
-			SCF::get( 'checkbox3', $this->post_id )
+			SCF::get_option_meta( $this->menu_slug, 'repeat-checkbox' )
 		);
-	}
 
-	/**
-	 * @group gets
-	 */
-	public function test_gets__未保存の投稿の場合はデフォルト値を返す() {
-		$this->assertEquals(
-			array(
-				'text'     => '',
-				'checkbox' => array(),
-				'group-name-3' => array(
-					array(
-						'text3'     => '',
-						'checkbox3' => array(),
-					),
+		$this->assertSame( array(
+			'text'                 => 'text',
+			'text-has-default'     => '',
+			'checkbox'             => array( 'not-exist-key' ),
+			'checkbox-has-default' => array(),
+			'checkbox-key-value'   => array(),
+			'group'                => array(
+				array(
+					'repeat-text'     => 'a',
+					'repeat-checkbox' => array( 'a' ),
 				),
-				'text-has-default'         => 'text default',
-				'text-has-not-default'     => '',
-				'checkbox-has-default'     => array( 'A', 'B' ),
-				'checkbox-has-not-default' => array(),
-				'checkbox-key-value'       => array( 'a', 'b', 'c' ),
+				array(
+					'repeat-text'     => 'b',
+					'repeat-checkbox' => array( 'b', 'c' ),
+				),
 			),
-			SCF::gets( $this->new_post_id )
-		);
-	}
-
-	/**
-	 * @group gets
-	 */
-	public function test_gets__メタデータが保存されていないときは空値() {
-		update_post_meta( $this->post_id, 'text', 'hoge' );
-		add_post_meta( $this->post_id, 'checkbox', 1 );
-		add_post_meta( $this->post_id, 'checkbox', 2 );
-
-		// ループ内のチェックボックス（複数値項目）は必ずこのメタデータを持つ
-		update_post_meta( $this->post_id, SCF_Config::PREFIX . 'repeat-multiple-data', array(
-			'checkbox3' => array( 1, 2 ),
-		) );
-
-		add_post_meta( $this->post_id, 'checkbox3', 1 );
-		add_post_meta( $this->post_id, 'checkbox3', 2 );
-		add_post_meta( $this->post_id, 'checkbox3', 3 );
-
-		$this->assertEquals(
-			array(
-				'text'     => 'hoge',
-				'checkbox' => array(
-					1, 2,
-				),
-				'group-name-3' => array(
-					array(
-						'text3'     => '',
-						'checkbox3' => array( 1 ),
-					),
-					array(
-						'text3'     => '',
-						'checkbox3' => array( 2, 3 ),
-					),
-				),
-				'text-has-default'         => '',
-				'text-has-not-default'     => '',
-				'checkbox-has-default'     => array(),
-				'checkbox-has-not-default' => array(),
-				'checkbox-key-value'       => array(),
-			),
-			SCF::gets( $this->post_id )
-		);
-	}
-
-	/**
-	 * @group get_user_meta
-	 */
-	public function test_get_user_meta__繰り返し内の単一値項目() {
-		add_user_meta( $this->user_id, 'text3', 1 );
-		add_user_meta( $this->user_id, 'text3', 2 );
-		$this->assertEquals(
-			array( 1, 2 ),
-			SCF::get_user_meta( $this->user_id, 'text3' )
-		);
-	}
-
-	/**
-	 * @group get_user_meta
-	 */
-	public function test_get_user_meta__繰り返し内の複数値項目() {
-		// ループ内のチェックボックス（複数値項目）は必ずこのメタデータを持つ
-		update_user_meta( $this->user_id, SCF_Config::PREFIX . 'repeat-multiple-data', array(
-			'checkbox3' => array( 1, 2 ),
-		) );
-
-		add_user_meta( $this->user_id, 'checkbox3', 1 );
-		add_user_meta( $this->user_id, 'checkbox3', 2 );
-		add_user_meta( $this->user_id, 'checkbox3', 3 );
-		$this->assertEquals(
-			array(
-				array( 1 ),
-				array( 2, 3 ),
-			),
-			SCF::get_user_meta( $this->user_id, 'checkbox3' )
-		);
-	}
-
-	/**
-	 * @group get_user_meta
-	 */
-	public function test_get_user_meta_all() {
-		update_user_meta( $this->user_id, 'text', 'hoge' );
-		add_user_meta( $this->user_id, 'checkbox', 1 );
-		add_user_meta( $this->user_id, 'checkbox', 2 );
-
-		// ループ内のチェックボックス（複数値項目）は必ずこのメタデータを持つ
-		update_user_meta( $this->user_id, SCF_Config::PREFIX . 'repeat-multiple-data', array(
-			'checkbox3' => array( 1, 2 ),
-		) );
-
-		add_user_meta( $this->user_id, 'checkbox3', 1 );
-		add_user_meta( $this->user_id, 'checkbox3', 2 );
-		add_user_meta( $this->user_id, 'checkbox3', 3 );
-
-		$this->assertEquals(
-			array(
-				'text'     => 'hoge',
-				'checkbox' => array(
-					1, 2,
-				),
-				'group-name-3' => array(
-					array(
-						'text3'     => '',
-						'checkbox3' => array( 1 ),
-					),
-					array(
-						'text3'     => '',
-						'checkbox3' => array( 2, 3 ),
-					),
-				),
-				'text-has-default'         => '',
-				'text-has-not-default'     => '',
-				'checkbox-has-default'     => array(),
-				'checkbox-has-not-default' => array(),
-				'checkbox-key-value'       => array(),
-			),
-			SCF::get_user_meta( $this->user_id )
-		);
-	}
-
-	/**
-	 * @group get_term_meta
-	 */
-	public function test_get_term_meta__繰り返し内の単一値項目() {
-		$Meta = new Smart_Custom_Fields_Meta( get_term( $this->term_id, 'category' ) );
-		$Meta->add( 'text3', 1 );
-		$Meta->add( 'text3', 2 );
-		$this->assertEquals(
-			array( 1, 2 ),
-			SCF::get_term_meta( $this->term_id, 'category', 'text3' )
-		);
-	}
-
-	/**
-	 * @group get_term_meta
-	 */
-	public function test_get_term_meta__繰り返し内の複数値項目() {
-		$Meta = new Smart_Custom_Fields_Meta( get_term( $this->term_id, 'category' ) );
-		// ループ内のチェックボックス（複数値項目）は必ずこのメタデータを持つ
-		$Meta->add( SCF_Config::PREFIX . 'repeat-multiple-data', array(
-			'checkbox3' => array( 1, 2 ),
-		) );
-
-		$Meta->add( 'checkbox3', 1 );
-		$Meta->add( 'checkbox3', 2 );
-		$Meta->add( 'checkbox3', 3 );
-		$this->assertEquals(
-			array(
-				array( 1 ),
-				array( 2, 3 ),
-			),
-			SCF::get_term_meta( $this->term_id, 'category', 'checkbox3' )
-		);
-	}
-
-	/**
-	 * @group get_term_meta
-	 */
-	public function test_get_term_meta_all() {
-		$Meta = new Smart_Custom_Fields_Meta( get_term( $this->term_id, 'category' ) );
-		$Meta->update( 'text', 'hoge' );
-		$Meta->add( 'checkbox', 1 );
-		$Meta->add( 'checkbox', 2 );
-
-		// ループ内のチェックボックス（複数値項目）は必ずこのメタデータを持つ
-		$Meta->add( SCF_Config::PREFIX . 'repeat-multiple-data', array(
-			'checkbox3' => array( 1, 2 ),
-		) );
-
-		$Meta->add( 'checkbox3', 1 );
-		$Meta->add( 'checkbox3', 2 );
-		$Meta->add( 'checkbox3', 3 );
-
-		$this->assertEquals(
-			array(
-				'text'     => 'hoge',
-				'checkbox' => array(
-					1, 2,
-				),
-				'group-name-3' => array(
-					array(
-						'text3'     => '',
-						'checkbox3' => array( 1 ),
-					),
-					array(
-						'text3'     => '',
-						'checkbox3' => array( 2, 3 ),
-					),
-				),
-				'text-has-default'         => '',
-				'text-has-not-default'     => '',
-				'checkbox-has-default'     => array(),
-				'checkbox-has-not-default' => array(),
-				'checkbox-key-value'       => array(),
-			),
-			SCF::get_term_meta( $this->term_id, 'category' )
-		);
+		), SCF::get_option_meta( $this->menu_slug ) );
 	}
 
 	/**
 	 * @group get_field
 	 */
-	public function test_get_field__フィールドが存在しないときはnull() {
+	public function test_get_field() {
+		// When the field isn't existed
 		$this->go_to( $this->post_id );
-		$Field = SCF::get_field( get_post( $this->post_id ), 'not_exist' );
+		$Field = SCF::get_field( get_post( $this->post_id ), 'not-exist' );
 		$this->assertNull( $Field );
-	}
 
-	/**
-	 * @group get_field
-	 */
-	public function test_get_field__フィールドが存在する() {
-		$this->go_to( $this->post_id );
+		// When the field existed
 		$Field = SCF::get_field( get_post( $this->post_id ), 'text' );
 		$this->assertEquals( 'text', $Field->get( 'name' ) );
 	}
@@ -610,12 +504,19 @@ class SCF_Test extends WP_UnitTestCase {
 	 * @group get_settings_posts
 	 */
 	public function test_get_settings_posts() {
+		// When isn't saved
+		$this->assertSame( array(), SCF::get_settings_posts( get_post( $this->post_id ) ) );
+	}
+
+	/**
+	 * @group get_settings_posts
+	 */
+	public function test_get_settings_posts__saved() {
 		$post_id = $this->factory->post->create( array(
 			'post_type'  => SCF_Config::NAME,
 			'post_title' => 'test_settings_post',
 		) );
 		update_post_meta( $post_id, SCF_Config::PREFIX . 'condition', array( 'post' ) );
-
 		$settings_posts = SCF::get_settings_posts( get_post( $this->post_id ) );
 		$this->assertCount( 1, $settings_posts );
 		foreach ( $settings_posts as $settings_post ) {
@@ -624,88 +525,38 @@ class SCF_Test extends WP_UnitTestCase {
 	}
 
 	/**
-	 * @group get_settings_posts_cache
-	 */
-	public function test_get_settings_posts__設定されていないときは空配列() {
-		$this->assertSame( array(), SCF::get_settings_posts( get_post( $this->post_id ) ) );
-	}
-
-	/**
 	 * @group get_settings
 	 */
-	public function test_get_settings__投稿タイプとPost_IDが一致する() {
+	public function test_get_settings() {
+		// Match the post
 		$post_id = $this->factory->post->create( array(
-			'post_type'  => SCF_Config::NAME,
-			'post_title' => 'test_settings',
+			'post_type'   => 'post',
+			'post_status' => 'publish',
 		) );
-
-		$settings = SCF::get_settings( get_post( $this->post_id ) );
+		$settings = SCF::get_settings( get_post( $post_id ) );
 		foreach ( $settings as $Setting ) {
 			$this->assertTrue( is_a( $Setting, 'Smart_Custom_Fields_Setting' ) );
 		}
-	}
 
-	/**
-	 * @group get_settings
-	 */
-	public function test_get_settings__投稿タイプが一致しない() {
-		$post_id = $this->factory->post->create( array(
-			'post_type'  => SCF_Config::NAME,
-			'post_title' => 'test_settings',
-		) );
-
+		// Not match the post
 		$settings = SCF::get_settings( get_post( 99999 ) );
 		$this->assertSame( array(), $settings );
-	}
 
-	/**
-	 * @group get_settings
-	 */
-	public function test_get_settings__ロールが一致する() {
-		$post_id = $this->factory->post->create( array(
-			'post_type'  => SCF_Config::NAME,
-			'post_title' => 'test_settings',
-		) );
-
-		$settings = SCF::get_settings( get_userdata( $this->user_id ) );
+		// Match the role
+		$user_id = $this->factory->user->create( array( 'role' => 'editor' ) );
+		$settings = SCF::get_settings( get_userdata( $user_id ) );
 		$this->assertTrue( is_a( current( $settings ), 'Smart_Custom_Fields_Setting' ) );
-	}
 
-	/**
-	 * @group get_settings
-	 */
-	public function test_get_settings__ロールが一致しない() {
-		$post_id = $this->factory->post->create( array(
-			'post_type'  => SCF_Config::NAME,
-			'post_title' => 'test_settings',
-		) );
-
+		// Not match the role
 		$settings = SCF::get_settings( get_userdata( 99999 ) );
 		$this->assertSame( array(), $settings );
-	}
 
-	/**
-	 * @group get_settings
-	 */
-	public function test_get_settings__タームが一致する() {
-		$post_id = $this->factory->post->create( array(
-			'post_type'  => SCF_Config::NAME,
-			'post_title' => 'test_settings',
-		) );
-
-		$settings = SCF::get_settings( get_term( $this->term_id, 'category' ) );
+		// Match the term
+		$term_id = $this->factory->term->create( array( 'taxonomy' => 'category' ) );
+		$settings = SCF::get_settings( get_term( $term_id, 'category' ) );
 		$this->assertTrue( is_a( current( $settings ), 'Smart_Custom_Fields_Setting' ) );
-	}
 
-	/**
-	 * @group get_settings
-	 */
-	public function test_get_settings__タームが一致しない() {
-		$post_id = $this->factory->post->create( array(
-			'post_type'  => SCF_Config::NAME,
-			'post_title' => 'test_settings',
-		) );
-
+		// Not match the term
 		$settings = SCF::get_settings( get_term( 99999, 'category' ) );
 		$this->assertSame( array(), $settings );
 	}
@@ -713,20 +564,19 @@ class SCF_Test extends WP_UnitTestCase {
 	/**
 	 * @group get_repeat_multiple_data
 	 */
-	public function test_get_repeat_multiple_data__存在しないときは空配列() {
-		$this->assertSame( array(), SCF::get_repeat_multiple_data( get_post( $this->post_id ) ) );
-	}
-
-	/**
-	 * @group get_repeat_multiple_data
-	 */
 	public function test_get_repeat_multiple_data() {
-		update_post_meta( $this->post_id, SCF_Config::PREFIX . 'repeat-multiple-data', array(
-			'checkbox3' => array( 1, 2 ),
-		) );
+		// When isn't existed
+		$this->assertSame( array(), SCF::get_repeat_multiple_data( get_post( $this->post_id ) ) );
+
+		// When existed
+		update_post_meta( $this->post_id, SCF_Config::PREFIX . 'repeat-multiple-data',
+			array(
+				'repeat-checkbox' => array( 1, 2 ),
+			)
+		);
 		$this->assertSame(
 			array(
-				'checkbox3' => array( 1, 2 ),
+				'repeat-checkbox' => array( 1, 2 ),
 			),
 			SCF::get_repeat_multiple_data( get_post( $this->post_id ) )
 		);
@@ -735,15 +585,15 @@ class SCF_Test extends WP_UnitTestCase {
 	/**
 	 * @group get_groups
 	 */
-	public function test_get_groups__Groupが返ってくるか() {
+	public function test_get_groups() {
 		$settings = SCF::get_settings( get_post( $this->post_id ) );
 		foreach ( $settings as $Setting ) {
 			foreach ( $Setting->get_groups() as $Group ) {
-				// グループ名が数字の場合は null が返る
+				// Return null when group name is numeric.
 				$this->assertTrue(
 					in_array(
 						$Group->get_name(),
-						array( null, null, 'group-name-3', 'group-name-4', 'group-name-5' ),
+						array( null, 'text-has-default', 'checkbox', 'checkbox-has-default', 'checkbox-key-value', 'group' ),
 						true
 					)
 				);
@@ -754,124 +604,58 @@ class SCF_Test extends WP_UnitTestCase {
 	/**
 	 * @group get_default_value
 	 */
-	public function test_get_default_value__指定されたFieldのデフォルト値なし_singleがtrueのときは空文字列() {
-		$Field = SCF::get_field( get_post( $this->post_id ), 'text-has-not-default' );
-		$this->assertSame(
-			'',
-			SCF::get_default_value( $Field, true )
-		);
-	}
+	public function test_get_default_value() {
+		// When the default value isn't existed, single is true
+		$Field = SCF::get_field( get_post( $this->post_id ), 'text' );
+		$this->assertSame( '', SCF::get_default_value( $Field, true ) );
 
-	/**
-	 * @group get_default_value
-	 */
-	public function test_get_default_value__指定されたFieldのデフォルト値なし_singleがfalseのときは空配列() {
-		$Field = SCF::get_field( get_post( $this->post_id ), 'text-has-not-default' );
-		$this->assertSame(
-			array(),
-			SCF::get_default_value( $Field )
-		);
-	}
+		// When the default value isn't existed, single is false
+		$Field = SCF::get_field( get_post( $this->post_id ), 'text' );
+		$this->assertSame( array(), SCF::get_default_value( $Field, false ) );
 
-	/**
-	 * @group get_default_value
-	 */
-	public function test_get_default_value__指定されたFieldのデフォルト値あり_singleがtrueのときは文字列() {
+		// When the default value existed, single is true
 		$Field = SCF::get_field( get_post( $this->post_id ), 'text-has-default' );
-		$this->assertSame(
-			'text default',
-			SCF::get_default_value( $Field, true )
-		);
-	}
+		$this->assertSame( 'a', SCF::get_default_value( $Field, true ) );
 
-	/**
-	 * @group get_default_value
-	 */
-	public function test_get_default_value__指定されたFieldのデフォルト値あり_singleがfalseのときは配列() {
+		// When the default value existed, single is false
 		$Field = SCF::get_field( get_post( $this->post_id ), 'text-has-default' );
-		$this->assertSame(
-			array(
-				'text default',
-			),
-			SCF::get_default_value( $Field )
-		);
-	}
+		$this->assertSame( array( 'a' ), SCF::get_default_value( $Field, false ) );
 
-	/**
-	 * @group get_default_value
-	 */
-	public function test_get_default_value__指定されたFieldのデフォルト値あり_複数値項目_singleがtrueのときは配列() {
+		// When the default value existed, multi-value field, single is true
 		$Field = SCF::get_field( get_post( $this->post_id ), 'checkbox-has-default' );
-		$this->assertSame(
-			array(
-				'A', 'B',
-			),
-			SCF::get_default_value( $Field, true )
-		);
-	}
+		$this->assertSame( array( 'a' ), SCF::get_default_value( $Field, true ) );
 
-	/**
-	 * @group get_default_value
-	 */
-	public function test_get_default_value__指定されたFieldのデフォルト値あり_複数値項目_singleがfalseのときは配列() {
+		// When the default value existed, multi-value field, single is false
 		$Field = SCF::get_field( get_post( $this->post_id ), 'checkbox-has-default' );
-		$this->assertSame(
-			array(
-				'A', 'B',
-			),
-			SCF::get_default_value( $Field )
-		);
-	}
+		$this->assertSame( array( 'a' ), SCF::get_default_value( $Field, false ) );
 
-	/**
-	 * @group get_default_value
-	 */
-	public function test_get_default_value__指定されたFieldのデフォルト値なし_複数値項目_singleがtrueのときは配列() {
-		$Field = SCF::get_field( get_post( $this->post_id ), 'checkbox-has-not-default' );
-		$this->assertSame(
-			array(),
-			SCF::get_default_value( $Field, true )
-		);
-	}
+		// When the default value isn't existed, multi-value field, single is true
+		$Field = SCF::get_field( get_post( $this->post_id ), 'checkbox' );
+		$this->assertSame( array(), SCF::get_default_value( $Field, true ) );
 
-	/**
-	 * @group get_default_value
-	 */
-	public function test_get_default_value__指定されたFieldのデフォルト値なし_複数値項目_singleがfalseのときは配列() {
-		$Field = SCF::get_field( get_post( $this->post_id ), 'checkbox-has-not-default' );
-		$this->assertSame(
-			array(),
-			SCF::get_default_value( $Field )
-		);
+		// When the default value isn't existed, multi-value field, single is false
+		$Field = SCF::get_field( get_post( $this->post_id ), 'checkbox' );
+		$this->assertSame( array(), SCF::get_default_value( $Field, false ) );
 	}
 
 	/**
 	 * @group get_post_meta
 	 */
-	public function test_get_post_meta__SCF以外のメタデータを取得できるか() {
+	public function test_get_post_meta() {
+		// If getting meta data other than SCF
 		update_post_meta( $this->post_id, '_get_post_meta', 'value' );
-		$this->assertSame(
-			'value',
-			get_post_meta( $this->post_id, '_get_post_meta', true )
-		);
-
+		$this->assertSame( 'value', get_post_meta( $this->post_id, '_get_post_meta', true ) );
 		update_post_meta( $this->new_post_id, '_get_post_meta', 'value' );
-		$this->assertSame(
-			'value',
-			get_post_meta( $this->new_post_id, '_get_post_meta', true )
-		);
-
+		$this->assertSame( 'value', get_post_meta( $this->new_post_id, '_get_post_meta', true ) );
 		update_post_meta( $this->draft_post_id, '_get_post_meta', 'value' );
-		$this->assertSame(
-			'value',
-			get_post_meta( $this->draft_post_id, '_get_post_meta', true )
-		);
+		$this->assertSame( 'value', get_post_meta( $this->draft_post_id, '_get_post_meta', true ) );
 	}
 
 	/**
 	 * @group get_post_meta
 	 */
-	public function test_get_post_meta__プレビュー時にSCF以外のメタデータを取得できるか() {
+	public function test_get_post_meta__in_preview() {
+		// If getting meta data other than SCF in preview
 		global $wp_query, $post;
 
 		update_post_meta( $this->post_id, '_get_post_meta', 'value' );
@@ -883,35 +667,26 @@ class SCF_Test extends WP_UnitTestCase {
 		update_post_meta( $this->draft_post_id, '_get_post_meta', 'value' );
 		$this->create_revision( $this->draft_post_id );
 
-		// プレビュー状態に設定
+		// Set preview state
 		$backup_wp_query = clone $wp_query;
 		$wp_query->is_preview = true;
 
 		$post = get_post( $this->post_id );
 		setup_postdata( $post );
-		$this->assertSame(
-			'value',
-			get_post_meta( $this->post_id, '_get_post_meta', true )
-		);
+		$this->assertSame( 'value', get_post_meta( $this->post_id, '_get_post_meta', true ) );
 		wp_reset_postdata();
 
 		$post = get_post( $this->new_post_id );
 		setup_postdata( $post );
-		$this->assertSame(
-			'value',
-			get_post_meta( $this->new_post_id, '_get_post_meta', true )
-		);
+		$this->assertSame( 'value', get_post_meta( $this->new_post_id, '_get_post_meta', true ) );
 		wp_reset_postdata();
 
 		$post = get_post( $this->draft_post_id );
 		setup_postdata( $post );
-		$this->assertSame(
-			'value',
-			get_post_meta( $this->draft_post_id, '_get_post_meta', true )
-		);
+		$this->assertSame( 'value', get_post_meta( $this->draft_post_id, '_get_post_meta', true ) );
 		wp_reset_postdata();
 
-		// プレビュー状態を解除
+		// Release the preview state
 		$wp_query = $backup_wp_query;
 	}
 
@@ -942,13 +717,7 @@ class SCF_Test extends WP_UnitTestCase {
 	}
 
 	/**
-	 * フック経由でカスタムフィールドを設定
-	 *
-	 * @param array $settings 管理画面で設定された Smart_Custom_Fields_Setting の配列
-	 * @param string $type 投稿タイプ or ロール or タクソノミー or menu-slug
-	 * @param int $id 投稿ID or ユーザーID or タームID or menu-slug
-	 * @param string $meta_type メタデータのタイプ。post or user or term or option
-	 * @return array
+	 * Register custom fields using filter hook
 	 */
 	public function _register( $settings, $type, $id, $meta_type ) {
 		// SCF::add_setting( 'ユニークなID', 'メタボックスのタイトル' );
@@ -960,15 +729,22 @@ class SCF_Test extends WP_UnitTestCase {
 			( $meta_type === 'option' && $id === 'menu-slug' )
 		) {
 			$Setting = SCF::add_setting( 'id-1', 'Register Test' );
-			// $Setting->add_group( 'ユニークなID', 繰り返し可能か, カスタムフィールドの配列 );
 			$Setting->add_group( 0, false, array(
 				array(
 					'name'  => 'text',
-					'label' => 'text field',
+					'label' => 'text',
 					'type'  => 'text',
 				),
 			) );
-			$Setting->add_group( 1, false, array(
+			$Setting->add_group( 'text-has-default', false, array(
+				array(
+					'name'    => 'text-has-default',
+					'label'   => 'text has default',
+					'type'    => 'text',
+					'default' => 'a',
+				),
+			) );
+			$Setting->add_group( 'checkbox', false, array(
 				array(
 					'name'    => 'checkbox',
 					'label'   => 'checkbox field',
@@ -976,55 +752,38 @@ class SCF_Test extends WP_UnitTestCase {
 					'choices' => array( 'a', 'b', 'c' ),
 				),
 			) );
-			$Setting->add_group( 'group-name-3', true, array(
-				array(
-					'name'  => 'text3',
-					'label' => 'text field 3',
-					'type'  => 'text',
-				),
-				array(
-					'name'    => 'checkbox3',
-					'label'   => 'checkbox field 3',
-					'type'    => 'check',
-					'choices' => array( 'a', 'b', 'c' ),
-				),
-			) );
-			$Setting->add_group( 'group-name-4', false, array(
-				array(
-					'name'    => 'text-has-default',
-					'label'   => 'text has default',
-					'type'    => 'text',
-					'default' => 'text default',
-				),
-				array(
-					'name'    => 'text-has-not-default',
-					'label'   => 'text has not default',
-					'type'    => 'text',
-				),
+			$Setting->add_group( 'checkbox-has-default', false, array(
 				array(
 					'name'    => 'checkbox-has-default',
 					'label'   => 'checkbox has default',
 					'type'    => 'check',
-					'choices' => array( 'A', 'B', 'C' ),
-					'default' => "A\nB\nX",
-				),
-				array(
-					'name'    => 'checkbox-has-not-default',
-					'label'   => 'checkbox has not default',
-					'type'    => 'check',
-					'choices' => array( 'A', 'B', 'C' ),
+					'choices' => array( 'a', 'b', 'c' ),
+					'default' => array( 'a' ),
 				),
 			) );
-			$Setting->add_group( 'group-name-5', false, array(
+			$Setting->add_group( 'checkbox-key-value', false, array(
 				array(
 					'name'    => 'checkbox-key-value',
-					'label'   => 'checkbox has key value',
+					'label'   => 'checkbox key value',
 					'type'    => 'check',
-					'choices' => array( 'a' => 'AAA', 'b' => 'BBB', 'c' => 'CCC' ),
-					'default' => "a\nb\nc",
+					'choices' => array( 'a' => 'apple', 'b' => 'banana', 'c' => 'carrot' ),
+					'default' => array( 'a' ),
 				),
 			) );
-			$settings['id-1'] = $Setting;
+			$Setting->add_group( 'group', true, array(
+				array(
+					'name'  => 'repeat-text',
+					'label' => 'repeat text',
+					'type'  => 'text',
+				),
+				array(
+					'name'    => 'repeat-checkbox',
+					'label'   => 'repeat checkbox',
+					'type'    => 'check',
+					'choices' => array( 'a', 'b', 'c' ),
+				),
+			) );
+			$settings[] = $Setting;
 		}
 		return $settings;
 	}
