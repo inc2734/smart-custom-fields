@@ -2,39 +2,84 @@
 class Smart_Custom_Fields_Cache_Test extends WP_UnitTestCase {
 
 	/**
+	 * @var Smart_Custom_Fields_Cache
+	 */
+	protected $Cache;
+
+
+	/**
+	 * @var int
+	 */
+	protected $settings_post_id;
+
+	/**
 	 * @var int
 	 */
 	protected $post_id;
+
+	/**
+	 * @var int
+	 */
+	protected $new_post_id;
+
+	/**
+	 * @var int
+	 */
+	protected $user_id;
+
+	/**
+	 * @var int
+	 */
+	protected $term_id;
+
+	/**
+	 * @var string
+	 */
+	protected $menu_slug;
 
 	/**
 	 * setUp
 	 */
 	public function setUp() {
 		parent::setUp();
-		// カスタムフィールドを設定するための投稿
+
+		// The post id of ettings page
+		$this->settings_post_id = $this->factory->post->create( array(
+			'post_type'   => SCF_Config::NAME,
+			'post_status' => 'publish',
+		) );
+
+		// The post for custom fields
 		$this->post_id = $this->factory->post->create( array(
 			'post_type'   => 'post',
 			'post_status' => 'publish',
 		) );
-		// カスタムフィールドを設定するための投稿（新規投稿時）
+
+		// The auto draft post for custom fields
 		$this->new_post_id = $this->factory->post->create( array(
 			'post_type'   => 'post',
 			'post_status' => 'auto-draft',
 		) );
-		// カスタムフィールドを設定するための投稿（下書き）
+
+		// The draft post for custom fields
 		$this->draft_post_id = $this->factory->post->create( array(
 			'post_type'   => 'post',
 			'post_status' => 'draft',
 		) );
-		// カスタムフィールドを設定するためのユーザー
+
+		// The user for custom fields
 		$this->user_id = $this->factory->user->create( array( 'role' => 'editor' ) );
-		// カスタムフィールドを設定するためのターム
+
+		// The term for custom fields
 		$this->term_id = $this->factory->term->create( array( 'taxonomy' => 'category' ) );
-		// コードでカスタムフィールドを定義
+
+		// The option page for custom fields
+		$this->menu_slug = SCF::add_options_page( 'page title', 'menu title', 'manage_options', 'menu-slug' );
+
 		add_filter( 'smart-cf-register-fields', array( $this, '_register' ), 10, 4 );
 
-		$Cache = Smart_Custom_Fields_Cache::getInstance();
-		$Cache->flush();
+		$this->Cache = Smart_Custom_Fields_Cache::getInstance();
+		$this->Cache->flush();
 	}
 
 	/**
@@ -42,257 +87,215 @@ class Smart_Custom_Fields_Cache_Test extends WP_UnitTestCase {
 	 */
 	public function tearDown() {
 		parent::tearDown();
-		$Cache = Smart_Custom_Fields_Cache::getInstance();
-		$Cache->flush();
+		$this->Cache->flush();
+	}
+
+	/**
+	 * @group save_settings_posts
+	 */
+	public function test_save_settings_posts() {
+		$settings_post = get_post( $this->settings_post_id );
+		$object = get_post( $this->post_id );
+		$this->Cache->save_settings_posts( $object, array( $settings_post ) );
+		$this->assertSame( array( $settings_post ), $this->Cache->get_settings_posts( $object ) );
 	}
 
 	/**
 	 * @group get_settings_posts
 	 */
 	public function test_get_settings_posts() {
-		$Cache = Smart_Custom_Fields_Cache::getInstance();
-		$post_id = $this->factory->post->create( array(
-			'post_type'  => SCF_Config::NAME,
-			'post_title' => 'test_settings_post',
-		) );
-		update_post_meta( $post_id, SCF_Config::PREFIX . 'condition', array( 'post' ) );
+		$settings_post = get_post( $this->settings_post_id );
 
-		$settings_posts = SCF::get_settings_posts( get_post( $this->post_id ) );
-		$settings_posts_cache = $Cache->get_settings_posts( get_post( $this->post_id ) );
-		$this->assertCount( 1, $settings_posts_cache );
-		foreach ( $settings_posts_cache as $settings_post ) {
-			$this->assertEquals( 'test_settings_post', $settings_post->post_title );
-		}
+		// post
+		$object = get_post( $this->post_id );
+		$this->assertNull( $this->Cache->get_settings_posts( $object ) );
+		$this->Cache->save_settings_posts( $object, array( $settings_post ) );
+		$this->assertSame( array( $settings_post ), $this->Cache->get_settings_posts( $object ) );
+
+		// user
+		$object = get_userdata( $this->user_id );
+		$this->assertNull( $this->Cache->get_settings_posts( $object ) );
+		$this->Cache->save_settings_posts( $object, array( $settings_post ) );
+		$this->assertSame( array( $settings_post ), $this->Cache->get_settings_posts( $object ) );
+
+		// term
+		$object = get_term( $this->term_id, 'category' );
+		$this->assertNull( $this->Cache->get_settings_posts( $object ) );
+		$this->Cache->save_settings_posts( $object, array( $settings_post ) );
+		$this->assertSame( array( $settings_post ), $this->Cache->get_settings_posts( $object ) );
+
+		// options page
+		$object = SCF::generate_option_object( $this->menu_slug );
+		$this->assertNull( $this->Cache->get_settings_posts( $object ) );
+		$this->Cache->save_settings_posts( $object, array( $settings_post ) );
+		$this->assertSame( array( $settings_post ), $this->Cache->get_settings_posts( $object ) );
 	}
 
 	/**
-	 * @group get_settings_posts
+	 * @group clear_settings_posts
 	 */
-	public function test_get_settings_posts__キャッシュされていないときはnull() {
-		$Cache = Smart_Custom_Fields_Cache::getInstance();
-		$this->assertNull( $Cache->get_settings_posts( get_post( $this->post_id ) ) );
+	public function test_clear_settings_posts() {
+		$settings_post = get_post( $this->settings_post_id );
+		$object = get_post( $this->post_id );
+		$this->Cache->save_settings_posts( $object, array( $settings_post ) );
+		$this->Cache->clear_settings_posts();
+		$this->assertNull( $this->Cache->get_settings_posts( $object ) );
+	}
+
+	/**
+	 * @group save_settings
+	 */
+	public function test_save_settings() {
+		// post
+		$settings_post_id = 1;
+		$Setting = new Smart_Custom_Fields_Setting( $settings_post_id, 'dummy' );
+		$object = get_post( $this->post_id );
+		$this->Cache->save_settings( $settings_post_id, $Setting, $object );
+		$this->assertEquals( $Setting, $this->Cache->get_settings( $settings_post_id, $object ) );
+
+		// user
+		$settings_post_id = 2;
+		$Setting = new Smart_Custom_Fields_Setting( $settings_post_id, 'dummy' );
+		$object = get_userdata( $this->user_id );
+		$this->Cache->save_settings( $settings_post_id, $Setting, $object );
+		$this->assertEquals( $Setting, $this->Cache->get_settings( $settings_post_id, $object ) );
+
+		// user
+		$settings_post_id = 3;
+		$Setting = new Smart_Custom_Fields_Setting( $settings_post_id, 'dummy' );
+		$object = get_term( $this->term_id, 'category' );
+		$this->Cache->save_settings( $settings_post_id, $Setting, $object );
+		$this->assertEquals( $Setting, $this->Cache->get_settings( $settings_post_id, $object ) );
+
+		// options page
+		$settings_post_id = 4;
+		$Setting = new Smart_Custom_Fields_Setting( $settings_post_id, 'dummy' );
+		$object = SCF::generate_option_object( $this->menu_slug );
+		$this->Cache->save_settings( $settings_post_id, $Setting, $object );
+		$this->assertEquals( $Setting, $this->Cache->get_settings( $settings_post_id, $object ) );
 	}
 
 	/**
 	 * @group get_settings
 	 */
-	public function test_get_settings__投稿タイプが一致する() {
-		$post_id = $this->factory->post->create( array(
-			'post_type'  => SCF_Config::NAME,
-			'post_title' => 'test_settings',
-		) );
-		update_post_meta( $post_id, SCF_Config::PREFIX . 'condition', array( 'post' ) );
+	public function test_get_settings() {
+		$settings_post_id = 1;
+		$Setting = new Smart_Custom_Fields_Setting( $settings_post_id, 'dummy' );
 
-		// キャッシュに保存
-		$settings = SCF::get_settings( get_post( $this->post_id ) );
+		// When isn't existed
+		$this->assertNull( $this->Cache->get_settings( $settings_post_id ) );
 
-		$Cache = Smart_Custom_Fields_Cache::getInstance();
-		$Setting = $Cache->get_settings( $post_id );
-		$this->assertTrue( is_a( $Setting, 'Smart_Custom_Fields_Setting' ) );
+		// When existed
+		$object = get_post( $this->post_id );
+		$this->Cache->save_settings( $settings_post_id, $Setting, $object );
+		$this->assertFalse( $this->Cache->get_settings( $settings_post_id ) );
+		$this->assertSame( $Setting, $this->Cache->get_settings( $settings_post_id, $object ) );
 	}
 
 	/**
-	 * @group get_settings
+	 * @group clear_settings
 	 */
-	public function test_get_settings__投稿タイプが一致しない() {
-		$post_id = $this->factory->post->create( array(
-			'post_type'  => SCF_Config::NAME,
-			'post_title' => 'test_settings',
-		) );
-		update_post_meta( $post_id, SCF_Config::PREFIX . 'condition', array( 'page' ) );
-
-		// キャッシュに保存
-		$settings = SCF::get_settings( get_post( $this->post_id ) );
-
-		$Cache = Smart_Custom_Fields_Cache::getInstance();
-		$Setting = $Cache->get_settings( $post_id );
-		$this->assertNull( $Setting );
+	public function test_clear_settings() {
+		$settings_post_id = 1;
+		$Setting = new Smart_Custom_Fields_Setting( $settings_post_id, 'dummy' );
+		$object = get_post( $this->post_id );
+		$this->Cache->save_settings( $settings_post_id, $Setting, $object );
+		$this->Cache->clear_settings();
+		$this->assertNull( $this->Cache->get_settings( $settings_post_id, $object ) );
 	}
 
 	/**
-	 * @group get_settings
+	 * @group save_repeat_multiple_data
 	 */
-	public function test_get_settings__投稿タイプとPost_IDが一致する() {
-		$post_id = $this->factory->post->create( array(
-			'post_type'  => SCF_Config::NAME,
-			'post_title' => 'test_settings',
-		) );
-		update_post_meta( $post_id, SCF_Config::PREFIX . 'condition', array( 'post' ) );
-		update_post_meta( $post_id, SCF_Config::PREFIX . 'condition-post-ids', $this->post_id );
-
-		// キャッシュに保存
-		$settings = SCF::get_settings( get_post( $this->post_id ) );
-
-		$Cache = Smart_Custom_Fields_Cache::getInstance();
-		$Setting = $Cache->get_settings( $post_id, get_post( $this->post_id ) );
-		$this->assertTrue( is_a( $Setting, 'Smart_Custom_Fields_Setting' ) );
+	public function test_save_repeat_multiple_data() {
+		$object = get_post( $this->post_id );
+		$repeat_multiple_data = array( 'dummy' );
+		$this->Cache->save_repeat_multiple_data( $object, $repeat_multiple_data );
+		$this->assertSame( array( 'dummy' ), $this->Cache->get_repeat_multiple_data( $object ) );
 	}
 
 	/**
-	 * @group get_settings
+	 * @group get_repeat_multiple_data
 	 */
-	public function test_get_settings__投稿タイプは一致するがPost_IDは一致しない() {
-		$post_id = $this->factory->post->create( array(
-			'post_type'  => SCF_Config::NAME,
-			'post_title' => 'test_settings',
-		) );
-		update_post_meta( $post_id, SCF_Config::PREFIX . 'condition', array( 'post' ) );
-		update_post_meta( $post_id, SCF_Config::PREFIX . 'condition-post-ids', '99999' );
+	public function test_get_repeat_multiple_data() {
+		$object = get_post( null );
+		$this->assertNull( $this->Cache->get_repeat_multiple_data( $object ) );
 
-		// キャッシュに保存
-		$settings = SCF::get_settings( get_post( $this->post_id ) );
-
-		$Cache = Smart_Custom_Fields_Cache::getInstance();
-		$Setting = $Cache->get_settings( $post_id, get_post( $this->post_id ) );
-		$this->assertFalse( $Setting );
+		$object = get_post( $this->post_id );
+		$repeat_multiple_data = array( 'dummy' );
+		$this->Cache->save_repeat_multiple_data( $object, $repeat_multiple_data );
+		$this->assertSame( array( 'dummy' ), $this->Cache->get_repeat_multiple_data( $object ) );
 	}
 
 	/**
-	 * @group get_settings
+	 * @group clear_repeat_multiple_data
 	 */
-	public function test_get_settings__ロールが一致する() {
-		$post_id = $this->factory->post->create( array(
-			'post_type'  => SCF_Config::NAME,
-			'post_title' => 'test_settings',
-		) );
-		update_post_meta( $post_id, SCF_Config::PREFIX . 'roles', array( 'editor' ) );
-
-		// キャッシュに保存
-		$settings = SCF::get_settings( get_userdata( $this->user_id ) );
-
-		$Cache = Smart_Custom_Fields_Cache::getInstance();
-		$Setting = $Cache->get_settings( $post_id, get_userdata( $this->user_id ) );
-		$this->assertTrue( is_a( $Setting, 'Smart_Custom_Fields_Setting' ) );
+	public function test_clear_repeat_multiple_data() {
+		$object = get_post( $this->post_id );
+		$repeat_multiple_data = array( 'dummy' );
+		$this->Cache->save_repeat_multiple_data( $object, $repeat_multiple_data );
+		$this->Cache->clear_repeat_multiple_data();
+		$this->assertNull( $this->Cache->get_repeat_multiple_data( $object ) );
 	}
 
 	/**
-	 * @group get_settings
+	 * @group save_meta
 	 */
-	public function test_get_settings__ロールが一致しない() {
-		$post_id = $this->factory->post->create( array(
-			'post_type'  => SCF_Config::NAME,
-			'post_title' => 'test_settings',
-		) );
-		update_post_meta( $post_id, SCF_Config::PREFIX . 'roles', array( 'administrator' ) );
+	public function test_save_meta() {
+		$object = get_post( null );
+		$this->Cache->save_meta( $object, 'text', 'text' );
+		$this->assertNull( $this->Cache->get_meta( $object, 'text' ) );
 
-		// キャッシュに保存
-		$settings = SCF::get_settings( get_userdata( $this->user_id ) );
-
-		$Cache = Smart_Custom_Fields_Cache::getInstance();
-		$Setting = $Cache->get_settings( $post_id, get_userdata( $this->user_id ) );
-		$this->assertNull( $Setting );
+		$object = get_post( $this->post_id );
+		$this->Cache->save_meta( $object, 'text', 'text' );
+		$this->assertSame( 'text', $this->Cache->get_meta( $object, 'text' ) );
 	}
 
 	/**
-	 * @group get_settings
+	 * @group get_meta
 	 */
-	public function test_get_settings__タームが一致する() {
-		$post_id = $this->factory->post->create( array(
-			'post_type'  => SCF_Config::NAME,
-			'post_title' => 'test_settings',
-		) );
-		update_post_meta( $post_id, SCF_Config::PREFIX . 'taxonomies', array( 'category' ) );
+	public function test_get_meta() {
+		$object = get_post( null );
+		$this->Cache->save_meta( $object, 'text', 'text' );
+		$this->assertNull( $this->Cache->get_meta( $object ) );
+		$this->assertNull( $this->Cache->get_meta( $object, 'text' ) );
 
-		// キャッシュに保存
-		$settings = SCF::get_settings( get_term( $this->term_id, 'category' ) );
-
-		$Cache = Smart_Custom_Fields_Cache::getInstance();
-		$Setting = $Cache->get_settings( $post_id, get_term( $this->term_id, 'category' ) );
-		$this->assertTrue( is_a( $Setting, 'Smart_Custom_Fields_Setting' ) );
+		$object = get_post( $this->post_id );
+		$this->Cache->save_meta( $object, 'text', 'text' );
+		$this->assertSame( array( 'text' => 'text' ), $this->Cache->get_meta( $object ) );
+		$this->assertSame( 'text', $this->Cache->get_meta( $object, 'text' ) );
 	}
 
 	/**
-	 * @group get_settings
+	 * @group clear_meta
 	 */
-	public function test_get_settings__タームが一致しない() {
-		$post_id = $this->factory->post->create( array(
-			'post_type'  => SCF_Config::NAME,
-			'post_title' => 'test_settings',
-		) );
-		update_post_meta( $post_id, SCF_Config::PREFIX . 'taxonomies', array( 'post_tag' ) );
-
-		// キャッシュに保存
-		$settings = SCF::get_settings( get_term( $this->term_id, 'category' ) );
-
-		$Cache = Smart_Custom_Fields_Cache::getInstance();
-		$Setting = $Cache->get_settings( $post_id, get_term( $this->term_id, 'category' ) );
-		$this->assertNull( $Setting );
+	public function test_clear_meta() {
+		$object = get_post( $this->post_id );
+		$this->Cache->save_meta( $object, 'text', 'text' );
+		$this->Cache->clear_meta();
+		$this->assertNull( $this->Cache->get_meta( $object, 'text' ) );
 	}
 
 	/**
-	 * フック経由でカスタムフィールドを設定
-	 *
-	 * @param array $settings 管理画面で設定された Smart_Custom_Fields_Setting の配列
-	 * @param string $type 投稿タイプ or ロール or タクソノミー
-	 * @param int $id 投稿ID or ユーザーID or タームID
-	 * @param string $meta_type メタデータのタイプ。post or user or term or option
-	 * @return array
+	 * Register custom fields using filter hook
 	 */
 	public function _register( $settings, $type, $id, $meta_type ) {
-		// SCF::add_setting( 'ユニークなID', 'メタボックスのタイトル' );
 		if (
 			( $type === 'post' && $id === $this->post_id ) ||
 			( $type === 'post' && $id === $this->new_post_id ) ||
 			( $type === 'editor' ) ||
-			( $type === 'category' )
+			( $type === 'category' ) ||
+			( $meta_type === 'option' && $id === 'menu-slug' )
 		) {
-			$Setting = SCF::add_setting( 'id-1', 'Register Test' );
-			// $Setting->add_group( 'ユニークなID', 繰り返し可能か, カスタムフィールドの配列 );
+			$Setting = SCF::add_setting( 'id', 'Register Test' );
 			$Setting->add_group( 0, false, array(
 				array(
 					'name'  => 'text',
-					'label' => 'text field',
+					'label' => 'text',
 					'type'  => 'text',
 				),
 			) );
-			$Setting->add_group( 1, false, array(
-				array(
-					'name'    => 'checkbox',
-					'label'   => 'checkbox field',
-					'type'    => 'check',
-					'choices' => array( 1, 2, 3 ),
-				),
-			) );
-			$Setting->add_group( 'group-name-3', true, array(
-				array(
-					'name'  => 'text3',
-					'label' => 'text field 3',
-					'type'  => 'text',
-				),
-				array(
-					'name'    => 'checkbox3',
-					'label'   => 'checkbox field 3',
-					'type'    => 'check',
-					'choices' => array( 1, 2, 3 ),
-				),
-			) );
-			$Setting->add_group( 'group-name-4', false, array(
-				array(
-					'name'    => 'text-has-default',
-					'label'   => 'text has default',
-					'type'    => 'text',
-					'default' => 'text default',
-				),
-				array(
-					'name'    => 'text-has-not-default',
-					'label'   => 'text has not default',
-					'type'    => 'text',
-				),
-				array(
-					'name'    => 'checkbox-has-default',
-					'label'   => 'checkbox has default',
-					'type'    => 'check',
-					'choices' => array( 'A', 'B', 'C' ),
-					'default' => "A\nB\nX",
-				),
-				array(
-					'name'    => 'checkbox-has-not-default',
-					'label'   => 'checkbox has not default',
-					'type'    => 'check',
-					'choices' => array( 'A', 'B', 'C' ),
-				),
-			) );
-			$settings['id-1'] = $Setting;
+			$settings[] = $Setting;
 		}
 		return $settings;
 	}

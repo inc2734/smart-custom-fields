@@ -35,7 +35,7 @@ class Smart_Custom_Fields_Cache {
 	 * Using post_type as key.
 	 * @var array
 	 */
-	public $settings = array();
+	protected $settings = array();
 
 	/**
 	 * Getting data proccesses is heavy. So saved getted data to $repeat_multiple_data.
@@ -151,8 +151,8 @@ class Smart_Custom_Fields_Cache {
 	 * Saving the Setting object to cache
 	 *
 	 * @param int $settings_post_id
-	 * @param WP_Post|WP_User|WP_Term|stdClass $object
 	 * @param Smart_Custom_Fields_Setting $Setting
+	 * @param WP_Post|WP_User|WP_Term|stdClass $object
 	 */
 	public function save_settings( $settings_post_id, $Setting, $object = null ) {
 		if ( !is_null( $object ) ) {
@@ -171,7 +171,7 @@ class Smart_Custom_Fields_Cache {
 	 * Getting the Setting object cache
 	 * If there isn't the custom field settings ... null
 	 * If there is custom field settings
-	 *     If there is no data for the specified $ meta_type + $id
+	 *     If there is no data for the specified $meta_type + $id
 	 *         There is a thing of the General ... Smart_Custom_Fields_Setting
 	 *         There isn't a thing of the General ... false
 	 *     If there the data for the specified $meta_type + $id ... Smart_Custom_Fields_Setting
