@@ -1,10 +1,10 @@
 <?php
 /**
  * Smart_Custom_Fields_Meta
- * Version    : 1.3.0
+ * Version    : 1.3.1
  * Author     : inc2734
  * Created    : March 17, 2015
- * Modified   : May 31, 2015
+ * Modified   : June 26, 2015
  * License    : GPLv2 or later
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
  */
@@ -342,24 +342,7 @@ class Smart_Custom_Fields_Meta {
 		// Retruning empty value when multi-value is empty, it doesn't save
 		$multiple_data_fields = array();
 
-		switch ( $this->meta_type ) {
-			case 'post' :
-				$object = get_post( $this->id );
-				break;
-			case 'user' :
-				$object = get_userdata( $this->id );
-				break;
-			case 'term' :
-				$object = get_term( $this->id, $this->type );
-				break;
-			case 'option' :
-				$object = SCF::generate_option_object( $this->id );
-				break;
-			default :
-				$object = null;
-		}
-
-		if ( is_null( $object ) ) {
+		if ( is_null( $this->object ) ) {
 			return;
 		}
 
@@ -369,7 +352,7 @@ class Smart_Custom_Fields_Meta {
 			return;
 		}
 
-		$settings = SCF::get_settings( $object );
+		$settings = SCF::get_settings( $this->object );
 		foreach ( $settings as $Setting ) {
 			$groups = $Setting->get_groups();
 			foreach ( $groups as $Group ) {
@@ -420,19 +403,11 @@ class Smart_Custom_Fields_Meta {
 	 * @param WP_Post $revision
 	 */
 	public function restore( $revision ) {
-		switch ( $this->meta_type ) {
-			case 'post' :
-				$object = get_post( $this->id );
-				break;
-			default :
-				$object = null;
-		}
-
-		if ( is_null( $object ) || !is_a( $revision, 'WP_Post' ) ) {
+		if ( $this->meta_type !== 'post' || is_null( $this->object ) || !is_a( $revision, 'WP_Post' ) ) {
 			return;
 		}
 
-		$settings = SCF::get_settings( $object );
+		$settings = SCF::get_settings( $this->object );
 		foreach ( $settings as $Setting ) {
 			$fields = $Setting->get_fields();
 			foreach ( $fields as $Field ) {
