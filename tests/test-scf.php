@@ -31,6 +31,7 @@ class SCF_Test extends WP_UnitTestCase {
 	 */
 	public function setUp() {
 		parent::setUp();
+
 		// The post for custom fields
 		$this->post_id = $this->factory->post->create( array(
 			'post_type'   => 'post',
