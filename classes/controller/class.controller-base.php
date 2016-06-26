@@ -176,7 +176,7 @@ class Smart_Custom_Fields_Controller_Base {
 	 * @param WP_Post|WP_User|WP_Term|stdClass $object
 	 * @param Smart_Custom_Fields_Field_Base $Field
 	 * @param int $index
-	 * @return array or null
+	 * @return array
 	 */
 	public function get_multiple_data_field_value( $object, $Field, $index ) {
 		$Meta       = new Smart_Custom_Fields_Meta( $object );
@@ -220,7 +220,7 @@ class Smart_Custom_Fields_Controller_Base {
 	 * @param WP_Post|WP_User|WP_Term|stdClass $object
 	 * @param Smart_Custom_Fields_Field_Base $Field
 	 * @param int $index
-	 * @return string or null
+	 * @return string
 	 */
 	public function get_single_data_field_value( $object, $Field, $index ) {
 		$Meta       = new Smart_Custom_Fields_Meta( $object );

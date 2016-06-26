@@ -16,18 +16,19 @@ class Smart_Custom_Fields_Controller_Base_Test extends WP_UnitTestCase {
 	 */
 	public function setUp() {
 		parent::setUp();
-		// カスタムフィールドを設定するための投稿（未保存）
+
+		// The post for custom fields
+		$this->post_id = $this->factory->post->create( array(
+			'post_type'   => 'post',
+			'post_status' => 'publish',
+		) );
+
+		// The auto draft post for custom fields
 		$this->new_post_id = $this->factory->post->create( array(
 			'post_type'   => 'post',
 			'post_status' => 'auto-draft',
 		) );
 
-		// カスタムフィールドを設定するための投稿
-		$this->post_id = $this->factory->post->create( array(
-			'post_type'   => 'post',
-			'post_status' => 'publish',
-		) );
-		// コードでカスタムフィールドを定義
 		add_filter( 'smart-cf-register-fields', array( $this, '_register' ), 10, 4 );
 
 		require_once plugin_dir_path( __FILE__ ) . '../classes/controller/class.controller-base.php';
@@ -49,278 +50,165 @@ class Smart_Custom_Fields_Controller_Base_Test extends WP_UnitTestCase {
 	/**
 	 * @group get_multiple_data_field_value
 	 */
-	public function test_get_multiple_data_field_value__indexがnull_デフォルト値ありの場合はデフォルト値を返す() {
+	public function test_get_multiple_data_field_value() {
+		// When $index is null
 		$object = get_post( $this->post_id );
 		$Field  = SCF::get_field( $object, 'checkbox-has-default' );
-		$index  = null;
-		$this->assertEquals(
-			array( 'A', 'B', ),
-			$this->Controller->get_multiple_data_field_value( $object, $Field, $index )
-		);
-	}
+		$this->assertSame( array( 'a' ), $this->Controller->get_multiple_data_field_value( $object, $Field, null ) );
+		$Field  = SCF::get_field( $object, 'checkbox' );
+		$this->assertSame( array(), $this->Controller->get_multiple_data_field_value( $object, $Field, null ) );
 
-
-	/**
-	 * @group get_multiple_data_field_value
-	 */
-	public function test_get_multiple_data_field_value__indexがnull_デフォルト値なしの場合は空配列を返す() {
-		$object = get_post( $this->post_id );
-		$Field  = SCF::get_field( $object, 'checkbox-has-not-default' );
-		$index  = null;
-		$this->assertEquals(
-			array(),
-			$this->Controller->get_multiple_data_field_value( $object, $Field, $index )
-		);
-	}
-
-	/**
-	 * @group get_multiple_data_field_value
-	 */
-	public function test_get_multiple_data_field_value__投稿未保存_デフォルト値ありの場合はデフォルト値を返す() {
+		// When isn't saved meta data. At that time ,$index is ignored.
 		$object = get_post( $this->new_post_id );
 		$Field  = SCF::get_field( $object, 'checkbox-has-default' );
-		$index  = 0;
-		$this->assertEquals(
-			array( 'A', 'B', ),
-			$this->Controller->get_multiple_data_field_value( $object, $Field, $index )
-		);
+		$this->assertSame( array( 'a' ), $this->Controller->get_multiple_data_field_value( $object, $Field, 0 ) );
+		$Field  = SCF::get_field( $object, 'checkbox' );
+		$this->assertSame( array(), $this->Controller->get_multiple_data_field_value( $object, $Field, 0 ) );
 	}
 
 	/**
 	 * @group get_multiple_data_field_value
 	 */
-	public function test_get_multiple_data_field_value__投稿保存済_メタデータ未保存の場合はデフォルト値を返す() {
+	public function test_get_multiple_data_field_value__saved() {
 		$object = get_post( $this->post_id );
-		$Field  = SCF::get_field( $object, 'checkbox-has-default' );
-		$index  = 0;
-		$this->assertEquals(
-			array( 'A', 'B', ),
-			$this->Controller->get_multiple_data_field_value( $object, $Field, $index )
-		);
-	}
-
-	/**
-	 * @group get_multiple_data_field_value
-	 */
-	public function test_get_multiple_data_field_value__未保存_デフォルト値なしの場合は空配列を返す() {
-		$object = get_post( $this->post_id );
-		$Field  = SCF::get_field( $object, 'checkbox-has-not-default' );
-		$index  = 0;
-		$this->assertEquals(
-			array(),
-			$this->Controller->get_multiple_data_field_value( $object, $Field, $index )
-		);
-	}
-
-	/**
-	 * @group get_multiple_data_field_value
-	 */
-	public function test_get_multiple_data_field_value__保存済の場合は配列を返す() {
-		$object = get_post( $this->post_id );
-		$Field  = SCF::get_field( $object, 'checkbox-has-default' );
-		$index  = 0;
-
 		$Meta = new Smart_Custom_Fields_Meta( $object );
-		$Meta->add( 'checkbox-has-default', 'A' );
-
-		$this->assertEquals(
-			array( 'A', ),
-			$this->Controller->get_multiple_data_field_value( $object, $Field, $index )
-		);
+		$Field  = SCF::get_field( $object, 'checkbox-has-default' );
+		$Meta->add( 'checkbox-has-default', 'a' );
+		$Meta->add( 'checkbox-has-default', 'b' );
+		$this->assertSame( array( 'a', 'b' ), $this->Controller->get_multiple_data_field_value( $object, $Field, 0 ) );
+		$Field  = SCF::get_field( $object, 'checkbox' );
+		$Meta->add( 'checkbox', 'a' );
+		$Meta->add( 'checkbox', 'b' );
+		$this->assertSame( array( 'a', 'b' ), $this->Controller->get_multiple_data_field_value( $object, $Field, 0 ) );
 	}
 
 	/**
 	 * @group get_multiple_data_field_value
 	 */
-	public function test_get_multiple_data_field_value__空値を保存済みの場合は空配列を返す() {
+	public function test_get_multiple_data_field_value__saved_multi() {
 		$object = get_post( $this->post_id );
 		$Meta   = new Smart_Custom_Fields_Meta( $object );
+		$Field  = SCF::get_field( $object, 'repeat-checkbox' );
 		$POST   = array(
 			SCF_Config::NAME => array(
-				'checkbox3' => array(
+				'repeat-checkbox' => array(
 					array(),
-					array( 1, 2 ),
-					array( 2, 3 ),
+					array( 'a', 'b' ),
+					array( 'b', 'c' ),
 				),
 			),
 		);
 		$Meta->save( $POST );
-
-		$Field = SCF::get_field( $object, 'checkbox3' );
-		$index = 0; // 空配列が返るべきキー
-
-		$this->assertSame(
-			array(),
-			$this->Controller->get_multiple_data_field_value( $object, $Field, $index )
-		);
+		$this->assertSame( array(), $this->Controller->get_multiple_data_field_value( $object, $Field, 0 ) );
+		$this->assertSame( array( 'a', 'b' ), $this->Controller->get_multiple_data_field_value( $object, $Field, 1 ) );
 	}
 
 	/**
 	 * @group get_single_data_field_value
 	 */
-	public function test_get_single_data_field_value__indexがnull_デフォルト値ありの場合はデフォルト値を返す() {
+	public function test_get_single_data_field_value() {
+		// When $index is null
 		$object = get_post( $this->post_id );
 		$Field  = SCF::get_field( $object, 'text-has-default' );
-		$index  = null;
-		$this->assertEquals(
-			'text default',
-			$this->Controller->get_single_data_field_value( $object, $Field, $index )
-		);
-	}
+		$this->assertSame( 'a', $this->Controller->get_single_data_field_value( $object, $Field, null ) );
+		$Field  = SCF::get_field( $object, 'text' );
+		$this->assertSame( '', $this->Controller->get_single_data_field_value( $object, $Field, null ) );
 
-	/**
-	 * @group get_single_data_field_value
-	 */
-	public function test_get_single_data_field_value__indexがnull_デフォルト値なしの場合は空文字列を返す() {
-		$object = get_post( $this->post_id );
-		$Field  = SCF::get_field( $object, 'text-has-not-default' );
-		$index  = null;
-		$this->assertEquals(
-			'',
-			$this->Controller->get_single_data_field_value( $object, $Field, $index )
-		);
-	}
-
-	/**
-	 * @group get_single_data_field_value
-	 */
-	public function test_get_single_data_field_value__投稿未保存_デフォルト値ありの場合はデフォルト値を返す() {
+		// When isn't saved meta data. At that time ,$index is ignored.
 		$object = get_post( $this->new_post_id );
 		$Field  = SCF::get_field( $object, 'text-has-default' );
-		$index  = 0;
-		$this->assertEquals(
-			'text default',
-			$this->Controller->get_single_data_field_value( $object, $Field, $index )
-		);
+		$this->assertSame( 'a', $this->Controller->get_single_data_field_value( $object, $Field, 0 ) );
+		$Field  = SCF::get_field( $object, 'text' );
+		$this->assertSame( '', $this->Controller->get_single_data_field_value( $object, $Field, 0 ) );
 	}
 
 	/**
 	 * @group get_single_data_field_value
+	 * @group todo
 	 */
-	public function test_get_single_data_field_value__投稿保存済み_メタデータ未保存の場合はデフォルト値を返す() {
+	public function test_get_single_data_field_value__saved() {
 		$object = get_post( $this->post_id );
-		$Field  = SCF::get_field( $object, 'text-has-default' );
-		$index  = 0;
-		$this->assertEquals(
-			'text default',
-			$this->Controller->get_single_data_field_value( $object, $Field, $index )
-		);
-	}
-
-	/**
-	 * @group get_single_data_field_value
-	 */
-	public function test_get_single_data_field_value__未保存_デフォルト値なしの場合は空文字列を返す() {
-		$object = get_post( $this->post_id );
-		$Field  = SCF::get_field( $object, 'text-has-not-default' );
-		$index  = 0;
-		$this->assertEquals(
-			'',
-			$this->Controller->get_single_data_field_value( $object, $Field, $index )
-		);
-	}
-
-	/**
-	 * @group get_single_data_field_value
-	 */
-	public function test_get_single_data_field_value__保存済の場合は文字列を返す() {
-		$object = get_post( $this->post_id );
-		$Field  = SCF::get_field( $object, 'text-has-default' );
-		$index  = 0;
-
 		$Meta = new Smart_Custom_Fields_Meta( $object );
-		$Meta->add( 'text-has-default', 'A' );
+		$Field  = SCF::get_field( $object, 'text-has-default' );
+		$Meta->add( 'text-has-default', 'b' );
+		$Meta->add( 'text-has-default', 'c' );
+		$this->assertSame( 'b', $this->Controller->get_single_data_field_value( $object, $Field, 0 ) );
+		$this->assertSame( 'c', $this->Controller->get_single_data_field_value( $object, $Field, 1 ) );
 
-		$this->assertEquals(
-			'A',
-			$this->Controller->get_single_data_field_value( $object, $Field, $index )
-		);
+		$Field  = SCF::get_field( $object, 'text' );
+		$Meta->add( 'text', 'b' );
+		$Meta->add( 'text', 'c' );
+		$this->assertSame( 'b', $this->Controller->get_single_data_field_value( $object, $Field, 0 ) );
+		$this->assertSame( 'c', $this->Controller->get_single_data_field_value( $object, $Field, 1 ) );
 	}
 
 	/**
-	 * フック経由でカスタムフィールドを設定
-	 *
-	 * @param array $settings 管理画面で設定された Smart_Custom_Fields_Setting の配列
-	 * @param string $type 投稿タイプ or ロール or タクソノミー
-	 * @param int $id 投稿ID or ユーザーID or タームID
-	 * @param string $meta_type メタデータのタイプ。post or user or term or option
-	 * @return array
+	 * Register custom fields using filter hook
 	 */
 	public function _register( $settings, $type, $id, $meta_type ) {
-		// SCF::add_setting( 'ユニークなID', 'メタボックスのタイトル' );
 		if (
 			( $type === 'post' && $id === $this->post_id ) ||
 			( $type === 'post' && $id === $this->new_post_id ) ||
 			( $type === 'editor' ) ||
-			( $type === 'category' )
+			( $type === 'category' ) ||
+			( $meta_type === 'option' && $id === 'menu-slug' )
 		) {
 			$Setting = SCF::add_setting( 'id-1', 'Register Test' );
-			// $Setting->add_group( 'ユニークなID', 繰り返し可能か, カスタムフィールドの配列 );
 			$Setting->add_group( 0, false, array(
 				array(
 					'name'  => 'text',
-					'label' => 'text field',
+					'label' => 'text',
 					'type'  => 'text',
 				),
 			) );
-			$Setting->add_group( 1, false, array(
-				array(
-					'name'    => 'checkbox',
-					'label'   => 'checkbox field',
-					'type'    => 'check',
-					'choices' => array( 1, 2, 3 ),
-				),
-			) );
-			$Setting->add_group( 'group-name-3', true, array(
-				array(
-					'name'  => 'text3',
-					'label' => 'text field 3',
-					'type'  => 'text',
-				),
-				array(
-					'name'    => 'checkbox3',
-					'label'   => 'checkbox field 3',
-					'type'    => 'check',
-					'choices' => array( 1, 2, 3 ),
-				),
-			) );
-			$Setting->add_group( 'group-name-4', false, array(
+			$Setting->add_group( 'text-has-default', false, array(
 				array(
 					'name'    => 'text-has-default',
 					'label'   => 'text has default',
 					'type'    => 'text',
-					'default' => 'text default',
+					'default' => 'a',
 				),
+			) );
+			$Setting->add_group( 'checkbox', false, array(
 				array(
-					'name'    => 'text-has-not-default',
-					'label'   => 'text has not default',
-					'type'    => 'text',
+					'name'    => 'checkbox',
+					'label'   => 'checkbox field',
+					'type'    => 'check',
+					'choices' => array( 'a', 'b', 'c' ),
 				),
+			) );
+			$Setting->add_group( 'checkbox-has-default', false, array(
 				array(
 					'name'    => 'checkbox-has-default',
 					'label'   => 'checkbox has default',
 					'type'    => 'check',
-					'choices' => array( 'A', 'B', 'C' ),
-					'default' => "A\nB\nX",
-				),
-				array(
-					'name'    => 'checkbox-has-not-default',
-					'label'   => 'checkbox has not default',
-					'type'    => 'check',
-					'choices' => array( 'A', 'B', 'C' ),
+					'choices' => array( 'a', 'b', 'c' ),
+					'default' => array( 'a' ),
 				),
 			) );
-			$settings['id-1'] = $Setting;
-
-			$Setting = SCF::add_setting( 'id-2', 'Register Test 2' );
-			$Setting->add_group( 0, false, array(
+			$Setting->add_group( 'checkbox-key-value', false, array(
 				array(
-					'name'  => 'text2-1',
-					'label' => 'text field 2-1',
+					'name'    => 'checkbox-key-value',
+					'label'   => 'checkbox key value',
+					'type'    => 'check',
+					'choices' => array( 'a' => 'apple', 'b' => 'banana', 'c' => 'carrot' ),
+					'default' => array( 'a' ),
+				),
+			) );
+			$Setting->add_group( 'group', true, array(
+				array(
+					'name'  => 'repeat-text',
+					'label' => 'repeat text',
 					'type'  => 'text',
 				),
+				array(
+					'name'    => 'repeat-checkbox',
+					'label'   => 'repeat checkbox',
+					'type'    => 'check',
+					'choices' => array( 'a', 'b', 'c' ),
+				),
 			) );
-			$settings['id-2'] = $Setting;
+			$settings[] = $Setting;
 		}
 		return $settings;
 	}
