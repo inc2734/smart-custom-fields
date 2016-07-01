@@ -295,7 +295,7 @@ class Smart_Custom_Fields_Cache_Test extends WP_UnitTestCase {
 					'type'  => 'text',
 				),
 			) );
-			$settings[] = $Setting;
+			$settings[$Setting->get_id()] = $Setting;
 		}
 		return $settings;
 	}

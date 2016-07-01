@@ -168,7 +168,7 @@ class Smart_Custom_Fields_Revision_Test extends WP_UnitTestCase {
 					'choices' => array( 'a', 'b', 'c' ),
 				),
 			) );
-			$settings[] = $Setting;
+			$settings[$Setting->get_id()] = $Setting;
 		}
 		return $settings;
 	}

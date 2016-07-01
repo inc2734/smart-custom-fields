@@ -55,7 +55,7 @@ class Smart_Custom_Fields_Ajax_Test extends WP_UnitTestCase {
 					'type'  => 'text',
 				),
 			) );
-			$settings['id-1'] = $Setting;
+			$settings[$Setting->get_id()] = $Setting;
 		}
 		return $settings;
 	}

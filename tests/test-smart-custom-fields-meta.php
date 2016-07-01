@@ -152,7 +152,7 @@ class Smart_Custom_Fields_Meta_Test extends WP_UnitTestCase {
 	/**
 	 * @group get
 	 */
-	public function test_get() {
+	public function test_get__post() {
 		$this->assertSame( array(), $this->Meta_post->get( 'text' ) );
 		$this->assertSame( '', $this->Meta_post->get( 'text', true ) );
 		$this->assertSame( array(), $this->Meta_post->get( 'not-exist' ) );
@@ -167,7 +167,12 @@ class Smart_Custom_Fields_Meta_Test extends WP_UnitTestCase {
 		$this->assertSame( '', $this->Meta_post->get( 'text-has-default', true ) );
 		$this->assertSame( array(), $this->Meta_post->get( 'checkbox-has-default' ) );
 		$this->assertSame( '', $this->Meta_post->get( 'checkbox-has-default', true ) );
+	}
 
+	/**
+	 * @group get
+	 */
+	public function test_get__term() {
 		$this->assertSame( array(), $this->Meta_term->get( 'text' ) );
 		$this->assertSame( '', $this->Meta_term->get( 'text', true ) );
 		$this->assertSame( array(), $this->Meta_term->get( 'not-exist' ) );
@@ -182,7 +187,12 @@ class Smart_Custom_Fields_Meta_Test extends WP_UnitTestCase {
 		$this->assertSame( '', $this->Meta_term->get( 'text-has-default', true ) );
 		$this->assertSame( array(), $this->Meta_term->get( 'checkbox-has-default' ) );
 		$this->assertSame( '', $this->Meta_term->get( 'checkbox-has-default', true ) );
+	}
 
+	/**
+	 * @group get
+	 */
+	public function test_get__user() {
 		$this->assertSame( array(), $this->Meta_user->get( 'text' ) );
 		$this->assertSame( '', $this->Meta_user->get( 'text', true ) );
 		$this->assertSame( array(), $this->Meta_user->get( 'not-exist' ) );
@@ -197,7 +207,12 @@ class Smart_Custom_Fields_Meta_Test extends WP_UnitTestCase {
 		$this->assertSame( '', $this->Meta_user->get( 'text-has-default', true ) );
 		$this->assertSame( array(), $this->Meta_user->get( 'checkbox-has-default' ) );
 		$this->assertSame( '', $this->Meta_user->get( 'checkbox-has-default', true ) );
+	}
 
+	/**
+	 * @group get
+	 */
+	public function test_get__option() {
 		$this->assertSame( array(), $this->Meta_option->get( 'text' ) );
 		$this->assertSame( '', $this->Meta_option->get( 'text', true ) );
 		$this->assertSame( array(), $this->Meta_option->get( 'not-exist' ) );
@@ -217,7 +232,7 @@ class Smart_Custom_Fields_Meta_Test extends WP_UnitTestCase {
 	/**
 	 * @group get
 	 */
-	public function test_get__saved() {
+	public function test_get__post_saved() {
 		$this->Meta_post->update( 'text', 'text' );
 		$this->Meta_post->add( 'checkbox', 'a' );
 		$this->Meta_post->add( 'checkbox', 'b' );
@@ -252,7 +267,12 @@ class Smart_Custom_Fields_Meta_Test extends WP_UnitTestCase {
 			),
 			$this->Meta_post->get( '', true )
 		);
+	}
 
+	/**
+	 * @group get
+	 */
+	public function test_get__term_saved() {
 		$this->Meta_term->update( 'text', 'text' );
 		$this->Meta_term->add( 'checkbox', 'a' );
 		$this->Meta_term->add( 'checkbox', 'b' );
@@ -287,7 +307,12 @@ class Smart_Custom_Fields_Meta_Test extends WP_UnitTestCase {
 			),
 			$this->Meta_term->get( '', true )
 		);
+	}
 
+	/**
+	 * @group get
+	 */
+	public function test_get__user_saved() {
 		$this->Meta_user->update( 'text', 'text' );
 		$this->Meta_user->add( 'checkbox', 'a' );
 		$this->Meta_user->add( 'checkbox', 'b' );
@@ -322,7 +347,12 @@ class Smart_Custom_Fields_Meta_Test extends WP_UnitTestCase {
 			),
 			$this->Meta_user->get( '', true )
 		);
+	}
 
+	/**
+	 * @group get
+	 */
+	public function test_get__option_saved() {
 		$this->Meta_option->update( 'text', 'text' );
 		$this->Meta_option->add( 'checkbox', 'a' );
 		$this->Meta_option->add( 'checkbox', 'b' );
@@ -362,22 +392,37 @@ class Smart_Custom_Fields_Meta_Test extends WP_UnitTestCase {
 	/**
 	 * @group update
 	 */
-	public function test_update() {
+	public function test_update__post() {
 		$this->Meta_post->update( 'text', 'text' );
 		$this->assertSame( 'text', $this->Meta_post->get( 'text', true ) );
 		$this->Meta_post->update( 'text', 'new-value' );
 		$this->assertSame( 'new-value', $this->Meta_post->get( 'text', true ) );
+	}
 
+	/**
+	 * @group update
+	 */
+	public function test_update__term() {
 		$this->Meta_term->update( 'text', 'text' );
 		$this->assertSame( 'text', $this->Meta_term->get( 'text', true ) );
 		$this->Meta_term->update( 'text', 'new-value' );
 		$this->assertSame( 'new-value', $this->Meta_term->get( 'text', true ) );
+	}
 
+	/**
+	 * @group update
+	 */
+	public function test_update__user() {
 		$this->Meta_user->update( 'text', 'text' );
 		$this->assertSame( 'text', $this->Meta_user->get( 'text', true ) );
 		$this->Meta_user->update( 'text', 'new-value' );
 		$this->assertSame( 'new-value', $this->Meta_user->get( 'text', true ) );
+	}
 
+	/**
+	 * @group update
+	 */
+	public function test_update__option() {
 		$this->Meta_option->update( 'text', 'text' );
 		$this->assertSame( 'text', $this->Meta_option->get( 'text', true ) );
 		$this->Meta_option->update( 'text', 'new-value' );
@@ -387,7 +432,7 @@ class Smart_Custom_Fields_Meta_Test extends WP_UnitTestCase {
 	/**
 	 * @group update
 	 */
-	public function test_update__using_prev_value() {
+	public function test_update__post_using_prev_value() {
 		$this->Meta_post->update( 'text', 'no-value', 'prev-value' );
 		$this->assertEquals( 'no-value', $this->Meta_post->get( 'text', true ) );
 		$this->Meta_post->update( 'text', 'prev-value' );
@@ -395,7 +440,12 @@ class Smart_Custom_Fields_Meta_Test extends WP_UnitTestCase {
 		$this->assertEquals( 'new-value', $this->Meta_post->get( 'text', true ) );
 		$this->Meta_post->update( 'text', 'text', 'incorrect-value' );
 		$this->assertEquals( 'new-value', $this->Meta_post->get( 'text', true ) );
+	}
 
+	/**
+	 * @group update
+	 */
+	public function test_update__term_using_prev_value() {
 		$this->Meta_term->update( 'text', 'no-value', 'prev-value' );
 		$this->assertEquals( 'no-value', $this->Meta_term->get( 'text', true ) );
 		$this->Meta_term->update( 'text', 'prev-value' );
@@ -403,7 +453,12 @@ class Smart_Custom_Fields_Meta_Test extends WP_UnitTestCase {
 		$this->assertEquals( 'new-value', $this->Meta_term->get( 'text', true ) );
 		$this->Meta_term->update( 'text', 'text', 'incorrect-value' );
 		$this->assertEquals( 'new-value', $this->Meta_term->get( 'text', true ) );
+	}
 
+	/**
+	 * @group update
+	 */
+	public function test_update__user_using_prev_value() {
 		$this->Meta_user->update( 'text', 'no-value', 'prev-value' );
 		$this->assertEquals( 'no-value', $this->Meta_user->get( 'text', true ) );
 		$this->Meta_user->update( 'text', 'prev-value' );
@@ -411,7 +466,12 @@ class Smart_Custom_Fields_Meta_Test extends WP_UnitTestCase {
 		$this->assertEquals( 'new-value', $this->Meta_user->get( 'text', true ) );
 		$this->Meta_user->update( 'text', 'text', 'incorrect-value' );
 		$this->assertEquals( 'new-value', $this->Meta_user->get( 'text', true ) );
+	}
 
+	/**
+	 * @group update
+	 */
+	public function test_update__option_using_prev_value() {
 		$this->Meta_option->update( 'text', 'no-value', 'prev-value' );
 		$this->assertEquals( 'no-value', $this->Meta_option->get( 'text', true ) );
 		$this->Meta_option->update( 'text', 'prev-value' );
@@ -424,22 +484,37 @@ class Smart_Custom_Fields_Meta_Test extends WP_UnitTestCase {
 	/**
 	 * @group add
 	 */
-	public function test_add() {
+	public function test_add__post() {
 		$this->Meta_post->add( 'text', 'text' );
 		$this->assertSame( array( 'text' ), $this->Meta_post->get( 'text' ) );
 		$this->Meta_post->add( 'text', 'text' );
 		$this->assertSame( array( 'text', 'text' ), $this->Meta_post->get( 'text' ) );
+	}
 
+	/**
+	 * @group add
+	 */
+	public function test_add__term() {
 		$this->Meta_term->add( 'text', 'text' );
 		$this->assertSame( array( 'text' ), $this->Meta_term->get( 'text' ) );
 		$this->Meta_term->add( 'text', 'text' );
 		$this->assertSame( array( 'text', 'text' ), $this->Meta_term->get( 'text' ) );
+	}
 
+	/**
+	 * @group add
+	 */
+	public function test_add__user() {
 		$this->Meta_user->add( 'text', 'text' );
 		$this->assertSame( array( 'text' ), $this->Meta_user->get( 'text' ) );
 		$this->Meta_user->add( 'text', 'text' );
 		$this->assertSame( array( 'text', 'text' ), $this->Meta_user->get( 'text' ) );
+	}
 
+	/**
+	 * @group add
+	 */
+	public function test_add__option() {
 		$this->Meta_option->add( 'text', 'text' );
 		$this->assertSame( array( 'text' ), $this->Meta_option->get( 'text' ) );
 		$this->Meta_option->add( 'text', 'text' );
@@ -449,22 +524,37 @@ class Smart_Custom_Fields_Meta_Test extends WP_UnitTestCase {
 	/**
 	 * @group add
 	 */
-	public function test_add__using_unique() {
+	public function test_add__post_using_unique() {
 		$this->Meta_post->add( 'text', 'text', true );
 		$this->assertEquals( array( 'text' ), $this->Meta_post->get( 'text' ) );
 		$this->Meta_post->add( 'text', 'new-value', true );
 		$this->assertEquals( array( 'text' ), $this->Meta_post->get( 'text' ) );
+	}
 
+	/**
+	 * @group add
+	 */
+	public function test_add__term_using_unique() {
 		$this->Meta_term->add( 'text', 'text', true );
 		$this->assertEquals( array( 'text' ), $this->Meta_term->get( 'text' ) );
 		$this->Meta_term->add( 'text', 'new-value', true );
 		$this->assertEquals( array( 'text' ), $this->Meta_term->get( 'text' ) );
+	}
 
+	/**
+	 * @group add
+	 */
+	public function test_add__user_using_unique() {
 		$this->Meta_user->add( 'text', 'text', true );
 		$this->assertEquals( array( 'text' ), $this->Meta_user->get( 'text' ) );
 		$this->Meta_user->add( 'text', 'new-value', true );
 		$this->assertEquals( array( 'text' ), $this->Meta_user->get( 'text' ) );
+	}
 
+	/**
+	 * @group add
+	 */
+	public function test_add__option_using_unique() {
 		$this->Meta_option->add( 'text', 'text', true );
 		$this->assertEquals( array( 'text' ), $this->Meta_option->get( 'text' ) );
 		$this->Meta_option->add( 'text', 'new-value', true );
@@ -474,22 +564,37 @@ class Smart_Custom_Fields_Meta_Test extends WP_UnitTestCase {
 	/**
 	 * @group delete
 	 */
-	public function test_delete() {
+	public function test_delete__post() {
 		$this->Meta_post->add( 'text', '1' );
 		$this->Meta_post->add( 'text', '2' );
 		$this->Meta_post->delete();
 		$this->assertSame( array( '1', '2' ), $this->Meta_post->get( 'text' ) );
+	}
 
+	/**
+	 * @group delete
+	 */
+	public function test_delete__term() {
 		$this->Meta_term->add( 'text', '1' );
 		$this->Meta_term->add( 'text', '2' );
 		$this->Meta_term->delete();
 		$this->assertSame( array( '1', '2' ), $this->Meta_term->get( 'text' ) );
+	}
 
+	/**
+	 * @group delete
+	 */
+	public function test_delete__user() {
 		$this->Meta_user->add( 'text', '1' );
 		$this->Meta_user->add( 'text', '2' );
 		$this->Meta_user->delete();
 		$this->assertSame( array( '1', '2' ), $this->Meta_user->get( 'text' ) );
+	}
 
+	/**
+	 * @group delete
+	 */
+	public function test_delete__option() {
 		$this->Meta_option->add( 'text', '1' );
 		$this->Meta_option->add( 'text', '2' );
 		$this->Meta_option->delete();
@@ -499,22 +604,37 @@ class Smart_Custom_Fields_Meta_Test extends WP_UnitTestCase {
 	/**
 	 * @group delete
 	 */
-	public function test_delete__using_key() {
+	public function test_delete__post_using_key() {
 		$this->Meta_post->add( 'text', '1' );
 		$this->Meta_post->add( 'text', '2' );
 		$this->Meta_post->delete( 'text' );
 		$this->assertSame( array(), $this->Meta_post->get( 'text' ) );
+	}
 
+	/**
+	 * @group delete
+	 */
+	public function test_delete__term_using_key() {
 		$this->Meta_term->add( 'text', '1' );
 		$this->Meta_term->add( 'text', '2' );
 		$this->Meta_term->delete( 'text' );
 		$this->assertSame( array(), $this->Meta_term->get( 'text' ) );
+	}
 
+	/**
+	 * @group delete
+	 */
+	public function test_delete__user_using_key() {
 		$this->Meta_user->add( 'text', '1' );
 		$this->Meta_user->add( 'text', '2' );
 		$this->Meta_user->delete( 'text' );
 		$this->assertSame( array(), $this->Meta_user->get( 'text' ) );
+	}
 
+	/**
+	 * @group delete
+	 */
+	public function test_delete__option_using_key() {
 		$this->Meta_option->add( 'text', '1' );
 		$this->Meta_option->add( 'text', '2' );
 		$this->Meta_option->delete( 'text' );
@@ -524,22 +644,37 @@ class Smart_Custom_Fields_Meta_Test extends WP_UnitTestCase {
 	/**
 	 * @group delete
 	 */
-	public function test_delete__using_value() {
+	public function test_delete__post_using_value() {
 		$this->Meta_post->add( 'text', '1' );
 		$this->Meta_post->add( 'text', '2' );
 		$this->Meta_post->delete( 'text', '2' );
 		$this->assertSame( array( '1' ), $this->Meta_post->get( 'text' ) );
+	}
 
+	/**
+	 * @group delete
+	 */
+	public function test_delete__term_using_value() {
 		$this->Meta_term->add( 'text', '1' );
 		$this->Meta_term->add( 'text', '2' );
 		$this->Meta_term->delete( 'text', '2' );
 		$this->assertSame( array( '1' ), $this->Meta_term->get( 'text' ) );
+	}
 
+	/**
+	 * @group delete
+	 */
+	public function test_delete__user_using_value() {
 		$this->Meta_user->add( 'text', '1' );
 		$this->Meta_user->add( 'text', '2' );
 		$this->Meta_user->delete( 'text', '2' );
 		$this->assertSame( array( '1' ), $this->Meta_user->get( 'text' ) );
+	}
 
+	/**
+	 * @group delete
+	 */
+	public function test_delete__option_using_value() {
 		$this->Meta_option->add( 'text', '1' );
 		$this->Meta_option->add( 'text', '2' );
 		$this->Meta_option->delete( 'text', '2' );
@@ -561,9 +696,8 @@ class Smart_Custom_Fields_Meta_Test extends WP_UnitTestCase {
 	/**
 	 * @group save
 	 */
-	public function test_save() {
+	public function test_save__post() {
 		$POST = $this->_return_post_data_for_save( SCF_Config::NAME );
-
 		$this->Meta_post->save( $POST );
 		$this->assertEquals( array( 1, 2 ), SCF::get( 'checkbox', $this->post_id ) );
 		$this->assertEquals(
@@ -579,7 +713,13 @@ class Smart_Custom_Fields_Meta_Test extends WP_UnitTestCase {
 			),
 			SCF::get( 'group', $this->post_id )
 		);
+	}
 
+	/**
+	 * @group save
+	 */
+	public function test_save__term() {
+		$POST = $this->_return_post_data_for_save( SCF_Config::NAME );
 		$this->Meta_term->save( $POST );
 		$this->assertEquals( array( 1, 2 ), SCF::get_term_meta( $this->term_id, 'category', 'checkbox' ) );
 		$this->assertEquals(
@@ -595,7 +735,13 @@ class Smart_Custom_Fields_Meta_Test extends WP_UnitTestCase {
 			),
 			SCF::get_term_meta( $this->term_id, 'category', 'group' )
 		);
+	}
 
+	/**
+	 * @group save
+	 */
+	public function test_save__user() {
+		$POST = $this->_return_post_data_for_save( SCF_Config::NAME );
 		$this->Meta_user->save( $POST );
 		$this->assertEquals( array( 1, 2 ), SCF::get_user_meta( $this->user_id, 'checkbox' ) );
 		$this->assertEquals(
@@ -611,7 +757,13 @@ class Smart_Custom_Fields_Meta_Test extends WP_UnitTestCase {
 			),
 			SCF::get_user_meta( $this->user_id, 'group' )
 		);
+	}
 
+	/**
+	 * @group save
+	 */
+	public function test_save__option() {
+		$POST = $this->_return_post_data_for_save( SCF_Config::NAME );
 		$this->Meta_option->save( $POST );
 		$this->assertEquals( array( 1, 2 ), SCF::get_option_meta( $this->menu_slug, 'checkbox' ) );
 		$this->assertEquals(
@@ -632,9 +784,8 @@ class Smart_Custom_Fields_Meta_Test extends WP_UnitTestCase {
 	/**
 	 * @group save
 	 */
-	public function test_save__not_posting_metadata() {
+	public function test_save__post_not_posting_metadata() {
 		$POST = $this->_return_post_data_for_save( 'dummy' );
-
 		$this->Meta_post->save( $POST );
 		$this->assertSame( array(), SCF::get( 'checkbox', $this->post_id ) );
 		$this->assertSame(
@@ -646,7 +797,13 @@ class Smart_Custom_Fields_Meta_Test extends WP_UnitTestCase {
 			),
 			SCF::get( 'group', $this->post_id )
 		);
+	}
 
+	/**
+	 * @group save
+	 */
+	public function test_save__term_not_posting_metadata() {
+		$POST = $this->_return_post_data_for_save( 'dummy' );
 		$this->Meta_term->save( $POST );
 		$this->assertSame( array(), SCF::get_term_meta( $this->term_id, 'category', 'checkbox' ) );
 		$this->assertSame(
@@ -658,7 +815,13 @@ class Smart_Custom_Fields_Meta_Test extends WP_UnitTestCase {
 			),
 			SCF::get_term_meta( $this->term_id, 'category', 'group' )
 		);
+	}
 
+	/**
+	 * @group save
+	 */
+	public function test_save__user_not_posting_metadata() {
+		$POST = $this->_return_post_data_for_save( 'dummy' );
 		$this->Meta_user->save( $POST );
 		$this->assertSame( array(), SCF::get_user_meta( $this->user_id, 'checkbox' ) );
 		$this->assertSame(
@@ -670,7 +833,13 @@ class Smart_Custom_Fields_Meta_Test extends WP_UnitTestCase {
 			),
 			SCF::get_user_meta( $this->user_id, 'group' )
 		);
+	}
 
+	/**
+	 * @group save
+	 */
+	public function test_save__option_not_posting_metadata() {
+		$POST = $this->_return_post_data_for_save( 'dummy' );
 		$this->Meta_option->save( $POST );
 		$this->assertSame( array(), SCF::get_option_meta( $this->menu_slug, 'checkbox' ) );
 		$this->assertSame(
@@ -797,7 +966,7 @@ class Smart_Custom_Fields_Meta_Test extends WP_UnitTestCase {
 					'choices' => array( 'a', 'b', 'c' ),
 				),
 			) );
-			$settings[] = $Setting;
+			$settings[$Setting->get_id()] = $Setting;
 		}
 		return $settings;
 	}
