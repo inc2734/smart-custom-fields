@@ -1,10 +1,10 @@
 <?php
 /**
  * Smart_Custom_Fields_Revisions
- * Version    : 1.1.4
+ * Version    : 1.1.5
  * Author     : inc2734
  * Created    : September 23, 2014
- * Modified   : June 22, 2016
+ * Modified   : July 1, 2016
  * License    : GPLv2 or later
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
  */
@@ -84,12 +84,12 @@ class Smart_Custom_Fields_Revisions {
 	 * @return mixed $value
 	 */
 	public function get_post_metadata( $value, $post_id, $meta_key, $single ) {
-		// $meta_key が SCF で定義されたものでなければスルー
 		if ( is_null( SCF::get_field( get_post( $post_id ), $meta_key ) ) ) {
 			return $value;
 		}
 
-		if ( $preview_id = $this->get_preview_id( $post_id ) && $meta_key !== '_thumbnail_id' ) {
+		$preview_id = $this->get_preview_id( $post_id );
+		if ( $preview_id && $meta_key !== '_thumbnail_id' ) {
 			if ( $post_id !== $preview_id ) {
 				$value = get_post_meta( $preview_id, $meta_key, $single );
 			}
@@ -107,7 +107,7 @@ class Smart_Custom_Fields_Revisions {
 		global $post;
 		$preview_id = 0;
 		if ( isset( $post->ID ) && intval( $post->ID ) === intval( $post_id ) ) {
-			if ( is_preview() && $preview = wp_get_post_autosave( $post->ID ) ) {
+			if ( is_preview() && $preview = wp_get_post_autosave( $post_id ) ) {
 				$preview_id = $preview->ID;
 			}
 		}
