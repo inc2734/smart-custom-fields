@@ -1,10 +1,10 @@
 <?php
 /**
  * Smart_Custom_Fields_Meta
- * Version    : 1.3.1
+ * Version    : 2.0.0
  * Author     : inc2734
  * Created    : March 17, 2015
- * Modified   : June 26, 2015
+ * Modified   : July 1, 2016
  * License    : GPLv2 or later
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
  */
@@ -81,16 +81,16 @@ class Smart_Custom_Fields_Meta {
 	}
 
 	/**
-	 * Getting object ID
+	 * Getting object ID. When option, this is menu slug.
 	 *
-	 * @return int
+	 * @return int|string
 	 */
 	public function get_id() {
 		return $this->id;
 	}
 
 	/**
-	 * Getting type ( Post type or Role or Taxonomy )
+	 * Getting type ( Post type or Role or Taxonomy or Menu slug )
 	 *
 	 * @param bool $accept_revision If post type, whether allow revision post type
 	 * @return string
@@ -143,7 +143,7 @@ class Smart_Custom_Fields_Meta {
 	/**
 	 * Getting the meta data
 	 *
-	 * @param string $key
+	 * @param string|null $key
 	 * @param bool $single false ... return array, true ... return string
 	 * @return string|array
 	 */
@@ -159,60 +159,71 @@ class Smart_Custom_Fields_Meta {
 
 		if ( _get_meta_table( $this->meta_type ) && !$maybe_4_3_term_meta ) {
 			$meta = get_metadata( $this->meta_type, $this->id, $key, $single );
+		} else {
+			$meta = $this->get_option_metadata( $key, $single );
+		}
 
-			if ( $key === SCF_Config::PREFIX . 'repeat-multiple-data' ) {
-				return $meta;
+		if ( $key === SCF_Config::PREFIX . 'repeat-multiple-data' ) {
+			return $meta;
+		}
+
+		$settings = SCF::get_settings( $this->object );
+		if ( $key ) {
+			foreach ( $settings as $Setting ) {
+				$fields = $Setting->get_fields();
+				if ( !empty( $fields[$key] ) ) {
+					return $meta;
+				}
 			}
-
-			$settings = SCF::get_settings( $this->object );
-			if ( $key ) {
+		} else {
+			if ( is_array( $meta ) ) {
 				foreach ( $settings as $Setting ) {
 					$fields = $Setting->get_fields();
-					if ( !empty( $fields[$key] ) ) {
-						return $meta;
-					}
-				}
-			} else {
-				if ( is_array( $meta ) ) {
-					foreach ( $settings as $Setting ) {
-						$fields = $Setting->get_fields();
-						foreach ( $meta as $meta_key => $meta_value ) {
-							if ( isset( $fields[$meta_key] ) ) {
-								$metas[$meta_key] = $meta[$meta_key];
-							}
+					foreach ( $meta as $meta_key => $meta_value ) {
+						if ( isset( $fields[$meta_key] ) ) {
+							$metas[$meta_key] = $meta[$meta_key];
 						}
 					}
 				}
 			}
-			if ( isset( $metas ) ) {
-				return $metas;
-			}
-			if ( $single ) {
-				return '';
-			}
-			return array();
-		} else {
-			$option = get_option( $this->get_option_name() );
-			if ( $key !=='' && isset( $option[$key] ) ) {
-				if ( $single && is_array( $option[$key] ) ) {
-					if ( isset( $option[$key][0] ) ) {
-						return $option[$key][0];
-					}
-				} else {
-					return $option[$key];
-				}
-			}
-
-			if ( $key === '' && $option !== false ) {
-				return $option;
-			}
-
-			// get_metadata() return entry string, so this method also same behavior
-			if ( $single ) {
-				return '';
-			}
-			return array();
 		}
+		if ( isset( $metas ) ) {
+			return $metas;
+		}
+		if ( $single ) {
+			return '';
+		}
+		return array();
+	}
+
+	/**
+	 * Getting option like meta data.
+	 *
+	 * @param string|null $key
+	 * @param bool $single false ... return array, true ... return string
+	 * @return string|array
+	 */
+	protected function get_option_metadata( $key, $single ) {
+		$option = get_option( $this->get_option_name() );
+
+		if ( !$key ) {
+			return $option;
+		}
+
+		if ( isset( $option[$key] ) ) {
+			if ( $single && is_array( $option[$key] ) ) {
+				if ( isset( $option[$key][0] ) ) {
+					return $option[$key][0];
+				}
+			} else {
+				return $option[$key];
+			}
+		}
+
+		if ( $single ) {
+			return '';
+		}
+		return array();
 	}
 
 	/**
@@ -231,30 +242,42 @@ class Smart_Custom_Fields_Meta {
 			if ( _get_meta_table( $this->meta_type ) ) {
 				$return = update_metadata( $this->meta_type, $this->id, $key, $value, $prev_value );
 			} else {
-				$option_name = $this->get_option_name();
-				$option = get_option( $option_name );
-				if ( isset( $option[$key] ) ) {
-					if ( $prev_value !== '' ) {
-						foreach( $option[$key] as $option_key => $option_value ) {
-							if ( $prev_value === $option_value ) {
-								$option[$key][$option_key] = $value;
-								break;
-							}
-						}
-					} else {
-						foreach( $option[$key] as $option_key => $option_value ) {
-							$option[$key][$option_key] = $value;
-						}
-					}
-				} else {
-					$option[$key][] = $value;
-				}
-				$option = stripslashes_deep( $option );
-				$return = update_option( $option_name, $option, false );
+				$return = $this->update_option_metadata( $key, $value, $prev_value );
 			}
 		}
 		do_action( SCF_Config::PREFIX . '-after-save-' . $this->meta_type, $this->id, $key, $value );
 		return $return;
+	}
+
+	/**
+	 * Updating the option like meta data. If the meta data not exist, adding it.
+	 *
+	 * @param string $key
+	 * @param mixed $value
+	 * @param mixed $prev_value If specified, it overwrites the only ones of this value
+	 * @return bool
+	 */
+	protected function update_option_metadata( $key, $value, $prev_value ) {
+		$option_name = $this->get_option_name();
+		$option = get_option( $option_name );
+		if ( isset( $option[$key] ) ) {
+			if ( $prev_value !== '' ) {
+				foreach( $option[$key] as $option_key => $option_value ) {
+					if ( $prev_value === $option_value ) {
+						$option[$key][$option_key] = $value;
+						break;
+					}
+				}
+			} else {
+				foreach( $option[$key] as $option_key => $option_value ) {
+					$option[$key][$option_key] = $value;
+				}
+			}
+		} else {
+			$option[$key][] = $value;
+		}
+		$option = stripslashes_deep( $option );
+		return update_option( $option_name, $option, false );
 	}
 
 	/**
@@ -273,17 +296,30 @@ class Smart_Custom_Fields_Meta {
 			if ( _get_meta_table( $this->meta_type ) ) {
 				$return = add_metadata( $this->meta_type, $this->id, $key, $value, $unique );
 			} else {
-				$option_name = $this->get_option_name();
-				$option = get_option( $option_name );
-				if ( !$unique || !isset( $option[$key] ) ) {
-					$option[$key][] = $value;
-					$option = stripslashes_deep( $option );
-					$return = update_option( $option_name, $option, false );
-				}
+				$return = $this->add_option_metadata( $key, $value, $unique );
 			}
 		}
 		do_action( SCF_Config::PREFIX . '-after-save-' . $this->meta_type, $this->id, $key, $value );
 		return $return;
+	}
+
+	/**
+	 * Adding the option like meta data
+	 *
+	 * @param string $key
+	 * @param mixed $value
+	 * @param bool $unique Whether the key to the unique
+	 * @return bool
+	 */
+	protected function add_option_metadata( $key, $value, $unique ) {
+		$option_name = $this->get_option_name();
+		$option = get_option( $option_name );
+		if ( !$unique || !isset( $option[$key] ) ) {
+			$option[$key][] = $value;
+			$option = stripslashes_deep( $option );
+			$return = update_option( $option_name, $option, false );
+		}
+		return false;
 	}
 
 	/**
@@ -299,27 +335,38 @@ class Smart_Custom_Fields_Meta {
 				return delete_metadata( $this->meta_type, $this->id, $key, $value );
 			}
 		} else {
-			if ( !$key ) {
-				return false;
-			}
-
-			$option_name = $this->get_option_name();
-			$option = get_option( $option_name );
-
-			if ( isset( $option[$key] ) && $value === '' ) {
-				unset( $option[$key] );
-				return update_option( $option_name, $option );
-			}
-
-			if ( isset( $option[$key] ) && $value !== '' ) {
-				foreach ( $option[$key] as $option_key => $option_value ) {
-					if ( $option_value === $value ) {
-						unset( $option[$key][$option_key] );
-					}
-				}
-				return update_option( $option_name, $option );
+			if ( $key ) {
+				return $this->delete_option_metadata( $key, $value );
 			}
 		}
+		return false;
+	}
+
+	/**
+	 * Deleting the option like meta data
+	 *
+	 * @param string $key
+	 * @param mixed $value If specified, it deletes the only ones of this value
+	 * @return bool
+	 */
+	protected function delete_option_metadata( $key, $value ) {
+		$option_name = $this->get_option_name();
+		$option = get_option( $option_name );
+
+		if ( isset( $option[$key] ) && $value === '' ) {
+			unset( $option[$key] );
+			return update_option( $option_name, $option );
+		}
+
+		if ( isset( $option[$key] ) && $value !== '' ) {
+			foreach ( $option[$key] as $option_key => $option_value ) {
+				if ( $option_value === $value ) {
+					unset( $option[$key][$option_key] );
+				}
+			}
+			return update_option( $option_name, $option );
+		}
+		return false;
 	}
 
 	/**
@@ -359,6 +406,9 @@ class Smart_Custom_Fields_Meta {
 				$fields = $Group->get_fields();
 				foreach ( $fields as $Field ) {
 					$field_name = $Field->get( 'name' );
+					if ( !isset( $POST[SCF_Config::NAME][$field_name] ) ) {
+						continue;
+					}
 					$this->delete( $field_name );
 					if ( $Field->get_attribute( 'allow-multiple-data' ) ) {
 						$multiple_data_fields[] = $field_name;
