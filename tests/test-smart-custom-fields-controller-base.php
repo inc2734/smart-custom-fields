@@ -124,7 +124,6 @@ class Smart_Custom_Fields_Controller_Base_Test extends WP_UnitTestCase {
 
 	/**
 	 * @group get_single_data_field_value
-	 * @group todo
 	 */
 	public function test_get_single_data_field_value__saved() {
 		$object = get_post( $this->post_id );
