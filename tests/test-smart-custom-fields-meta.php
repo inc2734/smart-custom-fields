@@ -582,6 +582,7 @@ class Smart_Custom_Fields_Meta_Test extends WP_UnitTestCase {
 
 		$this->Meta_term->save( $POST );
 		$this->assertEquals( array( 1, 2 ), SCF::get_term_meta( $this->term_id, 'category', 'checkbox' ) );
+		var_dump( SCF::get_term_meta( $this->term_id, 'category', 'group' ) );
 		$this->assertEquals(
 			array(
 				array(
