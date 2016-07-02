@@ -186,7 +186,7 @@ class Smart_Custom_Fields_Controller_Base {
 			return SCF::get_default_value( $Field );
 		}
 
-		if ( !$Meta->is_saved() ) {
+		if ( !$Meta->is_saved_the_key( $field_name ) ) {
 			return SCF::get_default_value( $Field );
 		}
 
@@ -230,7 +230,7 @@ class Smart_Custom_Fields_Controller_Base {
 			return SCF::get_default_value( $Field, true );
 		}
 
-		if ( $Meta->is_saved() ) {
+		if ( $Meta->is_saved_the_key( $field_name ) ) {
 			$value = $Meta->get( $field_name );
 			if ( isset( $value[$index] ) ) {
 				return $value[$index];

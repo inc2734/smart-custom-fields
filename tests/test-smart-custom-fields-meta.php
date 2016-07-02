@@ -150,6 +150,51 @@ class Smart_Custom_Fields_Meta_Test extends WP_UnitTestCase {
 	}
 
 	/**
+	 * @group is_saved_the_key
+	 */
+	public function test_is_saved_the_key() {
+		$this->assertFalse( $this->Meta_post->is_saved_the_key( 'not-exist' ) );
+
+		$this->assertFalse( $this->Meta_post->is_saved_the_key( 'text' ) );
+		$this->Meta_post->update( 'text', 'text' );
+		$this->assertTrue( $this->Meta_post->is_saved_the_key( 'text' ) );
+
+		$this->assertFalse( $this->Meta_new_post->is_saved_the_key( 'text' ) );
+		$this->Meta_new_post->update( 'text', 'text' );
+		$this->assertFalse( $this->Meta_new_post->is_saved_the_key( 'text' ) );
+
+		$this->assertFalse( $this->Meta_term->is_saved_the_key( 'text' ) );
+		$this->Meta_term->update( 'text', 'text' );
+		$this->assertTrue( $this->Meta_term->is_saved_the_key( 'text' ) );
+
+		$this->assertFalse( $this->Meta_user->is_saved_the_key( 'text' ) );
+		$this->Meta_user->update( 'text', 'text' );
+		$this->assertTrue( $this->Meta_user->is_saved_the_key( 'text' ) );
+
+		$this->assertFalse( $this->Meta_option->is_saved_the_key( 'text' ) );
+		$this->Meta_option->update( 'text', 'text' );
+		$this->assertTrue( $this->Meta_option->is_saved_the_key( 'text' ) );
+	}
+
+	/**
+	 * @group maybe_4_3_term_meta
+	 */
+	public function test_maybe_4_3_term_meta() {
+		$this->assertFalse( $this->Meta_post->maybe_4_3_term_meta() );
+
+		if ( _get_meta_table( $this->Meta_term->get_meta_type() ) ) {
+			$this->assertFalse( $this->Meta_term->maybe_4_3_term_meta() );
+		} else {
+			$this->assertTrue( $this->Meta_term->maybe_4_3_term_meta() );
+		}
+
+		update_option( $this->Meta_term->get_option_name(), 'text', 'text' );
+		$this->assertTrue( $this->Meta_term->maybe_4_3_term_meta() );
+		update_metadata( 'term', $this->term_id, 'text', 'text' );
+		$this->assertFalse( $this->Meta_term->maybe_4_3_term_meta() );
+	}
+
+	/**
 	 * @group get
 	 */
 	public function test_get__post() {

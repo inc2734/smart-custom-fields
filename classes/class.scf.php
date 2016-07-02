@@ -281,7 +281,7 @@ class SCF {
 		$field_type = $Field->get_attribute( 'type' );
 		$repeat_multiple_data = self::get_repeat_multiple_data( $object );
 		if ( is_array( $repeat_multiple_data ) && isset( $repeat_multiple_data[$field_name] ) ) {
-			if ( $Meta->is_saved() ) {
+			if ( $Meta->is_saved_the_key( $field_name ) ) {
 				$_meta = $Meta->get( $field_name );
 			} else {
 				$_meta = self::get_default_value( $Field );
@@ -304,7 +304,7 @@ class SCF {
 			if ( $Field->get_attribute( 'allow-multiple-data' ) || $is_repeatable ) {
 				$single = false;
 			}
-			if ( $Meta->is_saved() ) {
+			if ( $Meta->is_saved_the_key( $field_name ) ) {
 				$meta = $Meta->get( $field_name, $single );
 			} else {
 				$meta = self::get_default_value( $Field, $single );

@@ -107,9 +107,9 @@ class SCF_Test extends WP_UnitTestCase {
 		$this->assertSame( 'text', SCF::get( 'text', $this->post_id ) );
 		update_post_meta( $this->post_id, 'checkbox', 'not-exist-key' );
 		$this->assertSame( array( 'not-exist-key' ), SCF::get( 'checkbox', $this->post_id ) );
-		$this->assertSame( '', SCF::get( 'text-has-default', $this->post_id ) );
-		$this->assertSame( array(), SCF::get( 'checkbox-has-default', $this->post_id ) );
-		$this->assertSame( array(), SCF::get( 'checkbox-key-value', $this->post_id ) );
+		$this->assertSame( 'a', SCF::get( 'text-has-default', $this->post_id ) );
+		$this->assertSame( array( 'a' ), SCF::get( 'checkbox-has-default', $this->post_id ) );
+		$this->assertSame( array( 'a' ), SCF::get( 'checkbox-key-value', $this->post_id ) );
 
 		// In repeatable group, non multi-value field
 		add_post_meta( $this->post_id, 'repeat-text', 'a' );
@@ -190,10 +190,10 @@ class SCF_Test extends WP_UnitTestCase {
 
 		$this->assertSame( array(
 			'text'                 => 'text',
-			'text-has-default'     => '',
+			'text-has-default'     => 'a',
 			'checkbox'             => array( 'not-exist-key' ),
-			'checkbox-has-default' => array(),
-			'checkbox-key-value'   => array(),
+			'checkbox-has-default' => array( 'a' ),
+			'checkbox-key-value'   => array( 'a' ),
 			'group'                => array(
 				array(
 					'repeat-text'     => 'a',
@@ -247,9 +247,9 @@ class SCF_Test extends WP_UnitTestCase {
 		$this->assertSame( 'text', SCF::get_user_meta( $this->user_id, 'text' ) );
 		update_user_meta( $this->user_id, 'checkbox', 'not-exist-key' );
 		$this->assertSame( array( 'not-exist-key' ), SCF::get_user_meta( $this->user_id, 'checkbox' ) );
-		$this->assertSame( '', SCF::get_user_meta( $this->user_id, 'text-has-default' ) );
-		$this->assertSame( array(), SCF::get_user_meta( $this->user_id, 'checkbox-has-default' ) );
-		$this->assertSame( array(), SCF::get_user_meta( $this->user_id, 'checkbox-key-value' ) );
+		$this->assertSame( 'a', SCF::get_user_meta( $this->user_id, 'text-has-default' ) );
+		$this->assertSame( array( 'a' ), SCF::get_user_meta( $this->user_id, 'checkbox-has-default' ) );
+		$this->assertSame( array( 'a' ), SCF::get_user_meta( $this->user_id, 'checkbox-key-value' ) );
 
 		// In repeatable group, non multi-value field
 		add_user_meta( $this->user_id, 'repeat-text', 'a' );
@@ -276,10 +276,10 @@ class SCF_Test extends WP_UnitTestCase {
 
 		$this->assertSame( array(
 			'text'                 => 'text',
-			'text-has-default'     => '',
+			'text-has-default'     => 'a',
 			'checkbox'             => array( 'not-exist-key' ),
-			'checkbox-has-default' => array(),
-			'checkbox-key-value'   => array(),
+			'checkbox-has-default' => array( 'a' ),
+			'checkbox-key-value'   => array( 'a' ),
 			'group'                => array(
 				array(
 					'repeat-text'     => 'a',
@@ -339,9 +339,9 @@ class SCF_Test extends WP_UnitTestCase {
 		$this->assertSame( 'text', SCF::get_term_meta( $this->term_id, 'category', 'text' ) );
 		$Meta->update( 'checkbox', 'not-exist-key' );
 		$this->assertSame( array( 'not-exist-key' ), SCF::get_term_meta( $this->term_id, 'category', 'checkbox' ) );
-		$this->assertSame( '', SCF::get_term_meta( $this->term_id, 'category', 'text-has-default' ) );
-		$this->assertSame( array(), SCF::get_term_meta( $this->term_id, 'category', 'checkbox-has-default' ) );
-		$this->assertSame( array(), SCF::get_term_meta( $this->term_id, 'category', 'checkbox-key-value' ) );
+		$this->assertSame( 'a', SCF::get_term_meta( $this->term_id, 'category', 'text-has-default' ) );
+		$this->assertSame( array( 'a' ), SCF::get_term_meta( $this->term_id, 'category', 'checkbox-has-default' ) );
+		$this->assertSame( array( 'a' ), SCF::get_term_meta( $this->term_id, 'category', 'checkbox-key-value' ) );
 
 		// In repeatable group, non multi-value field
 		$Meta->add( 'repeat-text', 'a' );
@@ -368,10 +368,10 @@ class SCF_Test extends WP_UnitTestCase {
 
 		$this->assertSame( array(
 			'text'                 => 'text',
-			'text-has-default'     => '',
+			'text-has-default'     => 'a',
 			'checkbox'             => array( 'not-exist-key' ),
-			'checkbox-has-default' => array(),
-			'checkbox-key-value'   => array(),
+			'checkbox-has-default' => array( 'a' ),
+			'checkbox-key-value'   => array( 'a' ),
 			'group'                => array(
 				array(
 					'repeat-text'     => 'a',
@@ -428,9 +428,9 @@ class SCF_Test extends WP_UnitTestCase {
 		$this->assertSame( 'text', SCF::get_option_meta( $this->menu_slug, 'text' ) );
 		$Meta->update( 'checkbox', 'not-exist-key' );
 		$this->assertSame( array( 'not-exist-key' ), SCF::get_option_meta( $this->menu_slug, 'checkbox' ) );
-		$this->assertSame( '', SCF::get_option_meta( $this->menu_slug, 'text-has-default' ) );
-		$this->assertSame( array(), SCF::get_option_meta( $this->menu_slug, 'checkbox-has-default' ) );
-		$this->assertSame( array(), SCF::get_option_meta( $this->menu_slug, 'checkbox-key-value' ) );
+		$this->assertSame( 'a', SCF::get_option_meta( $this->menu_slug, 'text-has-default' ) );
+		$this->assertSame( array( 'a' ), SCF::get_option_meta( $this->menu_slug, 'checkbox-has-default' ) );
+		$this->assertSame( array( 'a' ), SCF::get_option_meta( $this->menu_slug, 'checkbox-key-value' ) );
 
 		// In repeatable group, non multi-value field
 		$Meta->add( 'repeat-text', 'a' );
@@ -455,10 +455,10 @@ class SCF_Test extends WP_UnitTestCase {
 
 		$this->assertSame( array(
 			'text'                 => 'text',
-			'text-has-default'     => '',
+			'text-has-default'     => 'a',
 			'checkbox'             => array( 'not-exist-key' ),
-			'checkbox-has-default' => array(),
-			'checkbox-key-value'   => array(),
+			'checkbox-has-default' => array( 'a' ),
+			'checkbox-key-value'   => array( 'a' ),
 			'group'                => array(
 				array(
 					'repeat-text'     => 'a',

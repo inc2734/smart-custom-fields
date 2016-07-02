@@ -124,13 +124,13 @@ class Smart_Custom_Fields_Meta {
 	/**
 	 * Object with this meta data is whether saved
 	 * Post ... If auto-draft, not saved (new posts in)
-	 * Profile or Taxonomy ... Since not display only after saving.
-	 *                         So if all of meta data is empty,
-	 *                         It is determined that not saved
+	 * Profile or Taxonomy or option ... Since not display only after saving.
+	 *                                   So if all of meta data is empty,
+	 *                                   It is determined that not saved
 	 *
 	 * @return bool
 	 */
-	public function is_saved() {
+	public function is_saved( $key = null ) {
 		if ( $this->meta_type === 'post' && get_post_status( $this->get_id() ) === 'auto-draft' ) {
 			return false;
 		}
@@ -141,6 +141,43 @@ class Smart_Custom_Fields_Meta {
 	}
 
 	/**
+	 * The metadata is wheter saved.
+	 *
+	 * @param string $key
+	 * @return bool
+	 */
+	public function is_saved_the_key( $key ) {
+		if ( $this->meta_type === 'post' && get_post_status( $this->get_id() ) === 'auto-draft' ) {
+			return false;
+		}
+
+		if ( _get_meta_table( $this->meta_type ) && !$this->maybe_4_3_term_meta() ) {
+			return metadata_exists( $this->meta_type, $this->id, $key );
+		}
+
+		$option = get_option( $this->get_option_name() );
+		if ( is_array( $option ) ) {
+			return array_key_exists( $key, $option );
+		}
+		return false;
+	}
+
+	/**
+	 * Less than WordPress 4.4 compatibility for term meta
+	 * More than 4.4 are saved in meta. So if that use the meta data.
+	 *
+	 * @return bool
+	 */
+	public function maybe_4_3_term_meta() {
+		if ( $this->meta_type == 'term' ) {
+			if ( !get_metadata( $this->meta_type, $this->id ) && get_option( $this->get_option_name() ) ) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
 	 * Getting the meta data
 	 *
 	 * @param string|null $key
@@ -148,16 +185,7 @@ class Smart_Custom_Fields_Meta {
 	 * @return string|array
 	 */
 	public function get( $key = '', $single = false ) {
-		// under WP 4.4 compatibility
-		$maybe_4_3_term_meta = false;
-		if ( $this->meta_type === 'term' ) {
-			$meta = get_metadata( $this->meta_type, $this->id );
-			if ( !$meta ) {
-				$maybe_4_3_term_meta = true;
-			}
-		}
-
-		if ( _get_meta_table( $this->meta_type ) && !$maybe_4_3_term_meta ) {
+		if ( _get_meta_table( $this->meta_type ) && !$this->maybe_4_3_term_meta() ) {
 			$meta = get_metadata( $this->meta_type, $this->id, $key, $single );
 		} else {
 			$meta = $this->get_option_metadata( $key, $single );
@@ -492,7 +520,7 @@ class Smart_Custom_Fields_Meta {
 	/**
 	 * Getting option name for saved options table
 	 */
-	protected function get_option_name() {
+	public function get_option_name() {
 		return sprintf(
 			'%s%s-%s-%d',
 			SCF_Config::PREFIX,
