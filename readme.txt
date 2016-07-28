@@ -84,7 +84,7 @@ This method can get all term meta data.
 
 This method can get any custom options page meta data.
 
-`SCF::get_option_meta( $menu_slug 'field-name' )`
+`SCF::get_option_meta( $menu_slug, 'field-name' )`
 
 This method can get custom options page meta data of any group.
 
