@@ -55,15 +55,18 @@ class Smart_Custom_Fields {
 			}
 		}
 
+		add_action( 'after_setup_theme', array( $this, 'after_setup_theme' ) );
 		add_action( 'init'             , array( $this, 'register_post_type' ) );
 		add_action( 'init'             , array( $this, 'ajax_request' ) );
 		add_action( 'admin_menu'       , array( $this, 'admin_menu' ) );
 		add_action( 'current_screen'   , array( $this, 'current_screen' ) );
-		add_action( 'after_setup_theme', array( $this, 'after_setup_theme' ) );
 	}
 
-	public function after_setup_theme()
-	{
+	/**
+	 * The action hook provides in after_setup_themeto be able to add fields
+	 * from themes not only plugins.
+	 */
+	public function after_setup_theme() {
 		do_action( SCF_Config::PREFIX . 'fields-loaded' );
 	}
 
