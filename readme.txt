@@ -4,7 +4,7 @@ Donate link: http://www.amazon.co.jp/registry/wishlist/39ANKRNSTNW40
 Tags: plugin, custom field, custom, field, meta, meta field, repeat, repeatable
 Requires at least: 3.9
 Tested up to: 4.5.3
-Stable tag: 2.2.0
+Stable tag: 2.2.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -124,6 +124,10 @@ You can send your own language pack to me.
 2. Post edit page.
 
 == Changelog ==
+
+= 2.2.1 =
+* Fix bug boolean field in repeatable group #39
+* Fix bug datepicker and colorpicker in repeatable group #41
 
 = 2.2.0 =
 * Refactoring tests.
