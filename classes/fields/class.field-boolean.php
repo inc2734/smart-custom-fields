@@ -1,11 +1,10 @@
 <?php
-
 /**
  * Smart_Custom_Fields_Field_Boolean
- * Version    : 1.1.0
+ * Version    : 1.1.1
  * Author     : Toro_Unit, inc2734
  * Created    : April 6, 2015
- * Modified   : June 4, 2016
+ * Modified   : July 28, 2016
  * License    : GPLv2 or later
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
  */
@@ -153,7 +152,13 @@ class Smart_Custom_Fields_Field_Boolean extends Smart_Custom_Fields_Field_Base {
 	 */
 	public function validate_get_value( $value, $field_type ) {
 		if ( $field_type === $this->get_attribute( 'type' ) ) {
-			$value = !!$value;
+			if ( is_array( $value ) ) {
+				foreach ( $value as $key => $val ) {
+					$value[$key] = !!$val;
+				}
+			} else {
+				$value = !!$value;
+			}
 		}
 		return $value;
 	}
