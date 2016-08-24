@@ -126,7 +126,7 @@ You can send your own language pack to me.
 == Changelog ==
 
 = 2.2.3 =
-* Fix get_post_metadata hooked only preview #43
+* Fix get_post_metadata hooked only preview #43 (by [@wireframeslayout](https://github.com/wireframeslayout))
 
 = 2.2.2 =
 * Fix #37 #38
