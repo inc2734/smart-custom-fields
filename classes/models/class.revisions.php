@@ -84,9 +84,9 @@ class Smart_Custom_Fields_Revisions {
 	 * @return mixed $value
 	 */
 	public function get_post_metadata( $value, $post_id, $meta_key, $single ) {
-        if (!is_preview()) {
-            return $value;
-        }
+		if ( ! is_preview() ) {
+			return $value;
+		}
 
 		if ( is_null( SCF::get_field( get_post( $post_id ), $meta_key ) ) ) {
 			return $value;
