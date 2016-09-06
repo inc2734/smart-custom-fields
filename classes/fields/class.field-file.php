@@ -1,10 +1,10 @@
 <?php
 /**
  * Smart_Custom_Fields_Field_File
- * Version    : 1.2.0
+ * Version    : 1.3.0
  * Author     : inc2734
  * Created    : October 7, 2014
- * Modified   : June 4, 2016
+ * Modified   : September 6, 2016
  * License    : GPLv2 or later
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
  */
@@ -54,9 +54,27 @@ class Smart_Custom_Fields_Field_File extends Smart_Custom_Fields_Field_Base {
 		$hide_class = 'hide';
 		$image = $btn_remove;
 		if ( $value ) {
-			$image_src = wp_get_attachment_image_src( $value, 'thumbnail', true );
-			if ( is_array( $image_src ) && isset( $image_src[0] ) ) {
-				$image_src = $image_src[0];
+			// Usually, $value is attachment ID.
+			// If a customized, for example, $value is not an ID,
+			// Regarded the $value is file URL.
+			if ( preg_match( '/^\d+$/', $value ) ) {
+				$image_src = wp_get_attachment_image_src( $value, 'thumbnail', true );
+				if ( is_array( $image_src ) && isset( $image_src[0] ) ) {
+					$image_src = $image_src[0];
+				}
+			} else {
+				$imag_url = $value;
+				$path = str_replace( home_url(), '', $value );
+				$image_path = ABSPATH . untrailingslashit( $path );
+				if ( file_exists( $image_path ) ) {
+					$wp_check_filetype = wp_check_filetype( $image_path );
+					if ( ! empty( $wp_check_filetype['type'] ) ) {
+						$image_src = $image_url;
+					}
+				}
+			}
+
+			if ( $image_src && ! is_array( $image_src ) ) {
 				$image = sprintf(
 					'<a href="%s" target="_blank"><img src="%s" alt="" /></a>%s',
 					wp_get_attachment_url( $value ),
