@@ -394,6 +394,19 @@ class SCF {
 				break;
 			case 'user' :
 				$key = SCF_Config::PREFIX . 'roles';
+                
+                // build the user meta_query according to roles they have
+                $user_info = get_userdata( $object->ID );
+                $user_roles = $user_info->roles;
+                $user_meta_query = array( 'relation' => 'OR' );
+                foreach( $user_roles as $role ) {
+                        $user_meta_query[] =  array(
+                                        'key'     => $key,
+                                        'value'   => sprintf( '"%s"', $role ),
+                                        'compare' => 'LIKE',
+                                        );
+                }
+                        
 				break;
 			case 'term' :
 				$key = SCF_Config::PREFIX . 'taxonomies';
@@ -406,7 +419,7 @@ class SCF {
 		}
 
 		if ( !empty( $key ) && !empty( $type ) ) {
-			$settings_posts = get_posts( array(
+            $args = array(
 				'post_type'      => SCF_Config::NAME,
 				'posts_per_page' => -1,
 				'order'          => 'ASC',
@@ -418,7 +431,15 @@ class SCF {
 						'value'   => sprintf( '"%s"', $type ),
 					),
 				),
-			) );
+            );  
+            
+			// allow an extended meta query to cover all roles assigned to a user
+            if ( $user_meta_query ) {
+                    $args['meta_query'] = $user_meta_query;
+            }
+
+                                    
+			$settings_posts = get_posts( $args );
 		}
 
 		$Cache = Smart_Custom_Fields_Cache::getInstance();
@@ -446,7 +467,11 @@ class SCF {
 		}
 
 		$settings = array();
-		if ( !empty( $type ) ) {
+                
+        // always allow $meta_type=user.  The $type can be empty if there is no primary role assigned
+        // howvever the user has other roles enabled.
+		if ( !empty( $type ) || ( $meta_type === 'user' ) ) {
+                   
 			$settings_posts = self::get_settings_posts( $object );
 			if ( $meta_type === 'post' ) {
 				$settings = self::get_settings_for_post( $object, $settings_posts );
