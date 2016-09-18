@@ -370,7 +370,7 @@ class SCF {
 	}
 
 	/**
-	 * Getting enabled custom field settings in the post type or the role or the term.
+	 * Getting enabled custom field settings in the post type or the role or the term..
 	 *
 	 * @param WP_Post|WP_User|WP_Term|stdClass $object
 	 * @return array $settings
