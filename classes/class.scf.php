@@ -394,18 +394,18 @@ class SCF {
 				break;
 			case 'user' :
 				$key = SCF_Config::PREFIX . 'roles';
-                
-                // build the user meta_query according to roles they have
-                $user_info = get_userdata( $object->ID );
-                $user_roles = $user_info->roles;
-                $user_meta_query = array( 'relation' => 'OR' );
-                foreach( $user_roles as $role ) {
-                        $user_meta_query[] =  array(
-                                        'key'     => $key,
-                                        'value'   => sprintf( '"%s"', $role ),
-                                        'compare' => 'LIKE',
-                                        );
-                }
+
+                                // build the user meta_query according to roles they have
+                                $user_info = get_userdata( $object->ID );
+                                $user_roles = $user_info->roles;
+                                $user_meta_query = array( 'relation' => 'OR' );
+                                foreach( $user_roles as $role ) {
+                                        $user_meta_query[] =  array(
+                                                        'key'     => $key,
+                                                        'value'   => sprintf( '"%s"', $role ),
+                                                        'compare' => 'LIKE',
+                                                        );
+                                }
                         
 				break;
 			case 'term' :
@@ -419,24 +419,24 @@ class SCF {
 		}
 
 		if ( !empty( $key ) && !empty( $type ) ) {
-            $args = array(
-				'post_type'      => SCF_Config::NAME,
-				'posts_per_page' => -1,
-				'order'          => 'ASC',
-				'order_by'       => 'menu_order',
-				'meta_query'     => array(
-					array(
-						'key'     => $key,
-						'compare' => 'LIKE',
-						'value'   => sprintf( '"%s"', $type ),
-					),
-				),
-            );  
-            
-			// allow an extended meta query to cover all roles assigned to a user
-            if ( $user_meta_query ) {
-                    $args['meta_query'] = $user_meta_query;
-            }
+                        $args = array(
+                                            'post_type'      => SCF_Config::NAME,
+                                            'posts_per_page' => -1,
+                                            'order'          => 'ASC',
+                                            'order_by'       => 'menu_order',
+                                            'meta_query'     => array(
+                                                    array(
+                                                            'key'     => $key,
+                                                            'compare' => 'LIKE',
+                                                            'value'   => sprintf( '"%s"', $type ),
+                                                    ),
+                                            ),
+                        );  
+
+                           // allow an extended meta query to cover all roles assigned to a user
+                        if ( isset( $user_meta_query ) ) {
+                                $args['meta_query'] = $user_meta_query;
+                        }
 
                                     
 			$settings_posts = get_posts( $args );
