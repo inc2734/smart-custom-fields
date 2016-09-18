@@ -418,7 +418,7 @@ class SCF {
 				$key = '';
 		}
 
-		if ( !empty( $key ) && !empty( $type ) ) {
+		if ( !empty( $key ) && ( !empty( $type ) || isset( $user_meta_query ) ) ) {
                         $args = array(
                                             'post_type'      => SCF_Config::NAME,
                                             'posts_per_page' => -1,
@@ -468,8 +468,8 @@ class SCF {
 
 		$settings = array();
                 
-        // always allow $meta_type=user.  The $type can be empty if there is no primary role assigned
-        // howvever the user has other roles enabled.
+		// always allow $meta_type=user.  The $type can be empty if there is no primary role assigned
+		// howvever the user has other roles enabled.
 		if ( !empty( $type ) || ( $meta_type === 'user' ) ) {
                    
 			$settings_posts = self::get_settings_posts( $object );
