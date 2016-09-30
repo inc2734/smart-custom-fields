@@ -1,10 +1,10 @@
 <?php
 /**
  * Smart_Custom_Fields_Meta
- * Version    : 2.0.0
+ * Version    : 2.1.0
  * Author     : inc2734
  * Created    : March 17, 2015
- * Modified   : July 1, 2016
+ * Modified   : September 30, 2016
  * License    : GPLv2 or later
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
  */

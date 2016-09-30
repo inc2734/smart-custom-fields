@@ -3,8 +3,8 @@ Contributors: inc2734, toro_unit, mimosafa, hideokamoto, hisako-isaka, kurudrive
 Donate link: http://www.amazon.co.jp/registry/wishlist/39ANKRNSTNW40
 Tags: plugin, custom field, custom, field, meta, meta field, repeat, repeatable
 Requires at least: 3.9
-Tested up to: 4.6.0
-Stable tag: 2.3.0
+Tested up to: 4.6.1
+Stable tag: 3.0.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -124,6 +124,10 @@ You can send your own language pack to me.
 2. Post edit page.
 
 == Changelog ==
+
+= 3.0.0 =
+* Support multiple user roles.
+* Update filter hook smart-cf-register-fields
 
 = 2.3.0 =
 * Support displayed thumbnail when value of file and image field is file url.
