@@ -30,8 +30,15 @@ class Smart_Custom_Fields_Meta {
 	/**
 	 * Post Type or Role or Taxonomy or Menu slug
 	 * @var string
+	 * @deprecated
 	 */
 	protected $type;
+
+	/**
+	 * Post Type or Roles or Taxonomy or Menu slug
+	 * @var array
+	 */
+	protected $types = array();
 
 	/**
 	 * @param WP_Post|WP_User|WP_Term|stdClass $object
@@ -42,28 +49,33 @@ class Smart_Custom_Fields_Meta {
 		}
 		$this->object = $object;
 		if ( is_a( $object, 'WP_Post' ) ) {
-			$this->id   = $object->ID;
-			$this->type = $object->post_type;
+			$this->id    = $object->ID;
+			$this->type  = $object->post_type;
+			$this->types = array( $object->post_type );
 			$this->meta_type = 'post';
 		}
 		elseif ( is_a( $object, 'WP_User' ) ) {
-			$this->id   = $object->ID;
-			$this->type = $object->roles[0];
+			$this->id    = $object->ID;
+			$this->type  = $object->roles[0];
+			$this->types = array_unique( array_merge( $object->roles, array_keys( $object->caps ) ) );
 			$this->meta_type = 'user';
 		}
 		elseif ( isset( $object->term_id ) ) {
-			$this->id   = $object->term_id;
-			$this->type = $object->taxonomy;
+			$this->id    = $object->term_id;
+			$this->type  = $object->taxonomy;
+			$this->types = array( $object->taxonomy );
 			$this->meta_type = 'term';
 		}
 		elseif ( isset( $object->menu_slug ) ) {
-			$this->id   = $object->menu_slug;
-			$this->type = $object->menu_slug;
+			$this->id    = $object->menu_slug;
+			$this->type  = $object->menu_slug;
+			$this->types = array( $object->menu_slug );
 			$this->meta_type = 'option';
 		}
 		elseif( empty( $object ) || is_wp_error( $object ) ) {
-			$this->id   = null;
-			$this->type = null;
+			$this->id    = null;
+			$this->type  = null;
+			$this->types = null;
 			$this->meta_type = null;
 		}
 		else {
@@ -92,14 +104,28 @@ class Smart_Custom_Fields_Meta {
 	/**
 	 * Getting type ( Post type or Role or Taxonomy or Menu slug )
 	 *
+	 * @deprecated
 	 * @param bool $accept_revision If post type, whether allow revision post type
 	 * @return string
 	 */
 	public function get_type( $accept_revision = true ) {
 		if ( $this->meta_type === 'post' && !$accept_revision ) {
-			return $this->get_public_post_type( $this->id );
+			return $this->get_public_post_type( $this->id )[0];
 		}
 		return $this->type;
+	}
+
+	/**
+	 * Getting type ( Post type or Role or Taxonomy or Menu slug )
+	 *
+	 * @param bool $accept_revision If post type, whether allow revision post type
+	 * @return array
+	 */
+	public function get_types( $accept_revision = true ) {
+		if ( $this->meta_type === 'post' && ! $accept_revision ) {
+			return $this->get_public_post_type( $this->id );
+		}
+		return $this->types;
 	}
 
 	/**
@@ -107,7 +133,7 @@ class Smart_Custom_Fields_Meta {
 	 * To feel good also Post ID of the revision
 	 *
 	 * @param int $post_id
-	 * @return string
+	 * @return array
 	 */
 	protected function get_public_post_type( $post_id ) {
 		if ( $public_post_id = wp_is_post_revision( $post_id ) ) {
@@ -116,9 +142,9 @@ class Smart_Custom_Fields_Meta {
 			$post = get_post( $post_id );
 		}
 		if ( !empty( $post->post_type ) ) {
-			return $post->post_type;
+			return array( $post->post_type );
 		}
-		return $this->type;
+		return $this->types;
 	}
 
 	/**

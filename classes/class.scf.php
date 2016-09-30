@@ -385,8 +385,8 @@ class SCF {
 			self::debug_cache_message( "dont use settings posts cache..." );
 		}
 
-		$Meta = new Smart_Custom_Fields_Meta( $object );
-		$type = $Meta->get_type( false );
+		$Meta  = new Smart_Custom_Fields_Meta( $object );
+		$types = $Meta->get_types( false );
 
 		switch ( $Meta->get_meta_type() ) {
 			case 'post' :
@@ -394,18 +394,6 @@ class SCF {
 				break;
 			case 'user' :
 				$key = SCF_Config::PREFIX . 'roles';
-
-				// build the user meta_query according to roles they have
-				$user_info = get_userdata( $object->ID );
-				$user_roles = $user_info->roles;
-				$user_meta_query = array( 'relation' => 'OR' );
-				foreach( $user_roles as $role ) {
-					$user_meta_query[] = array(
-						'key'     => $key,
-						'value'   => sprintf( '"%s"', $role ),
-						'compare' => 'LIKE',
-					);
-				}
 				break;
 			case 'term' :
 				$key = SCF_Config::PREFIX . 'taxonomies';
@@ -417,25 +405,26 @@ class SCF {
 				$key = '';
 		}
 
-		if ( !empty( $key ) && ( !empty( $type ) || isset( $user_meta_query ) ) ) {
+		if ( ! empty( $key ) && ( ! empty( $types ) ) ) {
+			$meta_query = array();
+			foreach ( $types as $type ) {
+				$meta_query[] = array(
+					'key'     => $key,
+					'value'   => sprintf( '"%s"', $type ),
+					'compare' => 'LIKE',
+				);
+			}
+			if ( $meta_query ) {
+				$meta_query[] = array( 'relation' => 'OR' );
+			}
+
 			$args = array(
 				'post_type'      => SCF_Config::NAME,
 				'posts_per_page' => -1,
 				'order'          => 'ASC',
 				'order_by'       => 'menu_order',
-				'meta_query'     => array(
-					array(
-						'key'     => $key,
-						'compare' => 'LIKE',
-						'value'   => sprintf( '"%s"', $type ),
-					),
-				),
+				'meta_query'     => $meta_query,
 			);
-
-			// allow an extended meta query to cover all roles assigned to a user
-			if ( isset( $user_meta_query ) ) {
-				$args['meta_query'] = $user_meta_query;
-			}
 
 			$settings_posts = get_posts( $args );
 		}
@@ -455,6 +444,7 @@ class SCF {
 		$Meta      = new Smart_Custom_Fields_Meta( $object );
 		$id        = $Meta->get_id();
 		$type      = $Meta->get_type( false );
+		$types     = $Meta->get_types( false );
 		$meta_type = $Meta->get_meta_type();
 
 		// IF the post that has custom field settings according to post ID,
@@ -466,9 +456,7 @@ class SCF {
 
 		$settings = array();
 
-		// Always allow $meta_type=user.  The $type can be empty if there is no primary role assigned
-		// however the user has other roles enabled.
-		if ( ! empty( $type ) || ( $meta_type === 'user' ) ) {
+		if ( ! empty( $types ) ) {
 			$settings_posts = self::get_settings_posts( $object );
 			if ( $meta_type === 'post' ) {
 				$settings = self::get_settings_for_post( $object, $settings_posts );
@@ -488,7 +476,8 @@ class SCF {
 			$settings,
 			$type,
 			$id,
-			$meta_type
+			$meta_type,
+			$types
 		);
 		if ( !is_array( $settings ) ) {
 			$settings = array();
