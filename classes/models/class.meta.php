@@ -110,7 +110,8 @@ class Smart_Custom_Fields_Meta {
 	 */
 	public function get_type( $accept_revision = true ) {
 		if ( $this->meta_type === 'post' && !$accept_revision ) {
-			return $this->get_public_post_type( $this->id )[0];
+			$public_post_type = $this->get_public_post_type( $this->id );
+			return $public_post_type[0];
 		}
 		return $this->type;
 	}
