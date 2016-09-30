@@ -55,6 +55,7 @@ class Smart_Custom_Fields_Meta_Test extends WP_UnitTestCase {
 
 		// The user for custom fields
 		$this->user_id = $this->factory->user->create( array( 'role' => 'editor' ) );
+		get_userdata( $this->user_id )->add_role( 'subscriber' );
 		$this->Meta_user = new Smart_Custom_Fields_Meta( get_userdata( $this->user_id ) );
 
 		// The term for custom fields
@@ -951,6 +952,7 @@ class Smart_Custom_Fields_Meta_Test extends WP_UnitTestCase {
 			( $type === 'post' && $id === $this->new_post_id ) ||
 			( $type === 'post' && $id === $this->revision_id ) ||
 			( $type === 'editor' ) ||
+			( $type === 'subscriber' ) ||
 			( $type === 'category' ) ||
 			( $meta_type === 'option' && $id === 'menu-slug' )
 		) {

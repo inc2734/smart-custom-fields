@@ -185,8 +185,8 @@ class SCF {
 	 * @return mixed
 	 */
 	protected static function get_all_meta( $object ) {
-		$Cache = Smart_Custom_Fields_Cache::getInstance();
-		$settings  = self::get_settings( $object );
+		$Cache    = Smart_Custom_Fields_Cache::getInstance();
+		$settings = self::get_settings( $object );
 		$post_meta = array();
 		foreach ( $settings as $Setting ) {
 			$groups = $Setting->get_groups();
@@ -370,7 +370,7 @@ class SCF {
 	}
 
 	/**
-	 * Getting enabled custom field settings in the post type or the role or the term..
+	 * Getting enabled custom field settings in the post type or the role or the term.
 	 *
 	 * @param WP_Post|WP_User|WP_Term|stdClass $object
 	 * @return array $settings
@@ -395,18 +395,17 @@ class SCF {
 			case 'user' :
 				$key = SCF_Config::PREFIX . 'roles';
 
-                                // build the user meta_query according to roles they have
-                                $user_info = get_userdata( $object->ID );
-                                $user_roles = $user_info->roles;
-                                $user_meta_query = array( 'relation' => 'OR' );
-                                foreach( $user_roles as $role ) {
-                                        $user_meta_query[] =  array(
-                                                        'key'     => $key,
-                                                        'value'   => sprintf( '"%s"', $role ),
-                                                        'compare' => 'LIKE',
-                                                        );
-                                }
-                        
+				// build the user meta_query according to roles they have
+				$user_info = get_userdata( $object->ID );
+				$user_roles = $user_info->roles;
+				$user_meta_query = array( 'relation' => 'OR' );
+				foreach( $user_roles as $role ) {
+					$user_meta_query[] = array(
+						'key'     => $key,
+						'value'   => sprintf( '"%s"', $role ),
+						'compare' => 'LIKE',
+					);
+				}
 				break;
 			case 'term' :
 				$key = SCF_Config::PREFIX . 'taxonomies';
@@ -419,26 +418,25 @@ class SCF {
 		}
 
 		if ( !empty( $key ) && ( !empty( $type ) || isset( $user_meta_query ) ) ) {
-                        $args = array(
-                                            'post_type'      => SCF_Config::NAME,
-                                            'posts_per_page' => -1,
-                                            'order'          => 'ASC',
-                                            'order_by'       => 'menu_order',
-                                            'meta_query'     => array(
-                                                    array(
-                                                            'key'     => $key,
-                                                            'compare' => 'LIKE',
-                                                            'value'   => sprintf( '"%s"', $type ),
-                                                    ),
-                                            ),
-                        );  
+			$args = array(
+				'post_type'      => SCF_Config::NAME,
+				'posts_per_page' => -1,
+				'order'          => 'ASC',
+				'order_by'       => 'menu_order',
+				'meta_query'     => array(
+					array(
+						'key'     => $key,
+						'compare' => 'LIKE',
+						'value'   => sprintf( '"%s"', $type ),
+					),
+				),
+			);
 
-                           // allow an extended meta query to cover all roles assigned to a user
-                        if ( isset( $user_meta_query ) ) {
-                                $args['meta_query'] = $user_meta_query;
-                        }
+			// allow an extended meta query to cover all roles assigned to a user
+			if ( isset( $user_meta_query ) ) {
+				$args['meta_query'] = $user_meta_query;
+			}
 
-                                    
 			$settings_posts = get_posts( $args );
 		}
 
@@ -467,11 +465,10 @@ class SCF {
 		}
 
 		$settings = array();
-                
-		// always allow $meta_type=user.  The $type can be empty if there is no primary role assigned
-		// howvever the user has other roles enabled.
-		if ( !empty( $type ) || ( $meta_type === 'user' ) ) {
-                   
+
+		// Always allow $meta_type=user.  The $type can be empty if there is no primary role assigned
+		// however the user has other roles enabled.
+		if ( ! empty( $type ) || ( $meta_type === 'user' ) ) {
 			$settings_posts = self::get_settings_posts( $object );
 			if ( $meta_type === 'post' ) {
 				$settings = self::get_settings_for_post( $object, $settings_posts );
@@ -650,7 +647,7 @@ class SCF {
 				$has_array = true;
 			}
 
-			if ( !is_int( $key ) )  {
+			if ( !is_int( $key ) ) {
 				return true;
 			}
 		}
