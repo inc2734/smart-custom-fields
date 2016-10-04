@@ -415,7 +415,7 @@ class SCF {
 				);
 			}
 			if ( $meta_query ) {
-				$meta_query[] = array( 'relation' => 'OR' );
+				$meta_query[ 'relation' ] = 'OR';
 			}
 
 			$args = array(
