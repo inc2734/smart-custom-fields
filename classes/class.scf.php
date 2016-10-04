@@ -1,10 +1,10 @@
 <?php
 /**
  * SCF
- * Version    : 1.5.0
+ * Version    : 2.0.0
  * Author     : inc2734
  * Created    : September 23, 2014
- * Modified   : June 4, 2016
+ * Modified   : September 30, 2016
  * License    : GPLv2 or later
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
  */
@@ -185,8 +185,8 @@ class SCF {
 	 * @return mixed
 	 */
 	protected static function get_all_meta( $object ) {
-		$Cache = Smart_Custom_Fields_Cache::getInstance();
-		$settings  = self::get_settings( $object );
+		$Cache    = Smart_Custom_Fields_Cache::getInstance();
+		$settings = self::get_settings( $object );
 		$post_meta = array();
 		foreach ( $settings as $Setting ) {
 			$groups = $Setting->get_groups();
@@ -385,8 +385,8 @@ class SCF {
 			self::debug_cache_message( "dont use settings posts cache..." );
 		}
 
-		$Meta = new Smart_Custom_Fields_Meta( $object );
-		$type = $Meta->get_type( false );
+		$Meta  = new Smart_Custom_Fields_Meta( $object );
+		$types = $Meta->get_types( false );
 
 		switch ( $Meta->get_meta_type() ) {
 			case 'post' :
@@ -405,20 +405,28 @@ class SCF {
 				$key = '';
 		}
 
-		if ( !empty( $key ) && !empty( $type ) ) {
-			$settings_posts = get_posts( array(
+		if ( ! empty( $key ) && ( ! empty( $types ) ) ) {
+			$meta_query = array();
+			foreach ( $types as $type ) {
+				$meta_query[] = array(
+					'key'     => $key,
+					'value'   => sprintf( '"%s"', $type ),
+					'compare' => 'LIKE',
+				);
+			}
+			if ( $meta_query ) {
+				$meta_query[ 'relation' ] = 'OR';
+			}
+
+			$args = array(
 				'post_type'      => SCF_Config::NAME,
 				'posts_per_page' => -1,
 				'order'          => 'ASC',
 				'order_by'       => 'menu_order',
-				'meta_query'     => array(
-					array(
-						'key'     => $key,
-						'compare' => 'LIKE',
-						'value'   => sprintf( '"%s"', $type ),
-					),
-				),
-			) );
+				'meta_query'     => $meta_query,
+			);
+
+			$settings_posts = get_posts( $args );
 		}
 
 		$Cache = Smart_Custom_Fields_Cache::getInstance();
@@ -436,6 +444,7 @@ class SCF {
 		$Meta      = new Smart_Custom_Fields_Meta( $object );
 		$id        = $Meta->get_id();
 		$type      = $Meta->get_type( false );
+		$types     = $Meta->get_types( false );
 		$meta_type = $Meta->get_meta_type();
 
 		// IF the post that has custom field settings according to post ID,
@@ -446,7 +455,8 @@ class SCF {
 		}
 
 		$settings = array();
-		if ( !empty( $type ) ) {
+
+		if ( ! empty( $types ) ) {
 			$settings_posts = self::get_settings_posts( $object );
 			if ( $meta_type === 'post' ) {
 				$settings = self::get_settings_for_post( $object, $settings_posts );
@@ -466,7 +476,8 @@ class SCF {
 			$settings,
 			$type,
 			$id,
-			$meta_type
+			$meta_type,
+			$types
 		);
 		if ( !is_array( $settings ) ) {
 			$settings = array();
@@ -625,7 +636,7 @@ class SCF {
 				$has_array = true;
 			}
 
-			if ( !is_int( $key ) )  {
+			if ( !is_int( $key ) ) {
 				return true;
 			}
 		}

@@ -52,6 +52,7 @@ class SCF_Test extends WP_UnitTestCase {
 
 		// The user for custom fields
 		$this->user_id = $this->factory->user->create( array( 'role' => 'editor' ) );
+		get_userdata( $this->user_id )->add_role( 'subscriber' );
 
 		// The term for custom fields
 		$this->term_id = $this->factory->term->create( array( 'taxonomy' => 'category' ) );
@@ -550,6 +551,10 @@ class SCF_Test extends WP_UnitTestCase {
 		$settings = SCF::get_settings( get_userdata( $user_id ) );
 		$this->assertTrue( is_a( current( $settings ), 'Smart_Custom_Fields_Setting' ) );
 
+		$user_id = $this->factory->user->create( array( 'role' => 'subscriber' ) );
+		$settings = SCF::get_settings( get_userdata( $user_id ) );
+		$this->assertTrue( is_a( current( $settings ), 'Smart_Custom_Fields_Setting' ) );
+
 		// Not match the role
 		$settings = SCF::get_settings( get_userdata( 99999 ) );
 		$this->assertSame( array(), $settings );
@@ -757,6 +762,7 @@ class SCF_Test extends WP_UnitTestCase {
 			( $type === 'post' && $id === $this->post_id ) ||
 			( $type === 'post' && $id === $this->new_post_id ) ||
 			( $type === 'editor' ) ||
+			( $type === 'subscriber' ) ||
 			( $type === 'category' ) ||
 			( $meta_type === 'option' && $id === 'menu-slug' )
 		) {

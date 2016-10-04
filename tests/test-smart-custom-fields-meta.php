@@ -55,6 +55,7 @@ class Smart_Custom_Fields_Meta_Test extends WP_UnitTestCase {
 
 		// The user for custom fields
 		$this->user_id = $this->factory->user->create( array( 'role' => 'editor' ) );
+		get_userdata( $this->user_id )->add_role( 'subscriber' );
 		$this->Meta_user = new Smart_Custom_Fields_Meta( get_userdata( $this->user_id ) );
 
 		// The term for custom fields
@@ -108,13 +109,26 @@ class Smart_Custom_Fields_Meta_Test extends WP_UnitTestCase {
 	 * @group get_type
 	 */
 	public function test_get_type() {
-		$this->assertSame( 'post'          , $this->Meta_post->get_type() );
-		$this->assertSame( 'post'          , $this->Meta_new_post->get_type() );
-		$this->assertSame( 'revision'      , $this->Meta_revision->get_type( true ) );
-		$this->assertSame( 'post'          , $this->Meta_revision->get_type( false ) );
-		$this->assertSame( 'editor'        , $this->Meta_user->get_type() );
-		$this->assertSame( 'category'      , $this->Meta_term->get_type() );
+		$this->assertSame( 'post'    , $this->Meta_post->get_type() );
+		$this->assertSame( 'post'    , $this->Meta_new_post->get_type() );
+		$this->assertSame( 'revision', $this->Meta_revision->get_type( true ) );
+		$this->assertSame( 'post'    , $this->Meta_revision->get_type( false ) );
+		$this->assertSame( 'category', $this->Meta_term->get_type() );
+		$this->assertSame( 'editor'  , $this->Meta_user->get_type() );
 		$this->assertSame( $this->menu_slug, $this->Meta_option->get_type() );
+	}
+
+	/**
+	 * @group get_types
+	 */
+	public function test_get_types() {
+		$this->assertSame( array( 'post' )    , $this->Meta_post->get_types() );
+		$this->assertSame( array( 'post' )    , $this->Meta_new_post->get_types() );
+		$this->assertSame( array( 'revision' ), $this->Meta_revision->get_types( true ) );
+		$this->assertSame( array( 'post' )    , $this->Meta_revision->get_types( false ) );
+		$this->assertSame( array( 'category' ), $this->Meta_term->get_types() );
+		$this->assertSame( array( 'editor', 'subscriber' ), $this->Meta_user->get_types() );
+		$this->assertSame( array( $this->menu_slug ), $this->Meta_option->get_types() );
 	}
 
 	/**
@@ -951,6 +965,7 @@ class Smart_Custom_Fields_Meta_Test extends WP_UnitTestCase {
 			( $type === 'post' && $id === $this->new_post_id ) ||
 			( $type === 'post' && $id === $this->revision_id ) ||
 			( $type === 'editor' ) ||
+			( $type === 'subscriber' ) ||
 			( $type === 'category' ) ||
 			( $meta_type === 'option' && $id === 'menu-slug' )
 		) {
