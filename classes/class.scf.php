@@ -749,7 +749,7 @@ class SCF {
 	 */
 	public static function add_options_page( $page_title, $menu_title, $capability, $menu_slug, $icon_url = '', $position = null ) {
 		self::$options_pages[$menu_slug] = $menu_title;
-		new Smart_Custom_Fields_Options_Page( $page_title, $menu_title, $capability, $menu_slug, $icon_url = '', $position = null );
+		new Smart_Custom_Fields_Options_Page( $page_title, $menu_title, $capability, $menu_slug, $icon_url, $position );
 		return $menu_slug;
 	}
 
