@@ -1,10 +1,10 @@
 === Smart Custom Fields ===
-Contributors: inc2734, toro_unit, mimosafa, hideokamoto, hisako-isaka, kurudrive, hanamura, justinticktock
+Contributors: inc2734, toro_unit, mimosafa, hideokamoto, hisako-isaka, kurudrive, hanamura, justinticktock, designhehe
 Donate link: http://www.amazon.co.jp/registry/wishlist/39ANKRNSTNW40
 Tags: plugin, custom field, custom, field, meta, meta field, repeat, repeatable
 Requires at least: 3.9
-Tested up to: 4.6.1
-Stable tag: 3.0.0
+Tested up to: 4.7.1
+Stable tag: 3.0.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -124,6 +124,9 @@ You can send your own language pack to me.
 2. Post edit page.
 
 == Changelog ==
+
+= 3.0.1 =
+* Fixed a bug that icon and display position of created option page are not reflected #47 (by [@designhehe](https://github.com/designhehe))
 
 = 3.0.0 =
 * Support multiple user roles.
