@@ -1,9 +1,9 @@
 /**
  * editor.js
- * Version    : 1.1.0
+ * Version    : 1.2.0
  * Author     : inc2734
  * Created    : September 30, 2014
- * Modified   : November 12, 2015
+ * Modified   : January 27, 2017
  * License    : GPLv2 or later
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
  */
@@ -98,14 +98,26 @@ jQuery( function( $ ) {
 	$( '.smart-cf-meta-box' ).on( 'click', choices_li, function() {
 		var id = $( this ).data( 'id' );
 		var parent = $( this ).closest( table_class );
-		if ( parent.find( '.smart-cf-relation-right li[data-id="' + id + '"]' ).length === 0 ) {
-			var clone = $( this ).clone();
-			clone
-				.prepend( $( '<span class="smart-cf-icon-handle dashicons dashicons-menu"></span>' ) )
-				.append(  $( '<span class="relation-remove">-</span>' ) );
-			parent.find( '.smart-cf-relation-right ul' ).append( clone );
-			update_relation_value( $( this ).closest( 'tr' ) );
+		var limit = parent.find( '.smart-cf-relation-left' ).data( 'limit' );
+
+		if ( limit <= 0 ) {
+			return true;
 		}
+
+		if ( limit <= parent.find( '.smart-cf-relation-right li' ).length ) {
+			return true;
+		}
+
+		if ( parent.find( '.smart-cf-relation-right li[data-id="' + id + '"]' ).length !== 0 ) {
+			return true;
+		}
+
+		var clone = $( this ).clone();
+		clone
+			.prepend( $( '<span class="smart-cf-icon-handle dashicons dashicons-menu"></span>' ) )
+			.append(  $( '<span class="relation-remove">-</span>' ) );
+		parent.find( '.smart-cf-relation-right ul' ).append( clone );
+		update_relation_value( $( this ).closest( 'tr' ) );
 	} );
 
 	/**

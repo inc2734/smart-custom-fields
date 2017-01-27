@@ -1,10 +1,10 @@
 <?php
 /**
  * Smart_Custom_Fields_Field_Relation
- * Version    : 1.3.2
+ * Version    : 1.4.0
  * Author     : inc2734
  * Created    : October 7, 2014
- * Modified   : June 22, 2016
+ * Modified   : January 27, 2017
  * License    : GPLv2 or later
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
  */
@@ -35,6 +35,7 @@ class Smart_Custom_Fields_Field_Relation extends Smart_Custom_Fields_Field_Base 
 	protected function options() {
 		return array(
 			'post-type'   => '',
+			'limit'       => 0,
 			'instruction' => '',
 			'notes'       => '',
 		);
@@ -114,8 +115,12 @@ class Smart_Custom_Fields_Field_Relation extends Smart_Custom_Fields_Field_Base 
 		$name      = $this->get_field_name_in_editor( $index );
 		$disabled  = $this->get_disable_attribute( $index );
 		$post_type = $this->get( 'post-type' );
-		if ( !$post_type ) {
+		$limit     = $this->get( 'limit' );
+		if ( ! $post_type ) {
 			$post_type = array( 'post' );
+		}
+		if ( ! is_int( $limit ) ) {
+			$limit = '';
 		}
 		$posts_per_page = get_option( 'posts_per_page' );
 
@@ -172,7 +177,7 @@ class Smart_Custom_Fields_Field_Relation extends Smart_Custom_Fields_Field_Base 
 		}
 
 		return sprintf(
-			'<div class="%s" data-post-types="%s">
+			'<div class="%s" data-post-types="%s" data-limit="%d">
 				<div class="%s">
 					<input type="text" class="widefat search-input search-input-post-types" name="search-input" placeholder="%s" />
 				</div>
@@ -186,6 +191,7 @@ class Smart_Custom_Fields_Field_Relation extends Smart_Custom_Fields_Field_Base 
 			<div class="%s"><ul>%s</ul></div>',
 			SCF_Config::PREFIX . 'relation-left',
 			implode( ',', $post_type ),
+			$limit,
 			SCF_Config::PREFIX . 'search',
 			esc_attr__( 'Search...', 'smart-custom-fields' ),
 			SCF_Config::PREFIX . 'relation-children-select',
@@ -227,6 +233,14 @@ class Smart_Custom_Fields_Field_Relation extends Smart_Custom_Fields_Field_Base 
 					value="<?php echo esc_attr( $post_type ); ?>"
 					 <?php echo $checked; ?> /><?php echo esc_html( $post_type_object->labels->singular_name ); ?>
 				<?php endforeach; ?>
+			</td>
+		</tr>
+		<tr>
+			<th><?php esc_html_e( 'Selectable number', 'smart-custom-fields' ); ?></th>
+			<td>
+				<input type="number"
+					name="<?php echo esc_attr( $this->get_field_name_in_setting( $group_key, $field_key, 'limit' ) ); ?>"
+					value="<?php echo esc_attr( $this->get( 'number' ) ); ?>" min="1" step="1" />
 			</td>
 		</tr>
 		<tr>
