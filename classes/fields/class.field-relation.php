@@ -48,6 +48,13 @@ class Smart_Custom_Fields_Field_Relation extends Smart_Custom_Fields_Field_Base 
 	 */
 	public function admin_enqueue_scripts( $hook ) {
 		wp_enqueue_script(
+			SCF_Config::PREFIX . 'editor-relation-common',
+			plugins_url( SCF_Config::NAME ) . '/js/editor-relation-common.js',
+			array( 'jquery' ),
+			null,
+			true
+		);
+		wp_enqueue_script(
 			SCF_Config::PREFIX . 'editor-relation-post-types',
 			plugins_url( SCF_Config::NAME ) . '/js/editor-relation-post-types.js',
 			array( 'jquery' ),

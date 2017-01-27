@@ -2,9 +2,9 @@
 # This file is distributed under the same license as the Smart Custom Fields package.
 msgid ""
 msgstr ""
-"Project-Id-Version: Smart Custom Fields 3.1.0\n"
+"Project-Id-Version: Smart Custom Fields 3.1.1\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/smart-custom-fields\n"
-"POT-Creation-Date: 2017-01-27 13:14:54+00:00\n"
+"POT-Creation-Date: 2017-01-27 13:56:52+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -78,7 +78,7 @@ msgid "Add Field"
 msgstr ""
 
 #: classes/controller/class.settings.php:232
-#: classes/fields/class.field-relation.php:218
+#: classes/fields/class.field-relation.php:225
 msgid "Post Types"
 msgstr ""
 
@@ -91,7 +91,7 @@ msgid "Roles"
 msgstr ""
 
 #: classes/controller/class.settings.php:290
-#: classes/fields/class.field-taxonomy.php:221
+#: classes/fields/class.field-taxonomy.php:228
 msgid "Taxonomies"
 msgstr ""
 
@@ -138,9 +138,9 @@ msgstr ""
 #: classes/fields/class.field-file.php:111
 #: classes/fields/class.field-image.php:112
 #: classes/fields/class.field-radio.php:125
-#: classes/fields/class.field-relation.php:247
+#: classes/fields/class.field-relation.php:254
 #: classes/fields/class.field-select.php:100
-#: classes/fields/class.field-taxonomy.php:248
+#: classes/fields/class.field-taxonomy.php:255
 #: classes/fields/class.field-text.php:75
 #: classes/fields/class.field-textarea.php:88
 #: classes/fields/class.field-wysiwyg.php:128
@@ -154,9 +154,9 @@ msgstr ""
 #: classes/fields/class.field-file.php:118
 #: classes/fields/class.field-image.php:119
 #: classes/fields/class.field-radio.php:132
-#: classes/fields/class.field-relation.php:254
+#: classes/fields/class.field-relation.php:261
 #: classes/fields/class.field-select.php:107
-#: classes/fields/class.field-taxonomy.php:255
+#: classes/fields/class.field-taxonomy.php:262
 #: classes/fields/class.field-text.php:82
 #: classes/fields/class.field-textarea.php:95
 #: classes/fields/class.field-wysiwyg.php:135
@@ -256,18 +256,18 @@ msgstr ""
 msgid "Relation ( Post Types )"
 msgstr ""
 
-#: classes/fields/class.field-relation.php:196
-#: classes/fields/class.field-taxonomy.php:199
+#: classes/fields/class.field-relation.php:203
+#: classes/fields/class.field-taxonomy.php:206
 msgid "Search..."
 msgstr ""
 
-#: classes/fields/class.field-relation.php:200
-#: classes/fields/class.field-taxonomy.php:203
+#: classes/fields/class.field-relation.php:207
+#: classes/fields/class.field-taxonomy.php:210
 msgid "Load more"
 msgstr ""
 
-#: classes/fields/class.field-relation.php:239
-#: classes/fields/class.field-taxonomy.php:240
+#: classes/fields/class.field-relation.php:246
+#: classes/fields/class.field-taxonomy.php:247
 msgid "Selectable number"
 msgstr ""
 
@@ -316,6 +316,11 @@ msgstr ""
 msgid "Group name"
 msgstr ""
 
+#: classes/models/class.revisions.php:128 smart-custom-fields.php:167
+#: smart-custom-fields.php:168 smart-custom-fields.php:169
+msgid "Smart Custom Fields"
+msgstr ""
+
 #: smart-custom-fields.php:170 smart-custom-fields.php:171
 #: smart-custom-fields.php:217 smart-custom-fields.php:218
 msgid "Add New"
@@ -351,9 +356,6 @@ msgstr ""
 
 #: smart-custom-fields.php:179
 msgid "No Fields found in Trash."
-msgstr ""
-#. Plugin Name of the plugin/theme
-msgid "Smart Custom Fields"
 msgstr ""
 
 #. Plugin URI of the plugin/theme
