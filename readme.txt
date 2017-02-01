@@ -8,15 +8,17 @@ Stable tag: 3.1.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Smart Custom Fields is a simple plugin that management custom fields.
+Smart Custom Fields is a simple plugin for managing custom fields.
 
 == Description ==
 
-Smart Custom Fields is a simple plugin that management custom fields.
+Smart Custom Fields is a simple plugin for managing custom fields.
 
-* This plugin has loop field function.
-* Supported metadata revision.
-* Supported metadata preview.
+= Features =
+
+* Field group loop support.
+* Meta data revision support.
+* Meta data preview support.
 
 https://www.youtube.com/watch?v=WxPZurn0yvI
 
@@ -27,11 +29,11 @@ https://www.youtube.com/watch?v=WxPZurn0yvI
 * Radio
 * Select
 * Checkbox
-* Wysiwyg editor
+* WYSIWYG editor
 * Image
 * File
-* Relation ( Post Types )
-* Relation ( Taxonomies )
+* Related Posts
+* Related Terms
 * Color picker
 * Date picker
 * Boolean
@@ -52,9 +54,9 @@ This method can get all meta data.
 
 `SCF::gets()`
 
-This method can get any user meta data.
-
 **User meta data**
+
+This method can get any user meta data.
 
 `SCF::get_user_meta( $user_id, 'field-name' )`
 
@@ -108,9 +110,9 @@ https://github.com/inc2734/smart-custom-fields/
 
 = Translators =
 
-* Japanese(ja) - [JOTAKI Taisuke ](https://profiles.wordpress.org/tai/)
+* Japanese(ja) - [JOTAKI Taisuke](https://profiles.wordpress.org/tai/)
 
-You can send your own language pack to me.
+You can translate this plugin to your language by using [GlotPress](https://translate.wordpress.org/projects/wp-plugins/smart-custom-fields).
 
 == Installation ==
 
