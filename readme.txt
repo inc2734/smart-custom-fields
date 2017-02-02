@@ -1,5 +1,5 @@
 === Smart Custom Fields ===
-Contributors: inc2734, toro_unit, mimosafa, hideokamoto, hisako-isaka, kurudrive, hanamura, justinticktock, designhehe
+Contributors: inc2734, toro_unit, mimosafa, hideokamoto, hisako-isaka, kurudrive, hanamura, justinticktock, designhehe, mayukojpn
 Donate link: http://www.amazon.co.jp/registry/wishlist/39ANKRNSTNW40
 Tags: plugin, custom field, custom, field, meta, meta field, repeat, repeatable
 Requires at least: 3.9
