@@ -112,7 +112,7 @@ https://github.com/inc2734/smart-custom-fields/
 
 * Japanese(ja) - [JOTAKI Taisuke](https://profiles.wordpress.org/tai/)
 
-You can translate this plugin to your language by using [GlotPress](https://translate.wordpress.org/projects/wp-plugins/smart-custom-fields).
+You can translate this plugin into your language by using [GlotPress](https://translate.wordpress.org/projects/wp-plugins/smart-custom-fields).
 
 == Installation ==
 
