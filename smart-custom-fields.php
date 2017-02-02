@@ -50,6 +50,7 @@ class Smart_Custom_Fields {
 			include_once $form_item;
 			$basename  = basename( $form_item, '.php' );
 			$classname = preg_replace( '/^class\.field\-(.+)$/', 'Smart_Custom_Fields_Field_$1', $basename );
+			$classname = str_replace( '-', '_', $classname );
 			if ( class_exists( $classname ) ) {
 				new $classname();
 			}
