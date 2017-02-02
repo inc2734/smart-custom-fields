@@ -2,10 +2,10 @@
 # This file is distributed under the same license as the Smart Custom Fields package.
 msgid ""
 msgstr ""
-"Project-Id-Version: Smart Custom Fields 3.1.1\n"
+"Project-Id-Version: Smart Custom Fields 3.1.2\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/smart-custom-fields\n"
-"POT-Creation-Date: 2017-01-27 22:58+0900\n"
-"PO-Revision-Date: 2017-01-27 22:59+0900\n"
+"POT-Creation-Date: 2017-02-02 15:41+0900\n"
+"PO-Revision-Date: 2017-02-02 15:42+0900\n"
 "Last-Translator: inc2734 <inc@2inc.org>\n"
 "Language-Team: \n"
 "Language: ja\n"
@@ -245,8 +245,8 @@ msgid "Radio"
 msgstr "ラジオボタン"
 
 #: classes/fields/class.field-relation.php:24
-msgid "Relation ( Post Types )"
-msgstr "関連（投稿タイプ）"
+msgid "Related Posts"
+msgstr "関連する投稿"
 
 #: classes/fields/class.field-relation.php:203
 #: classes/fields/class.field-taxonomy.php:206
@@ -268,8 +268,8 @@ msgid "Select"
 msgstr "セレクトボックス"
 
 #: classes/fields/class.field-taxonomy.php:24
-msgid "Relation ( Taxonomies )"
-msgstr "関連（タクソノミー）"
+msgid "Related Terms"
+msgstr "関連するターム"
 
 #: classes/fields/class.field-text.php:21
 msgid "Text"
@@ -308,11 +308,6 @@ msgstr "繰り返し"
 msgid "Group name"
 msgstr "グループ名"
 
-#: classes/models/class.revisions.php:128 smart-custom-fields.php:167
-#: smart-custom-fields.php:168 smart-custom-fields.php:169
-msgid "Smart Custom Fields"
-msgstr "Smart Custom Fields"
-
 #: smart-custom-fields.php:170 smart-custom-fields.php:171
 #: smart-custom-fields.php:217 smart-custom-fields.php:218
 msgid "Add New"
@@ -350,6 +345,10 @@ msgstr "フィールドは見つかりませんでした。"
 msgid "No Fields found in Trash."
 msgstr "ゴミ箱にフィールドは見つかりませんでした"
 
+#. Plugin Name of the plugin/theme
+msgid "Smart Custom Fields"
+msgstr "Smart Custom Fields"
+
 #. Plugin URI of the plugin/theme
 msgid "https://github.com/inc2734/smart-custom-fields/"
 msgstr "https://github.com/inc2734/smart-custom-fields/"
@@ -365,3 +364,6 @@ msgstr "inc2734"
 #. Author URI of the plugin/theme
 msgid "http://2inc.org"
 msgstr "http://2inc.org"
+
+#~ msgid "Relation ( Taxonomies )"
+#~ msgstr "関連（タクソノミー）"

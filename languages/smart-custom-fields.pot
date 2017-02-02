@@ -2,9 +2,9 @@
 # This file is distributed under the same license as the Smart Custom Fields package.
 msgid ""
 msgstr ""
-"Project-Id-Version: Smart Custom Fields 3.1.1\n"
+"Project-Id-Version: Smart Custom Fields 3.1.2\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/smart-custom-fields\n"
-"POT-Creation-Date: 2017-01-27 13:56:52+00:00\n"
+"POT-Creation-Date: 2017-02-02 06:40:56+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -253,7 +253,7 @@ msgid "Radio"
 msgstr ""
 
 #: classes/fields/class.field-relation.php:24
-msgid "Relation ( Post Types )"
+msgid "Related Posts"
 msgstr ""
 
 #: classes/fields/class.field-relation.php:203
@@ -276,7 +276,7 @@ msgid "Select"
 msgstr ""
 
 #: classes/fields/class.field-taxonomy.php:24
-msgid "Relation ( Taxonomies )"
+msgid "Related Terms"
 msgstr ""
 
 #: classes/fields/class.field-text.php:21
@@ -316,11 +316,6 @@ msgstr ""
 msgid "Group name"
 msgstr ""
 
-#: classes/models/class.revisions.php:128 smart-custom-fields.php:167
-#: smart-custom-fields.php:168 smart-custom-fields.php:169
-msgid "Smart Custom Fields"
-msgstr ""
-
 #: smart-custom-fields.php:170 smart-custom-fields.php:171
 #: smart-custom-fields.php:217 smart-custom-fields.php:218
 msgid "Add New"
@@ -356,6 +351,9 @@ msgstr ""
 
 #: smart-custom-fields.php:179
 msgid "No Fields found in Trash."
+msgstr ""
+#. Plugin Name of the plugin/theme
+msgid "Smart Custom Fields"
 msgstr ""
 
 #. Plugin URI of the plugin/theme

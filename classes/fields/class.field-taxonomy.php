@@ -21,7 +21,7 @@ class Smart_Custom_Fields_Field_Taxonomy extends Smart_Custom_Fields_Field_Base 
 		add_filter( 'smart-cf-validate-get-value', array( $this, 'validate_get_value' ), 10, 2 );
 		return array(
 			'type'                => 'taxonomy',
-			'display-name'        => __( 'Relation ( Taxonomies )', 'smart-custom-fields' ),
+			'display-name'        => __( 'Related Terms', 'smart-custom-fields' ),
 			'optgroup'            => 'other-fields',
 			'allow-multiple-data' => true,
 		);

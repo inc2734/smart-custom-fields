@@ -21,7 +21,7 @@ class Smart_Custom_Fields_Field_Relation extends Smart_Custom_Fields_Field_Base 
 		add_filter( 'smart-cf-validate-get-value', array( $this, 'validate_get_value' ), 10, 2 );
 		return array(
 			'type'                => 'relation',
-			'display-name'        => __( 'Relation ( Post Types )', 'smart-custom-fields' ),
+			'display-name'        => __( 'Related Posts', 'smart-custom-fields' ),
 			'optgroup'            => 'other-fields',
 			'allow-multiple-data' => true,
 		);
