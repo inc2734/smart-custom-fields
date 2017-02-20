@@ -1,10 +1,10 @@
 <?php
 /**
  * Smart_Custom_Fields_Field_Related_Terms
- * Version    : 1.5.0
+ * Version    : 1.5.1
  * Author     : inc2734
  * Created    : October 7, 2014
- * Modified   : January 27, 2017
+ * Modified   : February 20, 2017
  * License    : GPLv2 or later
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
  */
@@ -127,7 +127,7 @@ class Smart_Custom_Fields_Field_Related_Terms extends Smart_Custom_Fields_Field_
 		if ( ! $taxonomies ) {
 			$taxonomies = array( 'category' );
 		}
-		if ( ! is_int( $limit ) ) {
+		if ( ! preg_match( '/^\d+$/', $limit ) ) {
 			$limit = '';
 		}
 		$number = get_option( 'posts_per_page' );
@@ -248,7 +248,7 @@ class Smart_Custom_Fields_Field_Related_Terms extends Smart_Custom_Fields_Field_
 			<td>
 				<input type="number"
 					name="<?php echo esc_attr( $this->get_field_name_in_setting( $group_key, $field_key, 'limit' ) ); ?>"
-					value="<?php echo esc_attr( $this->get( 'number' ) ); ?>" min="1" step="1" />
+					value="<?php echo esc_attr( $this->get( 'limit' ) ); ?>" min="1" step="1" />
 			</td>
 		</tr>
 		<tr>
