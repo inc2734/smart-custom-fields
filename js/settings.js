@@ -79,16 +79,14 @@ jQuery( function( $ ) {
 				} );
 			} else {
 				var label = table.find( '.smart-cf-field-label' ).val();
+				var name = $( '<small>' ).text( '[ ' + table.find('.smart-cf-field-name').val() + ' ]' );
+
 				if ( !label ) {
 					label = table.find( '.smart-cf-field-name' ).val();
 				}
 				table.fadeOut( 'fast', function() {
 					$( this ).addClass( 'hide' );
-					if ( label ) {
-						field_label.text( label );
-					} else {
-						field_label.html( "&nbsp;" );
-					}
+					field_label.text( label + " ").append( name );
 				} );
 			}
 		} );
