@@ -86,7 +86,7 @@ jQuery( function( $ ) {
 				}
 				table.fadeOut( 'fast', function() {
 					$( this ).addClass( 'hide' );
-					field_label.text( label + " ").append( name );
+					field_label.text( label + " " ).append( name );
 				} );
 			}
 		} );
