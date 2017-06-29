@@ -725,7 +725,6 @@ class SCF_Test extends WP_UnitTestCase {
 		$this->assertFalse( SCF::is_assoc( 'a' ) );
 		$this->assertFalse( SCF::is_assoc( array( 'a' ) ) );
 		$this->assertTrue( SCF::is_assoc( array( 'a' => 'a' ) ) );
-		$this->assertTrue( SCF::is_assoc( array( 'a' => 'a', 'b' ) ) );
 	}
 
 	/**
@@ -743,6 +742,7 @@ class SCF_Test extends WP_UnitTestCase {
 		$this->assertSame( array( 'a' => 'AAA', 'b' => 'BBB' ), SCF::choices_eol_to_array( array( 'a' => 'AAA', 'b' => 'BBB' ) ) );
 		$this->assertSame( array( 'a' => 'AAA', 'b' => 'BBB' ), SCF::choices_eol_to_array( "a => AAA\nb => BBB" ) );
 		$this->assertSame( array( 'a' => 'AAA', 0 => 'BBB' ), SCF::choices_eol_to_array( "a => AAA\nBBB" ) );
+		$this->assertSame( array( '0' => 'AAA', '1' => 'BBB' ), SCF::choices_eol_to_array( "0 => AAA\n1 => BBB" ) );
 	}
 
 	protected function create_revision( $post_id ) {
