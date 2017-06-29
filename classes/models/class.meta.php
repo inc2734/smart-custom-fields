@@ -44,9 +44,6 @@ class Smart_Custom_Fields_Meta {
 	 * @param WP_Post|WP_User|WP_Term|stdClass $object
 	 */
 	public function __construct( $object ) {
-		if ( !function_exists( 'get_editable_roles' ) ) {
-			require_once( ABSPATH . '/wp-admin/includes/user.php' );
-		}
 		$this->object = $object;
 		if ( is_a( $object, 'WP_Post' ) ) {
 			$this->id    = $object->ID;
