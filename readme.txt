@@ -1,10 +1,10 @@
 === Smart Custom Fields ===
-Contributors: inc2734, toro_unit, mimosafa, hideokamoto, hisako-isaka, kurudrive, hanamura, justinticktock, designhehe, mayukojpn
+Contributors: inc2734, toro_unit, mimosafa, hideokamoto, hisako-isaka, kurudrive, hanamura, justinticktock, designhehe, mayukojpn, hogetan
 Donate link: http://www.amazon.co.jp/registry/wishlist/39ANKRNSTNW40
 Tags: plugin, custom field, custom, field, meta, meta field, repeat, repeatable
 Requires at least: 3.9
 Tested up to: 4.8.0
-Stable tag: 3.1.3
+Stable tag: 3.1.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -126,6 +126,10 @@ You can translate this plugin into your language by using [GlotPress](https://tr
 2. Post edit page.
 
 == Changelog ==
+
+= 3.1.4 =
+* Remove no used codes.
+* Fixed a bug that name disappears when opening / closing a field. #51 (by [@yousan](https://github.com/yousan))
 
 = 3.1.3 =
 * Fix Selectable number bug
