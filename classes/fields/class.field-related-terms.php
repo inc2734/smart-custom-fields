@@ -198,7 +198,8 @@ class Smart_Custom_Fields_Field_Related_Terms extends Smart_Custom_Fields_Field_
 					%s
 				</div>
 			</div>
-			<div class="%s"><ul>%s</ul></div>',
+			<div class="%s"><ul>%s</ul></div>
+			<div class="clear"></div>',
 			SCF_Config::PREFIX . 'relation-left',
 			implode( ',', $taxonomies ),
 			$limit,

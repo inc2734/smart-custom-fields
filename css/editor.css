@@ -54,6 +54,9 @@
 	margin: 10px 0 0;
 	color: #888;
 }
+.smart-cf-meta-box-table td .clear {
+	clear: both;
+}
 
 /** ==================================================
  * .smart-cf-meta-box-repeat-tables
