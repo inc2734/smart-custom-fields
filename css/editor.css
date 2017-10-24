@@ -148,16 +148,31 @@
 	width: 50%;
 	overflow: auto;
 }
+.smart-cf-meta-box-table .smart-cf-relation-right ul li {
+	padding-right: 30px;
+	padding-left: 30px;
+}
+.smart-cf-meta-box-table .smart-cf-relation-right ul li .smart-cf-icon-handle {
+	position: absolute;
+	top: 4px;
+	left: 5px;
+	margin: 0;
+}
 .smart-cf-meta-box-table .smart-cf-relation-right ul li .relation-remove {
 	cursor: pointer;
 	display: block;
-	padding: 2px 8px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	height: 12px;
+	width: 12px;
+	line-height: 1;
+	border-radius: 3px;
 	position: absolute;
-	top: 2px;
+	top: 7px;
 	right: 6px;
-}
-.smart-cf-meta-box-table .smart-cf-relation-right ul li {
-	padding-right: 15px;
+	color: #fff;
+	background-color: #32373c;
 }
 
 /** ==================================================
