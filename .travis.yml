@@ -5,7 +5,7 @@ php:
 sudo: false
 env:
 - WP_VERSION=nightly WP_MULTISITE=0
-- WP_VERSION=3.9 WP_MULTISITE=0
+- WP_VERSION=4.3 WP_MULTISITE=0
 cache:
   directories:
   - vendor
