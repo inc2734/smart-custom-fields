@@ -2,7 +2,7 @@
 
 set -e;
 
-themedir=$(pwd)
+plugindir=$(pwd)
 
 cd ${plugindir}
 

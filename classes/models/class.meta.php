@@ -452,6 +452,8 @@ class Smart_Custom_Fields_Meta {
 		}
 
 		$settings = SCF::get_settings( $this->object );
+		$saved_data = array();
+
 		foreach ( $settings as $Setting ) {
 			$groups = $Setting->get_groups();
 			foreach ( $groups as $Group ) {
@@ -461,12 +463,15 @@ class Smart_Custom_Fields_Meta {
 					if ( !isset( $POST[SCF_Config::NAME][$field_name] ) ) {
 						continue;
 					}
+					$saved_data[$field_name] = $POST[SCF_Config::NAME][$field_name];
+
 					$this->delete( $field_name );
 					if ( $Field->get_attribute( 'allow-multiple-data' ) ) {
 						$multiple_data_fields[] = $field_name;
 					}
+
 					if ( $Group->is_repeatable() && $Field->get_attribute( 'allow-multiple-data' ) ) {
-						$repeat_multiple_data_fields = $POST[SCF_Config::NAME][$field_name];
+						$repeat_multiple_data_fields = $saved_data[$field_name];
 						foreach ( $repeat_multiple_data_fields as $values ) {
 							if ( is_array( $values ) ) {
 								$repeat_multiple_data[$field_name][] = count( $values );
@@ -483,7 +488,7 @@ class Smart_Custom_Fields_Meta {
 			$this->update( SCF_Config::PREFIX . 'repeat-multiple-data', $repeat_multiple_data );
 		}
 
-		foreach ( $POST[SCF_Config::NAME] as $name => $values ) {
+		foreach ( $saved_data as $name => $values ) {
 			foreach ( $values as $value ) {
 				if ( in_array( $name, $multiple_data_fields ) && $value === '' ) {
 					continue;
