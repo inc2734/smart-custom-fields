@@ -18,7 +18,7 @@ if [ -e ${plugindir}/bin/install-wp-tests.sh ]; then
   fi
 
   bash "${plugindir}/bin/install-wp-tests.sh" wordpress_test root '' localhost latest;
-  vendor/bin/phpunit --configuration= ${plugindir}/phpunit.xml
+  vendor/bin/phpunit --configuration= ${plugindir}/phpunit.xml.dist
 else
   echo "${plugindir}/bin/install-wp-tests.sh not found."
 fi;

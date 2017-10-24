@@ -5,7 +5,7 @@ if [ -e /tmp/wordpress-tests-lib ]; then
   plugindir=$(pwd)
 
   cd ${plugindir};
-  vendor/bin/phpunit --configuration= ${plugindir}/phpunit.xml
+  vendor/bin/phpunit --configuration= ${plugindir}/phpunit.xml.dist
   exit 0
 fi
 
