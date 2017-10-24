@@ -62,11 +62,15 @@ jQuery( function( $ ) {
 	/**
 	 * sortable
 	 */
-	$( '.smart-cf-meta-box .smart-cf-relation-right ul' ).sortable( {
-		handle: '.smart-cf-icon-handle',
-		update: function() {
-			update_relation_value( $( this ).closest( 'tr' ) );
-		}
-	} );
+	$( '.smart-cf-meta-box' ).find( '.smart-cf-relation-right ul' )
+		.on( 'mousedown', function( event ) {
+			event.stopPropagation();
+		} )
+		.sortable( {
+			handle: '.smart-cf-icon-handle',
+			update: function() {
+				update_relation_value( $( this ).closest( 'tr' ) );
+			}
+		} );
 
 } );
