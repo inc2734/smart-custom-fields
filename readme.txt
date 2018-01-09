@@ -178,7 +178,7 @@ You can translate this plugin into your language by using [GlotPress](https://tr
 
 = 2.1.1 =
 * Fix revision lines duplication (by [@hanamura](https://github.com/hanamura))
-* Fixed a bug that relation felds don't work in options page.
+* Fixed a bug that relation fields don't work on the options page.
 
 = 2.1.0 =
 * Support separated key and value in select, checkbox, radio.
@@ -263,7 +263,7 @@ You can translate this plugin into your language by using [GlotPress](https://tr
 
 = 1.2.2 =
 * Fixed a bug that can not get the correct data when the posts use post id filtering.
-* Changed that original the_content filter does not apply to wisywig field.
+* Changed that original the_content filter does not apply to wysiwyg field.
 * Add post_id attribute to smart-cf-register-fields.
 
 = 1.2.1 =
@@ -271,7 +271,7 @@ You can translate this plugin into your language by using [GlotPress](https://tr
 
 = 1.2.0 =
 * refactoring. A lot of changes in all.
-* Renewd the Smart_Custom_Fields_Field_Base.
+* Renewed the Smart_Custom_Fields_Field_Base.
 * Add filter hook smart-cf-register-fields. If You use this hook, you can define custom fields by the code.
 * Add action hook smart-cf-before-editor-enqueue-scripts
 * Add action hook smart-cf-after-editor-enqueue-scripts
