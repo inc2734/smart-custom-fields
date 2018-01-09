@@ -108,10 +108,31 @@
 .smart-cf-meta-box-table .smart-cf-relation-right ul li {
 	background: #fff;
 	border-bottom: #eee solid 1px;
-	color: #0074a2;
+	color: #999;
 	margin: 0;
 	padding: 5px 10px;
 	position: relative;
+}
+.smart-cf-meta-box-table .smart-cf-relation-left ul li[data-status="publish"],
+.smart-cf-meta-box-table .smart-cf-relation-right ul li[data-status="publish"] {
+	color: #0074a2;
+}
+.smart-cf-meta-box-table .smart-cf-relation-left ul li::after,
+.smart-cf-meta-box-table .smart-cf-relation-right ul li::after {
+	content: attr(data-status);
+	display: inline-block;
+	background-color: #999;
+	color: #fff;
+	border-radius: 4px;
+	padding: 0 3px;
+	font-size: 10px;
+	margin-left: .5em;
+	position: relative;
+	top: -1px;
+}
+.smart-cf-meta-box-table .smart-cf-relation-left ul li[data-status="publish"]::after,
+.smart-cf-meta-box-table .smart-cf-relation-right ul li[data-status="publish"]::after {
+	display: none;
 }
 .smart-cf-meta-box-table .smart-cf-relation-left {
 	float: left;

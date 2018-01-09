@@ -80,6 +80,7 @@ jQuery( function( $ ) {
 					table.find( '.smart-cf-relation-children-select ul' ).append(
 						$( '<li />' )
 							.attr( 'data-id', this.ID )
+							.attr( 'data-status', this.post_status )
 							.text( this.post_title )
 					);
 				} );
