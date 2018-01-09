@@ -82,6 +82,7 @@ class Smart_Custom_Fields_Field_Related_Posts extends Smart_Custom_Fields_Field_
 				'order'     => 'ASC',
 				'orderby'   => 'ID',
 				'posts_per_page' => -1,
+				'post_status'    => 'any',
 			);
 
 			if ( isset( $_POST['click_count'] ) ) {
@@ -137,6 +138,7 @@ class Smart_Custom_Fields_Field_Related_Posts extends Smart_Custom_Fields_Field_
 			'order'          => 'ASC',
 			'orderby'        => 'ID',
 			'posts_per_page' => $posts_per_page,
+			'post_status'    => 'any',
 		) );
 		$choices_li = array();
 		foreach ( $choices_posts as $_post ) {
