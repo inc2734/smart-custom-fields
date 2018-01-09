@@ -156,9 +156,9 @@ jQuery( function( $ ) {
 				var images = custom_uploader_file.state().get( 'selection' );
 				images.each( function( file ){
 					var image_area = upload_button.parent().find( '.smart-cf-upload-file' );
-					image_area.find( 'img' ).remove();
+					image_area.find( 'a' ).remove();
 					image_area.prepend(
-						'<a href="' + file.toJSON().url + '" target="_blank"><img src="' + file.toJSON().icon + '" /></a>'
+						'<a href="' + file.toJSON().url + '" target="_blank"><img src="' + file.toJSON().icon + '" /><span>' + file.toJSON().filename + '</span></a>'
 					);
 					image_area.removeClass( 'hide' );
 					upload_button.parent().find( 'input[type="hidden"]' ).val( file.toJSON().id );
