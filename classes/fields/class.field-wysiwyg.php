@@ -90,8 +90,8 @@ class Smart_Custom_Fields_Field_Wysiwyg extends Smart_Custom_Fields_Field_Base {
 				<div class="wp-editor-tools hide-if-no-js">
 					<div class="wp-media-buttons">%1$s</div>
 					<div class="wp-editor-tabs">
-						<button type="button" id="%2$s-tmce" class="smart-cf-switch-editor wp-switch-editor switch-tmce" data-wp-editor-id="%2$s">ビジュアル</button>
-						<button type="button" id="%2$s-html" class="smart-cf-switch-editor wp-switch-editor switch-html" data-wp-editor-id="%2$s">テキスト</button>
+						<button type="button" id="%2$s-tmce" class="smart-cf-switch-editor wp-switch-editor switch-tmce" data-wp-editor-id="%2$s">%6$s</button>
+						<button type="button" id="%2$s-html" class="smart-cf-switch-editor wp-switch-editor switch-html" data-wp-editor-id="%2$s">%7$s</button>
 					</div>
 				</div>
 				<div class="wp-editor-container">
@@ -103,7 +103,10 @@ class Smart_Custom_Fields_Field_Wysiwyg extends Smart_Custom_Fields_Field_Base {
 			esc_attr( $wysiwyg_id ),
 			esc_attr( $name ),
 			disabled( true, $disabled, false ),
-			$value
+			$value,
+			esc_html__( 'Visual', 'smart-custom-fields' ),
+			esc_html__( 'Text', 'smart-custom-fields' )
+			
 		);
 	}
 

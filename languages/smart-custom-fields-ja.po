@@ -3,20 +3,21 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Smart Custom Fields 3.1.2\n"
-"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/smart-custom-fields\n"
-"POT-Creation-Date: 2017-02-02 15:41+0900\n"
-"PO-Revision-Date: 2017-02-02 15:42+0900\n"
-"Last-Translator: inc2734 <inc@2inc.org>\n"
-"Language-Team: \n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/smart-custom-"
+"fields\n"
+"POT-Creation-Date: 2017-02-02 06:40:56+00:00\n"
+"PO-Revision-Date: 2018-05-29 22:10+0000\n"
+"Last-Translator: robsonds <robssanches@hotmail.com>\n"
+"Language-Team: Japanese\n"
 "Language: ja\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.8.4\n"
+"X-Generator: Loco https://localise.biz/\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Poedit-KeywordsList: __;_e;esc_html__;esc_html_e;esc_attr__;esc_attr_e\n"
-"X-Poedit-Basepath: .\n"
-"X-Poedit-SearchPath-0: ..\n"
+"X-Poedit-Basepath: ..\n"
+"X-Poedit-SearchPath-0: ."
 
 #: classes/controller/class.controller-base.php:46
 msgid "Image setting"
@@ -30,7 +31,8 @@ msgstr "ファイル設定"
 msgid "Save settings"
 msgstr "設定を保存"
 
-#: classes/controller/class.profile.php:43 classes/controller/class.settings.php:76
+#: classes/controller/class.profile.php:43
+#: classes/controller/class.settings.php:76
 msgid "Custom Fields"
 msgstr "カスタムフィールド"
 
@@ -116,11 +118,14 @@ msgstr "はい"
 msgid "No"
 msgstr "いいえ"
 
-#: classes/fields/class.field-boolean.php:82 classes/fields/class.field-check.php:117
+#: classes/fields/class.field-boolean.php:82
+#: classes/fields/class.field-check.php:117
 #: classes/fields/class.field-colorpicker.php:103
 #: classes/fields/class.field-datepicker.php:125
-#: classes/fields/class.field-radio.php:116 classes/fields/class.field-select.php:91
-#: classes/fields/class.field-text.php:66 classes/fields/class.field-textarea.php:79
+#: classes/fields/class.field-radio.php:116
+#: classes/fields/class.field-select.php:91
+#: classes/fields/class.field-text.php:66
+#: classes/fields/class.field-textarea.php:79
 #: classes/fields/class.field-wysiwyg.php:119
 msgid "Default"
 msgstr "デフォルト"
@@ -137,11 +142,13 @@ msgstr "FALSE ラベル"
 #: classes/fields/class.field-check.php:126
 #: classes/fields/class.field-colorpicker.php:112
 #: classes/fields/class.field-datepicker.php:189
-#: classes/fields/class.field-file.php:111 classes/fields/class.field-image.php:112
+#: classes/fields/class.field-file.php:111
+#: classes/fields/class.field-image.php:112
 #: classes/fields/class.field-radio.php:125
 #: classes/fields/class.field-relation.php:254
 #: classes/fields/class.field-select.php:100
-#: classes/fields/class.field-taxonomy.php:255 classes/fields/class.field-text.php:75
+#: classes/fields/class.field-taxonomy.php:255
+#: classes/fields/class.field-text.php:75
 #: classes/fields/class.field-textarea.php:88
 #: classes/fields/class.field-wysiwyg.php:128
 msgid "Instruction"
@@ -151,11 +158,13 @@ msgstr "説明文"
 #: classes/fields/class.field-check.php:133
 #: classes/fields/class.field-colorpicker.php:119
 #: classes/fields/class.field-datepicker.php:196
-#: classes/fields/class.field-file.php:118 classes/fields/class.field-image.php:119
+#: classes/fields/class.field-file.php:118
+#: classes/fields/class.field-image.php:119
 #: classes/fields/class.field-radio.php:132
 #: classes/fields/class.field-relation.php:261
 #: classes/fields/class.field-select.php:107
-#: classes/fields/class.field-taxonomy.php:262 classes/fields/class.field-text.php:82
+#: classes/fields/class.field-taxonomy.php:262
+#: classes/fields/class.field-text.php:82
 #: classes/fields/class.field-textarea.php:95
 #: classes/fields/class.field-wysiwyg.php:135
 msgid "Notes"
@@ -165,25 +174,31 @@ msgstr "注記"
 msgid "Check"
 msgstr "チェックボックス"
 
-#: classes/fields/class.field-check.php:87 classes/fields/class.field-radio.php:86
+#: classes/fields/class.field-check.php:87
+#: classes/fields/class.field-radio.php:86
 #: classes/fields/class.field-select.php:81
 msgid "Choices"
 msgstr "選択肢"
 
-#: classes/fields/class.field-check.php:93 classes/fields/class.field-radio.php:92
+#: classes/fields/class.field-check.php:93
+#: classes/fields/class.field-radio.php:92
 #: classes/fields/class.field-select.php:87
-msgid "If you want to separate the key and the value, enter as follows: key => value"
+msgid ""
+"If you want to separate the key and the value, enter as follows: key => value"
 msgstr "もしキーと値を分けたい場合は次のように入力してください: キー => 値"
 
-#: classes/fields/class.field-check.php:97 classes/fields/class.field-radio.php:96
+#: classes/fields/class.field-check.php:97
+#: classes/fields/class.field-radio.php:96
 msgid "Display Direction"
 msgstr "表示方向"
 
-#: classes/fields/class.field-check.php:101 classes/fields/class.field-radio.php:100
+#: classes/fields/class.field-check.php:101
+#: classes/fields/class.field-radio.php:100
 msgid "horizontal"
 msgstr "水平方向"
 
-#: classes/fields/class.field-check.php:102 classes/fields/class.field-radio.php:101
+#: classes/fields/class.field-check.php:102
+#: classes/fields/class.field-radio.php:101
 msgid "vertical"
 msgstr "垂直方向"
 
@@ -220,7 +235,8 @@ msgstr "最小日付"
 msgid "File"
 msgstr "ファイル"
 
-#: classes/fields/class.field-file.php:51 classes/fields/class.field-image.php:52
+#: classes/fields/class.field-file.php:51
+#: classes/fields/class.field-image.php:52
 msgid "Delete"
 msgstr "削除"
 
@@ -287,6 +303,10 @@ msgstr "行数"
 msgid "Wysiwyg"
 msgstr "WYSIWYG"
 
+#: classes/fields/class.field-wysiwyg.php:107
+msgid "Visual"
+msgstr "ビジュアル"
+
 #: classes/fields/class.field-wysiwyg.php:157
 #: classes/fields/class.field-wysiwyg.php:158
 msgid "Add Media"
@@ -345,25 +365,21 @@ msgstr "フィールドは見つかりませんでした。"
 msgid "No Fields found in Trash."
 msgstr "ゴミ箱にフィールドは見つかりませんでした"
 
-#. Plugin Name of the plugin/theme
 msgid "Smart Custom Fields"
 msgstr "Smart Custom Fields"
 
 #. Plugin URI of the plugin/theme
 msgid "https://github.com/inc2734/smart-custom-fields/"
-msgstr "https://github.com/inc2734/smart-custom-fields/"
+msgstr ""
 
 #. Description of the plugin/theme
 msgid "Smart Custom Fields is a simple plugin that management custom fields."
-msgstr "Smart Custom Fields はカスタムフィールドを管理するシンプルなプラグインです。"
+msgstr ""
 
 #. Author of the plugin/theme
 msgid "inc2734"
-msgstr "inc2734"
+msgstr ""
 
 #. Author URI of the plugin/theme
 msgid "http://2inc.org"
-msgstr "http://2inc.org"
-
-#~ msgid "Relation ( Taxonomies )"
-#~ msgstr "関連（タクソノミー）"
+msgstr ""
