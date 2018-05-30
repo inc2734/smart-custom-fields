@@ -1,4 +1,4 @@
-# Copyright (C) 2015 Smart Custom Fields
+# Copyright (C) 2017 Smart Custom Fields
 # This file is distributed under the same license as the Smart Custom Fields package.
 msgid ""
 msgstr ""
@@ -6,117 +6,114 @@ msgstr ""
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/smart-custom-"
 "fields\n"
 "POT-Creation-Date: 2017-02-02 06:40:56+00:00\n"
-"PO-Revision-Date: 2018-05-29 22:10+0000\n"
-"Last-Translator: robssanches <robssanches@hotmail.com>\n"
-"Language-Team: Japanese\n"
-"Language: ja\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Loco https://localise.biz/\n"
-"Plural-Forms: nplurals=1; plural=0;\n"
-"X-Poedit-KeywordsList: __;_e;esc_html__;esc_html_e;esc_attr__;esc_attr_e\n"
-"X-Poedit-Basepath: ..\n"
-"X-Poedit-SearchPath-0: ."
+"PO-Revision-Date: 2018-05-29 19:42-0300\n"
+"Last-Translator: robssanches <robssanches@hotmail.com>\n"
+"Language-Team: Português do Brasil \n"
+"Language: pt_BR\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Poedit 2.0.7\n"
 
 #: classes/controller/class.controller-base.php:46
 msgid "Image setting"
-msgstr "画像設定"
+msgstr "Configuração de imagem"
 
 #: classes/controller/class.controller-base.php:47
 msgid "File setting"
-msgstr "ファイル設定"
+msgstr "Configuração de arquivo"
 
 #: classes/controller/class.option.php:57
 msgid "Save settings"
-msgstr "設定を保存"
+msgstr "Salvar configurações"
 
 #: classes/controller/class.profile.php:43
 #: classes/controller/class.settings.php:76
 msgid "Custom Fields"
-msgstr "カスタムフィールド"
+msgstr "Campos personalizados"
 
 #: classes/controller/class.settings.php:29
 msgid "Basic fields"
-msgstr "基本フィールド"
+msgstr "Campos básicos"
 
 #: classes/controller/class.settings.php:33
 msgid "Select fields"
-msgstr "選択フィールド"
+msgstr "Selecione os campos"
 
 #: classes/controller/class.settings.php:37
 msgid "Content fields"
-msgstr "コンテンツフィールド"
+msgstr "Campos de conteúdo"
 
 #: classes/controller/class.settings.php:41
 msgid "Other fields"
-msgstr "その他のフィールド"
+msgstr "Outros campos"
 
 #: classes/controller/class.settings.php:64
 msgid "Same name exists!"
-msgstr "同じ名前が存在します！"
+msgstr "O mesmo nome existe!"
 
 #: classes/controller/class.settings.php:82
 msgid "Display conditions ( Post )"
-msgstr "表示条件（投稿）"
+msgstr "Condições de exibição (Post)"
 
 #: classes/controller/class.settings.php:89
 msgid "Display conditions ( Profile )"
-msgstr "表示条件（プロフィール）"
+msgstr "Condições de exibição (Perfil)"
 
 #: classes/controller/class.settings.php:96
 msgid "Display conditions ( Taxonomy )"
-msgstr "表示条件（タクソノミー）"
+msgstr "Condições de exibição (Taxonomia)"
 
 #: classes/controller/class.settings.php:103
 msgid "Display conditions ( Options page )"
-msgstr "表示条件（オプションページ）"
+msgstr "Condições de exibição (Página de Opções)"
 
 #: classes/controller/class.settings.php:163
 msgid "Type"
-msgstr "タイプ"
+msgstr "Tipo"
 
 #: classes/controller/class.settings.php:198
 msgid "Add Sub field"
-msgstr "サブフィールドを追加"
+msgstr "Adicionar Campo Secundário"
 
 #: classes/controller/class.settings.php:202
 msgid "Add Field"
-msgstr "フィールド追加"
+msgstr "Adicionar Campo"
 
 #: classes/controller/class.settings.php:232
 #: classes/fields/class.field-relation.php:225
 msgid "Post Types"
-msgstr "投稿タイプ"
+msgstr "Tipos de Post"
 
 #: classes/controller/class.settings.php:239
 msgid "Post Ids ( Comma separated )"
-msgstr "投稿 ID (カンマ区切り)"
+msgstr "IDs de postagem (separados por vírgula)"
 
 #: classes/controller/class.settings.php:264
 msgid "Roles"
-msgstr "権限"
+msgstr "Funções"
 
 #: classes/controller/class.settings.php:290
 #: classes/fields/class.field-taxonomy.php:228
 msgid "Taxonomies"
-msgstr "タクソノミー"
+msgstr "Taxonomias"
 
 #: classes/controller/class.settings.php:314
 msgid "Options pages"
-msgstr "オプションページ"
+msgstr "Páginas de opções"
 
 #: classes/fields/class.field-boolean.php:23
 msgid "Boolean"
-msgstr "真偽値"
+msgstr "Verdadeiro ou Falso"
 
 #: classes/fields/class.field-boolean.php:38
 msgid "Yes"
-msgstr "はい"
+msgstr "Sim"
 
 #: classes/fields/class.field-boolean.php:39
 msgid "No"
-msgstr "いいえ"
+msgstr "Não"
 
 #: classes/fields/class.field-boolean.php:82
 #: classes/fields/class.field-check.php:117
@@ -128,15 +125,17 @@ msgstr "いいえ"
 #: classes/fields/class.field-textarea.php:79
 #: classes/fields/class.field-wysiwyg.php:119
 msgid "Default"
-msgstr "デフォルト"
+msgstr ""
+"7/5000\n"
+"Padrão"
 
 #: classes/fields/class.field-boolean.php:107
 msgid "TRUE Label"
-msgstr "TRUE ラベル"
+msgstr "Rótulo VERDADEIRO"
 
 #: classes/fields/class.field-boolean.php:117
 msgid "FALSE Label"
-msgstr "FALSE ラベル"
+msgstr "Rótulo FALSO"
 
 #: classes/fields/class.field-boolean.php:127
 #: classes/fields/class.field-check.php:126
@@ -152,7 +151,7 @@ msgstr "FALSE ラベル"
 #: classes/fields/class.field-textarea.php:88
 #: classes/fields/class.field-wysiwyg.php:128
 msgid "Instruction"
-msgstr "説明文"
+msgstr "Instrução"
 
 #: classes/fields/class.field-boolean.php:134
 #: classes/fields/class.field-check.php:133
@@ -168,203 +167,206 @@ msgstr "説明文"
 #: classes/fields/class.field-textarea.php:95
 #: classes/fields/class.field-wysiwyg.php:135
 msgid "Notes"
-msgstr "注記"
+msgstr "Notas"
 
 #: classes/fields/class.field-check.php:21
 msgid "Check"
-msgstr "チェックボックス"
+msgstr "Checkbox"
 
 #: classes/fields/class.field-check.php:87
 #: classes/fields/class.field-radio.php:86
 #: classes/fields/class.field-select.php:81
 msgid "Choices"
-msgstr "選択肢"
+msgstr "Opções"
 
 #: classes/fields/class.field-check.php:93
 #: classes/fields/class.field-radio.php:92
 #: classes/fields/class.field-select.php:87
 msgid ""
 "If you want to separate the key and the value, enter as follows: key => value"
-msgstr "もしキーと値を分けたい場合は次のように入力してください: キー => 値"
+msgstr ""
+"Se você deseja separar a chave e o valor, insira da seguinte forma: key => "
+"value"
 
 #: classes/fields/class.field-check.php:97
 #: classes/fields/class.field-radio.php:96
 msgid "Display Direction"
-msgstr "表示方向"
+msgstr "Direção de Exibição"
 
 #: classes/fields/class.field-check.php:101
 #: classes/fields/class.field-radio.php:100
 msgid "horizontal"
-msgstr "水平方向"
+msgstr "horizontal"
 
 #: classes/fields/class.field-check.php:102
 #: classes/fields/class.field-radio.php:101
 msgid "vertical"
-msgstr "垂直方向"
+msgstr "vertical"
 
 #: classes/fields/class.field-colorpicker.php:29
 msgid "Color picker"
-msgstr "カラーピッカー"
+msgstr "Seletor de cores"
 
 #: classes/fields/class.field-datepicker.php:29
 msgid "Date picker"
-msgstr "日付ピッカー"
+msgstr "Seletor de data"
 
 #: classes/fields/class.field-datepicker.php:135
 msgid "Date Format"
-msgstr "日付のフォーマット"
+msgstr "Formato de data"
 
 #: classes/fields/class.field-datepicker.php:143
 msgid "e.g dd/mm/yy"
-msgstr "例: dd/mm/yy"
+msgstr "ex. dd/mm/yy"
 
 #: classes/fields/class.field-datepicker.php:153
 msgid "Max Date"
-msgstr "最大日付"
+msgstr "Data máxima"
 
 #: classes/fields/class.field-datepicker.php:161
 #: classes/fields/class.field-datepicker.php:179
 msgid "e.g +1m +1w"
-msgstr "例: +1m +1w"
+msgstr "ex. +1m +1w"
 
 #: classes/fields/class.field-datepicker.php:171
 msgid "Min Date"
-msgstr "最小日付"
+msgstr "Data mínima"
 
 #: classes/fields/class.field-file.php:21
 msgid "File"
-msgstr "ファイル"
+msgstr "Arquivo"
 
 #: classes/fields/class.field-file.php:51
 #: classes/fields/class.field-image.php:52
 msgid "Delete"
-msgstr "削除"
+msgstr "Excluir"
 
 #: classes/fields/class.field-file.php:92
 msgid "File Select"
-msgstr "ファイル選択"
+msgstr "Seleção de Arquivo"
 
 #: classes/fields/class.field-image.php:21
 msgid "Image"
-msgstr "画像"
+msgstr "Imagem"
 
 #: classes/fields/class.field-image.php:92
 msgid "Image Select"
-msgstr "画像選択"
+msgstr "Selecionar imagem"
 
 #: classes/fields/class.field-image.php:129
 msgid "Preview Size"
-msgstr "プレビューサイズ"
+msgstr "Tamanho da pré-visualização"
 
 #: classes/fields/class.field-radio.php:21
 msgid "Radio"
-msgstr "ラジオボタン"
+msgstr "Radio"
 
 #: classes/fields/class.field-relation.php:24
 msgid "Related Posts"
-msgstr "関連する投稿"
+msgstr "Posts Relacionados"
 
 #: classes/fields/class.field-relation.php:203
 #: classes/fields/class.field-taxonomy.php:206
 msgid "Search..."
-msgstr "検索 …"
+msgstr "Pesquisa..."
 
 #: classes/fields/class.field-relation.php:207
 #: classes/fields/class.field-taxonomy.php:210
 msgid "Load more"
-msgstr "さらに読み込む"
+msgstr "Carregar mais"
 
 #: classes/fields/class.field-relation.php:246
 #: classes/fields/class.field-taxonomy.php:247
 msgid "Selectable number"
-msgstr "選択できる個数"
+msgstr "Número selecionável"
 
 #: classes/fields/class.field-select.php:21
 msgid "Select"
-msgstr "セレクトボックス"
+msgstr "Seleção"
 
 #: classes/fields/class.field-taxonomy.php:24
 msgid "Related Terms"
-msgstr "関連するターム"
+msgstr "Termos relacionados"
 
 #: classes/fields/class.field-text.php:21
 msgid "Text"
-msgstr "テキスト"
+msgstr "Texto"
 
 #: classes/fields/class.field-textarea.php:21
 msgid "Textarea"
-msgstr "テキストエリア"
+msgstr "Área de Texto"
 
 #: classes/fields/class.field-textarea.php:69
 msgid "Rows"
-msgstr "行数"
+msgstr "Linhas"
 
 #: classes/fields/class.field-wysiwyg.php:26
 msgid "Wysiwyg"
-msgstr "WYSIWYG"
+msgstr "Wysiwyg"
 
 #: classes/fields/class.field-wysiwyg.php:107
 msgid "Visual"
-msgstr "ビジュアル"
+msgstr "Visual"
 
 #: classes/fields/class.field-wysiwyg.php:157
 #: classes/fields/class.field-wysiwyg.php:158
 msgid "Add Media"
-msgstr "メディアを追加"
+msgstr "Adicionar Mídia"
 
 #: classes/models/class.abstract-field-base.php:105
 msgid "Name"
-msgstr "名前"
+msgstr "Nome"
 
 #: classes/models/class.abstract-field-base.php:116
 msgid "Label"
-msgstr "ラベル"
+msgstr "Rótulo"
 
 #: classes/models/class.group.php:127
 msgid "Repeat"
-msgstr "繰り返し"
+msgstr "Repetir"
 
 #: classes/models/class.group.php:132
 msgid "Group name"
-msgstr "グループ名"
+msgstr "Nome do grupo"
 
 #: smart-custom-fields.php:170 smart-custom-fields.php:171
 #: smart-custom-fields.php:217 smart-custom-fields.php:218
 msgid "Add New"
-msgstr "新規追加"
+msgstr "Adicionar Novo"
 
 #: smart-custom-fields.php:172
 msgid "New Field"
-msgstr "新規フィールド"
+msgstr "Novo Campo"
 
 #: smart-custom-fields.php:173
 msgid "Edit Field"
-msgstr "フィールド編集"
+msgstr "Editar campo"
 
 #: smart-custom-fields.php:174
 msgid "View Field"
-msgstr "フィールドを表示"
+msgstr "Visualizar campo"
 
 #: smart-custom-fields.php:175
 msgid "All Fields"
-msgstr "すべてのフィールド"
+msgstr "Todos os Campos"
 
 #: smart-custom-fields.php:176
 msgid "Search Fields"
-msgstr "フィールドを検索"
+msgstr "Campos de Pesquisa"
 
 #: smart-custom-fields.php:177
 msgid "Parent Fields:"
-msgstr "親フィールド:"
+msgstr "Campos pai:"
 
 #: smart-custom-fields.php:178
 msgid "No Fields found."
-msgstr "フィールドは見つかりませんでした。"
+msgstr "Nenhum campo encontrado."
 
 #: smart-custom-fields.php:179
 msgid "No Fields found in Trash."
-msgstr "ゴミ箱にフィールドは見つかりませんでした"
+msgstr "Nenhum campo encontrado na lixeira."
 
+#. Plugin Name of the plugin/theme
 msgid "Smart Custom Fields"
 msgstr "Smart Custom Fields"
 
@@ -375,6 +377,7 @@ msgstr ""
 #. Description of the plugin/theme
 msgid "Smart Custom Fields is a simple plugin that management custom fields."
 msgstr ""
+"Smart Custom Fields é um plugin simples que gerencia campos personalizados."
 
 #. Author of the plugin/theme
 msgid "inc2734"

@@ -295,6 +295,10 @@ msgstr ""
 msgid "Wysiwyg"
 msgstr ""
 
+#: classes/fields/class.field-wysiwyg.php:107
+msgid "Visual"
+msgstr ""
+
 #: classes/fields/class.field-wysiwyg.php:157
 #: classes/fields/class.field-wysiwyg.php:158
 msgid "Add Media"
