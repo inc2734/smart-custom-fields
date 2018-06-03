@@ -267,7 +267,7 @@ class Smart_Custom_Fields_Controller_Base {
 		}
 
 		printf(
-			'<div class="%s" %s>%s<table>',
+			'<div class="%s" %s>%s',
 			esc_attr( SCF_Config::PREFIX . 'meta-box-table' ),
 			$style,
 			$btn_repeat
@@ -275,6 +275,8 @@ class Smart_Custom_Fields_Controller_Base {
 
 		foreach ( $fields as $Field ) {
 			$display_name = $Field->get_attribute( 'display-name' );
+			$field_type   = $Field->get_attribute( 'type' ); // gets the field type for use in aditional CSS classes
+			$layout       = $Field->get_attribute( 'layout' ); // get layout type
 			$field_name   = $Field->get( 'name' );
 			$field_label  = $Field->get( 'label' );
 			if ( !$field_label ) {
@@ -312,21 +314,26 @@ class Smart_Custom_Fields_Controller_Base {
 			}
 
 			$form_field = $Field->get_field( $index, $value );
+			
+			// if the layout type is full-width, it hides the "Table Header" (th)
+			$table_th = $layout != 'full-width' ? '<th>'.esc_html( $field_label ).'</th>' : '';
 			printf(
-				'<tr>
-					<th>%1$s</th>
+				'<table class="field-type-%5$s layout-type-%6$s"><tr>
+					%1$s
 					<td>
 						%2$s
 						%3$s
 						%4$s
 					</td>
-				</tr>',
-				esc_html( $field_label ),
+				</tr></table>',
+				$table_th,
 				$instruction,
 				$form_field,
-				$notes
+				$notes,
+				$field_type,
+				$layout
 			);
 		}
-		echo '</table></div>';
+		echo '</div>';
 	}
 }

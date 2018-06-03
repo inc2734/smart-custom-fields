@@ -19,6 +19,7 @@ abstract class Smart_Custom_Fields_Field_Base {
 		'display-name'        => '', // eg. Text
 		'optgroup'            => 'other-fields',
 		'allow-multiple-data' => false,
+		'layout'              => 'default', // or "full-width" (new attribute to choose layout type)
 	);
 
 	/**
