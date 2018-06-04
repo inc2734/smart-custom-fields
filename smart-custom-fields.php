@@ -7,7 +7,7 @@
  * Author: inc2734
  * Author URI: https://2inc.org
  * Created: October 9, 2014
- * Modified: May 31, 2018
+ * Modified: June 04, 2018
  * Text Domain: smart-custom-fields
  * Domain Path: /languages
  * License: GPLv2 or later

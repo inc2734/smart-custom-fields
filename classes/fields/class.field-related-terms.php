@@ -4,7 +4,7 @@
  * Version    : 1.5.1
  * Author     : inc2734
  * Created    : October 7, 2014
- * Modified   : February 20, 2017
+ * Modified   : June 04, 2018
  * License    : GPLv2 or later
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
  */
