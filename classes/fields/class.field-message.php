@@ -1,10 +1,10 @@
 <?php
 /**
  * Smart_Custom_Fields_Field_Message
- * Version    : 1.3.0
- * Author     : inc2734
- * Created    : October 7, 2014
- * Modified   : June 4, 2016
+ * Version    : 1.0.0
+ * Author     : robssanches, inc2734
+ * Created    : June 2, 2018
+ * Modified   : June 2, 2018
  * License    : GPLv2 or later
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
  */
