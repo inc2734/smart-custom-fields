@@ -22,6 +22,7 @@ class Smart_Custom_Fields {
 		require_once plugin_dir_path( __FILE__ ) . 'classes/class.config.php';
 		add_action( 'plugins_loaded', array( $this, 'plugins_loaded' ) );
 		register_uninstall_hook( __FILE__, array( __CLASS__, 'uninstall' ) );
+		update_option( SCF_Config::PREFIX ."version", SCF_Config::VERSION, false );
 	}
 
 	/**
@@ -96,6 +97,9 @@ class Smart_Custom_Fields {
 				SCF_Config::PREFIX . '%'
 			)
 		);
+		
+		delete_option( SCF_Config::PREFIX ."version", SCF_Config::VERSION );
+		
 	}
 
 	/**

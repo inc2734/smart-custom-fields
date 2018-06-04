@@ -86,7 +86,7 @@ class Smart_Custom_Fields_Field_Datepicker extends Smart_Custom_Fields_Field_Bas
 			SCF_Config::PREFIX . 'settings-datepicker',
 			plugins_url( '../../js/settings-datepicker.js', __FILE__ ),
 			array( 'jquery', 'jquery-ui-datepicker' ),
-			false,
+			SCF_Config::VERSION,
 			true
 		);
 	}

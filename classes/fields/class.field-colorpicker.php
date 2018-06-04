@@ -67,7 +67,7 @@ class Smart_Custom_Fields_Field_Colorpicker extends Smart_Custom_Fields_Field_Ba
 			SCF_Config::PREFIX . 'settings-colorpicker',
 			plugins_url( '../../js/settings-colorpicker.js', __FILE__ ),
 			array( 'jquery', 'wp-color-picker' ),
-			false,
+			SCF_Config::VERSION,
 			true
 		);
 	}

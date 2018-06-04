@@ -51,14 +51,14 @@ class Smart_Custom_Fields_Field_Related_Posts extends Smart_Custom_Fields_Field_
 			SCF_Config::PREFIX . 'editor-relation-common',
 			plugins_url( SCF_Config::NAME ) . '/js/editor-relation-common.js',
 			array( 'jquery' ),
-			null,
+			SCF_Config::VERSION,
 			true
 		);
 		wp_enqueue_script(
 			SCF_Config::PREFIX . 'editor-relation-post-types',
 			plugins_url( SCF_Config::NAME ) . '/js/editor-relation-post-types.js',
 			array( 'jquery' ),
-			null,
+			SCF_Config::VERSION,
 			true
 		);
 		wp_localize_script( SCF_Config::PREFIX . 'editor-relation-post-types', 'smart_cf_relation_post_types', array(

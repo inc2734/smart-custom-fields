@@ -51,13 +51,15 @@ class Smart_Custom_Fields_Controller_Settings {
 		do_action( SCF_Config::PREFIX . 'before-settings-enqueue-scripts' );
 		wp_enqueue_style(
 			SCF_Config::PREFIX . 'settings',
-			plugins_url( SCF_Config::NAME ) . '/css/settings.css'
+			plugins_url( SCF_Config::NAME ) . '/css/settings.css',
+			array(),
+			SCF_Config::VERSION
 		);
 		wp_enqueue_script(
 			SCF_Config::PREFIX . 'settings',
 			plugins_url( SCF_Config::NAME ) . '/js/settings.js',
 			array( 'jquery' ),
-			null,
+			SCF_Config::VERSION,
 			true
 		);
 		wp_localize_script( SCF_Config::PREFIX . 'settings', 'smart_cf_settings', array(
