@@ -314,18 +314,19 @@ class Smart_Custom_Fields_Controller_Base {
 			}
 
 			$form_field = $Field->get_field( $index, $value );
-			
+
 			// if the layout type is full-width, it hides the "Table Header" (th)
 			$table_th = $layout != 'full-width' ? '<th>'.esc_html( $field_label ).'</th>' : '';
 			printf(
-				'<table class="field-type-%5$s layout-type-%6$s"><tr>
-					%1$s
+				'<table class="%1$sfield-type-%6$s %1$slayout-type-%7$s"><tr>
+					%2$s
 					<td>
-						%2$s
 						%3$s
 						%4$s
+						%5$s
 					</td>
 				</tr></table>',
+				SCF_Config::PREFIX,
 				$table_th,
 				$instruction,
 				$form_field,
