@@ -49,22 +49,26 @@ class Smart_Custom_Fields_Controller_Settings {
 	 */
 	public function admin_enqueue_scripts() {
 		do_action( SCF_Config::PREFIX . 'before-settings-enqueue-scripts' );
+
 		wp_enqueue_style(
 			SCF_Config::PREFIX . 'settings',
 			plugins_url( SCF_Config::NAME ) . '/css/settings.css',
 			array(),
-			SCF_Config::VERSION
+			filemtime( plugin_dir_path( dirname( __FILE__ ) . '/../../css/settings.css' ) )
 		);
+
 		wp_enqueue_script(
 			SCF_Config::PREFIX . 'settings',
 			plugins_url( SCF_Config::NAME ) . '/js/settings.js',
 			array( 'jquery' ),
-			SCF_Config::VERSION,
+			filemtime( plugin_dir_path( dirname( __FILE__ ) . '/../../js/settings.js' ) ),
 			true
 		);
+
 		wp_localize_script( SCF_Config::PREFIX . 'settings', 'smart_cf_settings', array(
 			'duplicate_alert' => esc_html__( 'Same name exists!', 'smart-custom-fields' ),
 		) );
+
 		wp_enqueue_script( 'jquery-ui-sortable' );
 		do_action( SCF_Config::PREFIX . 'after-settings-enqueue-scripts' );
 	}

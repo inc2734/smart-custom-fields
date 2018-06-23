@@ -51,16 +51,18 @@ class Smart_Custom_Fields_Field_Related_Terms extends Smart_Custom_Fields_Field_
 			SCF_Config::PREFIX . 'editor-relation-common',
 			plugins_url( SCF_Config::NAME ) . '/js/editor-relation-common.js',
 			array( 'jquery' ),
-			SCF_Config::VERSION,
+			filemtime( plugin_dir_path( dirname( __FILE__ ) . '/../../js/editor-relation-common.js' ) ),
 			true
 		);
+
 		wp_enqueue_script(
 			SCF_Config::PREFIX . 'editor-relation-taxonomies',
 			plugins_url( SCF_Config::NAME ) . '/js/editor-relation-taxonomies.js',
 			array( 'jquery' ),
-			SCF_Config::VERSION,
+			filemtime( plugin_dir_path( dirname( __FILE__ ) . '/../../js/editor-relation-taxonomies.js' ) ),
 			true
 		);
+
 		wp_localize_script( SCF_Config::PREFIX . 'editor-relation-taxonomies', 'smart_cf_relation_taxonomies', array(
 			'endpoint' => admin_url( 'admin-ajax.php' ),
 			'action'   => SCF_Config::PREFIX . 'relational-terms-search',

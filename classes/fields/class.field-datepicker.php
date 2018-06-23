@@ -75,18 +75,21 @@ class Smart_Custom_Fields_Field_Datepicker extends Smart_Custom_Fields_Field_Bas
 	public function settings_enqueue_scripts() {
 		global $wp_scripts;
 		$ui = $wp_scripts->query( 'jquery-ui-core' );
+
 		wp_enqueue_style(
 			'jquery.ui',
 			'//ajax.googleapis.com/ajax/libs/jqueryui/' . $ui->ver . '/themes/smoothness/jquery-ui.min.css',
 			array(),
 			$ui->ver
 		);
+
 		wp_enqueue_script( 'jquery-ui-datepicker' );
+
 		wp_enqueue_script(
 			SCF_Config::PREFIX . 'settings-datepicker',
-			plugins_url( '../../js/settings-datepicker.js', __FILE__ ),
+			plugins_url( SCF_Config::NAME ) . '/js/settings-datepicker.js',
 			array( 'jquery', 'jquery-ui-datepicker' ),
-			SCF_Config::VERSION,
+			filemtime( plugin_dir_path( dirname( __FILE__ ) . '/../../js/settings-datepicker.js' ) ),
 			true
 		);
 	}

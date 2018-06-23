@@ -20,11 +20,6 @@ class SCF_Config {
 	const PREFIX = 'smart-cf-';
 
 	/**
-	 * plugin version
-	 */
-	const VERSION = '3.1.7';
-
-	/**
 	 * プロフィール画面用の擬似投稿タイプ
 	 */
 	const PROFILE = 'smart-cf-profile';
