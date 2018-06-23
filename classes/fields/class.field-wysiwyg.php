@@ -106,7 +106,7 @@ class Smart_Custom_Fields_Field_Wysiwyg extends Smart_Custom_Fields_Field_Base {
 			$value,
 			esc_html__( 'Visual', 'smart-custom-fields' ),
 			esc_html__( 'Text', 'smart-custom-fields' )
-			
+
 		);
 	}
 
@@ -117,6 +117,8 @@ class Smart_Custom_Fields_Field_Wysiwyg extends Smart_Custom_Fields_Field_Base {
 	 * @param int $field_key
 	 */
 	public function display_field_options( $group_key, $field_key ) {
+		$this->display_name_option( $group_key, $field_key );
+		$this->display_label_option( $group_key, $field_key );
 		?>
 		<tr>
 			<th><?php esc_html_e( 'Default', 'smart-custom-fields' ); ?></th>

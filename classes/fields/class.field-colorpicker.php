@@ -98,6 +98,8 @@ class Smart_Custom_Fields_Field_Colorpicker extends Smart_Custom_Fields_Field_Ba
 	 * @param int $field_key
 	 */
 	public function display_field_options( $group_key, $field_key ) {
+		$this->display_name_option( $group_key, $field_key );
+		$this->display_label_option( $group_key, $field_key );
 		?>
 		<tr>
 			<th><?php esc_html_e( 'Default', 'smart-custom-fields' ); ?></th>

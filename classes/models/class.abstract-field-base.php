@@ -96,11 +96,23 @@ abstract class Smart_Custom_Fields_Field_Base {
 
 	/**
 	 * Displaying the option fields in custom field settings page ( Common )
-	 * 
+	 *
 	 * @param int $group_key
 	 * @param int $field_key
 	 */
 	public function display_options( $group_key, $field_key ) {
+		$fields = SCF::get_form_field_instances();
+		foreach ( $fields as $Field ) {
+			if ( $Field->get_attribute( 'type' ) === $this->get_attribute( 'type' ) ) {
+				foreach ( $this->options as $key => $value ) {
+					$Field->set( $key, $value );
+				}
+			}
+			$Field->_display_field_options( $group_key, $field_key );
+		}
+	}
+
+	protected function display_name_option( $group_key, $field_key ) {
 		?>
 		<tr>
 			<th><?php esc_html_e( 'Name', 'smart-custom-fields' ); ?><span class="<?php echo esc_attr( SCF_Config::PREFIX . 'require' ); ?>">*</span></th>
@@ -113,6 +125,11 @@ abstract class Smart_Custom_Fields_Field_Base {
 				/>
 			</td>
 		</tr>
+		<?php
+	}
+
+	protected function display_label_option( $group_key, $field_key ) {
+		?>
 		<tr>
 			<th><?php esc_html_e( 'Label', 'smart-custom-fields' ); ?></th>
 			<td>
@@ -125,15 +142,6 @@ abstract class Smart_Custom_Fields_Field_Base {
 			</td>
 		</tr>
 		<?php
-		$fields = SCF::get_form_field_instances();
-		foreach ( $fields as $Field ) {
-			if ( $Field->get_attribute( 'type' ) === $this->get_attribute( 'type' ) ) {
-				foreach ( $this->options as $key => $value ) {
-					$Field->set( $key, $value );
-				}
-			}
-			$Field->_display_field_options( $group_key, $field_key );
-		}
 	}
 
 	/**
@@ -157,7 +165,7 @@ abstract class Smart_Custom_Fields_Field_Base {
 
 	/**
 	 * Getting the name attribute in editor page
-	 * 
+	 *
 	 * @param string $name
 	 * @param string $index
 	 * @return string
@@ -174,7 +182,7 @@ abstract class Smart_Custom_Fields_Field_Base {
 	/**
 	 * Whether to disabled
 	 * Return true only when the null because data that all users have saved when $index is not null
-	 * 
+	 *
 	 * @param string $index
 	 * @return bool $disabled
 	 */
@@ -188,7 +196,7 @@ abstract class Smart_Custom_Fields_Field_Base {
 
 	/**
 	 * Getting the name attribute in custom field settings page
-	 * 
+	 *
 	 * @param int $group_key
 	 * @param int $field_key
 	 * @param string $name
@@ -218,7 +226,7 @@ abstract class Smart_Custom_Fields_Field_Base {
 
 	/**
 	 * Set option value
-	 * 
+	 *
 	 * @param string $key
 	 * @param mixed $value
 	 */

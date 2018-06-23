@@ -107,6 +107,8 @@ class Smart_Custom_Fields_Field_Image extends Smart_Custom_Fields_Field_Base {
 	 * @param int $field_key
 	 */
 	public function display_field_options( $group_key, $field_key ) {
+		$this->display_name_option( $group_key, $field_key );
+		$this->display_label_option( $group_key, $field_key );
 		?>
 		<tr>
 			<th><?php esc_html_e( 'Instruction', 'smart-custom-fields' ); ?></th>

@@ -62,9 +62,10 @@ class Smart_Custom_Fields_Field_Message extends Smart_Custom_Fields_Field_Base {
 	 * @param int $field_key
 	 */
 	public function display_field_options( $group_key, $field_key ) {
+		$this->display_name_option( $group_key, $field_key );
 		?>
 		<tr>
-			<th><?php esc_html_e( 'Default', 'smart-custom-fields' ); ?></th>
+			<th><?php esc_html_e( 'Message', 'smart-custom-fields' ); ?></th>
 			<td>
 				<textarea
 					name="<?php echo esc_attr( $this->get_field_name_in_setting( $group_key, $field_key, 'default' ) ); ?>"

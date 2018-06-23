@@ -224,6 +224,8 @@ class Smart_Custom_Fields_Field_Related_Terms extends Smart_Custom_Fields_Field_
 	 * @param int $field_key
 	 */
 	public function display_field_options( $group_key, $field_key ) {
+		$this->display_name_option( $group_key, $field_key );
+		$this->display_label_option( $group_key, $field_key );
 		?>
 		<tr>
 			<th><?php esc_html_e( 'Taxonomies', 'smart-custom-fields' ); ?></th>
