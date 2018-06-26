@@ -5,8 +5,8 @@ msgstr ""
 "Project-Id-Version: Smart Custom Fields 3.1.7\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/smart-custom-"
 "fields\n"
-"POT-Creation-Date: 2018-06-02 21:31-0300\n"
-"PO-Revision-Date: 2018-06-02 21:32-0300\n"
+"POT-Creation-Date: 2018-06-26 09:22+0900\n"
+"PO-Revision-Date: 2018-06-26 09:22+0900\n"
 "Last-Translator: inc2734 <inc@2inc.org>\n"
 "Language-Team: Japanese\n"
 "Language: ja\n"
@@ -14,7 +14,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Poedit 2.0.7\n"
+"X-Generator: Poedit 2.0.4\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Poedit-KeywordsList: __;_e;esc_html__;esc_html_e;esc_attr__;esc_attr_e\n"
 "X-Poedit-Basepath: ..\n"
@@ -33,7 +33,7 @@ msgid "Save settings"
 msgstr "設定を保存"
 
 #: classes/controller/class.profile.php:43
-#: classes/controller/class.settings.php:76
+#: classes/controller/class.settings.php:82
 msgid "Custom Fields"
 msgstr "カスタムフィールド"
 
@@ -53,57 +53,57 @@ msgstr "コンテンツフィールド"
 msgid "Other fields"
 msgstr "その他のフィールド"
 
-#: classes/controller/class.settings.php:64
+#: classes/controller/class.settings.php:69
 msgid "Same name exists!"
 msgstr "同じ名前が存在します！"
 
-#: classes/controller/class.settings.php:82
+#: classes/controller/class.settings.php:88
 msgid "Display conditions ( Post )"
 msgstr "表示条件（投稿）"
 
-#: classes/controller/class.settings.php:89
+#: classes/controller/class.settings.php:95
 msgid "Display conditions ( Profile )"
 msgstr "表示条件（プロフィール）"
 
-#: classes/controller/class.settings.php:96
+#: classes/controller/class.settings.php:102
 msgid "Display conditions ( Taxonomy )"
 msgstr "表示条件（タクソノミー）"
 
-#: classes/controller/class.settings.php:103
+#: classes/controller/class.settings.php:109
 msgid "Display conditions ( Options page )"
 msgstr "表示条件（オプションページ）"
 
-#: classes/controller/class.settings.php:163
+#: classes/controller/class.settings.php:169
 msgid "Type"
 msgstr "タイプ"
 
-#: classes/controller/class.settings.php:198
+#: classes/controller/class.settings.php:204
 msgid "Add Sub field"
 msgstr "サブフィールドを追加"
 
-#: classes/controller/class.settings.php:202
+#: classes/controller/class.settings.php:208
 msgid "Add Field"
 msgstr "フィールド追加"
 
-#: classes/controller/class.settings.php:232
-#: classes/fields/class.field-related-posts.php:231
+#: classes/controller/class.settings.php:238
+#: classes/fields/class.field-related-posts.php:235
 msgid "Post Types"
 msgstr "投稿タイプ"
 
-#: classes/controller/class.settings.php:239
+#: classes/controller/class.settings.php:245
 msgid "Post Ids ( Comma separated )"
 msgstr "投稿 ID (カンマ区切り)"
 
-#: classes/controller/class.settings.php:264
+#: classes/controller/class.settings.php:270
 msgid "Roles"
 msgstr "権限"
 
-#: classes/controller/class.settings.php:290
-#: classes/fields/class.field-related-terms.php:229
+#: classes/controller/class.settings.php:296
+#: classes/fields/class.field-related-terms.php:233
 msgid "Taxonomies"
 msgstr "タクソノミー"
 
-#: classes/controller/class.settings.php:314
+#: classes/controller/class.settings.php:320
 msgid "Options pages"
 msgstr "オプションページ"
 
@@ -119,57 +119,56 @@ msgstr "はい"
 msgid "No"
 msgstr "いいえ"
 
-#: classes/fields/class.field-boolean.php:82
-#: classes/fields/class.field-check.php:117
-#: classes/fields/class.field-colorpicker.php:103
-#: classes/fields/class.field-datepicker.php:125
-#: classes/fields/class.field-message.php:67
-#: classes/fields/class.field-radio.php:116
-#: classes/fields/class.field-select.php:91
-#: classes/fields/class.field-text.php:66
-#: classes/fields/class.field-textarea.php:79
-#: classes/fields/class.field-wysiwyg.php:122
+#: classes/fields/class.field-boolean.php:85
+#: classes/fields/class.field-check.php:119
+#: classes/fields/class.field-colorpicker.php:107
+#: classes/fields/class.field-datepicker.php:130
+#: classes/fields/class.field-radio.php:118
+#: classes/fields/class.field-select.php:93
+#: classes/fields/class.field-text.php:68
+#: classes/fields/class.field-textarea.php:81
+#: classes/fields/class.field-wysiwyg.php:124
 msgid "Default"
 msgstr "デフォルト"
 
-#: classes/fields/class.field-boolean.php:107
+#: classes/fields/class.field-boolean.php:110
 msgid "TRUE Label"
 msgstr "TRUE ラベル"
 
-#: classes/fields/class.field-boolean.php:117
+#: classes/fields/class.field-boolean.php:120
 msgid "FALSE Label"
 msgstr "FALSE ラベル"
 
-#: classes/fields/class.field-boolean.php:127
-#: classes/fields/class.field-check.php:126
-#: classes/fields/class.field-colorpicker.php:112
-#: classes/fields/class.field-datepicker.php:189
-#: classes/fields/class.field-file.php:117
-#: classes/fields/class.field-image.php:112
-#: classes/fields/class.field-radio.php:125
-#: classes/fields/class.field-related-posts.php:260
-#: classes/fields/class.field-related-terms.php:256
-#: classes/fields/class.field-select.php:100
-#: classes/fields/class.field-text.php:75
-#: classes/fields/class.field-textarea.php:88
-#: classes/fields/class.field-wysiwyg.php:131
+#: classes/fields/class.field-boolean.php:130
+#: classes/fields/class.field-check.php:128
+#: classes/fields/class.field-colorpicker.php:116
+#: classes/fields/class.field-datepicker.php:194
+#: classes/fields/class.field-file.php:119
+#: classes/fields/class.field-image.php:114
+#: classes/fields/class.field-radio.php:127
+#: classes/fields/class.field-related-posts.php:264
+#: classes/fields/class.field-related-terms.php:260
+#: classes/fields/class.field-select.php:102
+#: classes/fields/class.field-text.php:77
+#: classes/fields/class.field-textarea.php:90
+#: classes/fields/class.field-wysiwyg.php:133
 msgid "Instruction"
 msgstr "説明文"
 
-#: classes/fields/class.field-boolean.php:134
-#: classes/fields/class.field-check.php:133
-#: classes/fields/class.field-colorpicker.php:119
-#: classes/fields/class.field-datepicker.php:196
-#: classes/fields/class.field-file.php:124
-#: classes/fields/class.field-image.php:119
-#: classes/fields/class.field-message.php:76
-#: classes/fields/class.field-radio.php:132
-#: classes/fields/class.field-related-posts.php:267
-#: classes/fields/class.field-related-terms.php:263
-#: classes/fields/class.field-select.php:107
-#: classes/fields/class.field-text.php:82
-#: classes/fields/class.field-textarea.php:95
-#: classes/fields/class.field-wysiwyg.php:138
+#: classes/fields/class.field-boolean.php:137
+#: classes/fields/class.field-check.php:135
+#: classes/fields/class.field-colorpicker.php:123
+#: classes/fields/class.field-datepicker.php:201
+#: classes/fields/class.field-file.php:126
+#: classes/fields/class.field-image.php:121
+#: classes/fields/class.field-message.php:77
+#: classes/fields/class.field-radio.php:134
+#: classes/fields/class.field-related-posts.php:271
+#: classes/fields/class.field-related-terms.php:267
+#: classes/fields/class.field-select.php:109
+#: classes/fields/class.field-text.php:84
+#: classes/fields/class.field-textarea.php:97
+#: classes/fields/class.field-wysiwyg.php:140
 msgid "Notes"
 msgstr "注記"
 
@@ -177,31 +176,31 @@ msgstr "注記"
 msgid "Check"
 msgstr "チェックボックス"
 
-#: classes/fields/class.field-check.php:87
-#: classes/fields/class.field-radio.php:86
-#: classes/fields/class.field-select.php:81
+#: classes/fields/class.field-check.php:89
+#: classes/fields/class.field-radio.php:88
+#: classes/fields/class.field-select.php:83
 msgid "Choices"
 msgstr "選択肢"
 
-#: classes/fields/class.field-check.php:93
-#: classes/fields/class.field-radio.php:92
-#: classes/fields/class.field-select.php:87
+#: classes/fields/class.field-check.php:95
+#: classes/fields/class.field-radio.php:94
+#: classes/fields/class.field-select.php:89
 msgid ""
 "If you want to separate the key and the value, enter as follows: key => value"
 msgstr "もしキーと値を分けたい場合は次のように入力してください: キー => 値"
 
-#: classes/fields/class.field-check.php:97
-#: classes/fields/class.field-radio.php:96
+#: classes/fields/class.field-check.php:99
+#: classes/fields/class.field-radio.php:98
 msgid "Display Direction"
 msgstr "表示方向"
 
-#: classes/fields/class.field-check.php:101
-#: classes/fields/class.field-radio.php:100
+#: classes/fields/class.field-check.php:103
+#: classes/fields/class.field-radio.php:102
 msgid "horizontal"
 msgstr "水平方向"
 
-#: classes/fields/class.field-check.php:102
-#: classes/fields/class.field-radio.php:101
+#: classes/fields/class.field-check.php:104
+#: classes/fields/class.field-radio.php:103
 msgid "vertical"
 msgstr "垂直方向"
 
@@ -213,24 +212,24 @@ msgstr "カラーピッカー"
 msgid "Date picker"
 msgstr "日付ピッカー"
 
-#: classes/fields/class.field-datepicker.php:135
+#: classes/fields/class.field-datepicker.php:140
 msgid "Date Format"
 msgstr "日付のフォーマット"
 
-#: classes/fields/class.field-datepicker.php:143
+#: classes/fields/class.field-datepicker.php:148
 msgid "e.g dd/mm/yy"
 msgstr "例: dd/mm/yy"
 
-#: classes/fields/class.field-datepicker.php:153
+#: classes/fields/class.field-datepicker.php:158
 msgid "Max Date"
 msgstr "最大日付"
 
-#: classes/fields/class.field-datepicker.php:161
-#: classes/fields/class.field-datepicker.php:179
+#: classes/fields/class.field-datepicker.php:166
+#: classes/fields/class.field-datepicker.php:184
 msgid "e.g +1m +1w"
 msgstr "例: +1m +1w"
 
-#: classes/fields/class.field-datepicker.php:171
+#: classes/fields/class.field-datepicker.php:176
 msgid "Min Date"
 msgstr "最小日付"
 
@@ -255,11 +254,12 @@ msgstr "画像"
 msgid "Image Select"
 msgstr "画像選択"
 
-#: classes/fields/class.field-image.php:129
+#: classes/fields/class.field-image.php:131
 msgid "Preview Size"
 msgstr "プレビューサイズ"
 
 #: classes/fields/class.field-message.php:21
+#: classes/fields/class.field-message.php:68
 msgid "Message"
 msgstr "メッセージ"
 
@@ -271,18 +271,18 @@ msgstr "ラジオボタン"
 msgid "Related Posts"
 msgstr "関連する投稿"
 
-#: classes/fields/class.field-related-posts.php:209
-#: classes/fields/class.field-related-terms.php:207
+#: classes/fields/class.field-related-posts.php:211
+#: classes/fields/class.field-related-terms.php:209
 msgid "Search..."
 msgstr "検索 …"
 
-#: classes/fields/class.field-related-posts.php:213
-#: classes/fields/class.field-related-terms.php:211
+#: classes/fields/class.field-related-posts.php:215
+#: classes/fields/class.field-related-terms.php:213
 msgid "Load more"
 msgstr "さらに読み込む"
 
-#: classes/fields/class.field-related-posts.php:252
-#: classes/fields/class.field-related-terms.php:248
+#: classes/fields/class.field-related-posts.php:256
+#: classes/fields/class.field-related-terms.php:252
 msgid "Selectable number"
 msgstr "選択できる個数"
 
@@ -303,7 +303,7 @@ msgstr "テキスト"
 msgid "Textarea"
 msgstr "テキストエリア"
 
-#: classes/fields/class.field-textarea.php:69
+#: classes/fields/class.field-textarea.php:71
 msgid "Rows"
 msgstr "行数"
 
@@ -315,16 +315,16 @@ msgstr "WYSIWYG"
 msgid "Visual"
 msgstr "ビジュアル"
 
-#: classes/fields/class.field-wysiwyg.php:160
-#: classes/fields/class.field-wysiwyg.php:161
+#: classes/fields/class.field-wysiwyg.php:162
+#: classes/fields/class.field-wysiwyg.php:163
 msgid "Add Media"
 msgstr "メディアを追加"
 
-#: classes/models/class.abstract-field-base.php:106
+#: classes/models/class.abstract-field-base.php:118
 msgid "Name"
 msgstr "名前"
 
-#: classes/models/class.abstract-field-base.php:117
+#: classes/models/class.abstract-field-base.php:134
 msgid "Label"
 msgstr "ラベル"
 
@@ -376,4 +376,4 @@ msgstr "フィールドは見つかりませんでした。"
 
 #: smart-custom-fields.php:180
 msgid "No Fields found in Trash."
-msgstr "ゴミ箱にフィールドは見つかりませんでした"
+msgstr "ゴミ箱にフィールドは見つかりませんでした。"
