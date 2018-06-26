@@ -1,10 +1,10 @@
 === Smart Custom Fields ===
-Contributors: inc2734, toro_unit, mimosafa, hideokamoto, hisako-isaka, kurudrive, hanamura, justinticktock, designhehe, mayukojpn, hogetan
+Contributors: inc2734, toro_unit, mimosafa, hideokamoto, hisako-isaka, kurudrive, hanamura, justinticktock, designhehe, mayukojpn, hogetan, robssanches
 Donate link: http://www.amazon.co.jp/registry/wishlist/39ANKRNSTNW40
 Tags: plugin, custom field, custom, field, meta, meta field, repeat, repeatable
 Requires at least: 3.9
-Tested up to: 4.9.1
-Stable tag: 3.1.7
+Tested up to: 4.9.6
+Stable tag: 4.0.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -37,6 +37,7 @@ https://www.youtube.com/watch?v=WxPZurn0yvI
 * Color picker
 * Date picker
 * Boolean
+* Message
 
 = How to get meta data ? =
 
@@ -126,6 +127,11 @@ You can translate this plugin into your language by using [GlotPress](https://tr
 2. Post edit page.
 
 == Changelog ==
+
+= 4.0.0 =
+* Add message field. #64 (by [@robssanches](https://github.com/robssanches))
+* Fix boolean field bug with `smart-cf-register-fields` filter hook.
+* Refactoring displaying options process of each fields.
 
 = 3.1.7 =
 * Fixing issues and adding support for the Brazilian Portuguese language #63 (by [@robssanches](https://github.com/robssanches))
