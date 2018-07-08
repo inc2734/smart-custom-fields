@@ -78,11 +78,12 @@ jQuery( function( $ ) {
 					} );
 				} );
 			} else {
-				var label = table.find( '.smart-cf-field-label' ).val();
-				var name = $( '<small>' ).text( '[ ' + table.find('.smart-cf-field-name').val() + ' ]' );
+				var field_options = table.find( '.smart-cf-field-options:visible' );
+				var label = field_options.find( '.smart-cf-field-label' ).val();
+				var name = $( '<small>' ).text( '[ ' + field_options.find('.smart-cf-field-name').val() + ' ]' );
 
 				if ( !label ) {
-					label = table.find( '.smart-cf-field-name' ).val();
+					label = field_options.find( '.smart-cf-field-name' ).val();
 				}
 				table.fadeOut( 'fast', function() {
 					$( this ).addClass( 'hide' );
