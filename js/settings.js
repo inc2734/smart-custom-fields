@@ -207,14 +207,38 @@ jQuery( function( $ ) {
 		} );
 
 		/**
+		 * Convert string to slug
+		 * https://gist.github.com/codeguy/6684588
+		 */
+		function string_to_slug(str) {
+			str = str.replace(/^\s+|\s+$/g, ""); // trim
+			str = str.toLowerCase();
+		
+			// remove accents, swap ñ for n, etc
+			var from = "åàáãäâèéëêìíïîòóöôùúüûñç·/-,:;";
+			var to = "aaaaaaeeeeiiiioooouuuunc______";
+		
+			for (var i = 0, l = from.length; i < l; i++) {
+				str = str.replace(new RegExp(from.charAt(i), "g"), to.charAt(i));
+			}
+		
+			str = str
+				.replace(/[^a-z0-9 -]/g, "") // remove invalid chars
+				.replace(/\s+/g, "_") // collapse whitespace and replace by -
+				.replace(/-+/g, "_"); // collapse dashes
+		
+			return str;
+		}
+
+		/**
 		 * フィールド名入力ボックス
 		 */
-		wrapper.find( '.smart-cf-field-label' ).focus( function() {
-			var field     = $( this ).parents( '.smart-cf-field' );
-			var name_val  = field.find( '.smart-cf-field-name' ).val();
-			var label_val = $( this ).val();
-			if ( name_val && !label_val ) {
-				$( this ).val( name_val );
+		wrapper.find( '.smart-cf-field-name' ).focus( function() {
+			var field     = $( this ).parents( '.smart-cf-field-options' );
+			var label_val  = field.find( '.smart-cf-field-label' ).val();
+			var name_val = $( this ).val();
+			if ( label_val && !name_val) {
+				$( this ).val( string_to_slug(label_val) );
 			}
 		} );
 	} );
