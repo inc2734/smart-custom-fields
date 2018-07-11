@@ -7,7 +7,7 @@
  * Author: inc2734
  * Author URI: https://2inc.org
  * Created: October 9, 2014
- * Modified: June 26, 2018
+ * Modified: July 11, 2018
  * Text Domain: smart-custom-fields
  * Domain Path: /languages
  * License: GPLv2 or later
@@ -43,6 +43,7 @@ class Smart_Custom_Fields {
 		require_once plugin_dir_path( __FILE__ ) . 'classes/models/class.ajax.php';
 		require_once plugin_dir_path( __FILE__ ) . 'classes/models/class.options-page.php';
 		require_once plugin_dir_path( __FILE__ ) . 'classes/models/class.cache.php';
+		require_once plugin_dir_path( __FILE__ ) . 'classes/models/class.yoast-seo-analysis.php';
 		require_once plugin_dir_path( __FILE__ ) . 'classes/class.scf.php';
 		new Smart_Custom_Fields_Revisions();
 
