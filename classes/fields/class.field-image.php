@@ -60,6 +60,7 @@ class Smart_Custom_Fields_Field_Image extends Smart_Custom_Fields_Field_Base {
 			// Regarded the $value is file URL.
 			if ( preg_match( '/^\d+$/', $value ) ) {
 				$image_src = wp_get_attachment_image_src( $value, $this->get( 'size' ) );
+				$image_alt = get_the_title($value);
 				if ( is_array( $image_src ) && isset( $image_src[0] ) ) {
 					$image_src = $image_src[0];
 				}
@@ -77,8 +78,9 @@ class Smart_Custom_Fields_Field_Image extends Smart_Custom_Fields_Field_Base {
 
 			if ( $image_src && ! is_array( $image_src ) ) {
 				$image = sprintf(
-					'<img src="%s" alt="" />%s',
+					'<img src="%s" alt="%s" />%s',
 					esc_url( $image_src ),
+					$image_alt,
 					$btn_remove
 				);
 				$hide_class = '';
