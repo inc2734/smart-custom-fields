@@ -60,6 +60,7 @@ class Smart_Custom_Fields_Field_Image extends Smart_Custom_Fields_Field_Base {
 			// Regarded the $value is file URL.
 			if ( preg_match( '/^\d+$/', $value ) ) {
 				$image_src = wp_get_attachment_image_src( $value, $this->get( 'size' ) );
+				$image_alt = get_the_title($value);
 				if ( is_array( $image_src ) && isset( $image_src[0] ) ) {
 					$image_src = $image_src[0];
 				}
@@ -77,8 +78,9 @@ class Smart_Custom_Fields_Field_Image extends Smart_Custom_Fields_Field_Base {
 
 			if ( $image_src && ! is_array( $image_src ) ) {
 				$image = sprintf(
-					'<img src="%s" alt="" />%s',
+					'<img src="%s" alt="%s" />%s',
 					esc_url( $image_src ),
+					$image_alt,
 					$btn_remove
 				);
 				$hide_class = '';
@@ -107,8 +109,8 @@ class Smart_Custom_Fields_Field_Image extends Smart_Custom_Fields_Field_Base {
 	 * @param int $field_key
 	 */
 	public function display_field_options( $group_key, $field_key ) {
-		$this->display_name_option( $group_key, $field_key );
 		$this->display_label_option( $group_key, $field_key );
+		$this->display_name_option( $group_key, $field_key );
 		?>
 		<tr>
 			<th><?php esc_html_e( 'Instruction', 'smart-custom-fields' ); ?></th>

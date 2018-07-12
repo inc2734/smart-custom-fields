@@ -3,7 +3,7 @@
  * Version    : 2.0.0
  * Author     : inc2734
  * Created    : September 23, 2014
- * Modified   : June 4, 2016
+ * Modified   : July 11, 2018
  * License    : GPLv2 or later
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
  */
@@ -103,9 +103,10 @@ jQuery( function( $ ) {
 					var image_area = upload_button.parent().find( '.smart-cf-upload-image' );
 					var sizename = image_area.data('size');
 					var img = sizes[ sizename ] || sizes.full;
+					var alt_attr = file.get('title');
 					image_area.find( 'img' ).remove();
 					image_area.prepend(
-						'<img src="' + img.url + '" />'
+						'<img src="' + img.url + '" alt="' + alt_attr + '" />'
 					);
 					image_area.removeClass( 'hide' );
 					upload_button.parent().find( 'input[type="hidden"]' ).val( file.toJSON().id );
@@ -156,9 +157,10 @@ jQuery( function( $ ) {
 				var images = custom_uploader_file.state().get( 'selection' );
 				images.each( function( file ){
 					var image_area = upload_button.parent().find( '.smart-cf-upload-file' );
+					var alt_attr = file.get('title');
 					image_area.find( 'a' ).remove();
 					image_area.prepend(
-						'<a href="' + file.toJSON().url + '" target="_blank"><img src="' + file.toJSON().icon + '" /><span>' + file.toJSON().filename + '</span></a>'
+						'<a href="' + file.toJSON().url + '" target="_blank"><img src="' + file.toJSON().icon + '" alt="' + alt_attr + '" /><span>' + file.toJSON().filename + '</span></a>'
 					);
 					image_area.removeClass( 'hide' );
 					upload_button.parent().find( 'input[type="hidden"]' ).val( file.toJSON().id );
