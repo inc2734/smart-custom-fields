@@ -10,7 +10,6 @@
  */
 class Smart_Custom_Fields_Yoast_SEO_Analysis {
 
-
 	/**
 	 * __construct
 	 */
@@ -32,7 +31,4 @@ class Smart_Custom_Fields_Yoast_SEO_Analysis {
 			false
 		);
 	}
-
 }
-
-new Smart_Custom_Fields_Yoast_SEO_Analysis();

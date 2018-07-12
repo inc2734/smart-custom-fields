@@ -43,9 +43,13 @@ class Smart_Custom_Fields {
 		require_once plugin_dir_path( __FILE__ ) . 'classes/models/class.ajax.php';
 		require_once plugin_dir_path( __FILE__ ) . 'classes/models/class.options-page.php';
 		require_once plugin_dir_path( __FILE__ ) . 'classes/models/class.cache.php';
-		require_once plugin_dir_path( __FILE__ ) . 'classes/models/class.yoast-seo-analysis.php';
 		require_once plugin_dir_path( __FILE__ ) . 'classes/class.scf.php';
 		new Smart_Custom_Fields_Revisions();
+
+		if ( function_exists( 'wpseo_init' ) ) {
+			require_once plugin_dir_path( __FILE__ ) . 'classes/models/class.yoast-seo-analysis.php';
+			new Smart_Custom_Fields_Yoast_SEO_Analysis();
+		}
 
 		foreach ( glob( plugin_dir_path( __FILE__ ) . 'classes/fields/*.php' ) as $form_item ) {
 			include_once $form_item;
