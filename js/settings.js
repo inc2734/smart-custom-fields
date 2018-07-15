@@ -3,7 +3,7 @@
  * Version    : 1.1.0
  * Author     : inc2734
  * Created    : September 23, 2014
- * Modified   : March 10, 2015
+ * Modified   : July 14, 2018
  * License    : GPLv2 or later
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
  */
@@ -243,4 +243,89 @@ jQuery( function( $ ) {
 			}
 		} );
 	} );
+		
+	/**
+	 * Add autocomplete (selectivity plguin) in posts condition field
+	 * https://github.com/arendjr/selectivity
+	 */
+	$('#smart-cf-autocomplete-condition-post').selectivity({
+		//items: smart_cf_all_posts,
+		data: smart_cf_saved_posts,
+		multiple: true,
+		placeholder: smart_cf_settings.autocomplete_placeholder,
+		ajax: {
+			url: smart_cf_settings.rest_api_url,
+			quietMillis:200
+		},
+		templates: {
+			multipleSelectInput: function(options) {
+				return (
+							'<div class="selectivity-multiple-input-container">' +
+							(options.enabled ?
+								'<input type="text" autocomplete="off" autocorrect="off" ' +
+								'autocapitalize="off" class="selectivity-multiple-input">' :
+								'<div class="selectivity-multiple-input ' + 'selectivity-placeholder"></div>') +
+							'<div class="selectivity-clearfix"></div>' +
+							'</div>'
+						);
+			},
+			multipleSelectedItem: function(options) {
+				var extraClass = options.highlighted ? ' highlighted' : '';
+						return (
+							'<span class="selectivity-multiple-selected-item button button-primary' +
+							extraClass +
+							'" ' +
+							'data-item-id="' +
+							options.id +
+							'">' +
+							(options.removable ?
+								'<a class="selectivity-multiple-selected-item-remove">' +
+								'x' +
+								'</a>' :
+								'') +
+							options.id +
+							'</span>'
+						); //options.text
+			},
+			dropdown: function(options) {
+				var extraClass = options.dropdownCssClass ? ' ' + options.dropdownCssClass : '',
+				searchInput = '';
+						if (options.showSearchInput) {
+					extraClass += ' has-search-input';
+							var placeholder = options.searchInputPlaceholder;
+							searchInput =
+								'<div class="selectivity-search-input-container">' +
+								'<input type="text" class="selectivity-search-input"' +
+								(placeholder ? ' placeholder="' + escape(placeholder) + '"' : '') +
+								'>' +
+								'</div>';
+				}
+				
+				return (
+							'<div class="selectivity-dropdown' +
+							extraClass +
+							'">' +
+							searchInput +
+							'<div class="selectivity-results-container"></div>' +
+							'</div>'
+						);
+			},
+			loading: function() {
+					return '<div class="selectivity-loading">' + smart_cf_settings.loading + '</div>';
+			},
+			loadMore: function() {
+					return '<div class="selectivity-load-more">' + smart_cf_settings.load_more + '</div>';
+			},
+		}
+	});
+
+	$('#smart-cf-autocomplete-condition-post').on('change', function() {
+		var data = $(this).selectivity('value');
+		$('[name="smart-cf-condition-post-ids"]').val(data);
+	});
+	
+	$('.smart-cf-group .smart-cf-group-repeat label, #smart-cf-meta-box-condition-post, #smart-cf-meta-box-condition-profile, #smart-cf-meta-box-condition-taxonomy, #smart-cf-meta-box-condition-options-page')
+		.find('input[type=checkbox]')
+		.iosCheckbox();
+		
 } );

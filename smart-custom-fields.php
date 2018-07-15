@@ -7,7 +7,7 @@
  * Author: inc2734
  * Author URI: https://2inc.org
  * Created: October 9, 2014
- * Modified: July 11, 2018
+ * Modified: July 14, 2018
  * Text Domain: smart-custom-fields
  * Domain Path: /languages
  * License: GPLv2 or later
@@ -20,6 +20,7 @@ class Smart_Custom_Fields {
 	 */
 	public function __construct() {
 		require_once plugin_dir_path( __FILE__ ) . 'classes/class.config.php';
+		require_once plugin_dir_path( __FILE__ ) . 'classes/class.rest-api.php';	
 		add_action( 'plugins_loaded', array( $this, 'plugins_loaded' ) );
 		register_uninstall_hook( __FILE__, array( __CLASS__, 'uninstall' ) );
 	}
