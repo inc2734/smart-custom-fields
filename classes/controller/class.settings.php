@@ -46,16 +46,16 @@ class Smart_Custom_Fields_Controller_Settings {
 	}
 	
 	/**
-	 * Get Current Admin Colors Scheme
+	 * Get Current Admin Color Scheme
 	 *
 	 * @return object
 	 */
-	public function admin_colors_scheme(){
+	public function admin_color_scheme(){
 		global $_wp_admin_css_colors;
 		
-		$user_admin_colors_scheme = get_user_option('admin_color');
+		$user_admin_color_scheme = get_user_option('admin_color');
 		
-		$colors_obj = $_wp_admin_css_colors[$user_admin_colors_scheme];
+		$colors_obj = $_wp_admin_css_colors[$user_admin_color_scheme];
 		
 		return $colors_obj;
 	}
@@ -66,8 +66,8 @@ class Smart_Custom_Fields_Controller_Settings {
 	 */
 	public function admin_inline_css(){
 
-		$colors = $this->admin_colors_scheme()->colors;
-		$icon_colors = $this->admin_colors_scheme()->icon_colors;
+		$colors = $this->admin_color_scheme()->colors;
+		$icon_colors = $this->admin_color_scheme()->icon_colors;
 
 		//print_r($colors);
 		//print_r($icon_colors);
@@ -146,7 +146,7 @@ class Smart_Custom_Fields_Controller_Settings {
 			'autocomplete_placeholder' => esc_html__( 'Type to search a post or page', 'smart-custom-fields' ),
 			'loading' => esc_html__( 'Loading...', 'smart-custom-fields' ),
 			'load_more' => esc_html__( 'Load more', 'smart-custom-fields' ),
-			'rest_api_url' => rest_url( SCF_Config::PREFIX.'api/posts' ),
+			'rest_api_url' => rest_url( SCF_Config::PREFIX.'api/search/posts' ),
 		) );
 
 		wp_enqueue_script( 'jquery-ui-sortable' );
@@ -319,26 +319,6 @@ class Smart_Custom_Fields_Controller_Settings {
 			$post_type_field
 		);
 		
-		// get all posts
-		$all_posts = get_posts(
-			array(
-				'post_type' => array('post','page'),
-				'post_status' => 'publish',
-				'orderby' => 'date',
-				'order' => 'ASC',
-				'posts_per_page'   => -1 // all posts
-			)
-		);
-		
-		if( $all_posts ){
-			$source = array();
-			
-			foreach( $all_posts as $k => $post ) {
-				$source[$k]['id'] = $post->ID;
-				$source[$k]['text'] = $post->ID.' - '.$post->post_title;
-			}
-		}
-		
 		$condition_post_ids = get_post_meta( get_the_ID(), SCF_Config::PREFIX . 'condition-post-ids', true );
 		
 		// get all posts saved
@@ -353,10 +333,9 @@ class Smart_Custom_Fields_Controller_Settings {
 			}
 		}
 		
-		// create variable js with post ids to use in search results
+		// create variable js with posting IDs to use in post search results
 		printf(
-			'<script type="text/javascript"> smart_cf_all_posts = %s; smart_cf_saved_posts = %s; </script>',
-			json_encode( array_values( $source ) ),
+			'<script type="text/javascript">smart_cf_saved_posts = %s; </script>',
 			json_encode( array_values( $saved ) )
 		);
 

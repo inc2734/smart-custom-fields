@@ -249,7 +249,6 @@ jQuery( function( $ ) {
 	 * https://github.com/arendjr/selectivity
 	 */
 	$('#smart-cf-autocomplete-condition-post').selectivity({
-		//items: smart_cf_all_posts,
 		data: smart_cf_saved_posts,
 		multiple: true,
 		placeholder: smart_cf_settings.autocomplete_placeholder,
@@ -317,13 +316,15 @@ jQuery( function( $ ) {
 					return '<div class="selectivity-load-more">' + smart_cf_settings.load_more + '</div>';
 			},
 		}
-	});
-
+	});		
 	$('#smart-cf-autocomplete-condition-post').on('change', function() {
 		var data = $(this).selectivity('value');
 		$('[name="smart-cf-condition-post-ids"]').val(data);
-	});
+	});	
 	
+	/**
+	 * Add IOS style for checkboxes
+	 */
 	$('.smart-cf-group .smart-cf-group-repeat label, #smart-cf-meta-box-condition-post, #smart-cf-meta-box-condition-profile, #smart-cf-meta-box-condition-taxonomy, #smart-cf-meta-box-condition-options-page')
 		.find('input[type=checkbox]')
 		.iosCheckbox();
