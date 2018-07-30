@@ -20,9 +20,11 @@ class Smart_Custom_Fields {
 	 */
 	public function __construct() {
 		require_once plugin_dir_path( __FILE__ ) . 'classes/class.config.php';
-		require_once plugin_dir_path( __FILE__ ) . 'classes/class.rest-api.php';	
+		require_once plugin_dir_path( __FILE__ ) . 'classes/class.rest-api.php';
 		add_action( 'plugins_loaded', array( $this, 'plugins_loaded' ) );
 		register_uninstall_hook( __FILE__, array( __CLASS__, 'uninstall' ) );
+
+		new Smart_Custom_Fields_Rest_API();
 	}
 
 	/**

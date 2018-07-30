@@ -33,25 +33,23 @@ class Smart_Custom_Fields_Rest_API {
 	public function get_all_posts() {
 		$all_posts = get_posts(
 			array(
-				'post_type' => array('post','page'),
-				'post_status' => 'publish',
-				'orderby' => 'date',
-				'order' => 'ASC',
-				'posts_per_page'   => -1 // all posts
+				'post_type'      => array( 'post', 'page' ),
+				'post_status'    => 'publish',
+				'orderby'        => 'date',
+				'order'          => 'ASC',
+				'posts_per_page' => -1 // all posts
 			)
 		);
-		
-		if( $all_posts ){
+
+		if ( $all_posts ) {
 			$source = array();
-			
-			foreach( $all_posts as $k => $post ) {
-				$source[$k]['id'] = $post->ID;
-				$source[$k]['text'] = $post->ID.' - '.$post->post_title;
+
+			foreach ( $all_posts as $k => $post ) {
+				$source[ $k ]['id']   = $post->ID;
+				$source[ $k ]['text'] = $post->ID . ' - ' . $post->post_title;
 			}
 		}
-	
+
 		return $source;
 	}
 }
-
-new Smart_Custom_Fields_Rest_API();

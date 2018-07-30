@@ -44,19 +44,18 @@ class Smart_Custom_Fields_Controller_Settings {
 			),
 		);
 	}
-	
+
 	/**
 	 * Get Current Admin Color Scheme
 	 *
 	 * @return object
 	 */
-	public function admin_color_scheme(){
+	protected function admin_color_scheme() {
 		global $_wp_admin_css_colors;
-		
-		$user_admin_color_scheme = get_user_option('admin_color');
-		
-		$colors_obj = $_wp_admin_css_colors[$user_admin_color_scheme];
-		
+
+		$user_admin_color_scheme = get_user_option( 'admin_color' );
+		$colors_obj = $_wp_admin_css_colors[ $user_admin_color_scheme ];
+
 		return $colors_obj;
 	}
 
@@ -65,29 +64,24 @@ class Smart_Custom_Fields_Controller_Settings {
 	 *
 	 */
 	public function admin_inline_css(){
-
 		$colors = $this->admin_color_scheme()->colors;
 		$icon_colors = $this->admin_color_scheme()->icon_colors;
+		?>
+		<style>
+		#smart-cf-meta-box-condition-post .selectivity-load-more.highlight,
+		#smart-cf-meta-box-condition-post .selectivity-result-item.highlight {
+			background-color: <?php echo esc_html( $colors[2] ); ?>;
+		}
 
-		//print_r($colors);
-		//print_r($icon_colors);
-		
-		$output = '<style>';		
-	
-		$output .= 
-			'#smart-cf-meta-box-condition-post .selectivity-load-more.highlight, 
-			#smart-cf-meta-box-condition-post .selectivity-result-item.highlight { background-color:' . $colors[2] . '; }';
-			
-		$output .=
-			'.smart-cf-group .smart-cf-group-repeat label .ios-ui-select.checked,
-			#smart-cf-meta-box-condition-post .ios-ui-select.checked,
-			#smart-cf-meta-box-condition-profile .ios-ui-select.checked,
-			#smart-cf-meta-box-condition-taxonomy .ios-ui-select.checked,
-			#smart-cf-meta-box-condition-options-page .ios-ui-select.checked { box-shadow: inset 0 0 0 36px ' . $colors[2] . '; }';
-		
-		$output .= '</style>';
-		
-		echo $output;
+		.smart-cf-group .smart-cf-group-repeat label .ios-ui-select.checked,
+		#smart-cf-meta-box-condition-post .ios-ui-select.checked,
+		#smart-cf-meta-box-condition-profile .ios-ui-select.checked,
+		#smart-cf-meta-box-condition-taxonomy .ios-ui-select.checked,
+		#smart-cf-meta-box-condition-options-page .ios-ui-select.checked {
+			box-shadow: inset 0 0 0 36px <?php echo esc_html( $colors[2] ); ?>;
+		}
+		</style>
+		<?php
 	}
 
 	/**
@@ -102,14 +96,14 @@ class Smart_Custom_Fields_Controller_Settings {
 			array(),
 			filemtime( plugin_dir_path( dirname( __FILE__ ) . '/../../css/settings.css' ) )
 		);
-		
+
 		wp_enqueue_style(
 			SCF_Config::PREFIX . 'selectivity',
 			plugins_url( SCF_Config::NAME ) . '/libs/selectivity-3.1.0/selectivity-jquery.min.css',
 			array(),
 			filemtime( plugin_dir_path( dirname( __FILE__ ) . '/../../libs/selectivity-3.1.0/selectivity-jquery.min.css' ) )
 		);
-		
+
 		wp_enqueue_style(
 			SCF_Config::PREFIX . 'ios-checkbox',
 			plugins_url( SCF_Config::NAME ) . '/libs/iosCheckbox/iosCheckbox.min.css',
@@ -124,7 +118,7 @@ class Smart_Custom_Fields_Controller_Settings {
 			filemtime( plugin_dir_path( dirname( __FILE__ ) . '/../../js/settings.js' ) ),
 			true
 		);
-		
+
 		wp_enqueue_script(
 			SCF_Config::PREFIX . 'selectivity',
 			plugins_url( SCF_Config::NAME ) . '/libs/selectivity-3.1.0/selectivity-jquery.min.js',
@@ -132,7 +126,7 @@ class Smart_Custom_Fields_Controller_Settings {
 			filemtime( plugin_dir_path( dirname( __FILE__ ) . '/../../libs/selectivity-3.1.0/selectivity-jquery.min.js' ) ),
 			true
 		);
-		
+
 		wp_enqueue_script(
 			SCF_Config::PREFIX . 'ios-checkbox',
 			plugins_url( SCF_Config::NAME ) . '/libs/iosCheckbox/iosCheckbox.min.js',
@@ -152,7 +146,7 @@ class Smart_Custom_Fields_Controller_Settings {
 		wp_enqueue_script( 'jquery-ui-sortable' );
 		do_action( SCF_Config::PREFIX . 'after-settings-enqueue-scripts' );
 	}
-	
+
 	/**
 	 * Adding meta boxes
 	 */
@@ -318,35 +312,35 @@ class Smart_Custom_Fields_Controller_Settings {
 			esc_html__( 'Post Types', 'smart-custom-fields' ),
 			$post_type_field
 		);
-		
+
 		$condition_post_ids = get_post_meta( get_the_ID(), SCF_Config::PREFIX . 'condition-post-ids', true );
-		
+
 		// get all posts saved
-		$saved_posts = explode(',',$condition_post_ids);
-		
-		if( $saved_posts ){
+		$saved_posts = explode( ',', $condition_post_ids );
+
+		if ( $saved_posts ) {
 			$saved = array();
-			
+
 			foreach( $saved_posts as $k => $post_id ) {
-				$saved[$k]['id'] = $post_id;
-				$saved[$k]['text'] = $post_id; //$post_id . ' - ' . get_the_title($post_id);
+				$saved[ $k ]['id']   = $post_id;
+				$saved[ $k ]['text'] = $post_id; //$post_id . ' - ' . get_the_title($post_id);
 			}
 		}
-		
+
 		// create variable js with posting IDs to use in post search results
 		printf(
-			'<script type="text/javascript">smart_cf_saved_posts = %s; </script>',
+			'<script type="text/javascript">smart_cf_saved_posts = %s;</script>',
 			json_encode( array_values( $saved ) )
 		);
 
 		// create div to use with jquery plugin "selectivity"
-		// https://github.com/arendjr/selectivity	
+		// https://github.com/arendjr/selectivity
 		printf(
 			'<p><b>%s</b><div id="%s" class="selectivity-input"></div></p>',
 			esc_html__( 'Post or Page Ids', 'smart-custom-fields' ),
 			esc_attr( SCF_Config::PREFIX . 'autocomplete-condition-post' )
 		);
-		
+
 		// create input hidden with the IDS of saved posts
 		printf(
 			'<input type="hidden" name="%s" value="%s"/>',

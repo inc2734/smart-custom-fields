@@ -75,7 +75,7 @@
 	position: relative;
 	top: -2px;
 }
-@media (max-width:750px){
+@media (max-width:750px) {
 	.smart-cf-group .smart-cf-group-name {
 		max-width:79%;
 	}
@@ -199,16 +199,16 @@
 }
 
 #smart-cf-meta-box-condition-post .selectivity-multiple-input {
-	box-shadow:none;
+	box-shadow: none;
 }
 
 #smart-cf-meta-box-condition-post .selectivity-multiple-selected-item {
-	margin-right:5px;
+	margin-right: 5px;
 }
 
 #smart-cf-meta-box-condition-post .selectivity-multiple-selected-item-remove {
-	font-weight:bold;
-	color:#fff;
+	font-weight: bold;
+	color: #fff;
 }
 
 #smart-cf-meta-box-condition-post .selectivity-multiple-input-container {
@@ -218,7 +218,7 @@
 	color: #32373c;
 	outline: 0;
 	transition: 50ms border-color ease-in-out;
-	border-radius:0px;
+	border-radius: 0;
 }
 
 #smart-cf-meta-box-condition-post .selectivity-dropdown,
@@ -226,7 +226,7 @@
 #smart-cf-meta-box-condition-post .selectivity-load-more,
 #smart-cf-meta-box-condition-post .selectivity-result-item:last-child,
 #smart-cf-meta-box-condition-post .selectivity-result-children:last-child .selectivity-result-item:last-child {
-	border-radius:0px;
+	border-radius: 0;
 }
 
 .smart-cf-group .smart-cf-group-repeat label .ios-ui-select,
@@ -234,12 +234,12 @@
 #smart-cf-meta-box-condition-profile .ios-ui-select,
 #smart-cf-meta-box-condition-taxonomy .ios-ui-select,
 #smart-cf-meta-box-condition-options-page .ios-ui-select {
-	height:18px;
-	width:32px;
-	margin-bottom:-5px;
-	position:relative;
-	background:#ddd;
-	box-shadow: inset 0 1px 2px rgba(0,0,0,.07);
+	height: 18px;
+	width: 32px;
+	margin-bottom: -5px;
+	position: relative;
+	background: #ddd;
+	box-shadow: inset 0 1px 2px rgba(0, 0, 0, .07);
 
 }
 
@@ -248,8 +248,8 @@
 #smart-cf-meta-box-condition-profile .ios-ui-select .inner,
 #smart-cf-meta-box-condition-taxonomy .ios-ui-select .inner,
 #smart-cf-meta-box-condition-options-page .ios-ui-select .inner {
-	width:12px;
-	height:12px;
+	width: 12px;
+	height: 12px;
 }
 
 .smart-cf-group .smart-cf-group-repeat label .ios-ui-select.checked .inner,
