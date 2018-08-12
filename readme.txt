@@ -4,7 +4,7 @@ Donate link: http://www.amazon.co.jp/registry/wishlist/39ANKRNSTNW40
 Tags: plugin, custom field, custom, field, meta, meta field, repeat, repeatable
 Requires at least: 3.9
 Tested up to: 4.9.6
-Stable tag: 4.0.1
+Stable tag: 4.0.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -127,6 +127,9 @@ You can translate this plugin into your language by using [GlotPress](https://tr
 2. Post edit page.
 
 == Changelog ==
+
+= 4.0.2 =
+* Some updates by [@robssanches](https://github.com/robssanches)
 
 = 4.0.0 =
 * Add message field. #64 (by [@robssanches](https://github.com/robssanches))
