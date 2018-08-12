@@ -322,8 +322,10 @@ class Smart_Custom_Fields_Controller_Settings {
 			$saved = array();
 
 			foreach( $saved_posts as $k => $post_id ) {
-				$saved[ $k ]['id']   = $post_id;
-				$saved[ $k ]['text'] = $post_id; //$post_id . ' - ' . get_the_title($post_id);
+				if($post_id != ''){
+					$saved[ $k ]['id']   = $post_id;
+					$saved[ $k ]['text'] = $post_id; //$post_id . ' - ' . get_the_title($post_id);
+				}
 			}
 		}
 
