@@ -76,7 +76,6 @@ class Smart_Custom_Fields_Field_Related_Posts extends Smart_Custom_Fields_Field_
 	public function relational_posts_search() {
 		check_ajax_referer( SCF_Config::NAME . '-relation-post-types', 'nonce' );
 		$_posts = array();
-		$args = array();
 		if ( isset( $_POST['post_types'] ) ) {
 			$post_type = explode( ',', $_POST['post_types'] );
 			$args = array(
@@ -89,8 +88,8 @@ class Smart_Custom_Fields_Field_Related_Posts extends Smart_Custom_Fields_Field_
 
 			if ( isset( $_POST['click_count'] ) ) {
 				$posts_per_page = get_option( 'posts_per_page' );
-				$offset = $_POST['click_count'] * $posts_per_page;
-				$args = array_merge(
+				$offset         = $_POST['click_count'] * $posts_per_page;
+				$args           = array_merge(
 					$args,
 					array(
 						'offset'         => $offset,
@@ -107,6 +106,17 @@ class Smart_Custom_Fields_Field_Related_Posts extends Smart_Custom_Fields_Field_
 					)
 				);
 			}
+
+			/**
+			 * This filter will be always applied when it queries posts in related posts field.
+			 */
+			$args = apply_filters( SCF_Config::PREFIX . 'custom_related_posts_args', $args );
+
+			/**
+			 * This filter will only be applied when getting posts via ajax call, therefore it won't be applied for the first load.
+			 */
+			$args = apply_filters( SCF_Config::PREFIX . 'custom_related_posts_args_ajax_call', $args );
+
 			$_posts = get_posts( $args );
 		}
 		header( 'Content-Type: application/json; charset=utf-8' );
@@ -134,14 +144,26 @@ class Smart_Custom_Fields_Field_Related_Posts extends Smart_Custom_Fields_Field_
 		}
 		$posts_per_page = get_option( 'posts_per_page' );
 
-		// choicse
-		$choices_posts = get_posts( array(
+		$args = array(
 			'post_type'      => $post_type,
 			'order'          => 'ASC',
 			'orderby'        => 'ID',
 			'posts_per_page' => $posts_per_page,
 			'post_status'    => 'any',
-		) );
+		);
+
+		/**
+		 * This filter will be always applied when it queries posts in related posts field.
+		 */
+		$args = apply_filters( SCF_Config::PREFIX . 'custom_related_posts_args', $args );
+		/**
+		 * This filter will only be applied in the first load, therefore it won't be applied when getting posts via ajax call.
+		 */
+		$args = apply_filters( SCF_Config::PREFIX . 'custom_related_posts_args_first_load', $args );
+
+		// Get posts to show in the first load.
+		$choices_posts = get_posts( $args );
+
 		$choices_li = array();
 		foreach ( $choices_posts as $_post ) {
 			$post_title = get_the_title( $_post->ID );
