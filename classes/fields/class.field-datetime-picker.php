@@ -169,6 +169,10 @@ class Smart_Custom_Fields_Field_Datetime_Picker extends Smart_Custom_Fields_Fiel
 						'<a href="https://flatpickr.js.org/options/" target="_blank">',
 						'</a>'
 					);
+					esc_html_e(
+						'This datetime picker currently does not include the timezone support, therefore you need to include some information on the instruction field below to enforce everyone to use the same timezone. The value returned by this field is always a plain text of date string.',
+						'smart-custom-fields'
+					);
 					?>
 				</span>
 			</td>
