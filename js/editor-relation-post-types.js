@@ -65,11 +65,18 @@ jQuery( function( $ ) {
 		var btn_load_text = btn_load.text();
 		btn_load.text( 'Now loading...' );
 
+		var nameEl = document.getElementById('smart-cf-field-name-data');
+		var name = '';
+		if (nameEl) {
+			name = nameEl.getAttribute('data-js');
+		}
+
 		args = $.extend( args, {
 			action     : smart_cf_relation_post_types.action,
 			nonce      : smart_cf_relation_post_types.nonce,
 			click_count: click_count,
-			post_types : post_types
+			post_types : post_types,
+			field_name: name
 		} );
 		$.post(
 			smart_cf_relation_post_types.endpoint,

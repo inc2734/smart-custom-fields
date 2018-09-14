@@ -107,15 +107,16 @@ class Smart_Custom_Fields_Field_Related_Posts extends Smart_Custom_Fields_Field_
 				);
 			}
 
+      $field_name = sanitize_text_field( $_POST['field_name'] );
 			/**
 			 * This filter will be always applied when it queries posts in related posts field.
 			 */
-			$args = apply_filters( SCF_Config::PREFIX . 'custom_related_posts_args', $args );
+			$args = apply_filters( SCF_Config::PREFIX . 'custom_related_posts_args', $args, $field_name, $post_type );
 
 			/**
 			 * This filter will only be applied when getting posts via ajax call, therefore it won't be applied for the first load.
 			 */
-			$args = apply_filters( SCF_Config::PREFIX . 'custom_related_posts_args_ajax_call', $args );
+			$args = apply_filters( SCF_Config::PREFIX . 'custom_related_posts_args_ajax_call', $args, $field_name, $post_type );
 
 			$_posts = get_posts( $args );
 		}
@@ -155,11 +156,11 @@ class Smart_Custom_Fields_Field_Related_Posts extends Smart_Custom_Fields_Field_
 		/**
 		 * This filter will be always applied when it queries posts in related posts field.
 		 */
-		$args = apply_filters( SCF_Config::PREFIX . 'custom_related_posts_args', $args );
+		$args = apply_filters( SCF_Config::PREFIX . 'custom_related_posts_args', $args, $name, $post_type );
 		/**
 		 * This filter will only be applied in the first load, therefore it won't be applied when getting posts via ajax call.
 		 */
-		$args = apply_filters( SCF_Config::PREFIX . 'custom_related_posts_args_first_load', $args );
+		$args = apply_filters( SCF_Config::PREFIX . 'custom_related_posts_args_first_load', $args, $name, $post_type );
 
 		// Get posts to show in the first load.
 		$choices_posts = get_posts( $args );
@@ -221,6 +222,7 @@ class Smart_Custom_Fields_Field_Related_Posts extends Smart_Custom_Fields_Field_
 					<ul>%s</ul>
 					<p class="load-relation-items load-relation-post-types %s">%s</p>
 					<input type="hidden" name="%s" %s />
+					<input type="hidden" id="smart-cf-field-name-data" data-js="' . $name . '" />
 					%s
 				</div>
 			</div>
