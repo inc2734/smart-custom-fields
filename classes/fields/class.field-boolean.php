@@ -143,24 +143,24 @@ class Smart_Custom_Fields_Field_Boolean extends Smart_Custom_Fields_Field_Base {
 				/>
 			</td>
 		</tr>
-	<?php
+		<?php
 	}
 
 	/**
 	 * Validating when displaying meta data
 	 *
 	 * @param int|string $value
-	 * @param string $field_type
+	 * @param string     $field_type
 	 * @return boolean
 	 */
 	public function validate_get_value( $value, $field_type ) {
 		if ( $field_type === $this->get_attribute( 'type' ) ) {
 			if ( is_array( $value ) ) {
 				foreach ( $value as $key => $val ) {
-					$value[$key] = !!$val;
+					$value[ $key ] = ! ! $val;
 				}
 			} else {
-				$value = !!$value;
+				$value = ! ! $value;
 			}
 		}
 		return $value;

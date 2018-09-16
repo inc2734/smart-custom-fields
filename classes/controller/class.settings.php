@@ -12,6 +12,7 @@ class Smart_Custom_Fields_Controller_Settings {
 
 	/**
 	 * Selectbox choices of the field selection
+	 *
 	 * @var array
 	 */
 	private $optgroups = array();
@@ -26,11 +27,11 @@ class Smart_Custom_Fields_Controller_Settings {
 		add_action( 'add_meta_boxes', array( $this, 'add_meta_boxes' ) );
 
 		$this->optgroups = array(
-			'basic-fields' => array(
+			'basic-fields'   => array(
 				'label'   => esc_attr__( 'Basic fields', 'smart-custom-fields' ),
 				'options' => array(),
 			),
-			'select-fields' => array(
+			'select-fields'  => array(
 				'label'   => esc_attr__( 'Select fields', 'smart-custom-fields' ),
 				'options' => array(),
 			),
@@ -38,7 +39,7 @@ class Smart_Custom_Fields_Controller_Settings {
 				'label'   => esc_attr__( 'Content fields', 'smart-custom-fields' ),
 				'options' => array(),
 			),
-			'other-fields' => array(
+			'other-fields'   => array(
 				'label'   => esc_attr__( 'Other fields', 'smart-custom-fields' ),
 				'options' => array(),
 			),
@@ -54,17 +55,16 @@ class Smart_Custom_Fields_Controller_Settings {
 		global $_wp_admin_css_colors;
 
 		$user_admin_color_scheme = get_user_option( 'admin_color' );
-		$colors_obj = $_wp_admin_css_colors[ $user_admin_color_scheme ];
+		$colors_obj              = $_wp_admin_css_colors[ $user_admin_color_scheme ];
 
 		return $colors_obj;
 	}
 
 	/**
 	 * Add Custom Inline CSS on Admin Dashboard
-	 *
 	 */
-	public function admin_inline_css(){
-		$colors = $this->admin_color_scheme()->colors;
+	public function admin_inline_css() {
+		$colors      = $this->admin_color_scheme()->colors;
 		$icon_colors = $this->admin_color_scheme()->icon_colors;
 		?>
 		<style>
@@ -135,13 +135,17 @@ class Smart_Custom_Fields_Controller_Settings {
 			true
 		);
 
-		wp_localize_script( SCF_Config::PREFIX . 'settings', 'smart_cf_settings', array(
-			'duplicate_alert' => esc_html__( 'Same name exists!', 'smart-custom-fields' ),
-			'autocomplete_placeholder' => esc_html__( 'Type to search a post or page', 'smart-custom-fields' ),
-			'loading' => esc_html__( 'Loading...', 'smart-custom-fields' ),
-			'load_more' => esc_html__( 'Load more', 'smart-custom-fields' ),
-			'rest_api_url' => rest_url( SCF_Config::PREFIX.'api/search/posts' ),
-		) );
+		wp_localize_script(
+			SCF_Config::PREFIX . 'settings',
+			'smart_cf_settings',
+			array(
+				'duplicate_alert'          => esc_html__( 'Same name exists!', 'smart-custom-fields' ),
+				'autocomplete_placeholder' => esc_html__( 'Type to search a post or page', 'smart-custom-fields' ),
+				'loading'                  => esc_html__( 'Loading...', 'smart-custom-fields' ),
+				'load_more'                => esc_html__( 'Load more', 'smart-custom-fields' ),
+				'rest_api_url'             => rest_url( SCF_Config::PREFIX . 'api/search/posts' ),
+			)
+		);
 
 		wp_enqueue_script( 'jquery-ui-sortable' );
 		do_action( SCF_Config::PREFIX . 'after-settings-enqueue-scripts' );
@@ -193,7 +197,7 @@ class Smart_Custom_Fields_Controller_Settings {
 	 * @param string $key
 	 */
 	private function add_hide_class( $key ) {
-		if ( !$key ) {
+		if ( ! $key ) {
 			echo 'hide';
 		}
 	}
@@ -204,7 +208,7 @@ class Smart_Custom_Fields_Controller_Settings {
 	public function display_meta_box() {
 		$Setting = SCF::add_setting( get_the_ID(), get_the_title() );
 		$Setting->add_group_unshift();
-		$groups  = $Setting->get_groups();
+		$groups = $Setting->get_groups();
 		?>
 		<div class="<?php echo esc_attr( SCF_Config::PREFIX . 'fields-wrapper' ); ?>">
 			<div class="<?php echo esc_attr( SCF_Config::PREFIX . 'groups' ); ?>">
@@ -223,10 +227,10 @@ class Smart_Custom_Fields_Controller_Settings {
 							<?php
 							$field_name  = $Field->get( 'name' );
 							$field_label = $Field->get( 'label' );
-							if ( !$field_label ) {
+							if ( ! $field_label ) {
 								$field_label = $field_name;
-								if ( !$field_label ) {
-									$field_label = "&nbsp;";
+								if ( ! $field_label ) {
+									$field_label = '&nbsp;';
 								}
 							}
 							?>
@@ -238,7 +242,7 @@ class Smart_Custom_Fields_Controller_Settings {
 									<small>[ <?php echo esc_html( $field_name ); ?> ]</small>
 								<?php endif; ?>
 							</div>
-							<table class="<?php $this->add_hide_class( !$Field->get( 'name' ) ); ?>">
+							<table class="<?php $this->add_hide_class( ! $Field->get( 'name' ) ); ?>">
 								<tr>
 									<th><?php esc_html_e( 'Type', 'smart-custom-fields' ); ?><span class="<?php echo esc_attr( SCF_Config::PREFIX . 'require' ); ?>">*</span></th>
 									<td>
@@ -247,7 +251,7 @@ class Smart_Custom_Fields_Controller_Settings {
 											class="<?php echo esc_attr( SCF_Config::PREFIX . 'field-select' ); ?>" />
 											<?php
 											foreach ( $this->optgroups as $optgroup_name => $optgroup_values ) {
-												$optgroup_fields = array();
+												$optgroup_fields            = array();
 												$optgroup_values['options'] = apply_filters(
 													SCF_Config::PREFIX . 'field-select-' . $optgroup_name,
 													$optgroup_values['options']
@@ -281,7 +285,7 @@ class Smart_Custom_Fields_Controller_Settings {
 			</div>
 			<div class="button button-primary btn-add-group"><?php esc_html_e( 'Add Field', 'smart-custom-fields' ); ?></div>
 		</div>
-		<?php wp_nonce_field( SCF_Config::NAME . '-settings', SCF_Config::PREFIX . 'settings-nonce' ) ?>
+		<?php wp_nonce_field( SCF_Config::NAME . '-settings', SCF_Config::PREFIX . 'settings-nonce' ); ?>
 		<?php
 	}
 
@@ -289,16 +293,19 @@ class Smart_Custom_Fields_Controller_Settings {
 	 * Displaying the meta box to set the display conditions for post edit page
 	 */
 	public function display_meta_box_condition_post() {
-		$post_types = get_post_types( array(
-			'show_ui' => true,
-		), 'objects' );
+		$post_types = get_post_types(
+			array(
+				'show_ui' => true,
+			),
+			'objects'
+		);
 		unset( $post_types['attachment'] );
-		unset( $post_types[SCF_Config::NAME] );
+		unset( $post_types[ SCF_Config::NAME ] );
 
-		$conditions = get_post_meta( get_the_ID(), SCF_Config::PREFIX . 'condition', true );
+		$conditions      = get_post_meta( get_the_ID(), SCF_Config::PREFIX . 'condition', true );
 		$post_type_field = '';
 		foreach ( $post_types as $post_type => $post_type_object ) {
-			$current = ( is_array( $conditions ) && in_array( $post_type, $conditions ) ) ? $post_type : false;
+			$current          = ( is_array( $conditions ) && in_array( $post_type, $conditions ) ) ? $post_type : false;
 			$post_type_field .= sprintf(
 				'<label><input type="checkbox" name="%s" value="%s" %s /> %s</label>',
 				esc_attr( SCF_Config::PREFIX . 'condition[]' ),
@@ -321,10 +328,10 @@ class Smart_Custom_Fields_Controller_Settings {
 		if ( $saved_posts ) {
 			$saved = array();
 
-			foreach( $saved_posts as $k => $post_id ) {
-				if($post_id != ''){
+			foreach ( $saved_posts as $k => $post_id ) {
+				if ( $post_id != '' ) {
 					$saved[ $k ]['id']   = $post_id;
-					$saved[ $k ]['text'] = $post_id; //$post_id . ' - ' . get_the_title($post_id);
+					$saved[ $k ]['text'] = $post_id; // $post_id . ' - ' . get_the_title($post_id);
 				}
 			}
 		}
@@ -355,11 +362,11 @@ class Smart_Custom_Fields_Controller_Settings {
 	 *  Displaying the meta box to set the display conditions for profile edit page
 	 */
 	public function display_meta_box_condition_profile() {
-		$roles = get_editable_roles();
-		$conditions = get_post_meta( get_the_ID(), SCF_Config::PREFIX . 'roles', true );
+		$roles         = get_editable_roles();
+		$conditions    = get_post_meta( get_the_ID(), SCF_Config::PREFIX . 'roles', true );
 		$profile_field = '';
 		foreach ( $roles as $name => $role ) {
-			$current = ( is_array( $conditions ) && in_array( $name, $conditions ) ) ? $name : false;
+			$current        = ( is_array( $conditions ) && in_array( $name, $conditions ) ) ? $name : false;
 			$profile_field .= sprintf(
 				'<label><input type="checkbox" name="%s" value="%s" %s /> %s</label>',
 				esc_attr( SCF_Config::PREFIX . 'roles[]' ),
@@ -379,13 +386,16 @@ class Smart_Custom_Fields_Controller_Settings {
 	 *  Displaying the meta box to set the display conditions for term edit page
 	 */
 	public function display_meta_box_condition_taxonomy() {
-		$taxonomies = get_taxonomies( array(
-			'show_ui' => true,
-		), 'objects' );
-		$conditions = get_post_meta( get_the_ID(), SCF_Config::PREFIX . 'taxonomies', true );
+		$taxonomies     = get_taxonomies(
+			array(
+				'show_ui' => true,
+			),
+			'objects'
+		);
+		$conditions     = get_post_meta( get_the_ID(), SCF_Config::PREFIX . 'taxonomies', true );
 		$taxonomy_field = '';
 		foreach ( $taxonomies as $name => $taxonomy ) {
-			$current = ( is_array( $conditions ) && in_array( $name, $conditions ) ) ? $name : false;
+			$current         = ( is_array( $conditions ) && in_array( $name, $conditions ) ) ? $name : false;
 			$taxonomy_field .= sprintf(
 				'<label><input type="checkbox" name="%s" value="%s" %s /> %s</label>',
 				esc_attr( SCF_Config::PREFIX . 'taxonomies[]' ),
@@ -405,11 +415,11 @@ class Smart_Custom_Fields_Controller_Settings {
 	 *  Displaying the meta box to set the display conditions for custom options page
 	 */
 	public function display_meta_box_condition_options_page() {
-		$optinos_pages = SCF::get_options_pages();
-		$conditions = get_post_meta( get_the_ID(), SCF_Config::PREFIX . 'options-pages', true );
+		$optinos_pages      = SCF::get_options_pages();
+		$conditions         = get_post_meta( get_the_ID(), SCF_Config::PREFIX . 'options-pages', true );
 		$options_page_field = '';
 		foreach ( $optinos_pages as $name => $optinos_page ) {
-			$current = ( is_array( $conditions ) && in_array( $name, $conditions ) ) ? $name : false;
+			$current             = ( is_array( $conditions ) && in_array( $name, $conditions ) ) ? $name : false;
 			$options_page_field .= sprintf(
 				'<label><input type="checkbox" name="%s" value="%s" %s /> %s</label>',
 				esc_attr( SCF_Config::PREFIX . 'options-pages[]' ),
@@ -434,7 +444,7 @@ class Smart_Custom_Fields_Controller_Settings {
 		if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
 			return;
 		}
-		if ( !isset( $_POST[SCF_Config::NAME] ) ) {
+		if ( ! isset( $_POST[ SCF_Config::NAME ] ) ) {
 			return;
 		}
 		check_admin_referer(
@@ -443,27 +453,27 @@ class Smart_Custom_Fields_Controller_Settings {
 		);
 
 		$data = array();
-		foreach ( $_POST[SCF_Config::NAME] as $group_key => $group_value ) {
+		foreach ( $_POST[ SCF_Config::NAME ] as $group_key => $group_value ) {
 			// $group_key = 0 is hidden field so don't save
 			if ( $group_key === 0 ) {
 				continue;
 			}
-			if ( !empty( $group_value['fields'] ) && count( $group_value['fields'] ) > 1 ) {
+			if ( ! empty( $group_value['fields'] ) && count( $group_value['fields'] ) > 1 ) {
 				$fields = array();
 				foreach ( $group_value['fields'] as $field_key => $field_value ) {
 					// $field_key = 0 is hidden field so don't save
 					if ( $field_key === 0 ) {
 						continue;
 					}
-					if ( !empty( $field_value['name'] ) ) {
+					if ( ! empty( $field_value['name'] ) ) {
 						$fields[] = $field_value;
 					}
 				}
-				if ( !$fields ) {
+				if ( ! $fields ) {
 					continue;
 				}
 
-				if ( !empty( $group_value['repeat'] ) && $group_value['repeat'] === 'true' ) {
+				if ( ! empty( $group_value['repeat'] ) && $group_value['repeat'] === 'true' ) {
 					$group_value['repeat'] = true;
 				} else {
 					$group_value['repeat'] = false;
@@ -471,44 +481,44 @@ class Smart_Custom_Fields_Controller_Settings {
 
 				// If "repeat" isn't true, empty name
 				// If "repeat" is true and name is empty, assign index
-				if ( !( isset( $group_value['repeat'] ) && $group_value['repeat'] === true && !empty( $group_value['group-name'] ) ) ) {
+				if ( ! ( isset( $group_value['repeat'] ) && $group_value['repeat'] === true && ! empty( $group_value['group-name'] ) ) ) {
 					$group_value['group-name'] = $group_key;
 				}
 
 				$group_value['fields'] = $fields;
-				$data[] = $group_value;
+				$data[]                = $group_value;
 			}
 		}
 		update_post_meta( $post_id, SCF_Config::PREFIX . 'setting', $data );
 
-		if ( !isset( $_POST[SCF_Config::PREFIX . 'condition'] ) ) {
+		if ( ! isset( $_POST[ SCF_Config::PREFIX . 'condition' ] ) ) {
 			delete_post_meta( $post_id, SCF_Config::PREFIX . 'condition' );
 		} else {
-			update_post_meta( $post_id, SCF_Config::PREFIX . 'condition', $_POST[SCF_Config::PREFIX . 'condition'] );
+			update_post_meta( $post_id, SCF_Config::PREFIX . 'condition', $_POST[ SCF_Config::PREFIX . 'condition' ] );
 		}
 
-		if ( !isset( $_POST[SCF_Config::PREFIX . 'condition-post-ids'] ) ) {
+		if ( ! isset( $_POST[ SCF_Config::PREFIX . 'condition-post-ids' ] ) ) {
 			delete_post_meta( $post_id, SCF_Config::PREFIX . 'condition-post-ids' );
 		} else {
-			update_post_meta( $post_id, SCF_Config::PREFIX . 'condition-post-ids', $_POST[SCF_Config::PREFIX . 'condition-post-ids'] );
+			update_post_meta( $post_id, SCF_Config::PREFIX . 'condition-post-ids', $_POST[ SCF_Config::PREFIX . 'condition-post-ids' ] );
 		}
 
-		if ( !isset( $_POST[SCF_Config::PREFIX . 'roles'] ) ) {
+		if ( ! isset( $_POST[ SCF_Config::PREFIX . 'roles' ] ) ) {
 			delete_post_meta( $post_id, SCF_Config::PREFIX . 'roles' );
 		} else {
-			update_post_meta( $post_id, SCF_Config::PREFIX . 'roles', $_POST[SCF_Config::PREFIX . 'roles'] );
+			update_post_meta( $post_id, SCF_Config::PREFIX . 'roles', $_POST[ SCF_Config::PREFIX . 'roles' ] );
 		}
 
-		if ( !isset( $_POST[SCF_Config::PREFIX . 'taxonomies'] ) ) {
+		if ( ! isset( $_POST[ SCF_Config::PREFIX . 'taxonomies' ] ) ) {
 			delete_post_meta( $post_id, SCF_Config::PREFIX . 'taxonomies' );
 		} else {
-			update_post_meta( $post_id, SCF_Config::PREFIX . 'taxonomies', $_POST[SCF_Config::PREFIX . 'taxonomies'] );
+			update_post_meta( $post_id, SCF_Config::PREFIX . 'taxonomies', $_POST[ SCF_Config::PREFIX . 'taxonomies' ] );
 		}
 
-		if ( !isset( $_POST[SCF_Config::PREFIX . 'options-pages'] ) ) {
+		if ( ! isset( $_POST[ SCF_Config::PREFIX . 'options-pages' ] ) ) {
 			delete_post_meta( $post_id, SCF_Config::PREFIX . 'options-pages' );
 		} else {
-			update_post_meta( $post_id, SCF_Config::PREFIX . 'options-pages', $_POST[SCF_Config::PREFIX . 'options-pages'] );
+			update_post_meta( $post_id, SCF_Config::PREFIX . 'options-pages', $_POST[ SCF_Config::PREFIX . 'options-pages' ] );
 		}
 	}
 }

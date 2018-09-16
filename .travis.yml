@@ -1,18 +1,37 @@
 language: php
-php:
-- 5.6
-- 7.1
+
+matrix:
+  include:
+  - php: 7.2
+  - php: 5.6
+  - php: 5.6
+    env: WP_TRAVISCI=phpcs
+
 sudo: false
+
 env:
-- WP_VERSION=nightly WP_MULTISITE=0
-- WP_VERSION=4.3 WP_MULTISITE=0
+  - WP_VERSION=nightly WP_MULTISITE=0
+  - WP_VERSION=4.3 WP_MULTISITE=0
+
 cache:
   directories:
   - vendor
   - "$HOME/.composer/cache"
+
 install:
-- composer install
+  - composer install
+
 before_script:
-- bash bin/install-wp-tests.sh wordpress_test root '' localhost $WP_VERSION
+  - bash bin/install-wp-tests.sh wordpress_test root '' localhost $WP_VERSION
+  - |
+    if [[ "$WP_TRAVISCI" == "phpcs" ]] ; then
+      composer run set-config
+    fi
+
 script:
-- composer test
+  - composer test
+  - |
+    if [[ "$WP_TRAVISCI" == "phpcs" ]] ; then
+      composer run lint
+    fi
+

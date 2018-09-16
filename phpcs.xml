@@ -1,0 +1,79 @@
+<?xml version="1.0"?>
+<ruleset name="WordPress Coding Standards">
+
+    <arg value="ps"/>
+
+    <arg name="basepath" value="./"/>
+
+    <arg name="parallel" value="8"/>
+
+    <arg name="extensions" value="php"/>
+
+    <file>.</file>
+
+    <rule ref="WordPress-Core">
+        <exclude name="WordPress.Security.ValidatedSanitizedInput"/>
+        <exclude name="WordPress.Security.EscapeOutput.OutputNotEscaped"/>
+        <exclude name="WordPress.PHP.YodaConditions.NotYoda"/>
+        <exclude name="WordPress.Files.FileName.InvalidClassFileName"/>
+
+        <!-- Below exists temporarily and to be removed in the future -->
+        <exclude name="Squiz.ControlStructures.ControlSignature.SpaceAfterCloseBrace"/>
+        <exclude name="Squiz.Commenting.InlineComment.InvalidEndChar"/>
+        <exclude name="Squiz.PHP.DisallowMultipleAssignments.Found"/>
+        <exclude name="WordPress.NamingConventions.ValidVariableName.NotSnakeCase"/>
+        <exclude name="WordPress.PHP.StrictComparisons.LooseComparison"/>
+        <exclude name="WordPress.NamingConventions.ValidVariableName.NotSnakeCase"/>
+        <exclude name="WordPress.NamingConventions.ValidHookName.UseUnderscores"/>
+        <exclude name="WordPress.WhiteSpace.PrecisionAlignment.Found"/>
+        <exclude name="WordPress.WP.I18n.NonSingularStringLiteralText"/>
+        <exclude name="WordPress.NamingConventions.ValidFunctionName.MethodNameInvalid"/>
+    </rule>
+
+    <config name="minimum_supported_wp_version" value="4.7"/>
+
+
+    <!--
+    #############################################################################
+    USE THE PHPCompatibility RULESET
+    #############################################################################
+    -->
+
+
+    <config name="testVersion" value="5.6-99.0"/>
+    <rule ref="PHPCompatibility">
+        <!-- Whitelist PHP native classes, interfaces, functions and constants which
+             are back-filled by WP.
+             Based on:
+             * /wp-includes/compat.php
+             * /wp-includes/random_compat/random.php
+        -->
+        <exclude name="PHPCompatibility.PHP.NewClasses.errorFound"/>
+        <exclude name="PHPCompatibility.PHP.NewClasses.typeerrorFound"/>
+
+        <exclude name="PHPCompatibility.PHP.NewConstants.json_pretty_printFound"/>
+        <exclude name="PHPCompatibility.PHP.NewConstants.php_version_idFound"/>
+
+        <exclude name="PHPCompatibility.PHP.NewFunctions.hash_equalsFound"/>
+        <exclude name="PHPCompatibility.PHP.NewFunctions.json_last_error_msgFound"/>
+        <exclude name="PHPCompatibility.PHP.NewFunctions.random_intFound"/>
+        <exclude name="PHPCompatibility.PHP.NewFunctions.random_bytesFound"/>
+        <exclude name="PHPCompatibility.PHP.NewFunctions.array_replace_recursiveFound"/>
+
+        <exclude name="PHPCompatibility.PHP.NewInterfaces.jsonserializableFound"/>
+    </rule>
+
+    <!-- Whitelist the WP Core mysql_to_rfc3339() function. -->
+    <rule ref="PHPCompatibility.PHP.RemovedExtensions">
+        <properties>
+            <property name="functionWhitelist" type="array" value="mysql_to_rfc3339"/>
+        </properties>
+    </rule>
+
+    <exclude-pattern>*/node_modules/*</exclude-pattern>
+    <exclude-pattern>*/vendor/*</exclude-pattern>
+    <exclude-pattern>*/dist/*</exclude-pattern>
+    <exclude-pattern>*/assets/*</exclude-pattern>
+    <exclude-pattern>parts/tgm/*.php</exclude-pattern>
+    <exclude-pattern>*/tests/*.php</exclude-pattern>
+</ruleset>

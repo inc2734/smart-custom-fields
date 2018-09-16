@@ -12,6 +12,7 @@ abstract class Smart_Custom_Fields_Field_Base {
 
 	/**
 	 * Internal attribute value of this field
+	 *
 	 * @var array
 	 */
 	protected $attributes = array(
@@ -24,6 +25,7 @@ abstract class Smart_Custom_Fields_Field_Base {
 
 	/**
 	 * Options of this field
+	 *
 	 * @var array
 	 */
 	protected $options = array(
@@ -77,7 +79,7 @@ abstract class Smart_Custom_Fields_Field_Base {
 	/**
 	 * Getting the field
 	 *
-	 * @param int $index
+	 * @param int   $index
 	 * @param mixed $value
 	 * @return string html
 	 */
@@ -90,7 +92,7 @@ abstract class Smart_Custom_Fields_Field_Base {
 	 * @return array
 	 */
 	public function field_select( $attributes ) {
-		$attributes[$this->get_attribute( 'type' )] = $this->get_attribute( 'display-name' );
+		$attributes[ $this->get_attribute( 'type' ) ] = $this->get_attribute( 'display-name' );
 		return $attributes;
 	}
 
@@ -197,8 +199,8 @@ abstract class Smart_Custom_Fields_Field_Base {
 	/**
 	 * Getting the name attribute in custom field settings page
 	 *
-	 * @param int $group_key
-	 * @param int $field_key
+	 * @param int    $group_key
+	 * @param int    $field_key
 	 * @param string $name
 	 * @return string
 	 */
@@ -220,7 +222,7 @@ abstract class Smart_Custom_Fields_Field_Base {
 	 */
 	public function get( $key ) {
 		if ( array_key_exists( $key, $this->options ) ) {
-			return $this->options[$key];
+			return $this->options[ $key ];
 		}
 	}
 
@@ -228,11 +230,11 @@ abstract class Smart_Custom_Fields_Field_Base {
 	 * Set option value
 	 *
 	 * @param string $key
-	 * @param mixed $value
+	 * @param mixed  $value
 	 */
 	public function set( $key, $value ) {
 		if ( array_key_exists( $key, $this->options ) ) {
-			$this->options[$key] = $value;
+			$this->options[ $key ] = $value;
 		}
 	}
 
@@ -244,7 +246,7 @@ abstract class Smart_Custom_Fields_Field_Base {
 	 */
 	public function get_attribute( $key ) {
 		if ( array_key_exists( $key, $this->attributes ) ) {
-			return $this->attributes[$key];
+			return $this->attributes[ $key ];
 		}
 	}
 }

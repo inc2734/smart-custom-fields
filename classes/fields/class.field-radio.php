@@ -41,7 +41,7 @@ class Smart_Custom_Fields_Field_Radio extends Smart_Custom_Fields_Field_Base {
 	/**
 	 * Getting the field
 	 *
-	 * @param int $index
+	 * @param int    $index
 	 * @param string $value
 	 * @return string html
 	 */
@@ -58,7 +58,7 @@ class Smart_Custom_Fields_Field_Radio extends Smart_Custom_Fields_Field_Base {
 		);
 		foreach ( $choices as $key => $choice ) {
 			$choice = trim( $choice );
-			if ( !SCF::is_assoc( $choices ) ) {
+			if ( ! SCF::is_assoc( $choices ) ) {
 				$key = $choice;
 			}
 			$form_field .= sprintf(
@@ -100,7 +100,7 @@ class Smart_Custom_Fields_Field_Radio extends Smart_Custom_Fields_Field_Base {
 				<?php
 				$directions = array(
 					'horizontal' => __( 'horizontal', 'smart-custom-fields' ),
-					'vertical'   => __( 'vertical'  , 'smart-custom-fields' ),
+					'vertical'   => __( 'vertical', 'smart-custom-fields' ),
 				);
 				foreach ( $directions as $key => $value ) {
 					printf(

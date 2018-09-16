@@ -38,7 +38,7 @@ class Smart_Custom_Fields_Field_File extends Smart_Custom_Fields_Field_Base {
 	/**
 	 * Getting the field
 	 *
-	 * @param int $index
+	 * @param int    $index
 	 * @param string $value
 	 * @return string html
 	 */
@@ -52,20 +52,20 @@ class Smart_Custom_Fields_Field_File extends Smart_Custom_Fields_Field_Base {
 		);
 
 		$hide_class = 'hide';
-		$image = $btn_remove;
+		$image      = $btn_remove;
 		if ( $value ) {
 			// Usually, $value is attachment ID.
 			// If a customized, for example, $value is not an ID,
 			// Regarded the $value is file URL.
 			if ( preg_match( '/^\d+$/', $value ) ) {
 				$image_src = wp_get_attachment_image_src( $value, 'thumbnail', true );
-				$image_alt = get_the_title($value);
+				$image_alt = get_the_title( $value );
 				if ( is_array( $image_src ) && isset( $image_src[0] ) ) {
 					$image_src = $image_src[0];
 				}
 			} else {
-				$imag_url = $value;
-				$path = str_replace( home_url(), '', $value );
+				$imag_url   = $value;
+				$path       = str_replace( home_url(), '', $value );
 				$image_path = ABSPATH . untrailingslashit( $path );
 				if ( file_exists( $image_path ) ) {
 					$wp_check_filetype = wp_check_filetype( $image_path );
@@ -76,12 +76,12 @@ class Smart_Custom_Fields_Field_File extends Smart_Custom_Fields_Field_Base {
 			}
 
 			if ( $image_src && ! is_array( $image_src ) ) {
-				$attachment			 = get_post( $value );
-				$attachment_name     = $attachment->post_name;
-				$attachment_url      = get_attached_file( $attachment->ID );
-				$filetype            = wp_check_filetype( $attachment_url );
-				$filename            = $attachment_name . '.' . $filetype['ext'];
-				$image = sprintf(
+				$attachment      = get_post( $value );
+				$attachment_name = $attachment->post_name;
+				$attachment_url  = get_attached_file( $attachment->ID );
+				$filetype        = wp_check_filetype( $attachment_url );
+				$filename        = $attachment_name . '.' . $filetype['ext'];
+				$image           = sprintf(
 					'<a href="%s" target="_blank"><img src="%s" alt="%s" />%s</a>%s',
 					wp_get_attachment_url( $value ),
 					esc_url( $image_src ),
@@ -89,7 +89,7 @@ class Smart_Custom_Fields_Field_File extends Smart_Custom_Fields_Field_Base {
 					esc_attr( $filename ),
 					$btn_remove
 				);
-				$hide_class = '';
+				$hide_class      = '';
 			}
 		}
 

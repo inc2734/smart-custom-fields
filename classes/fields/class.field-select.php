@@ -40,22 +40,23 @@ class Smart_Custom_Fields_Field_Select extends Smart_Custom_Fields_Field_Base {
 	/**
 	 * Getting the field
 	 *
-	 * @param int $index
+	 * @param int    $index
 	 * @param string $value
 	 * @return string html
 	 */
 	public function get_field( $index, $value ) {
-		$name = $this->get_field_name_in_editor( $index );
+		$name     = $this->get_field_name_in_editor( $index );
 		$disabled = $this->get_disable_attribute( $index );
-		$choices = SCF::choices_eol_to_array( $this->get( 'choices' ) );
+		$choices  = SCF::choices_eol_to_array( $this->get( 'choices' ) );
 
 		$form_field = '';
 		foreach ( $choices as $key => $choice ) {
 			$choice = trim( $choice );
-			if ( !SCF::is_assoc( $choices ) ) {
+			if ( ! SCF::is_assoc( $choices ) ) {
 				$key = $choice;
 			}
-			$form_field .= sprintf( '<option value="%1$s" %2$s>%3$s</option>',
+			$form_field .= sprintf(
+				'<option value="%1$s" %2$s>%3$s</option>',
 				esc_attr( $key ),
 				selected( $value, $key, false ),
 				esc_html( $choice )

@@ -29,7 +29,7 @@ class Smart_Custom_Fields {
 	 * Loading translation files
 	 */
 	public function plugins_loaded() {
-		load_plugin_textdomain (
+		load_plugin_textdomain(
 			'smart-custom-fields',
 			false,
 			dirname( plugin_basename( __FILE__ ) ) . '/languages'
@@ -63,10 +63,10 @@ class Smart_Custom_Fields {
 		}
 
 		add_action( 'after_setup_theme', array( $this, 'after_setup_theme' ) );
-		add_action( 'init'             , array( $this, 'register_post_type' ) );
-		add_action( 'init'             , array( $this, 'ajax_request' ) );
-		add_action( 'admin_menu'       , array( $this, 'admin_menu' ) );
-		add_action( 'current_screen'   , array( $this, 'current_screen' ) );
+		add_action( 'init', array( $this, 'register_post_type' ) );
+		add_action( 'init', array( $this, 'ajax_request' ) );
+		add_action( 'admin_menu', array( $this, 'admin_menu' ) );
+		add_action( 'current_screen', array( $this, 'current_screen' ) );
 	}
 
 	/**
@@ -81,11 +81,13 @@ class Smart_Custom_Fields {
 	 * Uninstall proccesses
 	 */
 	public static function uninstall() {
-		$cf_posts = get_posts( array(
-			'post_type'      => SCF_Config::NAME,
-			'posts_per_page' => -1,
-			'post_status'    => 'any',
-		) );
+		$cf_posts = get_posts(
+			array(
+				'post_type'      => SCF_Config::NAME,
+				'posts_per_page' => -1,
+				'post_status'    => 'any',
+			)
+		);
 		foreach ( $cf_posts as $post ) {
 			wp_delete_post( $post->ID, true );
 		}
@@ -151,7 +153,7 @@ class Smart_Custom_Fields {
 		}
 		// オプションページ
 		else {
-			$menu_slug = preg_replace( '/^toplevel_page_(.+)$/', '$1', $screen->id );
+			$menu_slug     = preg_replace( '/^toplevel_page_(.+)$/', '$1', $screen->id );
 			$options_pages = SCF::get_options_pages();
 
 			if ( array_key_exists( $menu_slug, $options_pages ) ) {
@@ -183,7 +185,7 @@ class Smart_Custom_Fields {
 			'search_items'       => __( 'Search Fields', 'smart-custom-fields' ),
 			'parent_item_colon'  => __( 'Parent Fields:', 'smart-custom-fields' ),
 			'not_found'          => __( 'No Fields found.', 'smart-custom-fields' ),
-			'not_found_in_trash' => __( 'No Fields found in Trash.', 'smart-custom-fields' )
+			'not_found_in_trash' => __( 'No Fields found in Trash.', 'smart-custom-fields' ),
 		);
 		register_post_type(
 			SCF_Config::NAME,
@@ -235,9 +237,9 @@ class Smart_Custom_Fields {
 	 */
 	protected function get_post_id_in_admin() {
 		$post_id = false;
-		if ( !empty( $_GET['post'] ) ) {
+		if ( ! empty( $_GET['post'] ) ) {
 			$post_id = $_GET['post'];
-		} elseif ( !empty( $_POST['post_ID'] ) ) {
+		} elseif ( ! empty( $_POST['post_ID'] ) ) {
 			$post_id = $_POST['post_ID'];
 		}
 		return $post_id;
@@ -249,11 +251,11 @@ class Smart_Custom_Fields {
 	 * @return int
 	 */
 	protected function get_user_id_in_admin() {
-		$screen = get_current_screen();
+		$screen  = get_current_screen();
 		$user_id = false;
-		if ( !empty( $_GET['user_id'] ) ) {
+		if ( ! empty( $_GET['user_id'] ) ) {
 			$user_id = $_GET['user_id'];
-		} elseif ( !empty( $_POST['user_id'] ) ) {
+		} elseif ( ! empty( $_POST['user_id'] ) ) {
 			$user_id = $_POST['user_id'];
 		} elseif ( $screen->id === 'profile' ) {
 			$current_user = wp_get_current_user();
@@ -269,9 +271,9 @@ class Smart_Custom_Fields {
 	 */
 	protected function get_term_id_in_admin() {
 		$term_id = false;
-		if ( !empty( $_GET['tag_ID'] ) ) {
+		if ( ! empty( $_GET['tag_ID'] ) ) {
 			$term_id = $_GET['tag_ID'];
-		} elseif ( !empty( $_POST['tag_ID'] ) ) {
+		} elseif ( ! empty( $_POST['tag_ID'] ) ) {
 			$term_id = $_POST['tag_ID'];
 		}
 		return $term_id;

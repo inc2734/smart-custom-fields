@@ -20,11 +20,15 @@ class Smart_Custom_Fields_Rest_API {
 	/**
 	 * Register routes
 	 */
-	public function register_rest_api_routes(){
-		register_rest_route( SCF_Config::PREFIX.'api', '/search/posts', array(
-			'methods'  => 'GET',
-			'callback' => array( $this, 'get_all_posts' ),
-		));
+	public function register_rest_api_routes() {
+		register_rest_route(
+			SCF_Config::PREFIX . 'api',
+			'/search/posts',
+			array(
+				'methods'  => 'GET',
+				'callback' => array( $this, 'get_all_posts' ),
+			)
+		);
 	}
 
 	/**
@@ -37,7 +41,7 @@ class Smart_Custom_Fields_Rest_API {
 				'post_status'    => 'publish',
 				'orderby'        => 'date',
 				'order'          => 'ASC',
-				'posts_per_page' => -1 // all posts
+				'posts_per_page' => -1, // all posts
 			)
 		);
 

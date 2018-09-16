@@ -27,10 +27,10 @@ class Smart_Custom_Fields_Revisions {
 			3
 		);
 		add_filter( '_wp_post_revision_fields', array( $this, '_wp_post_revision_fields' ) );
-		add_filter( 'get_post_metadata'       , array( $this, 'get_post_metadata' ), 10, 4 );
-		add_action( 'edit_form_after_title'   , array( $this, 'edit_form_after_title' ) );
+		add_filter( 'get_post_metadata', array( $this, 'get_post_metadata' ), 10, 4 );
+		add_action( 'edit_form_after_title', array( $this, 'edit_form_after_title' ) );
 		add_action( 'wp_restore_post_revision', array( $this, 'wp_restore_post_revision' ), 10, 2 );
-		add_action( 'wp_insert_post'          , array( $this, 'wp_insert_post' ) );
+		add_action( 'wp_insert_post', array( $this, 'wp_insert_post' ) );
 	}
 
 	/**
@@ -54,14 +54,14 @@ class Smart_Custom_Fields_Revisions {
 	 * @param int $post_id リビジョンの投稿ID
 	 */
 	public function wp_insert_post( $post_id ) {
-		if ( !isset( $_POST[SCF_Config::NAME] ) ) {
+		if ( ! isset( $_POST[ SCF_Config::NAME ] ) ) {
 			return;
 		}
-		if ( !wp_is_post_revision( $post_id ) ) {
+		if ( ! wp_is_post_revision( $post_id ) ) {
 			return;
 		}
 		$settings = SCF::get_settings( get_post( $post_id ) );
-		if ( !$settings ) {
+		if ( ! $settings ) {
 			return;
 		}
 
@@ -77,10 +77,10 @@ class Smart_Custom_Fields_Revisions {
 	/**
 	 * プレビューのときはプレビューのメタデータを返す。ただし、アイキャッチはリビジョンが無いので除外する
 	 *
-	 * @param mixed $value
-	 * @param int $post_id
+	 * @param mixed  $value
+	 * @param int    $post_id
 	 * @param string $meta_key
-	 * @param bool $single
+	 * @param bool   $single
 	 * @return mixed $value
 	 */
 	public function get_post_metadata( $value, $post_id, $meta_key, $single ) {
@@ -124,8 +124,8 @@ class Smart_Custom_Fields_Revisions {
 	 * @param array $fields
 	 * @return array $fields
 	 */
-	public function _wp_post_revision_fields( $fields ){
-		$fields[SCF_Config::PREFIX . 'debug-preview'] = esc_html__( 'Smart Custom Fields', 'smart-custom-fields' );
+	public function _wp_post_revision_fields( $fields ) {
+		$fields[ SCF_Config::PREFIX . 'debug-preview' ] = esc_html__( 'Smart Custom Fields', 'smart-custom-fields' );
 		return $fields;
 	}
 
@@ -144,7 +144,7 @@ class Smart_Custom_Fields_Revisions {
 	 *
 	 * @param $value
 	 * @param $column
-	 * @param array $post
+	 * @param array  $post
 	 * @return string
 	 */
 	public function _wp_post_revision_field_debug_preview( $value, $column, $post ) {
@@ -157,7 +157,7 @@ class Smart_Custom_Fields_Revisions {
 					foreach ( $value as $i => $repeat_data_values ) {
 						$output .= sprintf( "- #%s\n", $i );
 						foreach ( $repeat_data_values as $field_name => $repeat_data_value ) {
-							$output .= sprintf( "　%s: ", $field_name );
+							$output .= sprintf( '　%s: ', $field_name );
 							if ( is_array( $repeat_data_value ) ) {
 								$output .= sprintf( "[%s]\n", implode( ', ', $repeat_data_value ) );
 							} else {
@@ -178,24 +178,24 @@ class Smart_Custom_Fields_Revisions {
 	/**
 	 * false ならリビジョンとして保存される
 	 *
-	 * @param bool $check_for_changes
+	 * @param bool    $check_for_changes
 	 * @param WP_Post $last_revision 最新のリビジョン
 	 * @param WP_Post $post 現在の投稿
 	 * @return bool
 	 */
 	public function wp_save_post_revision_check_for_changes( $check_for_changes, $last_revision, $post ) {
 		$post_meta = array();
-		$p = get_post_custom( $post->ID );
+		$p         = get_post_custom( $post->ID );
 		foreach ( $p as $key => $value ) {
 			$v = SCF::get( $key );
-			if ( !is_null( $v ) ) {
-				$post_meta[$key][] = $v;
+			if ( ! is_null( $v ) ) {
+				$post_meta[ $key ][] = $v;
 			}
 		}
 
-		if ( isset( $_POST[SCF_Config::NAME] ) ) {
+		if ( isset( $_POST[ SCF_Config::NAME ] ) ) {
 			$serialized_post_meta = serialize( $post_meta );
-			$serialized_send_data = $_POST[SCF_Config::NAME];
+			$serialized_send_data = $_POST[ SCF_Config::NAME ];
 			if ( $serialized_post_meta != $serialized_send_data ) {
 				return false;
 			}

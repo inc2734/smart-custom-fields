@@ -47,7 +47,7 @@ class Smart_Custom_Fields_Options_Page {
 	 * @param string $capability
 	 * @param string $menu_slug
 	 * @param string $icon_url
-	 * @param int $position
+	 * @param int    $position
 	 */
 	public function __construct( $page_title, $menu_title, $capability, $menu_slug, $icon_url = '', $position = null ) {
 		$this->page_title = $page_title;
@@ -73,7 +73,7 @@ class Smart_Custom_Fields_Options_Page {
 
 	public function display() {
 		$Option = SCF::generate_option_object( $_GET['page'] );
-		if ( !$Option ) {
+		if ( ! $Option ) {
 			return;
 		}
 		?>

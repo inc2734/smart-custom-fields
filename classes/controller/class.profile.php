@@ -61,10 +61,10 @@ class Smart_Custom_Fields_Controller_Profile extends Smart_Custom_Fields_Control
 	 * @param int $user_id
 	 */
 	public function update( $user_id ) {
-		if ( !current_user_can( 'edit_user', $user_id ) ) {
+		if ( ! current_user_can( 'edit_user', $user_id ) ) {
 			return;
 		}
-		if ( !isset( $_POST[SCF_Config::NAME] ) ) {
+		if ( ! isset( $_POST[ SCF_Config::NAME ] ) ) {
 			return;
 		}
 

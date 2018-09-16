@@ -72,7 +72,7 @@ class Smart_Custom_Fields_Field_Wysiwyg extends Smart_Custom_Fields_Field_Base {
 	/**
 	 * Getting the field
 	 *
-	 * @param int $index
+	 * @param int    $index
 	 * @param string $value
 	 * @return string html
 	 */
@@ -106,7 +106,6 @@ class Smart_Custom_Fields_Field_Wysiwyg extends Smart_Custom_Fields_Field_Base {
 			$value,
 			esc_html__( 'Visual', 'smart-custom-fields' ),
 			esc_html__( 'Text', 'smart-custom-fields' )
-
 		);
 	}
 
@@ -157,7 +156,8 @@ class Smart_Custom_Fields_Field_Wysiwyg extends Smart_Custom_Fields_Field_Base {
 	 */
 	protected function media_buttons( $editor_id = 'content' ) {
 		$img = '<span class="wp-media-buttons-icon"></span> ';
-		return sprintf( '<a href="#" class="button insert-media add_media" data-editor="%s" title="%s">%s</a>',
+		return sprintf(
+			'<a href="#" class="button insert-media add_media" data-editor="%s" title="%s">%s</a>',
 			esc_attr( $editor_id ),
 			esc_attr__( 'Add Media' ),
 			$img . __( 'Add Media' )
@@ -167,7 +167,7 @@ class Smart_Custom_Fields_Field_Wysiwyg extends Smart_Custom_Fields_Field_Base {
 	/**
 	 * Validating when displaying meta data
 	 *
-	 * @param mixed $value
+	 * @param mixed  $value
 	 * @param string $field_type
 	 * @return string|array
 	 */
@@ -176,7 +176,7 @@ class Smart_Custom_Fields_Field_Wysiwyg extends Smart_Custom_Fields_Field_Base {
 			if ( is_array( $value ) ) {
 				$validated_value = array();
 				foreach ( $value as $k => $v ) {
-					$validated_value[$k] = $this->add_the_content_filter( $v );
+					$validated_value[ $k ] = $this->add_the_content_filter( $v );
 				}
 				$value = $validated_value;
 			} else {

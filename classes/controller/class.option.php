@@ -39,7 +39,7 @@ class Smart_Custom_Fields_Controller_Option extends Smart_Custom_Fields_Controll
 	 */
 	public function custom_options_page( $Option ) {
 		$settings = SCF::get_settings( $Option );
-		if ( !$settings ) {
+		if ( ! $settings ) {
 			return;
 		}
 		?>
@@ -66,7 +66,7 @@ class Smart_Custom_Fields_Controller_Option extends Smart_Custom_Fields_Controll
 	 * @param stdClass $Option
 	 */
 	public function save_option( $Option ) {
-		if ( !isset( $_POST[SCF_Config::NAME] ) ) {
+		if ( ! isset( $_POST[ SCF_Config::NAME ] ) ) {
 			return;
 		}
 

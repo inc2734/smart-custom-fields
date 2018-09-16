@@ -22,8 +22,8 @@ class Smart_Custom_Fields_Ajax {
 	/**
 	 * Deleting term meta
 	 *
-	 * @param int $term_id
-	 * @param int $term_taxonomy_id
+	 * @param int    $term_id
+	 * @param int    $term_taxonomy_id
 	 * @param string $taxonomy
 	 * @param object $deleted_term
 	 */

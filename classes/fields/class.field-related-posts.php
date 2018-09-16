@@ -63,11 +63,15 @@ class Smart_Custom_Fields_Field_Related_Posts extends Smart_Custom_Fields_Field_
 			true
 		);
 
-		wp_localize_script( SCF_Config::PREFIX . 'editor-relation-post-types', 'smart_cf_relation_post_types', array(
-			'endpoint' => admin_url( 'admin-ajax.php' ),
-			'action'   => SCF_Config::PREFIX . 'relational-posts-search',
-			'nonce'    => wp_create_nonce( SCF_Config::NAME . '-relation-post-types' )
-		) );
+		wp_localize_script(
+			SCF_Config::PREFIX . 'editor-relation-post-types',
+			'smart_cf_relation_post_types',
+			array(
+				'endpoint' => admin_url( 'admin-ajax.php' ),
+				'action'   => SCF_Config::PREFIX . 'relational-posts-search',
+				'nonce'    => wp_create_nonce( SCF_Config::NAME . '-relation-post-types' ),
+			)
+		);
 	}
 
 	/**
@@ -78,10 +82,10 @@ class Smart_Custom_Fields_Field_Related_Posts extends Smart_Custom_Fields_Field_
 		$_posts = array();
 		if ( isset( $_POST['post_types'] ) ) {
 			$post_type = explode( ',', $_POST['post_types'] );
-			$args = array(
-				'post_type' => $post_type,
-				'order'     => 'ASC',
-				'orderby'   => 'ID',
+			$args      = array(
+				'post_type'      => $post_type,
+				'order'          => 'ASC',
+				'orderby'        => 'ID',
 				'posts_per_page' => -1,
 				'post_status'    => 'any',
 			);
@@ -107,7 +111,7 @@ class Smart_Custom_Fields_Field_Related_Posts extends Smart_Custom_Fields_Field_
 				);
 			}
 
-      $field_name = sanitize_text_field( $_POST['field_name'] );
+			$field_name = sanitize_text_field( $_POST['field_name'] );
 			/**
 			 * This filter will be always applied when it queries posts in related posts field.
 			 */
@@ -128,7 +132,7 @@ class Smart_Custom_Fields_Field_Related_Posts extends Smart_Custom_Fields_Field_
 	/**
 	 * Getting the field
 	 *
-	 * @param int $index
+	 * @param int   $index
 	 * @param array $value
 	 * @return string html
 	 */
@@ -181,17 +185,17 @@ class Smart_Custom_Fields_Field_Related_Posts extends Smart_Custom_Fields_Field_
 
 		// selected
 		$selected_posts = array();
-		if ( !empty( $value ) && is_array( $value ) ) {
+		if ( ! empty( $value ) && is_array( $value ) ) {
 			foreach ( $value as $post_id ) {
 				$post_title = get_the_title( $post_id );
 				if ( empty( $post_title ) ) {
 					$post_title = '&nbsp;';
 				}
-				$selected_posts[$post_id] = $post_title;
+				$selected_posts[ $post_id ] = $post_title;
 			}
 		}
 		$selected_li = array();
-		$hidden = array();
+		$hidden      = array();
 		foreach ( $selected_posts as $post_id => $post_title ) {
 			$selected_li[] = sprintf(
 				'<li data-id="%d" data-status="%s"><span class="%s"></span>%s<span class="relation-remove">-</li></li>',
@@ -200,7 +204,7 @@ class Smart_Custom_Fields_Field_Related_Posts extends Smart_Custom_Fields_Field_
 				esc_attr( SCF_Config::PREFIX . 'icon-handle dashicons dashicons-menu' ),
 				$post_title
 			);
-			$hidden[] = sprintf(
+			$hidden[]      = sprintf(
 				'<input type="hidden" name="%s" value="%d" %s />',
 				esc_attr( $name . '[]' ),
 				$post_id,
@@ -259,16 +263,20 @@ class Smart_Custom_Fields_Field_Related_Posts extends Smart_Custom_Fields_Field_
 			<th><?php esc_html_e( 'Post Types', 'smart-custom-fields' ); ?></th>
 			<td>
 				<?php
-				$post_types = get_post_types( array(
-					'show_ui' => true,
-				), 'objects' );
+				$post_types = get_post_types(
+					array(
+						'show_ui' => true,
+					),
+					'objects'
+				);
 				unset( $post_types['attachment'] );
-				unset( $post_types[SCF_Config::NAME] );
+				unset( $post_types[ SCF_Config::NAME ] );
 				?>
 				<?php foreach ( $post_types as $post_type => $post_type_object ) : ?>
-				<?php
-				$save_post_types = $this->get( 'post-type' );
-				$checked = ( is_array( $save_post_types ) && in_array( $post_type, $save_post_types ) ) ? 'checked="checked"' : ''; ?>
+					<?php
+					$save_post_types = $this->get( 'post-type' );
+					$checked         = ( is_array( $save_post_types ) && in_array( $post_type, $save_post_types ) ) ? 'checked="checked"' : '';
+					?>
 				<input type="checkbox"
 					name="<?php echo esc_attr( $this->get_field_name_in_setting( $group_key, $field_key, 'post-type' ) ); ?>[]"
 					value="<?php echo esc_attr( $post_type ); ?>"
@@ -307,7 +315,7 @@ class Smart_Custom_Fields_Field_Related_Posts extends Smart_Custom_Fields_Field_
 	/**
 	 * Validating when displaying meta data
 	 *
-	 * @param array $value
+	 * @param array  $value
 	 * @param string $field_type
 	 * @return array
 	 */

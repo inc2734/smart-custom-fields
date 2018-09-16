@@ -12,18 +12,21 @@ class Smart_Custom_Fields_Group {
 
 	/**
 	 * Group name
+	 *
 	 * @var string
 	 */
 	protected $name = null;
 
 	/**
 	 * Array of field objects
+	 *
 	 * @var array
 	 */
 	protected $fields = array();
 
 	/**
 	 * Whether repeating group
+	 *
 	 * @var bool
 	 */
 	protected $repeat = false;
@@ -32,24 +35,24 @@ class Smart_Custom_Fields_Group {
 	 * __construct
 	 *
 	 * @param string $group_name
-	 * @param bool $repeat
-	 * @param array $_fields
+	 * @param bool   $repeat
+	 * @param array  $_fields
 	 */
 	public function __construct( $group_name = null, $repeat = false, array $_fields = array() ) {
 		$this->name   = $group_name;
 		$this->repeat = ( $repeat === true ) ? true : false;
-		$fields = array();
+		$fields       = array();
 		foreach ( $_fields as $field_attributes ) {
 			$Field = SCF::get_form_field_instance( $field_attributes['type'] );
-			if ( !is_a( $Field, 'Smart_Custom_Fields_Field_Base' ) ) {
+			if ( ! is_a( $Field, 'Smart_Custom_Fields_Field_Base' ) ) {
 				continue;
 			}
 			foreach ( $field_attributes as $key => $value ) {
 				$Field->set( $key, $value );
 			}
-			
-			if ( !empty( $Field ) ) {
-				$fields[$Field->get( 'name' )] = $Field;
+
+			if ( ! empty( $Field ) ) {
+				$fields[ $Field->get( 'name' ) ] = $Field;
 			}
 		}
 		$this->fields = $fields;
@@ -57,7 +60,7 @@ class Smart_Custom_Fields_Group {
 
 	/**
 	 * Getting group name
-	 * 
+	 *
 	 * @return string
 	 */
 	public function get_name() {
@@ -75,7 +78,7 @@ class Smart_Custom_Fields_Group {
 	public function get_fields() {
 		return $this->fields;
 	}
-	
+
 	/**
 	 * Getting the field
 	 *
@@ -84,8 +87,8 @@ class Smart_Custom_Fields_Group {
 	 */
 	public function get_field( $field_name ) {
 		$fields = $this->get_fields();
-		if ( isset( $fields[$field_name] ) ) {
-			return $fields[$field_name];
+		if ( isset( $fields[ $field_name ] ) ) {
+			return $fields[ $field_name ];
 		}
 	}
 
@@ -100,18 +103,18 @@ class Smart_Custom_Fields_Group {
 
 	/**
 	 *  Displaying "hide" if $key isn't empty
-	 * 
+	 *
 	 * @param string $key
 	 */
 	private function add_hide_class( $key ) {
-		if ( !$key ) {
+		if ( ! $key ) {
 			echo 'hide';
 		}
 	}
 
 	/**
 	 * Displaying the option fields in custom field settings page ( Common )
-	 * 
+	 *
 	 * @param int $group_key
 	 */
 	public function display_options( $group_key ) {

@@ -97,7 +97,7 @@ class Smart_Custom_Fields_Field_Datepicker extends Smart_Custom_Fields_Field_Bas
 	/**
 	 * Getting the field
 	 *
-	 * @param int $index
+	 * @param int    $index
 	 * @param string $value
 	 * @return string html
 	 */
@@ -146,11 +146,13 @@ class Smart_Custom_Fields_Field_Datepicker extends Smart_Custom_Fields_Field_Bas
 				/><br />
 				<span class="<?php echo esc_attr( SCF_Config::PREFIX ); ?>notes">
 					<?php esc_html_e( 'e.g dd/mm/yy', 'smart-custom-fields' ); ?>
-					<?php printf(
+					<?php
+					printf(
 						esc_html( 'Prease see %sdateFormat%s', 'smart-custom-fields' ),
 						'<a href="http://api.jqueryui.com/datepicker/#option-dateFormat" target="_blank">',
 						'</a>'
-					); ?>
+					);
+					?>
 				</span>
 			</td>
 		</tr>
@@ -164,11 +166,13 @@ class Smart_Custom_Fields_Field_Datepicker extends Smart_Custom_Fields_Field_Bas
 				/><br />
 				<span class="<?php echo esc_attr( SCF_Config::PREFIX ); ?>notes">
 					<?php esc_html_e( 'e.g +1m +1w', 'smart-custom-fields' ); ?>
-					<?php printf(
+					<?php
+					printf(
 						esc_html( 'Prease see %smaxData%s', 'smart-custom-fields' ),
 						'<a href="http://api.jqueryui.com/datepicker/#option-maxDate" target="_blank">',
 						'</a>'
-					); ?>
+					);
+					?>
 				</span>
 			</td>
 		</tr>
@@ -182,11 +186,13 @@ class Smart_Custom_Fields_Field_Datepicker extends Smart_Custom_Fields_Field_Bas
 				/><br />
 				<span class="<?php echo esc_attr( SCF_Config::PREFIX ); ?>notes">
 					<?php esc_html_e( 'e.g +1m +1w', 'smart-custom-fields' ); ?>
-					<?php printf(
+					<?php
+					printf(
 						esc_html( 'Prease see %sminData%s', 'smart-custom-fields' ),
 						'<a href="http://api.jqueryui.com/datepicker/#option-minDate" target="_blank">',
 						'</a>'
-					); ?>
+					);
+					?>
 				</span>
 			</td>
 		</tr>
@@ -224,25 +230,68 @@ class Smart_Custom_Fields_Field_Datepicker extends Smart_Custom_Fields_Field_Bas
 
 		// If locale is Japanese, change in Japanese notation
 		if ( get_locale() === 'ja' ) {
-			$js = array_merge( $js, array(
-				'yearSuffix'      => '年',
-				'dateFormat'      => 'yy-mm-dd',
-				'dayNames'        => array(
-					'日曜日', '月曜日', '火曜日', '水曜日', '木曜日', '金曜日', '土曜日',
-				),
-				'dayNamesMin'     => array(
-					'日', '月', '火', '水', '木', '金', '土',
-				),
-				'dayNamesShort'   => array(
-					'日曜', '月曜', '火曜', '水曜', '木曜', '金曜', '土曜',
-				),
-				'monthNames'      => array(
-					'1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月',
-				),
-				'monthNamesShort' =>  array(
-					'1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月',
+			$js = array_merge(
+				$js,
+				array(
+					'yearSuffix'      => '年',
+					'dateFormat'      => 'yy-mm-dd',
+					'dayNames'        => array(
+						'日曜日',
+						'月曜日',
+						'火曜日',
+						'水曜日',
+						'木曜日',
+						'金曜日',
+						'土曜日',
+					),
+					'dayNamesMin'     => array(
+						'日',
+						'月',
+						'火',
+						'水',
+						'木',
+						'金',
+						'土',
+					),
+					'dayNamesShort'   => array(
+						'日曜',
+						'月曜',
+						'火曜',
+						'水曜',
+						'木曜',
+						'金曜',
+						'土曜',
+					),
+					'monthNames'      => array(
+						'1月',
+						'2月',
+						'3月',
+						'4月',
+						'5月',
+						'6月',
+						'7月',
+						'8月',
+						'9月',
+						'10月',
+						'11月',
+						'12月',
+					),
+					'monthNamesShort' => array(
+						'1月',
+						'2月',
+						'3月',
+						'4月',
+						'5月',
+						'6月',
+						'7月',
+						'8月',
+						'9月',
+						'10月',
+						'11月',
+						'12月',
+					),
 				)
-			) );
+			);
 		}
 
 		if ( $this->get( 'date_format' ) ) {

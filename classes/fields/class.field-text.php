@@ -39,7 +39,7 @@ class Smart_Custom_Fields_Field_Text extends Smart_Custom_Fields_Field_Base {
 	/**
 	 * Getting the field
 	 *
-	 * @param int $index
+	 * @param int    $index
 	 * @param string $value
 	 * @return string html
 	 */

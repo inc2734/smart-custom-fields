@@ -21,7 +21,7 @@ class Smart_Custom_Fields_Field_Message extends Smart_Custom_Fields_Field_Base {
 			'display-name'        => __( 'Message', 'smart-custom-fields' ),
 			'optgroup'            => 'basic-fields',
 			'allow-multiple-data' => false,
-			'layout'              => 'full-width'
+			'layout'              => 'full-width',
 		);
 	}
 
@@ -32,15 +32,15 @@ class Smart_Custom_Fields_Field_Message extends Smart_Custom_Fields_Field_Base {
 	 */
 	protected function options() {
 		return array(
-			'default'     => '',
-			'notes' => ''
+			'default' => '',
+			'notes'   => '',
 		);
 	}
 
 	/**
 	 * Getting the field
 	 *
-	 * @param int $index
+	 * @param int    $index
 	 * @param string $value
 	 * @return string html
 	 */

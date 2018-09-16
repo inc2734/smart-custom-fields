@@ -12,12 +12,14 @@ class SCF {
 
 	/**
 	 * Array of the registered fields ( Smart_Custom_Fields_Field_Base )
+	 *
 	 * @var array
 	 */
 	protected static $fields = array();
 
 	/**
 	 * Array of the custom options pages.
+	 *
 	 * @var array
 	 */
 	protected static $options_pages = array();
@@ -47,7 +49,7 @@ class SCF {
 	 * Getting the post meta data to feel good
 	 *
 	 * @param string $name group name or field name
-	 * @param int $post_id
+	 * @param int    $post_id
 	 * @return mixed
 	 */
 	public static function get( $name, $post_id = null ) {
@@ -68,7 +70,7 @@ class SCF {
 	/**
 	 * Getting the user meta data to feel good
 	 *
-	 * @param int $user_id
+	 * @param int    $user_id
 	 * @param string $name group name or field name
 	 * @return mixed
 	 */
@@ -90,7 +92,7 @@ class SCF {
 	/**
 	 * Getting the term meta data to feel good
 	 *
-	 * @param int $term_id
+	 * @param int    $term_id
 	 * @param string $taxonomy_name
 	 * @param string $name group name or field name
 	 * @return mixed
@@ -122,7 +124,7 @@ class SCF {
 			return;
 		}
 
-		if ( !isset( self::$options_pages[$menu_slug] ) ) {
+		if ( ! isset( self::$options_pages[ $menu_slug ] ) ) {
 			return;
 		}
 
@@ -142,7 +144,7 @@ class SCF {
 	 * Getting any meta data to feel good
 	 *
 	 * @param WP_Post|WP_User|WP_Term|stdClass $object
-	 * @param string $name group name or field name
+	 * @param string                           $name group name or field name
 	 * @return mixed
 	 */
 	protected static function get_meta( $object, $name ) {
@@ -169,7 +171,7 @@ class SCF {
 			foreach ( $groups as $Group ) {
 				$Field = $Group->get_field( $name );
 				if ( $Field ) {
-					$is_repeatable = $Group->is_repeatable();
+					$is_repeatable  = $Group->is_repeatable();
 					$value_by_field = self::get_value_by_field( $object, $Field, $is_repeatable );
 					$Cache->save_meta( $object, $name, $value_by_field );
 					return $value_by_field;
@@ -179,14 +181,14 @@ class SCF {
 	}
 
 	/**
- 	 * Getting all of any meta data to feel good
+	 * Getting all of any meta data to feel good
 	 *
 	 * @param WP_Post|WP_User|WP_Term|stdClass $object
 	 * @return mixed
 	 */
 	protected static function get_all_meta( $object ) {
-		$Cache    = Smart_Custom_Fields_Cache::getInstance();
-		$settings = self::get_settings( $object );
+		$Cache     = Smart_Custom_Fields_Cache::getInstance();
+		$settings  = self::get_settings( $object );
 		$post_meta = array();
 		foreach ( $settings as $Setting ) {
 			$groups = $Setting->get_groups();
@@ -196,15 +198,14 @@ class SCF {
 				if ( $is_repeatable && $group_name ) {
 					$values_by_group = self::get_values_by_group( $object, $Group );
 					$Cache->save_meta( $object, $group_name, $values_by_group );
-					$post_meta[$group_name] = $values_by_group;
-				}
-				else {
+					$post_meta[ $group_name ] = $values_by_group;
+				} else {
 					$fields = $Group->get_fields();
 					foreach ( $fields as $Field ) {
-						$field_name = $Field->get( 'name' );
+						$field_name     = $Field->get( 'name' );
 						$value_by_field = self::get_value_by_field( $object, $Field, $is_repeatable );
 						$Cache->save_meta( $object, $field_name, $value_by_field );
-						$post_meta[$field_name] = $value_by_field;
+						$post_meta[ $field_name ] = $value_by_field;
 					}
 				}
 			}
@@ -233,30 +234,30 @@ class SCF {
 	 * When group, Note the point that returned data are repetition
 	 *
 	 * @param WP_Post|WP_User|WP_Term|stdClass $object
-	 * @param Smart_Custom_Fields_Group $Group
+	 * @param Smart_Custom_Fields_Group        $Group
 	 * @return mixed
 	 */
 	protected static function get_values_by_group( $object, $Group ) {
-		$is_repeatable = $Group->is_repeatable();
-		$meta   = array();
-		$fields = $Group->get_fields();
+		$is_repeatable   = $Group->is_repeatable();
+		$meta            = array();
+		$fields          = $Group->get_fields();
 		$value_by_fields = array();
 		foreach ( $fields as $Field ) {
 			if ( $Field->get_attribute( 'allow-multiple-data' ) ) {
-				$meta[0][$Field->get( 'name' )] = array();
+				$meta[0][ $Field->get( 'name' ) ] = array();
 			} else {
-				$meta[0][$Field->get( 'name' )] = '';
+				$meta[0][ $Field->get( 'name' ) ] = '';
 			}
 		}
 		$default_meta = $meta[0];
 		foreach ( $fields as $Field ) {
 			$value_by_field = self::get_value_by_field( $object, $Field, $is_repeatable );
 			foreach ( $value_by_field as $i => $value ) {
-				$meta[$i][$Field->get( 'name' )] = $value;
+				$meta[ $i ][ $Field->get( 'name' ) ] = $value;
 			}
 		}
 		foreach ( $meta as $i => $value ) {
-			$meta[$i] = array_merge( $default_meta, $value );
+			$meta[ $i ] = array_merge( $default_meta, $value );
 		}
 		return $meta;
 	}
@@ -265,37 +266,37 @@ class SCF {
 	 * Getting the meta data of the field
 	 *
 	 * @param WP_Post|WP_User|WP_Term|stdClass $object
-	 * @param array $field
-	 * @param bool $is_repeatable Whether the group that this field belongs is repetition
+	 * @param array                            $field
+	 * @param bool                             $is_repeatable Whether the group that this field belongs is repetition
 	 * @return mixed $post_meta
 	 */
 	protected static function get_value_by_field( $object, $Field, $is_repeatable ) {
 		$field_name = $Field->get( 'name' );
-		if ( !$field_name ) {
+		if ( ! $field_name ) {
 			return;
 		}
 
 		$Meta = new Smart_Custom_Fields_Meta( $object );
 
 		// In the case of multi-value items in the loop
-		$field_type = $Field->get_attribute( 'type' );
+		$field_type           = $Field->get_attribute( 'type' );
 		$repeat_multiple_data = self::get_repeat_multiple_data( $object );
-		if ( is_array( $repeat_multiple_data ) && isset( $repeat_multiple_data[$field_name] ) ) {
+		if ( is_array( $repeat_multiple_data ) && isset( $repeat_multiple_data[ $field_name ] ) ) {
 			if ( $Meta->is_saved_the_key( $field_name ) ) {
 				$_meta = $Meta->get( $field_name );
 			} else {
 				$_meta = self::get_default_value( $Field );
 			}
 			$start = 0;
-			foreach ( $repeat_multiple_data[$field_name] as $repeat_multiple_key => $repeat_multiple_value ) {
+			foreach ( $repeat_multiple_data[ $field_name ] as $repeat_multiple_key => $repeat_multiple_value ) {
 				if ( $repeat_multiple_value === 0 ) {
 					$value = array();
 				} else {
 					$value  = array_slice( $_meta, $start, $repeat_multiple_value );
 					$start += $repeat_multiple_value;
 				}
-				$value = apply_filters( SCF_Config::PREFIX . 'validate-get-value', $value, $field_type );
-				$meta[$repeat_multiple_key] = $value;
+				$value                        = apply_filters( SCF_Config::PREFIX . 'validate-get-value', $value, $field_type );
+				$meta[ $repeat_multiple_key ] = $value;
 			}
 		}
 		// Other than that
@@ -318,11 +319,11 @@ class SCF {
 	 * Return the default value
 	 *
 	 * @param Smart_Custom_Fields_Field_Base $Field
-	 * @param bool $single
+	 * @param bool                           $single
 	 * @return array|strings
 	 */
 	public static function get_default_value( $Field, $single = false ) {
-		if ( !is_a( $Field, 'Smart_Custom_Fields_Field_Base' ) ) {
+		if ( ! is_a( $Field, 'Smart_Custom_Fields_Field_Base' ) ) {
 			if ( $single ) {
 				return '';
 			}
@@ -333,11 +334,11 @@ class SCF {
 		$default = $Field->get( 'default' );
 
 		if ( $Field->get_attribute( 'allow-multiple-data' ) ) {
-			$choices = SCF::choices_eol_to_array( $choices );
-			$default = SCF::choices_eol_to_array( $default );
+			$choices           = self::choices_eol_to_array( $choices );
+			$default           = self::choices_eol_to_array( $default );
 			$default_sanitized = array();
 
-			if ( SCF::is_assoc( $choices ) ) {
+			if ( self::is_assoc( $choices ) ) {
 				$_choices = array_flip( $choices );
 			} else {
 				$_choices = $choices;
@@ -345,9 +346,9 @@ class SCF {
 			foreach ( $default as $key => $value ) {
 				if ( in_array( $value, $_choices ) ) {
 					if ( preg_match( '/^\d+$/', $value ) ) {
-						$value = (int)$value;
+						$value = (int) $value;
 					}
-					$default_sanitized[$key] = $value;
+					$default_sanitized[ $key ] = $value;
 				}
 			}
 			return $default_sanitized;
@@ -365,7 +366,7 @@ class SCF {
 			if ( $default === '' || $default === false || $default === null ) {
 				return array();
 			}
-			return ( array ) $default;
+			return (array) $default;
 		}
 	}
 
@@ -376,32 +377,32 @@ class SCF {
 	 * @return array $settings
 	 */
 	public static function get_settings_posts( $object ) {
-		$Cache = Smart_Custom_Fields_Cache::getInstance();
+		$Cache          = Smart_Custom_Fields_Cache::getInstance();
 		$settings_posts = array();
 		if ( $Cache->get_settings_posts( $object ) !== null ) {
-			self::debug_cache_message( "use settings posts cache." );
+			self::debug_cache_message( 'use settings posts cache.' );
 			return $Cache->get_settings_posts( $object );
 		} else {
-			self::debug_cache_message( "dont use settings posts cache..." );
+			self::debug_cache_message( 'dont use settings posts cache...' );
 		}
 
 		$Meta  = new Smart_Custom_Fields_Meta( $object );
 		$types = $Meta->get_types( false );
 
 		switch ( $Meta->get_meta_type() ) {
-			case 'post' :
+			case 'post':
 				$key = SCF_Config::PREFIX . 'condition';
 				break;
-			case 'user' :
+			case 'user':
 				$key = SCF_Config::PREFIX . 'roles';
 				break;
-			case 'term' :
+			case 'term':
 				$key = SCF_Config::PREFIX . 'taxonomies';
 				break;
-			case 'option' :
+			case 'option':
 				$key = SCF_Config::PREFIX . 'options-pages';
 				break;
-			default :
+			default:
 				$key = '';
 		}
 
@@ -415,7 +416,7 @@ class SCF {
 				);
 			}
 			if ( $meta_query ) {
-				$meta_query[ 'relation' ] = 'OR';
+				$meta_query['relation'] = 'OR';
 			}
 
 			$args = array(
@@ -460,14 +461,11 @@ class SCF {
 			$settings_posts = self::get_settings_posts( $object );
 			if ( $meta_type === 'post' ) {
 				$settings = self::get_settings_for_post( $object, $settings_posts );
-			}
-			elseif ( $meta_type === 'user' ) {
+			} elseif ( $meta_type === 'user' ) {
 				$settings = self::get_settings_for_profile( $object, $settings_posts );
-			}
-			elseif ( $meta_type === 'term' ) {
+			} elseif ( $meta_type === 'term' ) {
 				$settings = self::get_settings_for_term( $object, $settings_posts );
-			}
-			elseif ( $meta_type === 'option' ) {
+			} elseif ( $meta_type === 'option' ) {
 				$settings = self::get_settings_for_option( $object, $settings_posts );
 			}
 		}
@@ -479,7 +477,7 @@ class SCF {
 			$meta_type,
 			$types
 		);
-		if ( !is_array( $settings ) ) {
+		if ( ! is_array( $settings ) ) {
 			$settings = array();
 		}
 		return $settings;
@@ -489,18 +487,18 @@ class SCF {
 	 * Getting the Setting object for post
 	 *
 	 * @param WP_Post $object
-	 * @param array $settings_posts
+	 * @param array   $settings_posts
 	 * @return array
 	 */
 	protected static function get_settings_for_post( $object, $settings_posts ) {
-		$Cache = Smart_Custom_Fields_Cache::getInstance();
+		$Cache    = Smart_Custom_Fields_Cache::getInstance();
 		$settings = array();
 		foreach ( $settings_posts as $settings_post ) {
 			if ( $Cache->get_settings( $settings_post->ID ) !== null ) {
 				self::debug_cache_message( "use settings cache. [id: {$settings_post->ID}]" );
 				$Setting = $Cache->get_settings( $settings_post->ID, $object );
 				if ( $Setting ) {
-					$settings[$settings_post->ID] = $Setting;
+					$settings[ $settings_post->ID ] = $Setting;
 				}
 				continue;
 			}
@@ -514,9 +512,9 @@ class SCF {
 				$condition_post_ids_raw = explode( ',', $condition_post_ids_raw );
 				foreach ( $condition_post_ids_raw as $condition_post_id ) {
 					$condition_post_id = trim( $condition_post_id );
-					$Setting = SCF::add_setting( $settings_post->ID, $settings_post->post_title );
+					$Setting           = self::add_setting( $settings_post->ID, $settings_post->post_title );
 					if ( $object->ID == $condition_post_id ) {
-						$settings[$settings_post->ID] = $Setting;
+						$settings[ $settings_post->ID ] = $Setting;
 					}
 					$Post = get_post( $condition_post_id );
 					if ( empty( $Post ) ) {
@@ -525,8 +523,8 @@ class SCF {
 					$Cache->save_settings( $settings_post->ID, $Setting, $Post );
 				}
 			} else {
-				$Setting = SCF::add_setting( $settings_post->ID, $settings_post->post_title );
-				$settings[$settings_post->ID] = $Setting;
+				$Setting                        = self::add_setting( $settings_post->ID, $settings_post->post_title );
+				$settings[ $settings_post->ID ] = $Setting;
 				$Cache->save_settings( $settings_post->ID, $Setting );
 			}
 		}
@@ -537,11 +535,11 @@ class SCF {
 	 * Getting the Setting object for user
 	 *
 	 * @param WP_User $object
-	 * @param array $settings_posts
+	 * @param array   $settings_posts
 	 * @return array
 	 */
 	protected static function get_settings_for_profile( $object, $settings_posts ) {
-		$Cache = Smart_Custom_Fields_Cache::getInstance();
+		$Cache    = Smart_Custom_Fields_Cache::getInstance();
 		$settings = array();
 		foreach ( $settings_posts as $settings_post ) {
 			if ( $Cache->get_settings( $settings_post->ID ) !== null ) {
@@ -550,7 +548,7 @@ class SCF {
 				continue;
 			}
 			self::debug_cache_message( "dont use settings cache... [id: {$settings_post->ID}]" );
-			$Setting    = SCF::add_setting( $settings_post->ID, $settings_post->post_title );
+			$Setting    = self::add_setting( $settings_post->ID, $settings_post->post_title );
 			$settings[] = $Setting;
 			$Cache->save_settings( $settings_post->ID, $Setting );
 		}
@@ -561,7 +559,7 @@ class SCF {
 	 * Getting the Setting object for term
 	 *
 	 * @param WP_Term $object
-	 * @param array $settings_posts
+	 * @param array   $settings_posts
 	 * @return array
 	 */
 	protected static function get_settings_for_term( $object, $settings_posts ) {
@@ -572,7 +570,7 @@ class SCF {
 	 * Getting the Setting object for option
 	 *
 	 * @param WP_Term $object
-	 * @param array $settings_posts
+	 * @param array   $settings_posts
 	 * @return array
 	 */
 	protected static function get_settings_for_option( $object, $settings_posts ) {
@@ -586,15 +584,15 @@ class SCF {
 	 * @return array
 	 */
 	public static function get_repeat_multiple_data( $object ) {
-		$Cache = Smart_Custom_Fields_Cache::getInstance();
+		$Cache                = Smart_Custom_Fields_Cache::getInstance();
 		$repeat_multiple_data = array();
 		if ( $Cache->get_repeat_multiple_data( $object ) ) {
 			return $Cache->get_repeat_multiple_data( $object );
 		}
 
-		$Meta = new Smart_Custom_Fields_Meta( $object );
+		$Meta                  = new Smart_Custom_Fields_Meta( $object );
 		$_repeat_multiple_data = $Meta->get( SCF_Config::PREFIX . 'repeat-multiple-data', true );
-		if ( !empty( $_repeat_multiple_data ) ) {
+		if ( ! empty( $_repeat_multiple_data ) ) {
 			$repeat_multiple_data = $_repeat_multiple_data;
 		}
 
@@ -622,12 +620,12 @@ class SCF {
 	 * Whether the associative array or not
 	 *
 	 * @see http://qiita.com/ka215/items/a14e53547e717d2a564f
-	 * @param array $data This argument should be expected an array
+	 * @param array   $data This argument should be expected an array
 	 * @param boolean $multidimensional True if a multidimensional array is inclusion into associative array, the default value is false
 	 * @return boolean
 	 */
 	public static function is_assoc( $data, $multidimensional = false ) {
-		if ( !is_array( $data ) || empty( $data ) ) {
+		if ( ! is_array( $data ) || empty( $data ) ) {
 			return false;
 		}
 		$has_array = false;
@@ -636,7 +634,7 @@ class SCF {
 				$has_array = true;
 			}
 
-			if ( !is_int( $key ) ) {
+			if ( ! is_int( $key ) ) {
 				return true;
 			}
 		}
@@ -650,20 +648,20 @@ class SCF {
 	 */
 	public static function add_form_field_instance( Smart_Custom_Fields_Field_Base $instance ) {
 		$type = $instance->get_attribute( 'type' );
-		if ( !empty( $type ) ) {
-			self::$fields[$type] = $instance;
+		if ( ! empty( $type ) ) {
+			self::$fields[ $type ] = $instance;
 		}
 	}
 
 	/**
 	 * Getting the available form field object
 	 *
-	 * @param string $type type of the form field
+	 * @param string                         $type type of the form field
 	 * @param Smart_Custom_Fields_Field_Base
 	 */
 	public static function get_form_field_instance( $type ) {
-		if ( !empty( self::$fields[$type] ) ) {
-			return clone self::$fields[$type];
+		if ( ! empty( self::$fields[ $type ] ) ) {
+			return clone self::$fields[ $type ];
 		}
 	}
 
@@ -675,7 +673,7 @@ class SCF {
 	public static function get_form_field_instances() {
 		$fields = array();
 		foreach ( self::$fields as $type => $instance ) {
-			$fields[$type] = self::get_form_field_instance( $type );
+			$fields[ $type ] = self::get_form_field_instance( $type );
 		}
 		return $fields;
 	}
@@ -685,15 +683,15 @@ class SCF {
 	 * Note that not return only one even define multiple fields with the same name of the field name
 	 *
 	 * @param WP_Post|WP_User|WP_Term|stdClass $object
-	 * @param string $field_name
+	 * @param string                           $field_name
 	 * @return Smart_Custom_Fields_Field_Base|null
 	 */
 	public static function get_field( $object, $field_name ) {
 		$settings = self::get_settings( $object );
 		foreach ( $settings as $Setting ) {
 			$fields = $Setting->get_fields();
-			if ( !empty( $fields[$field_name] ) ) {
-				return $fields[$field_name];
+			if ( ! empty( $fields[ $field_name ] ) ) {
+				return $fields[ $field_name ];
 			}
 		}
 	}
@@ -705,17 +703,17 @@ class SCF {
 	 * @return array
 	 */
 	public static function choices_eol_to_array( $choices ) {
-		if ( !is_array( $choices ) ) {
+		if ( ! is_array( $choices ) ) {
 			if ( $choices === '' || $choices === false || $choices === null ) {
 				return array();
 			}
 			$_choices = str_replace( array( "\r\n", "\r", "\n" ), "\n", $choices );
 			$_choices = explode( "\n", $_choices );
-			$choices = array();
+			$choices  = array();
 			foreach ( $_choices as $_choice ) {
 				$_choice = array_map( 'trim', explode( '=>', $_choice ) );
 				if ( count( $_choice ) === 2 ) {
-					$choices[$_choice[0]] = $_choice[1];
+					$choices[ $_choice[0] ] = $_choice[1];
 				} else {
 					$choices = array_merge( $choices, $_choice );
 				}
@@ -744,11 +742,11 @@ class SCF {
 	 * @param string $capability
 	 * @param string $menu_slug
 	 * @param string $icon_url
-	 * @param int $position
+	 * @param int    $position
 	 * @return $menu_slug
 	 */
 	public static function add_options_page( $page_title, $menu_title, $capability, $menu_slug, $icon_url = '', $position = null ) {
-		self::$options_pages[$menu_slug] = $menu_title;
+		self::$options_pages[ $menu_slug ] = $menu_title;
 		new Smart_Custom_Fields_Options_Page( $page_title, $menu_title, $capability, $menu_slug, $icon_url, $position );
 		return $menu_slug;
 	}
@@ -765,12 +763,12 @@ class SCF {
 	/**
 	 * Generate WP_Post object
 	 *
-	 * @param int $post_id
+	 * @param int    $post_id
 	 * @param string $post_type
 	 * @return WP_Post
 	 */
 	public static function generate_post_object( $post_id, $post_type = null ) {
-		$Post = new stdClass();
+		$Post            = new stdClass();
 		$Post->ID        = $post_id;
 		$Post->post_type = $post_type;
 		return new WP_Post( $Post );
@@ -783,13 +781,13 @@ class SCF {
 	 * @return stdClass
 	 */
 	public static function generate_option_object( $menu_slug ) {
-		$options_pages = SCF::get_options_pages();
-		if ( !isset( $options_pages[$menu_slug] ) ) {
+		$options_pages = self::get_options_pages();
+		if ( ! isset( $options_pages[ $menu_slug ] ) ) {
 			return;
 		}
-		$Option = new stdClass();
+		$Option             = new stdClass();
 		$Option->menu_slug  = $menu_slug;
-		$Option->menu_title = $options_pages[$menu_slug];
+		$Option->menu_title = $options_pages[ $menu_slug ];
 		return $Option;
 	}
 

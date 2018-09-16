@@ -63,11 +63,15 @@ class Smart_Custom_Fields_Field_Related_Terms extends Smart_Custom_Fields_Field_
 			true
 		);
 
-		wp_localize_script( SCF_Config::PREFIX . 'editor-relation-taxonomies', 'smart_cf_relation_taxonomies', array(
-			'endpoint' => admin_url( 'admin-ajax.php' ),
-			'action'   => SCF_Config::PREFIX . 'relational-terms-search',
-			'nonce'    => wp_create_nonce( SCF_Config::NAME . '-relation-taxonomies' )
-		) );
+		wp_localize_script(
+			SCF_Config::PREFIX . 'editor-relation-taxonomies',
+			'smart_cf_relation_taxonomies',
+			array(
+				'endpoint' => admin_url( 'admin-ajax.php' ),
+				'action'   => SCF_Config::PREFIX . 'relational-terms-search',
+				'nonce'    => wp_create_nonce( SCF_Config::NAME . '-relation-taxonomies' ),
+			)
+		);
 	}
 
 	/**
@@ -76,10 +80,10 @@ class Smart_Custom_Fields_Field_Related_Terms extends Smart_Custom_Fields_Field_
 	public function relational_terms_search() {
 		check_ajax_referer( SCF_Config::NAME . '-relation-taxonomies', 'nonce' );
 		$_terms = array();
-		$args = array();
+		$args   = array();
 		if ( isset( $_POST['taxonomies'] ) ) {
 			$taxonomies = explode( ',', $_POST['taxonomies'] );
-			$args = array(
+			$args       = array(
 				'order'        => 'ASC',
 				'orderby'      => 'ID',
 				'number'       => '',
@@ -90,7 +94,7 @@ class Smart_Custom_Fields_Field_Related_Terms extends Smart_Custom_Fields_Field_
 			if ( isset( $_POST['click_count'] ) ) {
 				$number = get_option( 'posts_per_page' );
 				$offset = $_POST['click_count'] * $number;
-				$args = array_merge(
+				$args   = array_merge(
 					$args,
 					array(
 						'offset' => $offset,
@@ -117,7 +121,7 @@ class Smart_Custom_Fields_Field_Related_Terms extends Smart_Custom_Fields_Field_
 	/**
 	 * Getting the field
 	 *
-	 * @param int $index
+	 * @param int   $index
 	 * @param array $value
 	 * @return string html
 	 */
@@ -135,14 +139,17 @@ class Smart_Custom_Fields_Field_Related_Terms extends Smart_Custom_Fields_Field_
 		$number = get_option( 'posts_per_page' );
 
 		// choicse
-		$choices_terms = get_terms( $taxonomies, array(
-			'order'        => 'ASC',
-			'orderby'      => 'ID',
-			'hide_empty'   => false,
-			'hierarchical' => false,
-			'number'       => $number,
-		) );
-		$choices_li = array();
+		$choices_terms = get_terms(
+			$taxonomies,
+			array(
+				'order'        => 'ASC',
+				'orderby'      => 'ID',
+				'hide_empty'   => false,
+				'hierarchical' => false,
+				'number'       => $number,
+			)
+		);
+		$choices_li    = array();
 		foreach ( $choices_terms as $_term ) {
 			$term_name = $_term->name;
 			if ( empty( $term_name ) ) {
@@ -157,17 +164,17 @@ class Smart_Custom_Fields_Field_Related_Terms extends Smart_Custom_Fields_Field_
 
 		// selected
 		$selected_terms = array();
-		if ( !empty( $value ) && is_array( $value ) ) {
+		if ( ! empty( $value ) && is_array( $value ) ) {
 			foreach ( $value as $term_id ) {
 				$term_name = get_term( $term_id )->name;
 				if ( empty( $term_name ) ) {
 					$term_name = '&nbsp;';
 				}
-				$selected_terms[$term_id] = $term_name;
+				$selected_terms[ $term_id ] = $term_name;
 			}
 		}
 		$selected_li = array();
-		$hidden = array();
+		$hidden      = array();
 		foreach ( $selected_terms as $term_id => $term_name ) {
 			$selected_li[] = sprintf(
 				'<li data-id="%d"><span class="%s"></span>%s<span class="relation-remove">-</li></li>',
@@ -175,7 +182,7 @@ class Smart_Custom_Fields_Field_Related_Terms extends Smart_Custom_Fields_Field_
 				esc_attr( SCF_Config::PREFIX . 'icon-handle dashicons dashicons-menu' ),
 				$term_name
 			);
-			$hidden[] = sprintf(
+			$hidden[]      = sprintf(
 				'<input type="hidden" name="%s" value="%d" %s />',
 				esc_attr( $name . '[]' ),
 				$term_id,
@@ -233,14 +240,18 @@ class Smart_Custom_Fields_Field_Related_Terms extends Smart_Custom_Fields_Field_
 			<th><?php esc_html_e( 'Taxonomies', 'smart-custom-fields' ); ?></th>
 			<td>
 				<?php
-				$tasonomies = get_taxonomies( array(
-					'show_ui' => true,
-				), 'objects' );
+				$tasonomies = get_taxonomies(
+					array(
+						'show_ui' => true,
+					),
+					'objects'
+				);
 				?>
 				<?php foreach ( $tasonomies as $taxonomy => $taxonomy_object ) : ?>
-				<?php
-				$save_taxonomies = $this->get( 'taxonomy' );
-				$checked = ( is_array( $save_taxonomies ) && in_array( $taxonomy, $save_taxonomies ) ) ? 'checked="checked"' : ''; ?>
+					<?php
+					$save_taxonomies = $this->get( 'taxonomy' );
+					$checked         = ( is_array( $save_taxonomies ) && in_array( $taxonomy, $save_taxonomies ) ) ? 'checked="checked"' : '';
+					?>
 				<input type="checkbox"
 					name="<?php echo esc_attr( $this->get_field_name_in_setting( $group_key, $field_key, 'taxonomy' ) ); ?>[]"
 					value="<?php echo esc_attr( $taxonomy ); ?>"
@@ -279,7 +290,7 @@ class Smart_Custom_Fields_Field_Related_Terms extends Smart_Custom_Fields_Field_
 	/**
 	 * Validating when displaying meta data
 	 *
-	 * @param array $value
+	 * @param array  $value
 	 * @param string $field_type
 	 * @return array
 	 */

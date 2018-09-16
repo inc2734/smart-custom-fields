@@ -12,42 +12,48 @@ class Smart_Custom_Fields_Setting {
 
 	/**
 	 * Post ID of custom field settings page
+	 *
 	 * @var string
 	 */
 	protected $id;
 
 	/**
 	 * Title of custom field settings page
+	 *
 	 * @var title
 	 */
 	protected $title;
 
 	/**
 	 * Array of the saved group objects
+	 *
 	 * @var array
 	 */
 	protected $groups = array();
 
 	/**
 	 * __construct
-	 * 
+	 *
 	 * @param int $post_id
 	 */
 	public function __construct( $id, $title ) {
 		$this->id    = $id;
 		$this->title = $title;
-		$post_meta = get_post_meta(
+		$post_meta   = get_post_meta(
 			$this->get_id(),
 			SCF_Config::PREFIX . 'setting',
 			true
 		);
 		if ( is_array( $post_meta ) ) {
 			foreach ( $post_meta as $group ) {
-				$group = shortcode_atts( array(
-					'group-name' => '',
-					'repeat'     => false,
-					'fields'     => array(),
-				), $group );
+				$group = shortcode_atts(
+					array(
+						'group-name' => '',
+						'repeat'     => false,
+						'fields'     => array(),
+					),
+					$group
+				);
 				$this->add_group(
 					$group['group-name'],
 					$group['repeat'],
@@ -59,7 +65,7 @@ class Smart_Custom_Fields_Setting {
 
 	/**
 	 * Getting the post ID
-	 * 
+	 *
 	 * @return string
 	 */
 	public function get_id() {
@@ -77,13 +83,13 @@ class Smart_Custom_Fields_Setting {
 
 	/**
 	 * Getting the group objects
-	 * 
+	 *
 	 * @return array
 	 */
 	public function get_groups() {
 		return $this->groups;
 	}
-	
+
 	/**
 	 * Getting together the fields in each group
 	 *
@@ -101,21 +107,21 @@ class Smart_Custom_Fields_Setting {
 	/**
 	 * Adding group to the tail
 	 * If the argument is not, adding an empty group
-	 * 
+	 *
 	 * @param string $group_name
-	 * @param bool $repeat
-	 * @param array $_fields
+	 * @param bool   $repeat
+	 * @param array  $_fields
 	 */
 	public function add_group( $group_name = null, $repeat = false, array $fields = array() ) {
-		$Group = $this->new_group( $group_name, $repeat, $fields );
+		$Group      = $this->new_group( $group_name, $repeat, $fields );
 		$group_name = $Group->get_name();
 		if ( $group_name ) {
-			$this->groups[$group_name] = $Group;
+			$this->groups[ $group_name ] = $Group;
 		} else {
 			$this->groups[] = $Group;
 		}
 	}
-	
+
 	/**
 	 * Getting group
 	 *
@@ -124,8 +130,8 @@ class Smart_Custom_Fields_Setting {
 	 */
 	public function get_group( $group_name ) {
 		$groups = $this->get_groups();
-		if ( isset( $groups[$group_name] ) && $groups[$group_name]->is_repeatable() ) {
-			return $groups[$group_name];
+		if ( isset( $groups[ $group_name ] ) && $groups[ $group_name ]->is_repeatable() ) {
+			return $groups[ $group_name ];
 		}
 	}
 
@@ -134,8 +140,8 @@ class Smart_Custom_Fields_Setting {
 	 * If the argument is not, adding an empty group
 	 *
 	 * @param string $group_name
-	 * @param bool $repeat
-	 * @param array $_fields
+	 * @param bool   $repeat
+	 * @param array  $_fields
 	 */
 	public function add_group_unshift( $group_name = null, $repeat = false, array $fields = array() ) {
 		$Group = $this->new_group( $group_name, $repeat, $fields );
@@ -144,10 +150,10 @@ class Smart_Custom_Fields_Setting {
 
 	/**
 	 * Getting generated new group
-	 * 
+	 *
 	 * @param string $group_name
-	 * @param bool $repeat
-	 * @param array $_fields
+	 * @param bool   $repeat
+	 * @param array  $_fields
 	 */
 	protected function new_group( $group_name, $repeat, $fields ) {
 		return new Smart_Custom_Fields_Group( $group_name, $repeat, $fields );

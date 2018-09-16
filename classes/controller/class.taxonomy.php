@@ -17,8 +17,8 @@ class Smart_Custom_Fields_Controller_Taxonomy extends Smart_Custom_Fields_Contro
 		parent::__construct();
 
 		add_action( $_REQUEST['taxonomy'] . '_edit_form_fields', array( $this, 'edit_form_fields' ) );
-		add_action( 'edited_terms'                       , array( $this, 'update' ), 10, 2 );
-		add_action( 'delete_term'                        , array( $this, 'delete' ), 10, 4 );
+		add_action( 'edited_terms', array( $this, 'update' ), 10, 2 );
+		add_action( 'delete_term', array( $this, 'delete' ), 10, 4 );
 	}
 
 	/**
@@ -57,14 +57,14 @@ class Smart_Custom_Fields_Controller_Taxonomy extends Smart_Custom_Fields_Contro
 	/**
 	 * Saving meta data from custom fields in term edit page
 	 *
-	 * @param int $term_id
+	 * @param int    $term_id
 	 * @param string $taxonomy
 	 */
 	public function update( $term_id, $taxonomy ) {
-		if ( !current_user_can( 'manage_categories' ) ) {
+		if ( ! current_user_can( 'manage_categories' ) ) {
 			return;
 		}
-		if ( !isset( $_POST[SCF_Config::NAME] ) ) {
+		if ( ! isset( $_POST[ SCF_Config::NAME ] ) ) {
 			return;
 		}
 
@@ -75,8 +75,8 @@ class Smart_Custom_Fields_Controller_Taxonomy extends Smart_Custom_Fields_Contro
 	/**
 	 * Delete meta data
 	 *
-	 * @param int $term_id
-	 * @param int $term_taxonomy_id
+	 * @param int    $term_id
+	 * @param int    $term_taxonomy_id
 	 * @param string $taxonomy
 	 * @param object $deleted_term
 	 */

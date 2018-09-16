@@ -39,7 +39,7 @@ class Smart_Custom_Fields_Field_Image extends Smart_Custom_Fields_Field_Base {
 	/**
 	 * Getting the field
 	 *
-	 * @param int $index
+	 * @param int    $index
 	 * @param string $value
 	 * @return string html
 	 */
@@ -53,20 +53,20 @@ class Smart_Custom_Fields_Field_Image extends Smart_Custom_Fields_Field_Base {
 		);
 
 		$hide_class = 'hide';
-		$image = $btn_remove;
+		$image      = $btn_remove;
 		if ( $value ) {
 			// Usually, $value is attachment ID.
 			// If a customized, for example, $value is not an ID,
 			// Regarded the $value is file URL.
 			if ( preg_match( '/^\d+$/', $value ) ) {
 				$image_src = wp_get_attachment_image_src( $value, $this->get( 'size' ) );
-				$image_alt = get_the_title($value);
+				$image_alt = get_the_title( $value );
 				if ( is_array( $image_src ) && isset( $image_src[0] ) ) {
 					$image_src = $image_src[0];
 				}
 			} else {
-				$image_url = $value;
-				$path = str_replace( home_url(), '', $value );
+				$image_url  = $value;
+				$path       = str_replace( home_url(), '', $value );
 				$image_path = ABSPATH . untrailingslashit( $path );
 				if ( file_exists( $image_path ) ) {
 					$wp_check_filetype = wp_check_filetype( $image_path );
@@ -77,7 +77,7 @@ class Smart_Custom_Fields_Field_Image extends Smart_Custom_Fields_Field_Base {
 			}
 
 			if ( $image_src && ! is_array( $image_src ) ) {
-				$image = sprintf(
+				$image      = sprintf(
 					'<img src="%s" alt="%s" />%s',
 					esc_url( $image_src ),
 					$image_alt,
@@ -133,10 +133,10 @@ class Smart_Custom_Fields_Field_Image extends Smart_Custom_Fields_Field_Base {
 			<th><?php esc_html_e( 'Preview Size', 'smart-custom-fields' ); ?></th>
 			<td>
 				<select name="<?php echo esc_attr( $this->get_field_name_in_setting( $group_key, $field_key, 'size' ) ); ?>">
-					<option value="full" <?php selected( $this->get( 'size' ), 'full' );?> >full</option>
+					<option value="full" <?php selected( $this->get( 'size' ), 'full' ); ?> >full</option>
 					<?php foreach ( get_intermediate_image_sizes() as $size ) : ?>
-						<option value="<?php echo esc_attr( $size );?>" <?php selected( $this->get( 'size' ), $size );?>><?php echo esc_html( $size );?></option>
-					<?php endforeach;?>
+						<option value="<?php echo esc_attr( $size ); ?>" <?php selected( $this->get( 'size' ), $size ); ?>><?php echo esc_html( $size ); ?></option>
+					<?php endforeach; ?>
 				</select>
 			</td>
 		</tr>
