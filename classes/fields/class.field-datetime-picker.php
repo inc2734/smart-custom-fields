@@ -357,7 +357,7 @@ class Smart_Custom_Fields_Field_Datetime_Picker extends Smart_Custom_Fields_Fiel
 
 		$wp_locale = get_locale();
 		if ( strpos( $wp_locale, '_' ) ) {
-			$_user_lang = explode( $wp_locale, '_' )[0];
+			$_user_lang = explode( $wp_locale, '_' );
 			$user_lang  = $_user_lang[0];
 		} else {
 			$user_lang = $wp_locale;
