@@ -135,7 +135,7 @@ class Smart_Custom_Fields_Field_Datetime_Picker extends Smart_Custom_Fields_Fiel
 
 		return '<input
 				type="text"
-				name="' . esc_attr( $name ) . '" 
+				name="' . esc_attr( $name ) . '"
 				value="' . esc_attr( $value ) . '"
 				class="' . esc_attr( SCF_Config::PREFIX . 'datetime_picker' ) . '"
 				data-js=\'' . $data_js . '\'
@@ -357,7 +357,8 @@ class Smart_Custom_Fields_Field_Datetime_Picker extends Smart_Custom_Fields_Fiel
 
 		$wp_locale = get_locale();
 		if ( strpos( $wp_locale, '_' ) ) {
-			$user_lang = explode( $wp_locale, '_' )[0];
+			$_user_lang = explode( $wp_locale, '_' )[0];
+			$user_lang  = $_user_lang[0];
 		} else {
 			$user_lang = $wp_locale;
 		}
