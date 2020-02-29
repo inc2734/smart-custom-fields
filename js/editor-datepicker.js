@@ -23,5 +23,13 @@ jQuery( function( $ ) {
 				$( e ).datepicker( $( e ).data( 'js' ) );
 			}
 		} );
-	} );
+
+        $('.smart-cf-datetime_picker.add').each(function (i, e) {
+            var data = e.getAttribute('data-js');
+            data = JSON.parse(data);
+            data['enableTime'] = true;
+            flatpickr(this, data);
+            $(this).removeClass('add');
+        });
+    } );
 } );
