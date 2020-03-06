@@ -24,12 +24,12 @@ jQuery( function( $ ) {
 			}
 		} );
 
-        $('.smart-cf-datetime_picker.add').each(function (i, e) {
-            var data = e.getAttribute('data-js');
-            data = JSON.parse(data);
-            data['enableTime'] = true;
-            flatpickr(this, data);
-            $(this).removeClass('add');
-        });
-    } );
+		$( '.smart-cf-datetime_picker.add' ).each( function ( i, e ) {
+			var data = e.getAttribute( 'data-js' );
+			data = JSON.parse( data );
+			data['enableTime'] = true;
+			flatpickr( this, data );
+			$( this ).removeClass( 'add' );
+		} );
+	} );
 } );

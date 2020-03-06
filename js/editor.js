@@ -58,7 +58,7 @@ jQuery( function( $ ) {
 				}
 			} );
 
-            clone.find('.smart-cf-datetime_picker').addClass('add');
+			clone.find( '.smart-cf-datetime_picker' ).addClass( 'add' );
 
 			button.parent().after( clone.fadeIn( 'fast' ) );
 			button.trigger( 'smart-cf-after-add-group', { button: button, clone: clone} );
