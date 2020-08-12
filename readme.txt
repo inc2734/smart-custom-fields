@@ -3,8 +3,8 @@ Contributors: inc2734, toro_unit, mimosafa, hideokamoto, hisako-isaka, kurudrive
 Donate link: http://www.amazon.co.jp/registry/wishlist/39ANKRNSTNW40
 Tags: plugin, custom field, custom, field, meta, meta field, repeat, repeatable
 Requires at least: 3.9
-Tested up to: 4.9.8
-Stable tag: 4.1.3
+Tested up to: 5.5.0
+Stable tag: 4.1.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -128,6 +128,10 @@ You can translate this plugin into your language by using [GlotPress](https://tr
 2. Post edit page.
 
 == Changelog ==
+
+= 4.1.4 =
+* WordPress 5.5 support
+* Changed so that the reusable block post type is not displayed in the conditional judgment.
 
 = 4.1.3 =
 * Activate datetimepicker in repeat group #80
