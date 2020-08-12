@@ -5,10 +5,6 @@ matrix:
   include:
   - php: 7.3
     env: WP_VERSION=latest WP_MULTISITE=0
-  - php: 5.6
-    env: WP_VERSION=nightly WP_MULTISITE=0
-  - php: 5.6
-    env: WP_TRAVISCI=phpcs
 
 sudo: false
 
