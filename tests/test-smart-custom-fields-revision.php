@@ -35,7 +35,7 @@ class Smart_Custom_Fields_Revision_Test extends WP_UnitTestCase {
 			'post_type'   => 'revision',
 			'post_parent' => $this->post_id,
 			'post_status' => 'inherit',
-			'post_name'   => $this->post_id . '-autosave',
+			'post_name'   => $this->post_id . '-autosave-v1',
 		) );
 
 		add_filter( 'smart-cf-register-fields', array( $this, '_register' ), 10, 4 );

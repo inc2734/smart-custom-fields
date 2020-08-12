@@ -1,10 +1,10 @@
 <?php
 /**
  * Smart_Custom_Fields_Rest_API
- * Version    : 1.0.0
+ * Version    : 1.0.1
  * Author     : robssanches
  * Created    : July 14, 2018
- * Modified   : July 14, 2018
+ * Modified   : July 22, 2020
  * License    : GPLv2 or later
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
  */
@@ -27,6 +27,9 @@ class Smart_Custom_Fields_Rest_API {
 			array(
 				'methods'  => 'GET',
 				'callback' => array( $this, 'get_all_posts' ),
+				'permission_callback' => function() {
+					return current_user_can( 'edit_posts' );
+				},
 			)
 		);
 	}
