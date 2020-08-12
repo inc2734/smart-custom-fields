@@ -1,10 +1,10 @@
 <?php
 /**
  * Smart_Custom_Fields_Controller_Settings
- * Version    : 1.3.0
+ * Version    : 1.3.1
  * Author     : inc2734
  * Created    : September 23, 2014
- * Modified   : July 14, 2018
+ * Modified   : August 12, 2020
  * License    : GPLv2 or later
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
  */
@@ -300,6 +300,7 @@ class Smart_Custom_Fields_Controller_Settings {
 			'objects'
 		);
 		unset( $post_types['attachment'] );
+		unset( $post_types['wp_block'] );
 		unset( $post_types[ SCF_Config::NAME ] );
 
 		$conditions      = get_post_meta( get_the_ID(), SCF_Config::PREFIX . 'condition', true );

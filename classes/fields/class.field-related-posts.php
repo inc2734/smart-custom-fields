@@ -1,10 +1,10 @@
 <?php
 /**
  * Smart_Custom_Fields_Field_Related_Posts
- * Version    : 1.4.1
+ * Version    : 1.4.2
  * Author     : inc2734
  * Created    : October 7, 2014
- * Modified   : June 04, 2018
+ * Modified   : August 12, 2020
  * License    : GPLv2 or later
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
  */
@@ -270,6 +270,7 @@ class Smart_Custom_Fields_Field_Related_Posts extends Smart_Custom_Fields_Field_
 					'objects'
 				);
 				unset( $post_types['attachment'] );
+				unset( $post_types['wp_block'] );
 				unset( $post_types[ SCF_Config::NAME ] );
 				?>
 				<?php foreach ( $post_types as $post_type => $post_type_object ) : ?>
