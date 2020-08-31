@@ -214,20 +214,20 @@ jQuery( function( $ ) {
 		function string_to_slug(str) {
 			str = str.replace(/^\s+|\s+$/g, ""); // trim
 			str = str.toLowerCase();
-		
+
 			// remove accents, swap ñ for n, etc
 			var from = "åàáãäâèéëêìíïîòóöôùúüûñç·/-,:;";
 			var to = "aaaaaaeeeeiiiioooouuuunc______";
-		
+
 			for (var i = 0, l = from.length; i < l; i++) {
 				str = str.replace(new RegExp(from.charAt(i), "g"), to.charAt(i));
 			}
-		
+
 			str = str
 				.replace(/[^a-z0-9 -]/g, "") // remove invalid chars
 				.replace(/\s+/g, "_") // collapse whitespace and replace by -
 				.replace(/-+/g, "_"); // collapse dashes
-		
+
 			return str;
 		}
 
@@ -243,7 +243,7 @@ jQuery( function( $ ) {
 			}
 		} );
 	} );
-		
+
 	/**
 	 * Add autocomplete (selectivity plguin) in posts condition field
 	 * https://github.com/arendjr/selectivity
@@ -254,7 +254,12 @@ jQuery( function( $ ) {
 		placeholder: smart_cf_settings.autocomplete_placeholder,
 		ajax: {
 			url: smart_cf_settings.rest_api_url,
-			quietMillis:200
+			quietMillis: 200,
+			params: function(term, offset) {
+				return {
+					_wpnonce: smart_cf_settings.nonce,
+				};
+			},
 		},
 		templates: {
 			multipleSelectInput: function(options) {
@@ -299,7 +304,7 @@ jQuery( function( $ ) {
 								'>' +
 								'</div>';
 				}
-				
+
 				return (
 							'<div class="selectivity-dropdown' +
 							extraClass +
@@ -316,17 +321,17 @@ jQuery( function( $ ) {
 					return '<div class="selectivity-load-more">' + smart_cf_settings.load_more + '</div>';
 			},
 		}
-	});		
+	});
 	$('#smart-cf-autocomplete-condition-post').on('change', function() {
 		var data = $(this).selectivity('value');
 		$('[name="smart-cf-condition-post-ids"]').val(data);
-	});	
-	
+	});
+
 	/**
 	 * Add IOS style for checkboxes
 	 */
 	$('.smart-cf-group .smart-cf-group-repeat label, #smart-cf-meta-box-condition-post, #smart-cf-meta-box-condition-profile, #smart-cf-meta-box-condition-taxonomy, #smart-cf-meta-box-condition-options-page')
 		.find('input[type=checkbox]')
 		.iosCheckbox();
-		
+
 } );

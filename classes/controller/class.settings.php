@@ -143,7 +143,8 @@ class Smart_Custom_Fields_Controller_Settings {
 				'autocomplete_placeholder' => esc_html__( 'Type to search a post or page', 'smart-custom-fields' ),
 				'loading'                  => esc_html__( 'Loading...', 'smart-custom-fields' ),
 				'load_more'                => esc_html__( 'Load more', 'smart-custom-fields' ),
-				'rest_api_url'             => rest_url( SCF_Config::PREFIX . 'api/search/posts' ),
+				'rest_api_url'             => rest_url( SCF_Config::PREFIX . 'api/v2/search/posts' ),
+				'nonce'                    => wp_create_nonce( 'wp_rest' ),
 			)
 		);
 

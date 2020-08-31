@@ -22,7 +22,7 @@ class Smart_Custom_Fields_Rest_API {
 	 */
 	public function register_rest_api_routes() {
 		register_rest_route(
-			SCF_Config::PREFIX . 'api',
+			SCF_Config::PREFIX . 'api/v2',
 			'/search/posts',
 			array(
 				'methods'  => 'GET',
