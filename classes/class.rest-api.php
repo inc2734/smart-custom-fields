@@ -11,6 +11,13 @@
 class Smart_Custom_Fields_Rest_API {
 
 	/**
+	 * Post Type
+	 *
+	 * @var array
+	 */
+	protected $post_type = array( 'post', 'page' );
+
+	/**
 	 * __construct
 	 */
 	public function __construct() {
@@ -40,7 +47,7 @@ class Smart_Custom_Fields_Rest_API {
 	public function get_all_posts() {
 		$all_posts = get_posts(
 			array(
-				'post_type'      => array( 'post', 'page' ),
+				'post_type'      => $this->get_post_type(),
 				'post_status'    => 'publish',
 				'orderby'        => 'date',
 				'order'          => 'ASC',
@@ -58,5 +65,13 @@ class Smart_Custom_Fields_Rest_API {
 		}
 
 		return $source;
+	}
+
+	/**
+	 * Get posts type
+	 */
+	public function get_post_type() {
+		$post_type = $this->post_type;
+		return apply_filters( SCF_Config::PREFIX . 'rest_api_post_type', $post_type );
 	}
 }
