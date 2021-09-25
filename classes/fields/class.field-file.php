@@ -76,12 +76,8 @@ class Smart_Custom_Fields_Field_File extends Smart_Custom_Fields_Field_Base {
 			}
 
 			if ( $image_src && ! is_array( $image_src ) ) {
-				$attachment      = get_post( $value );
-				$attachment_name = $attachment->post_name;
-				$attachment_url  = get_attached_file( $attachment->ID );
-				$filetype        = wp_check_filetype( $attachment_url );
-				$filename        = $attachment_name . '.' . $filetype['ext'];
-				$image           = sprintf(
+				$filename   = wp_basename( get_attached_file( $value ) );
+				$image      = sprintf(
 					'<a href="%s" target="_blank"><img src="%s" alt="%s" />%s</a>%s',
 					wp_get_attachment_url( $value ),
 					esc_url( $image_src ),
