@@ -1,20 +1,19 @@
 <?php
 /**
- * Class file for Smart_Custom_Fields_Field_Datetime_picker.
- *
+ * @package snow-monkey-blocks
+ * @license GPL-2.0+
  * @author Toshihiro Kanai <i@miruc.co>
- * @package Smart_Custom_Fields
  */
 
 /**
- * Class Smart_Custom_Fields_Field_Datetime_Picker.
+ * Smart_Custom_Fields_Field_Datetime_Picker class.
  *
  * @since 4.x
  */
 class Smart_Custom_Fields_Field_Datetime_Picker extends Smart_Custom_Fields_Field_Base {
 
 	/**
-	 * Set the required items
+	 * Set the required items.
 	 *
 	 * @return array
 	 */
@@ -35,7 +34,7 @@ class Smart_Custom_Fields_Field_Datetime_Picker extends Smart_Custom_Fields_Fiel
 	}
 
 	/**
-	 * Set the non required items
+	 * Set the non required items.
 	 *
 	 * @return array
 	 */
@@ -52,7 +51,7 @@ class Smart_Custom_Fields_Field_Datetime_Picker extends Smart_Custom_Fields_Fiel
 	}
 
 	/**
-	 * Loading resources for editor
+	 * Loading resources for editor.
 	 */
 	public function editor_enqueue_scripts() {
 		wp_enqueue_style(
@@ -87,7 +86,7 @@ class Smart_Custom_Fields_Field_Datetime_Picker extends Smart_Custom_Fields_Fiel
 	}
 
 	/**
-	 * Loading resources for editor for custom field settings page
+	 * Loading resources for editor for custom field settings page.
 	 */
 	public function settings_enqueue_scripts() {
 		wp_enqueue_style(
@@ -122,11 +121,11 @@ class Smart_Custom_Fields_Field_Datetime_Picker extends Smart_Custom_Fields_Fiel
 	}
 
 	/**
-	 * Get the field
+	 * Get the field.
 	 *
-	 * @param int    $index Index number.
-	 * @param string $value Value.
-	 * @return string HTML content.
+	 * @param int    $index Field index.
+	 * @param string $value The value.
+	 * @return string
 	 */
 	public function get_field( $index, $value ) {
 		$name     = $this->get_field_name_in_editor( $index );
@@ -143,7 +142,7 @@ class Smart_Custom_Fields_Field_Datetime_Picker extends Smart_Custom_Fields_Fiel
 	}
 
 	/**
-	 * Displaying the option fields in custom field settings page
+	 * Displaying the option fields in custom field settings page.
 	 *
 	 * @param int $group_key Group key.
 	 * @param int $field_key Field key.
@@ -288,7 +287,7 @@ class Smart_Custom_Fields_Field_Datetime_Picker extends Smart_Custom_Fields_Fiel
 	/**
 	 * Return locale name for flatpickr.
 	 *
-	 * @return false|string $locale
+	 * @return false|string $locale Locale.
 	 */
 	private function get_locale_name() {
 

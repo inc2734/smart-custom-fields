@@ -10,6 +10,14 @@
  * Domain Path: /languages
  * License: GPLv2 or later
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
+ *
+ * @package smart-custom-fields
+ * @author inc2734
+ * @license GPL-2.0+
+ */
+
+/**
+ * Main class.
  */
 class Smart_Custom_Fields {
 
@@ -107,21 +115,25 @@ class Smart_Custom_Fields {
 	}
 
 	/**
-	 * Run management screens
+	 * Run management screens.
 	 *
-	 * @param WP_Screen $screen
+	 * @param WP_Screen $screen Current WP_Screen object.
 	 */
 	public function current_screen( $screen ) {
 		// 一覧画面
-		if ( $screen->id === 'edit-' . SCF_Config::NAME ) {
+		if ( 'edit-' . SCF_Config::NAME === $screen->id ) {
+			return;
 		}
+
 		// 新規作成・編集画面
-		elseif ( $screen->id === SCF_Config::NAME ) {
+		if ( SCF_Config::NAME === $screen->id ) {
 			require_once plugin_dir_path( __FILE__ ) . 'classes/controller/class.settings.php';
 			new Smart_Custom_Fields_Controller_Settings();
+			return;
 		}
+
 		// その他の新規作成・編集画面
-		elseif ( in_array( $screen->id, get_post_types() ) ) {
+		if ( in_array( $screen->id, get_post_types(), true ) ) {
 			$post_id = $this->get_post_id_in_admin();
 			if ( SCF::get_settings( SCF::generate_post_object( $post_id, $screen->id ) ) ) {
 				require_once plugin_dir_path( __FILE__ ) . 'classes/controller/class.controller-base.php';
@@ -129,18 +141,22 @@ class Smart_Custom_Fields {
 				new Smart_Custom_Fields_Revisions();
 				new Smart_Custom_Fields_Controller_Editor();
 			}
+			return;
 		}
+
 		// プロフィール編集画面
-		elseif ( in_array( $screen->id, array( 'profile', 'user-edit' ) ) ) {
+		if ( in_array( $screen->id, array( 'profile', 'user-edit' ), true ) ) {
 			$user_id = $this->get_user_id_in_admin();
 			if ( SCF::get_settings( get_userdata( $user_id ) ) ) {
 				require_once plugin_dir_path( __FILE__ ) . 'classes/controller/class.controller-base.php';
 				require_once plugin_dir_path( __FILE__ ) . 'classes/controller/class.profile.php';
 				new Smart_Custom_Fields_Controller_Profile();
 			}
+			return;
 		}
+
 		// タグ、カテゴリー、タクソノミー
-		elseif ( $screen->taxonomy ) {
+		if ( $screen->taxonomy ) {
 			$term_id = $this->get_term_id_in_admin();
 			if ( $term_id ) {
 				$term = get_term( $term_id, $screen->taxonomy );
@@ -150,19 +166,18 @@ class Smart_Custom_Fields {
 					new Smart_Custom_Fields_Controller_Taxonomy();
 				}
 			}
+			return;
 		}
-		// オプションページ
-		else {
-			$menu_slug     = preg_replace( '/^toplevel_page_(.+)$/', '$1', $screen->id );
-			$options_pages = SCF::get_options_pages();
 
-			if ( array_key_exists( $menu_slug, $options_pages ) ) {
-				$Option = SCF::generate_option_object( $menu_slug );
-				if ( SCF::get_settings( $Option ) ) {
-					require_once plugin_dir_path( __FILE__ ) . 'classes/controller/class.controller-base.php';
-					require_once plugin_dir_path( __FILE__ ) . 'classes/controller/class.option.php';
-					new Smart_Custom_Fields_Controller_Option();
-				}
+		// オプションページ
+		$menu_slug     = preg_replace( '/^toplevel_page_(.+)$/', '$1', $screen->id );
+		$options_pages = SCF::get_options_pages();
+		if ( array_key_exists( $menu_slug, $options_pages ) ) {
+			$option = SCF::generate_option_object( $menu_slug );
+			if ( SCF::get_settings( $option ) ) {
+				require_once plugin_dir_path( __FILE__ ) . 'classes/controller/class.controller-base.php';
+				require_once plugin_dir_path( __FILE__ ) . 'classes/controller/class.option.php';
+				new Smart_Custom_Fields_Controller_Option();
 			}
 		}
 	}
@@ -205,7 +220,7 @@ class Smart_Custom_Fields {
 	 * Hooking the process that it want to fire when the ajax request.
 	 */
 	public function ajax_request() {
-		$Ajax = new Smart_Custom_Fields_Ajax();
+		new Smart_Custom_Fields_Ajax();
 	}
 
 	/**
@@ -257,7 +272,7 @@ class Smart_Custom_Fields {
 			$user_id = $_GET['user_id'];
 		} elseif ( ! empty( $_POST['user_id'] ) ) {
 			$user_id = $_POST['user_id'];
-		} elseif ( $screen->id === 'profile' ) {
+		} elseif ( 'profile' === $screen->id ) {
 			$current_user = wp_get_current_user();
 			$user_id      = $current_user->ID;
 		}

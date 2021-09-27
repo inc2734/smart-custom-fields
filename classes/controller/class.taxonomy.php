@@ -1,12 +1,12 @@
 <?php
 /**
- * Smart_Custom_Fields_Controller_Taxonomy
- * Version    : 1.0.1
- * Author     : inc2734
- * Created    : April 26, 2015
- * Modified   : May 31, 2016
- * License    : GPLv2 or later
- * License URI: http://www.gnu.org/licenses/gpl-2.0.html
+ * @package snow-monkey-blocks
+ * @author inc2734
+ * @license GPL-2.0+
+ */
+
+/**
+ * Smart_Custom_Fields_Controller_Taxonomy class.
  */
 class Smart_Custom_Fields_Controller_Taxonomy extends Smart_Custom_Fields_Controller_Base {
 
@@ -22,9 +22,9 @@ class Smart_Custom_Fields_Controller_Taxonomy extends Smart_Custom_Fields_Contro
 	}
 
 	/**
-	 * Loading resources for term edit page
+	 * Loading resources for term edit page.
 	 *
-	 * @param string $hook
+	 * @param string $hook The current admin page.
 	 */
 	public function admin_enqueue_scripts( $hook ) {
 		parent::admin_enqueue_scripts( $hook );
@@ -35,18 +35,19 @@ class Smart_Custom_Fields_Controller_Taxonomy extends Smart_Custom_Fields_Contro
 	}
 
 	/**
-	 * Displaying custom fields in term edit page
+	 * Displaying custom fields in term edit page.
 	 *
-	 * @param object $term
+	 * @param object $term Term object.
 	 */
 	public function edit_form_fields( $term ) {
-		$settings = SCF::get_settings( $term );
-		foreach ( $settings as $Setting ) {
-			$callback_args['args'] = $Setting->get_groups();
+		$settings      = SCF::get_settings( $term );
+		$callback_args = [];
+		foreach ( $settings as $setting ) {
+			$callback_args['args'] = $setting->get_groups();
 			?>
 			<table class="form-table">
 				<tr>
-					<th scope="row"><?php echo esc_html( $Setting->get_title() ); ?></th>
+					<th scope="row"><?php echo esc_html( $setting->get_title() ); ?></th>
 					<td><?php $this->display_meta_box( $term, $callback_args ); ?></td>
 				</tr>
 			</table>
@@ -55,10 +56,10 @@ class Smart_Custom_Fields_Controller_Taxonomy extends Smart_Custom_Fields_Contro
 	}
 
 	/**
-	 * Saving meta data from custom fields in term edit page
+	 * Saving meta data from custom fields in term edit page.
 	 *
-	 * @param int    $term_id
-	 * @param string $taxonomy
+	 * @param int    $term_id  Term ID.
+	 * @param string $taxonomy Taxonomy slug.
 	 */
 	public function update( $term_id, $taxonomy ) {
 		if ( ! current_user_can( 'manage_categories' ) ) {
@@ -73,15 +74,15 @@ class Smart_Custom_Fields_Controller_Taxonomy extends Smart_Custom_Fields_Contro
 	}
 
 	/**
-	 * Delete meta data
+	 * Delete meta data.
 	 *
-	 * @param int    $term_id
-	 * @param int    $term_taxonomy_id
-	 * @param string $taxonomy
-	 * @param object $deleted_term
+	 * @param int    $term_id          Term ID.
+	 * @param int    $term_taxonomy_id Term taxonomy ID.
+	 * @param string $taxonomy         Taxonomy slug.
+	 * @param object $deleted_term     Copy of the already-deleted term.
 	 */
 	public function delete( $term_id, $term_taxonomy_id, $taxonomy, $deleted_term ) {
-		$Meta = new Smart_Custom_Fields_Meta( $deleted_term );
-		$Meta->delete();
+		$meta = new Smart_Custom_Fields_Meta( $deleted_term );
+		$meta->delete();
 	}
 }

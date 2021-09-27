@@ -1,12 +1,12 @@
 <?php
 /**
- * Smart_Custom_Fields_Yoast_SEO_Analysis
- * Version    : 1.0.0
- * Author     : robssanches
- * Created    : July 11, 2018
- * Modified   : July 11, 2018
- * License    : GPLv2 or later
- * License URI: http://www.gnu.org/licenses/gpl-2.0.html
+ * @package snow-monkey-blocks
+ * @author inc2734
+ * @license GPL-2.0+
+ */
+
+/**
+ * Smart_Custom_Fields_Yoast_SEO_Analysis class.
  */
 class Smart_Custom_Fields_Yoast_SEO_Analysis {
 
@@ -19,10 +19,8 @@ class Smart_Custom_Fields_Yoast_SEO_Analysis {
 
 	/**
 	 * Loading resources.
-	 *
-	 * @param string $hook
 	 */
-	public function admin_enqueue_scripts( $hook ) {
+	public function admin_enqueue_scripts() {
 		wp_enqueue_script(
 			SCF_Config::PREFIX . 'yoast-seo-analysis',
 			plugins_url( SCF_Config::NAME ) . '/js/yoast-seo-analysis.js',

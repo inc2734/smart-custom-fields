@@ -78,7 +78,7 @@ class Smart_Custom_Fields_Cache_Test extends WP_UnitTestCase {
 
 		add_filter( 'smart-cf-register-fields', array( $this, '_register' ), 10, 4 );
 
-		$this->Cache = Smart_Custom_Fields_Cache::getInstance();
+		$this->Cache = Smart_Custom_Fields_Cache::get_instance();
 		$this->Cache->flush();
 	}
 

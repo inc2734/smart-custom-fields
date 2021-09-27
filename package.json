@@ -1,0 +1,34 @@
+{
+  "author": "inc2734",
+  "license": "GPL-2.0+",
+  "devDependencies": {
+    "@wordpress/env": "4.1.1",
+    "npm-run-all": "^4.1.5"
+  },
+  "scripts": {
+    "export:wp-content:themes": "npm run cli 'cp -r wp-content/themes .export/wp-content'",
+    "export:wp-content:uploads": "npm run cli 'cp -r wp-content/uploads .export/wp-content'",
+    "export:wp-content": "npm run cli 'rm -rf .export/wp-content' && mkdir -p .export/wp-content/uploads && run-p export:wp-content:*",
+    "export:db": "mkdir -p .export/sql && npm run wp 'db export .export/sql/local.sql'",
+    "export": "run-p export:*",
+    "import:wp-content:themes": "npm run cli 'cp -r .export/wp-content/themes wp-content'",
+    "import:wp-content:uploads": "npm run cli 'cp -r .export/wp-content/uploads wp-content'",
+    "import:wp-content": "run-p import:wp-content:*",
+    "import:db": "npm run wp 'db import .export/sql/local.sql'",
+    "import": "run-p import:*",
+    "wp-env": "wp-env",
+    "start": "wp-env start && open http://localhost:8888",
+    "stop": "npm run export && wp-env stop",
+    "cli": "wp-env run cli",
+    "wp": "wp-env run cli wp",
+    "pretest": "wp-env start && wp-env run composer 'install --no-interaction'",
+    "test:lint:php": "wp-env run composer run-script lint",
+    "test:lint": "run-s test:lint:*",
+    "test:unit:php": "wp-env run phpunit 'phpunit -c /var/www/html/wp-content/plugins/smart-custom-fields/.phpunit.xml.dist --verbose'",
+    "test:unit": "run-s test:unit:*",
+    "test": "run-s test:*",
+    "zip:pack": "rsync -a --exclude='/bin' --exclude='/vendor' --exclude='/node_modules' --exclude='.*' --exclude='*.ruleset.xml' --exclude='*.config.js' --exclude='*.xml.dist' --exclude='/tests' --exclude='package*.json' . smart-custom-fields && cd smart-custom-fields && composer install --no-dev",
+    "zip:archive": "zip -9 -qmr smart-custom-fields.zip smart-custom-fields",
+    "zip": "npm run clean:zip && npm run zip:pack && npm run zip:archive"
+  }
+}

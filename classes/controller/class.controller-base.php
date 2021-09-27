@@ -1,12 +1,12 @@
 <?php
 /**
- * Smart_Custom_Fields_Controller_Base
- * Version    : 1.4.0
- * Author     : inc2734
- * Created    : April 27, 2015
- * Modified   : June 4, 2016
- * License    : GPLv2 or later
- * License URI: http://www.gnu.org/licenses/gpl-2.0.html
+ * @package snow-monkey-blocks
+ * @author inc2734
+ * @license GPL-2.0+
+ */
+
+/**
+ * Smart_Custom_Fields_Controller_Base class.
  */
 class Smart_Custom_Fields_Controller_Base {
 
@@ -26,10 +26,8 @@ class Smart_Custom_Fields_Controller_Base {
 
 	/**
 	 * Loading resources for edit page.
-	 *
-	 * @param string $hook
 	 */
-	public function admin_enqueue_scripts( $hook ) {
+	public function admin_enqueue_scripts() {
 		do_action( SCF_Config::PREFIX . 'before-editor-enqueue-scripts' );
 		wp_enqueue_style(
 			SCF_Config::PREFIX . 'editor',
@@ -67,8 +65,8 @@ class Smart_Custom_Fields_Controller_Base {
 	/**
 	 * Display custom fields in edit page.
 	 *
-	 * @param WP_Post|WP_User|WP_Term|stdClass $object
-	 * @param array                            $callback_args custom field setting information
+	 * @param WP_Post|WP_User|WP_Term|stdClass $object        Object meta object.
+	 * @param array                            $callback_args Custom field setting information.
 	 */
 	public function display_meta_box( $object, $callback_args ) {
 		$groups = $callback_args['args'];
@@ -76,27 +74,29 @@ class Smart_Custom_Fields_Controller_Base {
 
 		printf( '<div class="%s">', esc_attr( SCF_Config::PREFIX . 'meta-box' ) );
 		$index = 0;
-		foreach ( $tables as $group_key => $Group ) {
-			$is_repeatable = $Group->is_repeatable();
-			if ( $is_repeatable && $index === 0 ) {
+		foreach ( $tables as $group_key => $group ) {
+			$is_repeatable = $group->is_repeatable();
+			if ( $is_repeatable && 0 === $index ) {
 				printf(
 					'<div class="%s">',
 					esc_attr( SCF_Config::PREFIX . 'meta-box-repeat-tables' )
 				);
-				$this->display_tr( $object, $is_repeatable, $Group->get_fields() );
+				$this->display_tr( $object, $is_repeatable, $group->get_fields() );
 			}
-			$this->display_tr( $object, $is_repeatable, $Group->get_fields(), $index );
+			$this->display_tr( $object, $is_repeatable, $group->get_fields(), $index );
 
 			// If in the loop, count up the index.
 			// If exit the loop, reset the count.
-			if ( $is_repeatable &&
-				 isset( $tables[ $group_key + 1 ] ) &&
-				 $tables[ $group_key + 1 ]->get_name() === $Group->get_name() ) {
+			if (
+				$is_repeatable
+				&& isset( $tables[ $group_key + 1 ] )
+				&& $group->get_name() === $tables[ $group_key + 1 ]->get_name()
+			) {
 				$index ++;
 			} else {
 				$index = 0;
 			}
-			if ( $is_repeatable && $index === 0 ) {
+			if ( $is_repeatable && 0 === $index ) {
 				printf( '</div>' );
 			}
 		}
@@ -105,10 +105,10 @@ class Smart_Custom_Fields_Controller_Base {
 	}
 
 	/**
-	 * Saving posted data
+	 * Saving posted data.
 	 *
-	 * @param array                            $data
-	 * @param WP_Post|WP_User|WP_Term|stdClass $object
+	 * @param array                            $data   Data.
+	 * @param WP_Post|WP_User|WP_Term|stdClass $object Object meta object.
 	 */
 	protected function save( $data, $object ) {
 		check_admin_referer(
@@ -116,46 +116,45 @@ class Smart_Custom_Fields_Controller_Base {
 			SCF_Config::PREFIX . 'fields-nonce'
 		);
 
-		$Meta = new Smart_Custom_Fields_Meta( $object );
-		$Meta->save( $_POST );
+		$meta = new Smart_Custom_Fields_Meta( $object );
+		$meta->save( $data );
 	}
 
 	/**
-	 * Generating array for displaying the custom fields
+	 * Generating array for displaying the custom fields.
 	 *
-	 * @param WP_Post|WP_User|WP_Term|stdClass $object
-	 * @param array                            $groups Settings from custom field settings page
-	 * @return array $tables Array for displaying a table for custom fields
+	 * @param WP_Post|WP_User|WP_Term|stdClass $object Object meta object.
+	 * @param array                            $groups Settings from custom field settings page.
+	 * @return array Array for displaying a table for custom fields.
 	 */
 	protected function get_tables( $object, $groups ) {
-		$Meta = new Smart_Custom_Fields_Meta( $object );
+		$meta = new Smart_Custom_Fields_Meta( $object );
 
 		$repeat_multiple_data = SCF::get_repeat_multiple_data( $object );
 		$tables               = array();
-		foreach ( $groups as $Group ) {
+		foreach ( $groups as $group ) {
 			// If in the loop, Added groupgs by the amount of the loop.
 			// Added only one if setting is repetition but not loop (Ex, new registration)
-			if ( $Group->is_repeatable() === true ) {
+			if ( true === $group->is_repeatable() ) {
 				$loop_count = 1;
-				$fields     = $Group->get_fields();
-				foreach ( $fields as $Field ) {
-					$field_name = $Field->get( 'name' );
-					$meta       = $Meta->get( $field_name );
-					if ( is_array( $meta ) ) {
-						$meta_count = count( $meta );
+				$fields     = $group->get_fields();
+				foreach ( $fields as $field ) {
+					$field_name = $field->get( 'name' );
+					$meta_value = $meta->get( $field_name );
+					if ( is_array( $meta_value ) ) {
+						$meta_count = count( $meta_value );
 						// When the same name of the custom field is a multiple (checbox or loop)
 						if ( $meta_count > 1 ) {
 							// checkbox
-							if ( $Field->get_attribute( 'allow-multiple-data' ) ) {
+							if ( $field->get_attribute( 'allow-multiple-data' ) ) {
 								if ( is_array( $repeat_multiple_data ) && isset( $repeat_multiple_data[ $field_name ] ) ) {
 									$repeat_multiple_data_count = count( $repeat_multiple_data[ $field_name ] );
 									if ( $loop_count < $repeat_multiple_data_count ) {
 										$loop_count = $repeat_multiple_data_count;
 									}
 								}
-							}
-							// other than checkbox
-							else {
+							} else {
+								// other than checkbox
 								if ( $loop_count < $meta_count ) {
 									$loop_count = $meta_count;
 								}
@@ -165,12 +164,12 @@ class Smart_Custom_Fields_Controller_Base {
 				}
 				if ( $loop_count >= 1 ) {
 					for ( $i = $loop_count; $i > 0; $i -- ) {
-						$tables[] = $Group;
+						$tables[] = $group;
 					}
 					continue;
 				}
 			}
-			$tables[] = $Group;
+			$tables[] = $group;
 		}
 		return $tables;
 	}
@@ -178,24 +177,24 @@ class Smart_Custom_Fields_Controller_Base {
 	/**
 	 * Getting the multi-value field meta data.
 	 *
-	 * @param WP_Post|WP_User|WP_Term|stdClass $object
-	 * @param Smart_Custom_Fields_Field_Base   $Field
-	 * @param int                              $index
+	 * @param WP_Post|WP_User|WP_Term|stdClass $object Object meta object.
+	 * @param Smart_Custom_Fields_Field_Base   $field  Field object.
+	 * @param int                              $index  Index of value.
 	 * @return array
 	 */
-	public function get_multiple_data_field_value( $object, $Field, $index ) {
-		$Meta       = new Smart_Custom_Fields_Meta( $object );
-		$field_name = $Field->get( 'name' );
+	public function get_multiple_data_field_value( $object, $field, $index ) {
+		$meta       = new Smart_Custom_Fields_Meta( $object );
+		$field_name = $field->get( 'name' );
 
 		if ( is_null( $index ) ) {
-			return SCF::get_default_value( $Field );
+			return SCF::get_default_value( $field );
 		}
 
-		if ( ! $Meta->is_saved_the_key( $field_name ) ) {
-			return SCF::get_default_value( $Field );
+		if ( ! $meta->is_saved_the_key( $field_name ) ) {
+			return SCF::get_default_value( $field );
 		}
 
-		$value = $Meta->get( $field_name );
+		$value = $meta->get( $field_name );
 
 		// in the loop
 		$repeat_multiple_data = SCF::get_repeat_multiple_data( $object );
@@ -222,40 +221,38 @@ class Smart_Custom_Fields_Controller_Base {
 	/**
 	 * Getting the non multi-value field meta data.
 	 *
-	 * @param WP_Post|WP_User|WP_Term|stdClass $object
-	 * @param Smart_Custom_Fields_Field_Base   $Field
-	 * @param int                              $index
+	 * @param WP_Post|WP_User|WP_Term|stdClass $object Object meta object.
+	 * @param Smart_Custom_Fields_Field_Base   $field  Field object.
+	 * @param int                              $index  Index of value.
 	 * @return string
 	 */
-	public function get_single_data_field_value( $object, $Field, $index ) {
-		$Meta       = new Smart_Custom_Fields_Meta( $object );
-		$field_name = $Field->get( 'name' );
+	public function get_single_data_field_value( $object, $field, $index ) {
+		$meta       = new Smart_Custom_Fields_Meta( $object );
+		$field_name = $field->get( 'name' );
 
 		if ( is_null( $index ) ) {
-			return SCF::get_default_value( $Field, true );
+			return SCF::get_default_value( $field, true );
 		}
 
-		if ( $Meta->is_saved_the_key( $field_name ) ) {
-			$value = $Meta->get( $field_name );
+		if ( $meta->is_saved_the_key( $field_name ) ) {
+			$value = $meta->get( $field_name );
 			if ( isset( $value[ $index ] ) ) {
 				return $value[ $index ];
 			}
 			return '';
 		}
-		return SCF::get_default_value( $Field, true );
+		return SCF::get_default_value( $field, true );
 	}
 
 	/**
-	 * Displaying tr element for table of custom fields
+	 * Displaying tr element for table of custom fields.
 	 *
-	 * @param WP_Post|WP_User|WP_Term|stdClass $object
-	 * @param bool                             $is_repeat
-	 * @param array                            $fields
-	 * @param int, null                        $index
+	 * @param WP_Post|WP_User|WP_Term|stdClass $object    Object meta object.
+	 * @param bool                             $is_repeat If repeat, return true.
+	 * @param array                            $fields    Fields.
+	 * @param int|null                         $index     Field index.
 	 */
 	protected function display_tr( $object, $is_repeat, $fields, $index = null ) {
-		$Meta = new Smart_Custom_Fields_Meta( $object );
-
 		$btn_repeat = '';
 		if ( $is_repeat ) {
 			$btn_repeat  = sprintf(
@@ -278,26 +275,24 @@ class Smart_Custom_Fields_Controller_Base {
 			$btn_repeat
 		);
 
-		foreach ( $fields as $Field ) {
-			$display_name = $Field->get_attribute( 'display-name' );
-			$field_type   = $Field->get_attribute( 'type' ); // gets the field type for use in aditional CSS classes
-			$layout       = $Field->get_attribute( 'layout' ); // get layout type
-			$field_name   = $Field->get( 'name' );
-			$field_label  = $Field->get( 'label' );
+		foreach ( $fields as $field ) {
+			$field_type  = $field->get_attribute( 'type' ); // gets the field type for use in aditional CSS classes
+			$layout      = $field->get_attribute( 'layout' ); // get layout type
+			$field_name  = $field->get( 'name' );
+			$field_label = $field->get( 'label' );
 			if ( ! $field_label ) {
 				$field_label = $field_name;
 			}
 
-			// When multi-value field
-			if ( $Field->get_attribute( 'allow-multiple-data' ) ) {
-				$value = $this->get_multiple_data_field_value( $object, $Field, $index );
-			}
-			// When non multi-value field
-			else {
-				$value = $this->get_single_data_field_value( $object, $Field, $index );
+			if ( $field->get_attribute( 'allow-multiple-data' ) ) {
+				// When multi-value field
+				$value = $this->get_multiple_data_field_value( $object, $field, $index );
+			} else {
+				// When non multi-value field
+				$value = $this->get_single_data_field_value( $object, $field, $index );
 			}
 
-			$instruction = $Field->get( 'instruction' );
+			$instruction = $field->get( 'instruction' );
 			if ( ! empty( $instruction ) ) {
 				if ( apply_filters( SCF_Config::PREFIX . 'instruction-apply-html', false ) === true ) {
 					$instruction_html = $instruction;
@@ -310,7 +305,7 @@ class Smart_Custom_Fields_Controller_Base {
 				);
 			}
 
-			$notes = $Field->get( 'notes' );
+			$notes = $field->get( 'notes' );
 			if ( ! empty( $notes ) ) {
 				$notes = sprintf(
 					'<p class="description">%s</p>',
@@ -318,10 +313,10 @@ class Smart_Custom_Fields_Controller_Base {
 				);
 			}
 
-			$form_field = $Field->get_field( $index, $value );
+			$form_field = $field->get_field( $index, $value );
 
 			// if the layout type is full-width, it hides the "Table Header" (th)
-			$table_th = $layout != 'full-width' ? '<th>' . esc_html( $field_label ) . '</th>' : '';
+			$table_th = 'full-width' !== $layout ? '<th>' . esc_html( $field_label ) . '</th>' : '';
 			printf(
 				'<table class="%1$sfield-type-%6$s %1$slayout-type-%7$s"><tr>
 					%2$s

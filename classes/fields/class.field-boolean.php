@@ -1,18 +1,17 @@
 <?php
 /**
- * Smart_Custom_Fields_Field_Boolean
- * Version    : 1.1.1
- * Author     : Toro_Unit, inc2734
- * Created    : April 6, 2015
- * Modified   : July 28, 2016
- * License    : GPLv2 or later
- * License URI: http://www.gnu.org/licenses/gpl-2.0.html
+ * @package snow-monkey-blocks
+ * @author inc2734
+ * @license GPL-2.0+
  */
 
+/**
+ * Smart_Custom_Fields_Field_Boolean class.
+ */
 class Smart_Custom_Fields_Field_Boolean extends Smart_Custom_Fields_Field_Base {
 
 	/**
-	 * Set the required items
+	 * Set the required items.
 	 *
 	 * @return array
 	 */
@@ -26,7 +25,7 @@ class Smart_Custom_Fields_Field_Boolean extends Smart_Custom_Fields_Field_Base {
 	}
 
 	/**
-	 * Set the non required items
+	 * Set the non required items.
 	 *
 	 * @return array
 	 */
@@ -41,11 +40,11 @@ class Smart_Custom_Fields_Field_Boolean extends Smart_Custom_Fields_Field_Base {
 	}
 
 	/**
-	 * Getting the field
+	 * Getting the field.
 	 *
-	 * @param int $index
-	 * @param int $value
-	 * @return string html
+	 * @param int $index Field index.
+	 * @param int $value The value.
+	 * @return string
 	 */
 	public function get_field( $index, $value ) {
 		$name     = $this->get_field_name_in_editor( $index );
@@ -72,10 +71,10 @@ class Smart_Custom_Fields_Field_Boolean extends Smart_Custom_Fields_Field_Base {
 	}
 
 	/**
-	 * Displaying the option fields in custom field settings page
+	 * Displaying the option fields in custom field settings page.
 	 *
-	 * @param int $group_key
-	 * @param int $field_key
+	 * @param int $group_key Group key.
+	 * @param int $field_key Field key.
 	 */
 	public function display_field_options( $group_key, $field_key ) {
 		$this->display_label_option( $group_key, $field_key );
@@ -147,10 +146,10 @@ class Smart_Custom_Fields_Field_Boolean extends Smart_Custom_Fields_Field_Base {
 	}
 
 	/**
-	 * Validating when displaying meta data
+	 * Validating when displaying meta data.
 	 *
-	 * @param int|string $value
-	 * @param string     $field_type
+	 * @param int|string $value      The value.
+	 * @param string     $field_type Field type.
 	 * @return boolean
 	 */
 	public function validate_get_value( $value, $field_type ) {

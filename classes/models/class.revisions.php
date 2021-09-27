@@ -1,12 +1,12 @@
 <?php
 /**
- * Smart_Custom_Fields_Revisions
- * Version    : 1.1.6
- * Author     : inc2734
- * Created    : September 23, 2014
- * Modified   : August 24, 2016
- * License    : GPLv2 or later
- * License URI: http://www.gnu.org/licenses/gpl-2.0.html
+ * @package snow-monkey-blocks
+ * @author inc2734
+ * @license GPL-2.0+
+ */
+
+/**
+ * Smart_Custom_Fields_Revisions class.
  */
 class Smart_Custom_Fields_Revisions {
 
@@ -36,22 +36,22 @@ class Smart_Custom_Fields_Revisions {
 	/**
 	 * リビジョンから復元するときに呼び出される
 	 *
-	 * @param int $post_id
-	 * @param int $revision_id
+	 * @param int $post_id     The post id.
+	 * @param int $revision_id The revision post id.
 	 */
 	public function wp_restore_post_revision( $post_id, $revision_id ) {
 		$post     = get_post( $post_id );
 		$revision = get_post( $revision_id );
 
-		$Meta = new Smart_Custom_Fields_Meta( $post );
-		$Meta->restore( $revision );
+		$meta = new Smart_Custom_Fields_Meta( $post );
+		$meta->restore( $revision );
 	}
 
 	/**
 	 * リビジョンデータを保存
 	 * *_post_meta はリビジョンIDのときに自動的に本物IDに変換して処理してしまうので、*_metadata を使うこと
 	 *
-	 * @param int $post_id リビジョンの投稿ID
+	 * @param int $post_id The revision post id.
 	 */
 	public function wp_insert_post( $post_id ) {
 		if ( ! isset( $_POST[ SCF_Config::NAME ] ) ) {
@@ -70,18 +70,18 @@ class Smart_Custom_Fields_Revisions {
 			SCF_Config::PREFIX . 'fields-nonce'
 		);
 
-		$Meta = new Smart_Custom_Fields_Meta( get_post( $post_id ) );
-		$Meta->save( $_POST );
+		$meta = new Smart_Custom_Fields_Meta( get_post( $post_id ) );
+		$meta->save( $_POST );
 	}
 
 	/**
 	 * プレビューのときはプレビューのメタデータを返す。ただし、アイキャッチはリビジョンが無いので除外する
 	 *
-	 * @param mixed  $value
-	 * @param int    $post_id
-	 * @param string $meta_key
-	 * @param bool   $single
-	 * @return mixed $value
+	 * @param mixed  $value    The value to return, either a single metadata value or an array of values depending on the value of $single. Default null.
+	 * @param int    $post_id  ID of the object metadata is for.
+	 * @param string $meta_key Metadata key.
+	 * @param bool   $single   Whether to return only the first value of the specified $meta_key.
+	 * @return mixed
 	 */
 	public function get_post_metadata( $value, $post_id, $meta_key, $single ) {
 		if ( ! is_preview() ) {
@@ -93,7 +93,7 @@ class Smart_Custom_Fields_Revisions {
 		}
 
 		$preview_id = $this->get_preview_id( $post_id );
-		if ( $preview_id && $meta_key !== '_thumbnail_id' ) {
+		if ( $preview_id && '_thumbnail_id' !== $meta_key ) {
 			if ( $post_id !== $preview_id ) {
 				$value = get_post_meta( $preview_id, $meta_key, $single );
 			}
@@ -104,14 +104,15 @@ class Smart_Custom_Fields_Revisions {
 	/**
 	 * プレビューの Post ID を返す
 	 *
-	 * @param int $post_id
-	 * @return int $preview_id
+	 * @param int $post_id The post id.
+	 * @return int
 	 */
 	protected function get_preview_id( $post_id ) {
 		global $post;
 		$preview_id = 0;
 		if ( isset( $post->ID ) && intval( $post->ID ) === intval( $post_id ) ) {
-			if ( is_preview() && $preview = wp_get_post_autosave( $post_id ) ) {
+			$preview = wp_get_post_autosave( $post_id );
+			if ( is_preview() && $preview ) {
 				$preview_id = $preview->ID;
 			}
 		}
@@ -121,8 +122,8 @@ class Smart_Custom_Fields_Revisions {
 	/**
 	 * リビジョン比較画面でメタデータを表示させるためにキーを追加する
 	 *
-	 * @param array $fields
-	 * @return array $fields
+	 * @param array $fields List of fields to revision. Contains 'post_title', 'post_content', and 'post_excerpt' by default.
+	 * @return array
 	 */
 	public function _wp_post_revision_fields( $fields ) {
 		$fields[ SCF_Config::PREFIX . 'debug-preview' ] = esc_html__( 'Smart Custom Fields', 'smart-custom-fields' );
@@ -142,9 +143,9 @@ class Smart_Custom_Fields_Revisions {
 	/**
 	 * リビジョン比較画面にメタデータを表示
 	 *
-	 * @param $value
-	 * @param $column
-	 * @param array  $post
+	 * @param string  $value  The current revision field to compare to or from.
+	 * @param string  $column The current revision field.
+	 * @param WP_Post $post   The revision post object to compare to or from.
 	 * @return string
 	 */
 	public function _wp_post_revision_field_debug_preview( $value, $column, $post ) {
@@ -178,9 +179,9 @@ class Smart_Custom_Fields_Revisions {
 	/**
 	 * false ならリビジョンとして保存される
 	 *
-	 * @param bool    $check_for_changes
-	 * @param WP_Post $last_revision 最新のリビジョン
-	 * @param WP_Post $post 現在の投稿
+	 * @param bool    $check_for_changes Whether to check for changes before saving a new revision. Default true.
+	 * @param WP_Post $last_revision     The last revision post object.
+	 * @param WP_Post $post              The post object.
 	 * @return bool
 	 */
 	public function wp_save_post_revision_check_for_changes( $check_for_changes, $last_revision, $post ) {
@@ -196,6 +197,8 @@ class Smart_Custom_Fields_Revisions {
 		if ( isset( $_POST[ SCF_Config::NAME ] ) ) {
 			$serialized_post_meta = serialize( $post_meta );
 			$serialized_send_data = $_POST[ SCF_Config::NAME ];
+
+			// phpcs:ignore WordPress.PHP.StrictComparisons.LooseComparison
 			if ( $serialized_post_meta != $serialized_send_data ) {
 				return false;
 			}

@@ -1,31 +1,31 @@
 <?php
 /**
- * Smart_Custom_Fields_Group
- * Version    : 1.0.0
- * Author     : inc2734
- * Created    : September 23, 2014
- * Modified   : February 27, 2015
- * License    : GPLv2 or later
- * License URI: http://www.gnu.org/licenses/gpl-2.0.html
+ * @package snow-monkey-blocks
+ * @author inc2734
+ * @license GPL-2.0+
+ */
+
+/**
+ * Smart_Custom_Fields_Group class.
  */
 class Smart_Custom_Fields_Group {
 
 	/**
-	 * Group name
+	 * Group name.
 	 *
 	 * @var string
 	 */
 	protected $name = null;
 
 	/**
-	 * Array of field objects
+	 * Array of field objects.
 	 *
 	 * @var array
 	 */
 	protected $fields = array();
 
 	/**
-	 * Whether repeating group
+	 * Whether repeating group.
 	 *
 	 * @var bool
 	 */
@@ -34,25 +34,25 @@ class Smart_Custom_Fields_Group {
 	/**
 	 * __construct
 	 *
-	 * @param string $group_name
-	 * @param bool   $repeat
-	 * @param array  $_fields
+	 * @param string $group_name Gruop name.
+	 * @param bool   $repeat     If repeat, set true.
+	 * @param array  $_fields    Fields.
 	 */
 	public function __construct( $group_name = null, $repeat = false, array $_fields = array() ) {
 		$this->name   = $group_name;
-		$this->repeat = ( $repeat === true ) ? true : false;
+		$this->repeat = true === $repeat ? true : false;
 		$fields       = array();
 		foreach ( $_fields as $field_attributes ) {
-			$Field = SCF::get_form_field_instance( $field_attributes['type'] );
-			if ( ! is_a( $Field, 'Smart_Custom_Fields_Field_Base' ) ) {
+			$field = SCF::get_form_field_instance( $field_attributes['type'] );
+			if ( ! is_a( $field, 'Smart_Custom_Fields_Field_Base' ) ) {
 				continue;
 			}
 			foreach ( $field_attributes as $key => $value ) {
-				$Field->set( $key, $value );
+				$field->set( $key, $value );
 			}
 
-			if ( ! empty( $Field ) ) {
-				$fields[ $Field->get( 'name' ) ] = $Field;
+			if ( ! empty( $field ) ) {
+				$fields[ $field->get( 'name' ) ] = $field;
 			}
 		}
 		$this->fields = $fields;
@@ -80,9 +80,9 @@ class Smart_Custom_Fields_Group {
 	}
 
 	/**
-	 * Getting the field
+	 * Getting the field.
 	 *
-	 * @param string $field_name
+	 * @param string $field_name Field name.
 	 * @return Smart_Custom_Fields_Field_Base|null
 	 */
 	public function get_field( $field_name ) {
@@ -93,7 +93,7 @@ class Smart_Custom_Fields_Group {
 	}
 
 	/**
-	 * Whether repeating group
+	 * Whether repeating group.
 	 *
 	 * @return bool
 	 */
@@ -102,20 +102,20 @@ class Smart_Custom_Fields_Group {
 	}
 
 	/**
-	 *  Displaying "hide" if $key isn't empty
+	 *  Displaying "hide" if $repeatable is empty.
 	 *
-	 * @param string $key
+	 * @param string $repeatable Repeatable.
 	 */
-	private function add_hide_class( $key ) {
-		if ( ! $key ) {
+	private function add_hide_class( $repeatable ) {
+		if ( ! $repeatable ) {
 			echo 'hide';
 		}
 	}
 
 	/**
-	 * Displaying the option fields in custom field settings page ( Common )
+	 * Displaying the option fields in custom field settings page ( Common ).
 	 *
-	 * @param int $group_key
+	 * @param int $group_key Group key.
 	 */
 	public function display_options( $group_key ) {
 		?>

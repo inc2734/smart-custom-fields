@@ -1,12 +1,12 @@
 <?php
 /**
- * Smart_Custom_Fields_Field_Base
- * Version    : 1.1.1
- * Author     : inc2734
- * Created    : October 7, 2014
- * Modified   : June 2, 2018
- * License    : GPLv2 or later
- * License URI: http://www.gnu.org/licenses/gpl-2.0.html
+ * @package snow-monkey-blocks
+ * @author inc2734
+ * @license GPL-2.0+
+ */
+
+/**
+ *  Smart_Custom_Fields_Field_Base class.
  */
 abstract class Smart_Custom_Fields_Field_Base {
 
@@ -77,18 +77,18 @@ abstract class Smart_Custom_Fields_Field_Base {
 	}
 
 	/**
-	 * Getting the field
+	 * Getting the field.
 	 *
-	 * @param int   $index
-	 * @param mixed $value
-	 * @return string html
+	 * @param int   $index Field index.
+	 * @param mixed $value Field value.
+	 * @return string
 	 */
 	abstract public function get_field( $index, $value );
 
 	/**
-	 * Adding the type of this field to fields selection in custom field settings page
+	 * Adding the type of this field to fields selection in custom field settings page.
 	 *
-	 * @param array $attributes List of fields that belong to the optgroup
+	 * @param array $attributes List of fields that belong to the optgroup.
 	 * @return array
 	 */
 	public function field_select( $attributes ) {
@@ -97,23 +97,29 @@ abstract class Smart_Custom_Fields_Field_Base {
 	}
 
 	/**
-	 * Displaying the option fields in custom field settings page ( Common )
+	 * Displaying the option fields in custom field settings page ( Common ).
 	 *
-	 * @param int $group_key
-	 * @param int $field_key
+	 * @param int $group_key Group key.
+	 * @param int $field_key Field key.
 	 */
 	public function display_options( $group_key, $field_key ) {
 		$fields = SCF::get_form_field_instances();
-		foreach ( $fields as $Field ) {
-			if ( $Field->get_attribute( 'type' ) === $this->get_attribute( 'type' ) ) {
+		foreach ( $fields as $field ) {
+			if ( $field->get_attribute( 'type' ) === $this->get_attribute( 'type' ) ) {
 				foreach ( $this->options as $key => $value ) {
-					$Field->set( $key, $value );
+					$field->set( $key, $value );
 				}
 			}
-			$Field->_display_field_options( $group_key, $field_key );
+			$field->_display_field_options( $group_key, $field_key );
 		}
 	}
 
+	/**
+	 * Displaying the name in custom field settings page.
+	 *
+	 * @param int $group_key Group key.
+	 * @param int $field_key Field key.
+	 */
 	protected function display_name_option( $group_key, $field_key ) {
 		?>
 		<tr>
@@ -130,6 +136,12 @@ abstract class Smart_Custom_Fields_Field_Base {
 		<?php
 	}
 
+	/**
+	 * Displaying the label in custom field settings page.
+	 *
+	 * @param int $group_key Group key.
+	 * @param int $field_key Field key.
+	 */
 	protected function display_label_option( $group_key, $field_key ) {
 		?>
 		<tr>
@@ -147,12 +159,19 @@ abstract class Smart_Custom_Fields_Field_Base {
 	}
 
 	/**
-	 * Displaying the option fields in custom field settings page ( original )
+	 * Displaying the option fields in custom field settings page ( original ).
 	 *
-	 * @param int $group_key
-	 * @param int $field_key
+	 * @param int $group_key Group key.
+	 * @param int $field_key Field key.
 	 */
 	abstract protected function display_field_options( $group_key, $field_key );
+
+	/**
+	 * Displaying the option fields in custom field settings page ( original ).
+	 *
+	 * @param int $group_key Group key.
+	 * @param int $field_key Field key.
+	 */
 	public function _display_field_options( $group_key, $field_key ) {
 		?>
 		<tr class="<?php echo esc_attr( SCF_Config::PREFIX . 'field-options' ); ?> <?php echo esc_attr( SCF_Config::PREFIX . 'field-options-' . $this->get_attribute( 'type' ) ); ?> hide">
@@ -166,10 +185,9 @@ abstract class Smart_Custom_Fields_Field_Base {
 	}
 
 	/**
-	 * Getting the name attribute in editor page
+	 * Getting the name attribute in editor page.
 	 *
-	 * @param string $name
-	 * @param string $index
+	 * @param string $index Field index.
 	 * @return string
 	 */
 	protected function get_field_name_in_editor( $index ) {
@@ -182,11 +200,11 @@ abstract class Smart_Custom_Fields_Field_Base {
 	}
 
 	/**
-	 * Whether to disabled
+	 * Whether to disabled.
 	 * Return true only when the null because data that all users have saved when $index is not null
 	 *
-	 * @param string $index
-	 * @return bool $disabled
+	 * @param string $index Field index.
+	 * @return bool
 	 */
 	protected function get_disable_attribute( $index ) {
 		$disabled = false;
@@ -197,11 +215,11 @@ abstract class Smart_Custom_Fields_Field_Base {
 	}
 
 	/**
-	 * Getting the name attribute in custom field settings page
+	 * Getting the name attribute in custom field settings page.
 	 *
-	 * @param int    $group_key
-	 * @param int    $field_key
-	 * @param string $name
+	 * @param int    $group_key Group key.
+	 * @param int    $field_key Field key.
+	 * @param string $name      Field name.
 	 * @return string
 	 */
 	public function get_field_name_in_setting( $group_key, $field_key, $name ) {
@@ -215,9 +233,9 @@ abstract class Smart_Custom_Fields_Field_Base {
 	}
 
 	/**
-	 * Getting saved option value
+	 * Getting saved option value.
 	 *
-	 * @param string $key key of the data
+	 * @param string $key Key of options of this field.
 	 * @return mixed
 	 */
 	public function get( $key ) {
@@ -227,10 +245,10 @@ abstract class Smart_Custom_Fields_Field_Base {
 	}
 
 	/**
-	 * Set option value
+	 * Set option value.
 	 *
-	 * @param string $key
-	 * @param mixed  $value
+	 * @param string $key   Key of options of this field.
+	 * @param mixed  $value Value of options of this field.
 	 */
 	public function set( $key, $value ) {
 		if ( array_key_exists( $key, $this->options ) ) {
@@ -239,9 +257,9 @@ abstract class Smart_Custom_Fields_Field_Base {
 	}
 
 	/**
-	 * Getting the attribute value
+	 * Getting the attribute value.
 	 *
-	 * @param string $key
+	 * @param string $key Internal attribute key.
 	 * @return mixed
 	 */
 	public function get_attribute( $key ) {

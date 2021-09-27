@@ -1,17 +1,17 @@
 <?php
 /**
- * Smart_Custom_Fields_Field_File
- * Version    : 1.3.0
- * Author     : inc2734
- * Created    : October 7, 2014
- * Modified   : September 6, 2016
- * License    : GPLv2 or later
- * License URI: http://www.gnu.org/licenses/gpl-2.0.html
+ * @package snow-monkey-blocks
+ * @author inc2734
+ * @license GPL-2.0+
+ */
+
+/**
+ * Smart_Custom_Fields_Field_File class.
  */
 class Smart_Custom_Fields_Field_File extends Smart_Custom_Fields_Field_Base {
 
 	/**
-	 * Set the required items
+	 * Set the required items.
 	 *
 	 * @return array
 	 */
@@ -24,7 +24,7 @@ class Smart_Custom_Fields_Field_File extends Smart_Custom_Fields_Field_Base {
 	}
 
 	/**
-	 * Set the non required items
+	 * Set the non required items.
 	 *
 	 * @return array
 	 */
@@ -36,11 +36,11 @@ class Smart_Custom_Fields_Field_File extends Smart_Custom_Fields_Field_Base {
 	}
 
 	/**
-	 * Getting the field
+	 * Getting the field.
 	 *
-	 * @param int    $index
-	 * @param string $value
-	 * @return string html
+	 * @param int    $index Field index.
+	 * @param string $value The value.
+	 * @return string
 	 */
 	public function get_field( $index, $value ) {
 		$name     = $this->get_field_name_in_editor( $index );
@@ -64,7 +64,7 @@ class Smart_Custom_Fields_Field_File extends Smart_Custom_Fields_Field_Base {
 					$image_src = $image_src[0];
 				}
 			} else {
-				$imag_url   = $value;
+				$image_url  = $value;
 				$path       = str_replace( home_url(), '', $value );
 				$image_path = ABSPATH . untrailingslashit( $path );
 				if ( file_exists( $image_path ) ) {
@@ -85,7 +85,7 @@ class Smart_Custom_Fields_Field_File extends Smart_Custom_Fields_Field_Base {
 					esc_attr( $filename ),
 					$btn_remove
 				);
-				$hide_class      = '';
+				$hide_class = '';
 			}
 		}
 
@@ -104,10 +104,10 @@ class Smart_Custom_Fields_Field_File extends Smart_Custom_Fields_Field_Base {
 	}
 
 	/**
-	 * Displaying the option fields in custom field settings page
+	 * Displaying the option fields in custom field settings page.
 	 *
-	 * @param int $group_key
-	 * @param int $field_key
+	 * @param int $group_key Group key.
+	 * @param int $field_key Field key.
 	 */
 	public function display_field_options( $group_key, $field_key ) {
 		$this->display_label_option( $group_key, $field_key );

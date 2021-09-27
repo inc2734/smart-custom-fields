@@ -1,12 +1,12 @@
 <?php
 /**
- * Smart_Custom_Fields_Controller_Profile
- * Version    : 1.0.1
- * Author     : inc2734
- * Created    : March 16, 2015
- * Modified   : April 26, 2015
- * License    : GPLv2 or later
- * License URI: http://www.gnu.org/licenses/gpl-2.0.html
+ * @package snow-monkey-blocks
+ * @author inc2734
+ * @license GPL-2.0+
+ */
+
+/**
+ * Smart_Custom_Fields_Controller_Profile class.
  */
 class Smart_Custom_Fields_Controller_Profile extends Smart_Custom_Fields_Controller_Base {
 
@@ -22,12 +22,13 @@ class Smart_Custom_Fields_Controller_Profile extends Smart_Custom_Fields_Control
 	}
 
 	/**
-	 * Loading resources for profile edit page
+	 * Loading resources for profile edit page.
 	 *
-	 * @param string $hook
+	 * @param string $hook The current admin page.
 	 */
 	public function admin_enqueue_scripts( $hook ) {
 		parent::admin_enqueue_scripts( $hook );
+
 		wp_enqueue_style(
 			SCF_Config::PREFIX . 'profile',
 			plugins_url( SCF_Config::NAME ) . '/css/profile.css'
@@ -35,19 +36,20 @@ class Smart_Custom_Fields_Controller_Profile extends Smart_Custom_Fields_Control
 	}
 
 	/**
-	 * Displaying custom fields
+	 * Displaying custom fields.
 	 *
-	 * @param WP_User $user
+	 * @param WP_User $user WP_User object.
 	 */
 	public function user_profile( $user ) {
 		printf( '<h3>%s</h3>', esc_html__( 'Custom Fields', 'smart-custom-fields' ) );
-		$settings = SCF::get_settings( $user );
-		foreach ( $settings as $Setting ) {
-			$callback_args['args'] = $Setting->get_groups();
+		$settings      = SCF::get_settings( $user );
+		$callback_args = [];
+		foreach ( $settings as $setting ) {
+			$callback_args['args'] = $setting->get_groups();
 			?>
 			<table class="form-table">
 				<tr>
-					<th scope="row"><?php echo esc_html( $Setting->get_title() ); ?></th>
+					<th scope="row"><?php echo esc_html( $setting->get_title() ); ?></th>
 					<td><?php $this->display_meta_box( $user, $callback_args ); ?></td>
 				</tr>
 			</table>
@@ -58,7 +60,7 @@ class Smart_Custom_Fields_Controller_Profile extends Smart_Custom_Fields_Control
 	/**
 	 * Saving meta data from custom fields in profile edit page.
 	 *
-	 * @param int $user_id
+	 * @param int $user_id User id.
 	 */
 	public function update( $user_id ) {
 		if ( ! current_user_can( 'edit_user', $user_id ) ) {

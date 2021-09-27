@@ -1,12 +1,12 @@
 <?php
 /**
- * Smart_Custom_Fields_Controller_Editor
- * Version    : 1.1.0
- * Author     : inc2734
- * Created    : September 23, 2014
- * Modified   : April 28, 2015
- * License    : GPLv2 or later
- * License URI: http://www.gnu.org/licenses/gpl-2.0.html
+ * @package snow-monkey-blocks
+ * @author inc2734
+ * @license GPL-2.0+
+ */
+
+/**
+ * Smart_Custom_Fields_Controller_Editor class.
  */
 class Smart_Custom_Fields_Controller_Editor extends Smart_Custom_Fields_Controller_Base {
 
@@ -20,30 +20,30 @@ class Smart_Custom_Fields_Controller_Editor extends Smart_Custom_Fields_Controll
 	}
 
 	/**
-	 * Displaying custom fields in post edit page
+	 * Displaying custom fields in post edit page.
 	 *
-	 * @param string  $post_type
-	 * @param WP_Post $post
+	 * @param string  $post_type Post type.
+	 * @param WP_Post $post      WP_Post object.
 	 */
 	public function add_meta_boxes( $post_type, $post ) {
 		$settings = SCF::get_settings( $post );
-		foreach ( $settings as $Setting ) {
+		foreach ( $settings as $setting ) {
 			add_meta_box(
-				SCF_Config::PREFIX . 'custom-field-' . $Setting->get_id(),
-				$Setting->get_title(),
+				SCF_Config::PREFIX . 'custom-field-' . $setting->get_id(),
+				$setting->get_title(),
 				array( $this, 'display_meta_box' ),
 				$post_type,
 				'normal',
 				'default',
-				$Setting->get_groups()
+				$setting->get_groups()
 			);
 		}
 	}
 
 	/**
-	 * Saving meta data from custom fields in post edit page
+	 * Saving meta data from custom fields in post edit page.
 	 *
-	 * @param int $post_id
+	 * @param int $post_id Post id.
 	 */
 	public function save_post( $post_id ) {
 		if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {

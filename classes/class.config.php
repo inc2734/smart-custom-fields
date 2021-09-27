@@ -1,12 +1,12 @@
 <?php
 /**
- * SCF_Config
- * Version    : 1.0.1
- * Author     : inc2734
- * Created    : September 23, 2014
- * Modified   : June 04, 2018
- * License    : GPLv2 or later
- * License URI: http://www.gnu.org/licenses/gpl-2.0.html
+ * @package snow-monkey-blocks
+ * @author inc2734
+ * @license GPL-2.0+
+ */
+
+/**
+ * SCF_Config class.
  */
 class SCF_Config {
 	/**

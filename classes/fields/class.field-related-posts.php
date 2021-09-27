@@ -1,17 +1,17 @@
 <?php
 /**
- * Smart_Custom_Fields_Field_Related_Posts
- * Version    : 1.4.2
- * Author     : inc2734
- * Created    : October 7, 2014
- * Modified   : August 12, 2020
- * License    : GPLv2 or later
- * License URI: http://www.gnu.org/licenses/gpl-2.0.html
+ * @package snow-monkey-blocks
+ * @author inc2734
+ * @license GPL-2.0+
+ */
+
+/**
+ * Smart_Custom_Fields_Field_Related_Posts class.
  */
 class Smart_Custom_Fields_Field_Related_Posts extends Smart_Custom_Fields_Field_Base {
 
 	/**
-	 * Set the required items
+	 * Set the required items.
 	 *
 	 * @return array
 	 */
@@ -28,7 +28,7 @@ class Smart_Custom_Fields_Field_Related_Posts extends Smart_Custom_Fields_Field_
 	}
 
 	/**
-	 * Set the non required items
+	 * Set the non required items.
 	 *
 	 * @return array
 	 */
@@ -42,11 +42,9 @@ class Smart_Custom_Fields_Field_Related_Posts extends Smart_Custom_Fields_Field_
 	}
 
 	/**
-	 * Loading resources
-	 *
-	 * @param string $hook
+	 * Loading resources.
 	 */
-	public function admin_enqueue_scripts( $hook ) {
+	public function admin_enqueue_scripts() {
 		wp_enqueue_script(
 			SCF_Config::PREFIX . 'editor-relation-common',
 			plugins_url( SCF_Config::NAME ) . '/js/editor-relation-common.js',
@@ -75,7 +73,7 @@ class Smart_Custom_Fields_Field_Related_Posts extends Smart_Custom_Fields_Field_
 	}
 
 	/**
-	 * Process that loading post when clicking post load button
+	 * Process that loading post when clicking post load button.
 	 */
 	public function relational_posts_search() {
 		check_ajax_referer( SCF_Config::NAME . '-relation-post-types', 'nonce' );
@@ -130,11 +128,11 @@ class Smart_Custom_Fields_Field_Related_Posts extends Smart_Custom_Fields_Field_
 	}
 
 	/**
-	 * Getting the field
+	 * Getting the field.
 	 *
-	 * @param int   $index
-	 * @param array $value
-	 * @return string html
+	 * @param int   $index Field index.
+	 * @param array $value The value.
+	 * @return string
 	 */
 	public function get_field( $index, $value ) {
 		$name      = $this->get_field_name_in_editor( $index );
@@ -250,10 +248,10 @@ class Smart_Custom_Fields_Field_Related_Posts extends Smart_Custom_Fields_Field_
 	}
 
 	/**
-	 * Displaying the option fields in custom field settings page
+	 * Displaying the option fields in custom field settings page.
 	 *
-	 * @param int $group_key
-	 * @param int $field_key
+	 * @param int $group_key Group key.
+	 * @param int $field_key Field key.
 	 */
 	public function display_field_options( $group_key, $field_key ) {
 		$this->display_label_option( $group_key, $field_key );
@@ -276,12 +274,14 @@ class Smart_Custom_Fields_Field_Related_Posts extends Smart_Custom_Fields_Field_
 				<?php foreach ( $post_types as $post_type => $post_type_object ) : ?>
 					<?php
 					$save_post_types = $this->get( 'post-type' );
-					$checked         = ( is_array( $save_post_types ) && in_array( $post_type, $save_post_types ) ) ? 'checked="checked"' : '';
+					$checked         = is_array( $save_post_types ) && in_array( $post_type, $save_post_types, true )
+						? 'checked="checked"'
+						: '';
 					?>
 				<input type="checkbox"
 					name="<?php echo esc_attr( $this->get_field_name_in_setting( $group_key, $field_key, 'post-type' ) ); ?>[]"
 					value="<?php echo esc_attr( $post_type ); ?>"
-					 <?php echo $checked; ?> /><?php echo esc_html( $post_type_object->labels->singular_name ); ?>
+					<?php echo $checked; ?> /><?php echo esc_html( $post_type_object->labels->singular_name ); ?>
 				<?php endforeach; ?>
 			</td>
 		</tr>
@@ -314,10 +314,10 @@ class Smart_Custom_Fields_Field_Related_Posts extends Smart_Custom_Fields_Field_
 	}
 
 	/**
-	 * Validating when displaying meta data
+	 * Validating when displaying meta data.
 	 *
-	 * @param array  $value
-	 * @param string $field_type
+	 * @param array  $value      The value.
+	 * @param string $field_type Field type.
 	 * @return array
 	 */
 	public function validate_get_value( $value, $field_type ) {

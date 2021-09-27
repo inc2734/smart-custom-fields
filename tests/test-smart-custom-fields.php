@@ -24,7 +24,7 @@ class Smart_Custom_Fields_Test extends WP_UnitTestCase {
 			update_option( SCF_Config::PREFIX . $i, 'dummy' );
 		}
 
-		$Cache = Smart_Custom_Fields_Cache::getInstance();
+		$Cache = Smart_Custom_Fields_Cache::get_instance();
 		$Cache->flush();
 	}
 
@@ -33,7 +33,7 @@ class Smart_Custom_Fields_Test extends WP_UnitTestCase {
 	 */
 	public function tearDown() {
 		parent::tearDown();
-		$Cache = Smart_Custom_Fields_Cache::getInstance();
+		$Cache = Smart_Custom_Fields_Cache::get_instance();
 		$Cache->flush();
 	}
 

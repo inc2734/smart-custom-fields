@@ -1,4 +1,8 @@
 vendor/
+node_modules/
 .idea/
 .vscode/
 .DS_Store
+.wp-env.override.json
+/.export/*
+smart-custom-fields/

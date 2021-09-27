@@ -1,17 +1,17 @@
 <?php
 /**
- * Smart_Custom_Fields_Controller_Settings
- * Version    : 1.3.1
- * Author     : inc2734
- * Created    : September 23, 2014
- * Modified   : August 12, 2020
- * License    : GPLv2 or later
- * License URI: http://www.gnu.org/licenses/gpl-2.0.html
+ * @package snow-monkey-blocks
+ * @author inc2734
+ * @license GPL-2.0+
+ */
+
+/**
+ * Smart_Custom_Fields_Controller_Settings class.
  */
 class Smart_Custom_Fields_Controller_Settings {
 
 	/**
-	 * Selectbox choices of the field selection
+	 * Selectbox choices of the field selection.
 	 *
 	 * @var array
 	 */
@@ -47,7 +47,7 @@ class Smart_Custom_Fields_Controller_Settings {
 	}
 
 	/**
-	 * Get Current Admin Color Scheme
+	 * Get Current Admin Color Scheme.
 	 *
 	 * @return object
 	 */
@@ -61,11 +61,10 @@ class Smart_Custom_Fields_Controller_Settings {
 	}
 
 	/**
-	 * Add Custom Inline CSS on Admin Dashboard
+	 * Add Custom Inline CSS on Admin Dashboard.
 	 */
 	public function admin_inline_css() {
-		$colors      = $this->admin_color_scheme()->colors;
-		$icon_colors = $this->admin_color_scheme()->icon_colors;
+		$colors = $this->admin_color_scheme()->colors;
 		?>
 		<style>
 		#smart-cf-meta-box-condition-post .selectivity-load-more.highlight,
@@ -85,7 +84,7 @@ class Smart_Custom_Fields_Controller_Settings {
 	}
 
 	/**
-	 * Loading resources
+	 * Loading resources.
 	 */
 	public function admin_enqueue_scripts() {
 		do_action( SCF_Config::PREFIX . 'before-settings-enqueue-scripts' );
@@ -153,7 +152,7 @@ class Smart_Custom_Fields_Controller_Settings {
 	}
 
 	/**
-	 * Adding meta boxes
+	 * Adding meta boxes.
 	 */
 	public function add_meta_boxes() {
 		add_meta_box(
@@ -193,9 +192,9 @@ class Smart_Custom_Fields_Controller_Settings {
 	}
 
 	/**
-	 * Displaying "hide" if $key isn't empty
+	 * Displaying "hide" if $key isn't empty.
 	 *
-	 * @param string $key
+	 * @param string $key Key.
 	 */
 	private function add_hide_class( $key ) {
 		if ( ! $key ) {
@@ -204,30 +203,30 @@ class Smart_Custom_Fields_Controller_Settings {
 	}
 
 	/**
-	 * Displaying custom fields
+	 * Displaying custom fields.
 	 */
 	public function display_meta_box() {
-		$Setting = SCF::add_setting( get_the_ID(), get_the_title() );
-		$Setting->add_group_unshift();
-		$groups = $Setting->get_groups();
+		$setting = SCF::add_setting( get_the_ID(), get_the_title() );
+		$setting->add_group_unshift();
+		$groups = $setting->get_groups();
 		?>
 		<div class="<?php echo esc_attr( SCF_Config::PREFIX . 'fields-wrapper' ); ?>">
 			<div class="<?php echo esc_attr( SCF_Config::PREFIX . 'groups' ); ?>">
-			<?php foreach ( $groups as $group_key => $Group ) : ?>
+			<?php foreach ( $groups as $group_key => $group ) : ?>
 				<?php
-				$fields = $Group->get_fields();
+				$fields = $group->get_fields();
 				array_unshift( $fields, SCF::get_form_field_instance( 'text' ) );
 				?>
 				<div class="<?php echo esc_attr( SCF_Config::PREFIX . 'group' ); ?> <?php $this->add_hide_class( $group_key ); ?>">
 					<div class="btn-remove-group"><span class="dashicons dashicons-no-alt"></span></div>
-					<?php $Group->display_options( $group_key ); ?>
+					<?php $group->display_options( $group_key ); ?>
 
 					<div class="<?php echo esc_attr( SCF_Config::PREFIX . 'fields' ); ?>">
-						<?php foreach ( $fields as $field_key => $Field ) : ?>
+						<?php foreach ( $fields as $field_key => $field ) : ?>
 						<div class="<?php echo esc_attr( SCF_Config::PREFIX . 'field' ); ?> <?php $this->add_hide_class( $field_key ); ?>">
 							<?php
-							$field_name  = $Field->get( 'name' );
-							$field_label = $Field->get( 'label' );
+							$field_name  = $field->get( 'name' );
+							$field_label = $field->get( 'label' );
 							if ( ! $field_label ) {
 								$field_label = $field_name;
 								if ( ! $field_label ) {
@@ -243,12 +242,12 @@ class Smart_Custom_Fields_Controller_Settings {
 									<small>[ <?php echo esc_html( $field_name ); ?> ]</small>
 								<?php endif; ?>
 							</div>
-							<table class="<?php $this->add_hide_class( ! $Field->get( 'name' ) ); ?>">
+							<table class="<?php $this->add_hide_class( ! $field->get( 'name' ) ); ?>">
 								<tr>
 									<th><?php esc_html_e( 'Type', 'smart-custom-fields' ); ?><span class="<?php echo esc_attr( SCF_Config::PREFIX . 'require' ); ?>">*</span></th>
 									<td>
 										<select
-											name="<?php echo esc_attr( $Field->get_field_name_in_setting( $group_key, $field_key, 'type' ) ); ?>"
+											name="<?php echo esc_attr( $field->get_field_name_in_setting( $group_key, $field_key, 'type' ) ); ?>"
 											class="<?php echo esc_attr( SCF_Config::PREFIX . 'field-select' ); ?>" />
 											<?php
 											foreach ( $this->optgroups as $optgroup_name => $optgroup_values ) {
@@ -261,7 +260,7 @@ class Smart_Custom_Fields_Controller_Settings {
 													$optgroup_fields[] = sprintf(
 														'<option value="%s" %s>%s</option>',
 														esc_attr( $option_key ),
-														selected( $Field->get_attribute( 'type' ), $option_key, false ),
+														selected( $field->get_attribute( 'type' ), $option_key, false ),
 														esc_html( $option )
 													);
 												}
@@ -275,12 +274,12 @@ class Smart_Custom_Fields_Controller_Settings {
 										</select>
 									</td>
 								</tr>
-								<?php $Field->display_options( $group_key, $field_key ); ?>
+								<?php $field->display_options( $group_key, $field_key ); ?>
 							</table>
 						</div>
 						<?php endforeach; ?>
 					</div>
-					<div class="button btn-add-field <?php $this->add_hide_class( $Group->is_repeatable() ); ?>"><?php esc_html_e( 'Add Sub field', 'smart-custom-fields' ); ?></div>
+					<div class="button btn-add-field <?php $this->add_hide_class( $group->is_repeatable() ); ?>"><?php esc_html_e( 'Add Sub field', 'smart-custom-fields' ); ?></div>
 				</div>
 			<?php endforeach; ?>
 			</div>
@@ -291,7 +290,7 @@ class Smart_Custom_Fields_Controller_Settings {
 	}
 
 	/**
-	 * Displaying the meta box to set the display conditions for post edit page
+	 * Displaying the meta box to set the display conditions for post edit page.
 	 */
 	public function display_meta_box_condition_post() {
 		$post_types = get_post_types(
@@ -307,7 +306,7 @@ class Smart_Custom_Fields_Controller_Settings {
 		$conditions      = get_post_meta( get_the_ID(), SCF_Config::PREFIX . 'condition', true );
 		$post_type_field = '';
 		foreach ( $post_types as $post_type => $post_type_object ) {
-			$current          = ( is_array( $conditions ) && in_array( $post_type, $conditions ) ) ? $post_type : false;
+			$current          = is_array( $conditions ) && in_array( $post_type, $conditions, true ) ? $post_type : false;
 			$post_type_field .= sprintf(
 				'<label><input type="checkbox" name="%s" value="%s" %s /> %s</label>',
 				esc_attr( SCF_Config::PREFIX . 'condition[]' ),
@@ -331,7 +330,7 @@ class Smart_Custom_Fields_Controller_Settings {
 			$saved = array();
 
 			foreach ( $saved_posts as $k => $post_id ) {
-				if ( $post_id != '' ) {
+				if ( '' !== $post_id ) {
 					$saved[ $k ]['id']   = $post_id;
 					$saved[ $k ]['text'] = $post_id; // $post_id . ' - ' . get_the_title($post_id);
 				}
@@ -361,19 +360,20 @@ class Smart_Custom_Fields_Controller_Settings {
 	}
 
 	/**
-	 *  Displaying the meta box to set the display conditions for profile edit page
+	 *  Displaying the meta box to set the display conditions for profile edit page.
 	 */
 	public function display_meta_box_condition_profile() {
 		$roles         = get_editable_roles();
 		$conditions    = get_post_meta( get_the_ID(), SCF_Config::PREFIX . 'roles', true );
 		$profile_field = '';
 		foreach ( $roles as $name => $role ) {
-			$current        = ( is_array( $conditions ) && in_array( $name, $conditions ) ) ? $name : false;
+			$current        = is_array( $conditions ) && in_array( $name, $conditions, true ) ? $name : false;
 			$profile_field .= sprintf(
 				'<label><input type="checkbox" name="%s" value="%s" %s /> %s</label>',
 				esc_attr( SCF_Config::PREFIX . 'roles[]' ),
 				esc_attr( $name ),
 				checked( $current, $name, false ),
+				// phpcs:ignore WordPress.WP.I18n.NonSingularStringLiteralText
 				esc_html__( $role['name'], 'smart-custom-fields' )
 			);
 		}
@@ -385,7 +385,7 @@ class Smart_Custom_Fields_Controller_Settings {
 	}
 
 	/**
-	 *  Displaying the meta box to set the display conditions for term edit page
+	 *  Displaying the meta box to set the display conditions for term edit page.
 	 */
 	public function display_meta_box_condition_taxonomy() {
 		$taxonomies     = get_taxonomies(
@@ -397,12 +397,13 @@ class Smart_Custom_Fields_Controller_Settings {
 		$conditions     = get_post_meta( get_the_ID(), SCF_Config::PREFIX . 'taxonomies', true );
 		$taxonomy_field = '';
 		foreach ( $taxonomies as $name => $taxonomy ) {
-			$current         = ( is_array( $conditions ) && in_array( $name, $conditions ) ) ? $name : false;
+			$current         = is_array( $conditions ) && in_array( $name, $conditions, true ) ? $name : false;
 			$taxonomy_field .= sprintf(
 				'<label><input type="checkbox" name="%s" value="%s" %s /> %s</label>',
 				esc_attr( SCF_Config::PREFIX . 'taxonomies[]' ),
 				esc_attr( $name ),
 				checked( $current, $name, false ),
+				// phpcs:ignore WordPress.WP.I18n.NonSingularStringLiteralText
 				esc_html__( $taxonomy->label, 'smart-custom-fields' )
 			);
 		}
@@ -414,14 +415,14 @@ class Smart_Custom_Fields_Controller_Settings {
 	}
 
 	/**
-	 *  Displaying the meta box to set the display conditions for custom options page
+	 *  Displaying the meta box to set the display conditions for custom options page.
 	 */
 	public function display_meta_box_condition_options_page() {
 		$optinos_pages      = SCF::get_options_pages();
 		$conditions         = get_post_meta( get_the_ID(), SCF_Config::PREFIX . 'options-pages', true );
 		$options_page_field = '';
 		foreach ( $optinos_pages as $name => $optinos_page ) {
-			$current             = ( is_array( $conditions ) && in_array( $name, $conditions ) ) ? $name : false;
+			$current             = is_array( $conditions ) && in_array( $name, $conditions, true ) ? $name : false;
 			$options_page_field .= sprintf(
 				'<label><input type="checkbox" name="%s" value="%s" %s /> %s</label>',
 				esc_attr( SCF_Config::PREFIX . 'options-pages[]' ),
@@ -438,9 +439,9 @@ class Smart_Custom_Fields_Controller_Settings {
 	}
 
 	/**
-	 * Saving settings
+	 * Saving settings.
 	 *
-	 * @param int $post_id
+	 * @param int $post_id The post id.
 	 */
 	public function save_post( $post_id ) {
 		if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
@@ -457,14 +458,14 @@ class Smart_Custom_Fields_Controller_Settings {
 		$data = array();
 		foreach ( $_POST[ SCF_Config::NAME ] as $group_key => $group_value ) {
 			// $group_key = 0 is hidden field so don't save
-			if ( $group_key === 0 ) {
+			if ( 0 === $group_key ) {
 				continue;
 			}
 			if ( ! empty( $group_value['fields'] ) && count( $group_value['fields'] ) > 1 ) {
 				$fields = array();
 				foreach ( $group_value['fields'] as $field_key => $field_value ) {
 					// $field_key = 0 is hidden field so don't save
-					if ( $field_key === 0 ) {
+					if ( 0 === $field_key ) {
 						continue;
 					}
 					if ( ! empty( $field_value['name'] ) ) {
@@ -475,7 +476,7 @@ class Smart_Custom_Fields_Controller_Settings {
 					continue;
 				}
 
-				if ( ! empty( $group_value['repeat'] ) && $group_value['repeat'] === 'true' ) {
+				if ( ! empty( $group_value['repeat'] ) && 'true' === $group_value['repeat'] ) {
 					$group_value['repeat'] = true;
 				} else {
 					$group_value['repeat'] = false;
@@ -483,7 +484,7 @@ class Smart_Custom_Fields_Controller_Settings {
 
 				// If "repeat" isn't true, empty name
 				// If "repeat" is true and name is empty, assign index
-				if ( ! ( isset( $group_value['repeat'] ) && $group_value['repeat'] === true && ! empty( $group_value['group-name'] ) ) ) {
+				if ( ! isset( $group_value['repeat'] ) || true !== $group_value['repeat'] || empty( $group_value['group-name'] ) ) {
 					$group_value['group-name'] = $group_key;
 				}
 

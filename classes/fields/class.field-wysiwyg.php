@@ -1,17 +1,17 @@
 <?php
 /**
- * Smart_Custom_Fields_Field_Wysiwyg
- * Version    : 1.2.0
- * Author     : inc2734
- * Created    : October 7, 2014
- * Modified   : June 4, 2016
- * License    : GPLv2 or later
- * License URI: http://www.gnu.org/licenses/gpl-2.0.html
+ * @package snow-monkey-blocks
+ * @author inc2734
+ * @license GPL-2.0+
+ */
+
+/**
+ * Smart_Custom_Fields_Field_Wysiwyg class.
  */
 class Smart_Custom_Fields_Field_Wysiwyg extends Smart_Custom_Fields_Field_Base {
 
 	/**
-	 * Set the required items
+	 * Set the required items.
 	 *
 	 * @return array
 	 */
@@ -29,7 +29,7 @@ class Smart_Custom_Fields_Field_Wysiwyg extends Smart_Custom_Fields_Field_Base {
 	}
 
 	/**
-	 * Set the non required items
+	 * Set the non required items.
 	 *
 	 * @return array
 	 */
@@ -42,11 +42,15 @@ class Smart_Custom_Fields_Field_Wysiwyg extends Smart_Custom_Fields_Field_Base {
 	}
 
 	/**
-	 * Loading js after loading TinyMCE in editor page
+	 * Loading js after loading TinyMCE in editor page.
 	 */
 	public function editor_enqueue_scripts() {
 		add_action( 'after_wp_tiny_mce', array( $this, 'after_wp_tiny_mce' ) );
 	}
+
+	/**
+	 * Add script for wysiwyg.
+	 */
 	public function after_wp_tiny_mce() {
 		printf(
 			'<script type="text/javascript" src="%s"></script>',
@@ -55,12 +59,16 @@ class Smart_Custom_Fields_Field_Wysiwyg extends Smart_Custom_Fields_Field_Base {
 	}
 
 	/**
-	 * Processing to be executed immediately after the field initialization
+	 * Processing to be executed immediately after the field initialization.
 	 * If not exec this, taxonomy and profile wysiwyg has js error.
 	 */
 	protected function after_loaded() {
 		add_action( 'admin_footer', array( $this, 'admin_footer' ) );
 	}
+
+	/**
+	 * Add dummy editor.
+	 */
 	public function admin_footer() {
 		?>
 		<div style="display:none;">
@@ -70,11 +78,11 @@ class Smart_Custom_Fields_Field_Wysiwyg extends Smart_Custom_Fields_Field_Base {
 	}
 
 	/**
-	 * Getting the field
+	 * Getting the field.
 	 *
-	 * @param int    $index
-	 * @param string $value
-	 * @return string html
+	 * @param int    $index Field index.
+	 * @param string $value The value.
+	 * @return string
 	 */
 	public function get_field( $index, $value ) {
 		$name       = $this->get_field_name_in_editor( $index );
@@ -110,10 +118,10 @@ class Smart_Custom_Fields_Field_Wysiwyg extends Smart_Custom_Fields_Field_Base {
 	}
 
 	/**
-	 * Displaying the option fields in custom field settings page
+	 * Displaying the option fields in custom field settings page.
 	 *
-	 * @param int $group_key
-	 * @param int $field_key
+	 * @param int $group_key Group key.
+	 * @param int $field_key Field key.
 	 */
 	public function display_field_options( $group_key, $field_key ) {
 		$this->display_label_option( $group_key, $field_key );
@@ -149,9 +157,9 @@ class Smart_Custom_Fields_Field_Wysiwyg extends Smart_Custom_Fields_Field_Base {
 	}
 
 	/**
-	 * Return the media button
+	 * Return the media button.
 	 *
-	 * @param string $editor_id
+	 * @param string $editor_id Editor id.
 	 * @return string
 	 */
 	protected function media_buttons( $editor_id = 'content' ) {
@@ -159,16 +167,18 @@ class Smart_Custom_Fields_Field_Wysiwyg extends Smart_Custom_Fields_Field_Base {
 		return sprintf(
 			'<a href="#" class="button insert-media add_media" data-editor="%s" title="%s">%s</a>',
 			esc_attr( $editor_id ),
+			// phpcs:ignore WordPress.WP.I18n.MissingArgDomain
 			esc_attr__( 'Add Media' ),
+			// phpcs:ignore WordPress.WP.I18n.MissingArgDomain
 			$img . __( 'Add Media' )
 		);
 	}
 
 	/**
-	 * Validating when displaying meta data
+	 * Validating when displaying meta data.
 	 *
-	 * @param mixed  $value
-	 * @param string $field_type
+	 * @param mixed  $value      The value.
+	 * @param string $field_type Field type.
 	 * @return string|array
 	 */
 	public function validate_get_value( $value, $field_type ) {
@@ -187,9 +197,9 @@ class Smart_Custom_Fields_Field_Wysiwyg extends Smart_Custom_Fields_Field_Base {
 	}
 
 	/**
-	 * Hooking functions that is hooked to the_content
+	 * Hooking functions that is hooked to the_content.
 	 *
-	 * @param string $value
+	 * @param string $value The value.
 	 * @return string
 	 */
 	protected function add_the_content_filter( $value ) {

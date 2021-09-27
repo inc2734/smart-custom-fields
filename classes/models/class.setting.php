@@ -1,31 +1,31 @@
 <?php
 /**
- * Smart_Custom_Fields_Setting
- * Version    : 1.0.0
- * Author     : inc2734
- * Created    : September 23, 2014
- * Modified   : February 27, 2015
- * License    : GPLv2 or later
- * License URI: http://www.gnu.org/licenses/gpl-2.0.html
+ * @package snow-monkey-blocks
+ * @author inc2734
+ * @license GPL-2.0+
+ */
+
+/**
+ * Smart_Custom_Fields_Setting class.
  */
 class Smart_Custom_Fields_Setting {
 
 	/**
-	 * Post ID of custom field settings page
+	 * Post ID of custom field settings page.
 	 *
 	 * @var string
 	 */
 	protected $id;
 
 	/**
-	 * Title of custom field settings page
+	 * Title of custom field settings page.
 	 *
 	 * @var title
 	 */
 	protected $title;
 
 	/**
-	 * Array of the saved group objects
+	 * Array of the saved group objects.
 	 *
 	 * @var array
 	 */
@@ -34,7 +34,8 @@ class Smart_Custom_Fields_Setting {
 	/**
 	 * __construct
 	 *
-	 * @param int $post_id
+	 * @param int    $id    Post ID of custom field settings page.
+	 * @param string $title Title of custom field settings page.
 	 */
 	public function __construct( $id, $title ) {
 		$this->id    = $id;
@@ -64,7 +65,7 @@ class Smart_Custom_Fields_Setting {
 	}
 
 	/**
-	 * Getting the post ID
+	 * Getting the post ID.
 	 *
 	 * @return string
 	 */
@@ -73,7 +74,7 @@ class Smart_Custom_Fields_Setting {
 	}
 
 	/**
-	 * Getting the post title
+	 * Getting the post title.
 	 *
 	 * @return string
 	 */
@@ -82,7 +83,7 @@ class Smart_Custom_Fields_Setting {
 	}
 
 	/**
-	 * Getting the group objects
+	 * Getting the group objects.
 	 *
 	 * @return array
 	 */
@@ -91,41 +92,41 @@ class Smart_Custom_Fields_Setting {
 	}
 
 	/**
-	 * Getting together the fields in each group
+	 * Getting together the fields in each group.
 	 *
 	 * @return array
 	 */
 	public function get_fields() {
 		$groups = $this->get_groups();
 		$fields = array();
-		foreach ( $groups as $Group ) {
-			$fields = array_merge( $fields, $Group->get_fields() );
+		foreach ( $groups as $group ) {
+			$fields = array_merge( $fields, $group->get_fields() );
 		}
 		return $fields;
 	}
 
 	/**
-	 * Adding group to the tail
-	 * If the argument is not, adding an empty group
+	 * Adding group to the tail.
+	 * If the argument is not, adding an empty group.
 	 *
-	 * @param string $group_name
-	 * @param bool   $repeat
-	 * @param array  $_fields
+	 * @param string $group_name Gruop name.
+	 * @param bool   $repeat     If repeat, set true.
+	 * @param array  $fields     Fields.
 	 */
 	public function add_group( $group_name = null, $repeat = false, array $fields = array() ) {
-		$Group      = $this->new_group( $group_name, $repeat, $fields );
-		$group_name = $Group->get_name();
+		$group      = $this->new_group( $group_name, $repeat, $fields );
+		$group_name = $group->get_name();
 		if ( $group_name ) {
-			$this->groups[ $group_name ] = $Group;
+			$this->groups[ $group_name ] = $group;
 		} else {
-			$this->groups[] = $Group;
+			$this->groups[] = $group;
 		}
 	}
 
 	/**
-	 * Getting group
+	 * Getting group.
 	 *
-	 * @param string $group_name
+	 * @param string $group_name Gruop name.
 	 * @return Smart_Custom_Fields_Group|false
 	 */
 	public function get_group( $group_name ) {
@@ -136,24 +137,24 @@ class Smart_Custom_Fields_Setting {
 	}
 
 	/**
-	 * Adding group to the head
-	 * If the argument is not, adding an empty group
+	 * Adding group to the head.
+	 * If the argument is not, adding an empty group.
 	 *
-	 * @param string $group_name
-	 * @param bool   $repeat
-	 * @param array  $_fields
+	 * @param string $group_name Gruop name.
+	 * @param bool   $repeat     If repeat, set true.
+	 * @param array  $fields     Fields.
 	 */
 	public function add_group_unshift( $group_name = null, $repeat = false, array $fields = array() ) {
-		$Group = $this->new_group( $group_name, $repeat, $fields );
-		array_unshift( $this->groups, $Group );
+		$group = $this->new_group( $group_name, $repeat, $fields );
+		array_unshift( $this->groups, $group );
 	}
 
 	/**
-	 * Getting generated new group
+	 * Getting generated new group.
 	 *
-	 * @param string $group_name
-	 * @param bool   $repeat
-	 * @param array  $_fields
+	 * @param string $group_name Gruop name.
+	 * @param bool   $repeat     If repeat, set true.
+	 * @param array  $fields     Fields.
 	 */
 	protected function new_group( $group_name, $repeat, $fields ) {
 		return new Smart_Custom_Fields_Group( $group_name, $repeat, $fields );

@@ -1,12 +1,12 @@
 <?php
 /**
- * Smart_Custom_Fields_Meta
- * Version    : 2.1.0
- * Author     : inc2734
- * Created    : March 17, 2015
- * Modified   : September 30, 2016
- * License    : GPLv2 or later
- * License URI: http://www.gnu.org/licenses/gpl-2.0.html
+ * @package snow-monkey-blocks
+ * @author inc2734
+ * @license GPL-2.0+
+ */
+
+/**
+ * Smart_Custom_Fields_Meta class.
  */
 class Smart_Custom_Fields_Meta {
 
@@ -16,21 +16,21 @@ class Smart_Custom_Fields_Meta {
 	protected $object;
 
 	/**
-	 * What meta data
+	 * What meta data.
 	 *
-	 * @var string post or user or term or option
+	 * @var string post or user or term or option.
 	 */
 	protected $meta_type = 'post';
 
 	/**
-	 * Post ID or User ID or Term ID or Menu slug
+	 * Post ID or User ID or Term ID or Menu slug.
 	 *
 	 * @var int
 	 */
 	protected $id;
 
 	/**
-	 * Post Type or Role or Taxonomy or Menu slug
+	 * Post Type or Role or Taxonomy or Menu slug.
 	 *
 	 * @var string
 	 * @deprecated
@@ -38,14 +38,18 @@ class Smart_Custom_Fields_Meta {
 	protected $type;
 
 	/**
-	 * Post Type or Roles or Taxonomy or Menu slug
+	 * Post Type or Roles or Taxonomy or Menu slug.
 	 *
 	 * @var array
 	 */
 	protected $types = array();
 
 	/**
-	 * @param WP_Post|WP_User|WP_Term|stdClass $object
+	 * __construct
+	 *
+	 * @param WP_Post|WP_User|WP_Term|stdClass $object Meta object type object.
+	 *
+	 * @throws \Exception If object type not found.
 	 */
 	public function __construct( $object ) {
 		$this->object = $object;
@@ -98,14 +102,15 @@ class Smart_Custom_Fields_Meta {
 	}
 
 	/**
-	 * Getting type ( Post type or Role or Taxonomy or Menu slug )
+	 * Getting type ( Post type or Role or Taxonomy or Menu slug ).
 	 *
 	 * @deprecated
-	 * @param bool $accept_revision If post type, whether allow revision post type
+	 *
+	 * @param bool $accept_revision If post type, whether allow revision post type.
 	 * @return string
 	 */
 	public function get_type( $accept_revision = true ) {
-		if ( $this->meta_type === 'post' && ! $accept_revision ) {
+		if ( 'post' === $this->meta_type && ! $accept_revision ) {
 			$public_post_type = $this->get_public_post_type( $this->id );
 			return $public_post_type[0];
 		}
@@ -113,27 +118,28 @@ class Smart_Custom_Fields_Meta {
 	}
 
 	/**
-	 * Getting type ( Post type or Role or Taxonomy or Menu slug )
+	 * Getting type ( Post type or Role or Taxonomy or Menu slug ).
 	 *
-	 * @param bool $accept_revision If post type, whether allow revision post type
+	 * @param bool $accept_revision If post type, whether allow revision post type.
 	 * @return array
 	 */
 	public function get_types( $accept_revision = true ) {
-		if ( $this->meta_type === 'post' && ! $accept_revision ) {
+		if ( 'post' === $this->meta_type && ! $accept_revision ) {
 			return $this->get_public_post_type( $this->id );
 		}
 		return $this->types;
 	}
 
 	/**
-	 * Getting post type
-	 * To feel good also Post ID of the revision
+	 * Getting post type.
+	 * To feel good also Post ID of the revision.
 	 *
-	 * @param int $post_id
+	 * @param int $post_id Post id.
 	 * @return array
 	 */
 	protected function get_public_post_type( $post_id ) {
-		if ( $public_post_id = wp_is_post_revision( $post_id ) ) {
+		$public_post_id = wp_is_post_revision( $post_id );
+		if ( $public_post_id ) {
 			$post = get_post( $public_post_id );
 		} else {
 			$post = get_post( $post_id );
@@ -145,7 +151,7 @@ class Smart_Custom_Fields_Meta {
 	}
 
 	/**
-	 * Object with this meta data is whether saved
+	 * Object with this meta data is whether saved.
 	 * Post ... If auto-draft, not saved (new posts in)
 	 * Profile or Taxonomy or option ... Since not display only after saving.
 	 *                                   So if all of meta data is empty,
@@ -153,8 +159,8 @@ class Smart_Custom_Fields_Meta {
 	 *
 	 * @return bool
 	 */
-	public function is_saved( $key = null ) {
-		if ( $this->meta_type === 'post' && get_post_status( $this->get_id() ) === 'auto-draft' ) {
+	public function is_saved() {
+		if ( 'post' === $this->meta_type && 'auto-draft' === get_post_status( $this->get_id() ) ) {
 			return false;
 		}
 		if ( ! $this->get() ) {
@@ -166,11 +172,11 @@ class Smart_Custom_Fields_Meta {
 	/**
 	 * The metadata is wheter saved.
 	 *
-	 * @param string $key
+	 * @param string $key Meta key.
 	 * @return bool
 	 */
 	public function is_saved_the_key( $key ) {
-		if ( $this->meta_type === 'post' && get_post_status( $this->get_id() ) === 'auto-draft' ) {
+		if ( 'post' === $this->meta_type && 'auto-draft' === get_post_status( $this->get_id() ) ) {
 			return false;
 		}
 
@@ -186,13 +192,13 @@ class Smart_Custom_Fields_Meta {
 	}
 
 	/**
-	 * Less than WordPress 4.4 compatibility for term meta
+	 * Less than WordPress 4.4 compatibility for term meta.
 	 * More than 4.4 are saved in meta. So if that use the meta data.
 	 *
 	 * @return bool
 	 */
 	public function maybe_4_3_term_meta() {
-		if ( $this->meta_type == 'term' ) {
+		if ( 'term' === $this->meta_type ) {
 			if ( ! get_metadata( $this->meta_type, $this->id ) && get_option( $this->get_option_name() ) ) {
 				return true;
 			}
@@ -201,10 +207,10 @@ class Smart_Custom_Fields_Meta {
 	}
 
 	/**
-	 * Getting the meta data
+	 * Getting the meta data.
 	 *
-	 * @param string|null $key
-	 * @param bool        $single false ... return array, true ... return string
+	 * @param string|null $key Field key.
+	 * @param bool        $single false ... return array, true ... return string.
 	 * @return string|array
 	 */
 	public function get( $key = '', $single = false ) {
@@ -214,22 +220,23 @@ class Smart_Custom_Fields_Meta {
 			$meta = $this->get_option_metadata( $key, $single );
 		}
 
-		if ( $key === SCF_Config::PREFIX . 'repeat-multiple-data' ) {
+		if ( SCF_Config::PREFIX . 'repeat-multiple-data' === $key ) {
 			return $meta;
 		}
 
 		$settings = SCF::get_settings( $this->object );
 		if ( $key ) {
-			foreach ( $settings as $Setting ) {
-				$fields = $Setting->get_fields();
+			foreach ( $settings as $setting ) {
+				$fields = $setting->get_fields();
 				if ( ! empty( $fields[ $key ] ) ) {
 					return $meta;
 				}
 			}
 		} else {
 			if ( is_array( $meta ) ) {
-				foreach ( $settings as $Setting ) {
-					$fields = $Setting->get_fields();
+				$metas = [];
+				foreach ( $settings as $setting ) {
+					$fields = $setting->get_fields();
 					foreach ( $meta as $meta_key => $meta_value ) {
 						if ( isset( $fields[ $meta_key ] ) ) {
 							$metas[ $meta_key ] = $meta[ $meta_key ];
@@ -238,7 +245,7 @@ class Smart_Custom_Fields_Meta {
 				}
 			}
 		}
-		if ( isset( $metas ) ) {
+		if ( ! empty( $metas ) ) {
 			return $metas;
 		}
 		if ( $single ) {
@@ -250,8 +257,8 @@ class Smart_Custom_Fields_Meta {
 	/**
 	 * Getting option like meta data.
 	 *
-	 * @param string|null $key
-	 * @param bool        $single false ... return array, true ... return string
+	 * @param string|null $key    Option key.
+	 * @param bool        $single false ... return array, true ... return string.
 	 * @return string|array
 	 */
 	protected function get_option_metadata( $key, $single ) {
@@ -280,10 +287,10 @@ class Smart_Custom_Fields_Meta {
 	/**
 	 * Updating meta data. If the meta data not exist, adding it.
 	 *
-	 * @param string $key
-	 * @param mixed  $value
-	 * @param mixed  $prev_value If specified, it overwrites the only ones of this value
-	 * @return int|false Meta ID
+	 * @param string $key        Option key.
+	 * @param mixed  $value      Option value.
+	 * @param mixed  $prev_value If specified, it overwrites the only ones of this value.
+	 * @return int|false
 	 */
 	public function update( $key, $value, $prev_value = '' ) {
 		$return = false;
@@ -303,16 +310,16 @@ class Smart_Custom_Fields_Meta {
 	/**
 	 * Updating the option like meta data. If the meta data not exist, adding it.
 	 *
-	 * @param string $key
-	 * @param mixed  $value
-	 * @param mixed  $prev_value If specified, it overwrites the only ones of this value
+	 * @param string $key        Option key.
+	 * @param mixed  $value      Option value.
+	 * @param mixed  $prev_value If specified, it overwrites the only ones of this value.
 	 * @return bool
 	 */
 	protected function update_option_metadata( $key, $value, $prev_value ) {
 		$option_name = $this->get_option_name();
 		$option      = get_option( $option_name );
 		if ( isset( $option[ $key ] ) ) {
-			if ( $prev_value !== '' ) {
+			if ( '' !== $prev_value ) {
 				foreach ( $option[ $key ] as $option_key => $option_value ) {
 					if ( $prev_value === $option_value ) {
 						$option[ $key ][ $option_key ] = $value;
@@ -332,12 +339,12 @@ class Smart_Custom_Fields_Meta {
 	}
 
 	/**
-	 * Adding the meta data
+	 * Adding the meta data.
 	 *
-	 * @param string $key
-	 * @param mixed  $value
-	 * @param bool   $unique Whether the key to the unique
-	 * @return int|false Meta ID
+	 * @param string $key    Option key.
+	 * @param mixed  $value  Option value.
+	 * @param bool   $unique Whether the key to the unique.
+	 * @return int|false
 	 */
 	public function add( $key, $value, $unique = false ) {
 		$return = false;
@@ -355,11 +362,11 @@ class Smart_Custom_Fields_Meta {
 	}
 
 	/**
-	 * Adding the option like meta data
+	 * Adding the option like meta data.
 	 *
-	 * @param string $key
-	 * @param mixed  $value
-	 * @param bool   $unique Whether the key to the unique
+	 * @param string $key    Option key.
+	 * @param mixed  $value  Option value.
+	 * @param bool   $unique Whether the key to the unique.
 	 * @return bool
 	 */
 	protected function add_option_metadata( $key, $value, $unique ) {
@@ -368,16 +375,16 @@ class Smart_Custom_Fields_Meta {
 		if ( ! $unique || ! isset( $option[ $key ] ) ) {
 			$option[ $key ][] = $value;
 			$option           = stripslashes_deep( $option );
-			$return           = update_option( $option_name, $option, false );
+			return update_option( $option_name, $option, false );
 		}
 		return false;
 	}
 
 	/**
-	 * Deleting the meta data
+	 * Deleting the meta data.
 	 *
-	 * @param string $key
-	 * @param mixed  $value If specified, it deletes the only ones of this value
+	 * @param string $key   Meta key.
+	 * @param mixed  $value If specified, it deletes the only ones of this value.
 	 * @return bool
 	 */
 	public function delete( $key = '', $value = '' ) {
@@ -394,22 +401,22 @@ class Smart_Custom_Fields_Meta {
 	}
 
 	/**
-	 * Deleting the option like meta data
+	 * Deleting the option like meta data.
 	 *
-	 * @param string $key
-	 * @param mixed  $value If specified, it deletes the only ones of this value
+	 * @param string $key   Option key.
+	 * @param mixed  $value If specified, it deletes the only ones of this value.
 	 * @return bool
 	 */
 	protected function delete_option_metadata( $key, $value ) {
 		$option_name = $this->get_option_name();
 		$option      = get_option( $option_name );
 
-		if ( isset( $option[ $key ] ) && $value === '' ) {
+		if ( isset( $option[ $key ] ) && '' === $value ) {
 			unset( $option[ $key ] );
 			return update_option( $option_name, $option );
 		}
 
-		if ( isset( $option[ $key ] ) && $value !== '' ) {
+		if ( isset( $option[ $key ] ) && '' !== $value ) {
 			foreach ( $option[ $key ] as $option_key => $option_value ) {
 				if ( $option_value === $value ) {
 					unset( $option[ $key ][ $option_key ] );
@@ -421,7 +428,7 @@ class Smart_Custom_Fields_Meta {
 	}
 
 	/**
-	 * Delete all term meta for less than WordPress 4.3
+	 * Delete all term meta for less than WordPress 4.3.
 	 */
 	public function delete_term_meta_for_wp43() {
 		$option_name = $this->get_option_name();
@@ -429,11 +436,11 @@ class Smart_Custom_Fields_Meta {
 	}
 
 	/**
-	 * Saving the meta data based on the posted data
+	 * Saving the meta data based on the posted data.
 	 *
-	 * @param array $POST
+	 * @param array $__post $_POST.
 	 */
-	public function save( array $POST ) {
+	public function save( array $__post ) {
 		// For repeated multi-value items identification
 		$repeat_multiple_data = array();
 
@@ -446,30 +453,30 @@ class Smart_Custom_Fields_Meta {
 
 		$this->delete( SCF_Config::PREFIX . 'repeat-multiple-data' );
 
-		if ( ! isset( $POST[ SCF_Config::NAME ] ) ) {
+		if ( ! isset( $__post[ SCF_Config::NAME ] ) ) {
 			return;
 		}
 
 		$settings   = SCF::get_settings( $this->object );
 		$saved_data = array();
 
-		foreach ( $settings as $Setting ) {
-			$groups = $Setting->get_groups();
-			foreach ( $groups as $Group ) {
-				$fields = $Group->get_fields();
-				foreach ( $fields as $Field ) {
-					$field_name = $Field->get( 'name' );
-					if ( ! isset( $POST[ SCF_Config::NAME ][ $field_name ] ) ) {
+		foreach ( $settings as $setting ) {
+			$groups = $setting->get_groups();
+			foreach ( $groups as $group ) {
+				$fields = $group->get_fields();
+				foreach ( $fields as $field ) {
+					$field_name = $field->get( 'name' );
+					if ( ! isset( $__post[ SCF_Config::NAME ][ $field_name ] ) ) {
 						continue;
 					}
-					$saved_data[ $field_name ] = $POST[ SCF_Config::NAME ][ $field_name ];
+					$saved_data[ $field_name ] = $__post[ SCF_Config::NAME ][ $field_name ];
 
 					$this->delete( $field_name );
-					if ( $Field->get_attribute( 'allow-multiple-data' ) ) {
+					if ( $field->get_attribute( 'allow-multiple-data' ) ) {
 						$multiple_data_fields[] = $field_name;
 					}
 
-					if ( $Group->is_repeatable() && $Field->get_attribute( 'allow-multiple-data' ) ) {
+					if ( $group->is_repeatable() && $field->get_attribute( 'allow-multiple-data' ) ) {
 						$repeat_multiple_data_fields = $saved_data[ $field_name ];
 						foreach ( $repeat_multiple_data_fields as $values ) {
 							if ( is_array( $values ) ) {
@@ -489,7 +496,7 @@ class Smart_Custom_Fields_Meta {
 
 		foreach ( $saved_data as $name => $values ) {
 			foreach ( $values as $value ) {
-				if ( in_array( $name, $multiple_data_fields ) && $value === '' ) {
+				if ( in_array( $name, $multiple_data_fields, true ) && '' === $value ) {
 					continue;
 				}
 				if ( ! is_array( $value ) ) {
@@ -504,20 +511,20 @@ class Smart_Custom_Fields_Meta {
 	}
 
 	/**
-	 * Restore the data from the revision
+	 * Restore the data from the revision.
 	 *
-	 * @param WP_Post $revision
+	 * @param WP_Post $revision The revision post.
 	 */
 	public function restore( $revision ) {
-		if ( $this->meta_type !== 'post' || is_null( $this->object ) || ! is_a( $revision, 'WP_Post' ) ) {
+		if ( 'post' !== $this->meta_type || is_null( $this->object ) || ! is_a( $revision, 'WP_Post' ) ) {
 			return;
 		}
 
 		$settings = SCF::get_settings( $this->object );
-		foreach ( $settings as $Setting ) {
-			$fields = $Setting->get_fields();
-			foreach ( $fields as $Field ) {
-				$field_name = $Field->get( 'name' );
+		foreach ( $settings as $setting ) {
+			$fields = $setting->get_fields();
+			foreach ( $fields as $field ) {
+				$field_name = $field->get( 'name' );
 				$this->delete( $field_name );
 				$value = SCF::get( $field_name, $revision->ID );
 				if ( is_array( $value ) ) {
@@ -546,7 +553,9 @@ class Smart_Custom_Fields_Meta {
 	}
 
 	/**
-	 * Getting option name for saved options table
+	 * Getting option name for saved options table.
+	 *
+	 * @return string
 	 */
 	public function get_option_name() {
 		return sprintf(

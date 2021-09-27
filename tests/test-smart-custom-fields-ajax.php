@@ -13,7 +13,7 @@ class Smart_Custom_Fields_Ajax_Test extends WP_UnitTestCase {
 		parent::setUp();
 		$this->Ajax = new Smart_Custom_Fields_Ajax();
 
-		$Cache = Smart_Custom_Fields_Cache::getInstance();
+		$Cache = Smart_Custom_Fields_Cache::get_instance();
 		$Cache->flush();
 	}
 
@@ -22,7 +22,7 @@ class Smart_Custom_Fields_Ajax_Test extends WP_UnitTestCase {
 	 */
 	public function tearDown() {
 		parent::tearDown();
-		$Cache = Smart_Custom_Fields_Cache::getInstance();
+		$Cache = Smart_Custom_Fields_Cache::get_instance();
 		$Cache->flush();
 	}
 

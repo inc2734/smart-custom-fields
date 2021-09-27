@@ -1,12 +1,12 @@
 <?php
 /**
- * Smart_Custom_Fields_Controller_Option
- * Version    : 1.0.0
- * Author     : inc2734
- * Created    : May 29, 2014
- * Modified   :
- * License    : GPLv2 or later
- * License URI: http://www.gnu.org/licenses/gpl-2.0.html
+ * @package snow-monkey-blocks
+ * @author inc2734
+ * @license GPL-2.0+
+ */
+
+/**
+ * Smart_Custom_Fields_Controller_Option class.
  */
 class Smart_Custom_Fields_Controller_Option extends Smart_Custom_Fields_Controller_Base {
 
@@ -20,9 +20,9 @@ class Smart_Custom_Fields_Controller_Option extends Smart_Custom_Fields_Controll
 	}
 
 	/**
-	 * Loading resources for term edit page
+	 * Loading resources for term edit page.
 	 *
-	 * @param string $hook
+	 * @param string $hook The current admin page.
 	 */
 	public function admin_enqueue_scripts( $hook ) {
 		parent::admin_enqueue_scripts( $hook );
@@ -33,23 +33,25 @@ class Smart_Custom_Fields_Controller_Option extends Smart_Custom_Fields_Controll
 	}
 
 	/**
-	 * Displaying custom fields in custom options page
+	 * Displaying custom fields in custom options page.
 	 *
-	 * @param stdClass $Option
+	 * @param stdClass $option Option object.
 	 */
-	public function custom_options_page( $Option ) {
-		$settings = SCF::get_settings( $Option );
+	public function custom_options_page( $option ) {
+		$settings = SCF::get_settings( $option );
 		if ( ! $settings ) {
 			return;
 		}
+
+		$callback_args = [];
 		?>
 		<form method="post" action="">
-			<?php foreach ( $settings as $Setting ) : ?>
-				<?php $callback_args['args'] = $Setting->get_groups(); ?>
+			<?php foreach ( $settings as $setting ) : ?>
+				<?php $callback_args['args'] = $setting->get_groups(); ?>
 				<table class="form-table">
 					<tr>
-						<th scope="row"><?php echo esc_html( $Setting->get_title() ); ?></th>
-						<td><?php $this->display_meta_box( $Option, $callback_args ); ?></td>
+						<th scope="row"><?php echo esc_html( $setting->get_title() ); ?></th>
+						<td><?php $this->display_meta_box( $option, $callback_args ); ?></td>
 					</tr>
 				</table>
 			<?php endforeach; ?>
@@ -61,15 +63,15 @@ class Smart_Custom_Fields_Controller_Option extends Smart_Custom_Fields_Controll
 	}
 
 	/**
-	 * Saving meta data from custom fields in custom options page
+	 * Saving meta data from custom fields in custom options page.
 	 *
-	 * @param stdClass $Option
+	 * @param stdClass $option Option object.
 	 */
-	public function save_option( $Option ) {
+	public function save_option( $option ) {
 		if ( ! isset( $_POST[ SCF_Config::NAME ] ) ) {
 			return;
 		}
 
-		$this->save( $_POST, $Option );
+		$this->save( $_POST, $option );
 	}
 }
