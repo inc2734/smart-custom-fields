@@ -745,6 +745,17 @@ class SCF_Test extends WP_UnitTestCase {
 		$this->assertSame( array( '0' => 'AAA', '1' => 'BBB' ), SCF::choices_eol_to_array( "0 => AAA\n1 => BBB" ) );
 	}
 
+	/**
+	 * @group rest_api_get_post_type
+	 */
+	public function test_rest_api_get_post_type() {
+		$rest_api = new Smart_Custom_Fields_Rest_API();
+		$this->assertSame( array( 'post', 'page' ), $rest_api->get_post_type() );
+		add_filter( SCF_Config::PREFIX . 'rest_api_post_type', array( $this, '_get_post_type' ) );
+		$this->assertSame( array( 'post', 'page', 'my-custom-post' ), $rest_api->get_post_type() );
+		remove_filter( SCF_Config::PREFIX . 'rest_api_post_type', array( $this, '_get_post_type' ) );
+	}
+
 	protected function create_revision( $post_id ) {
 		return $this->factory->post->create( array(
 			'post_type'   => 'revision',
@@ -824,5 +835,12 @@ class SCF_Test extends WP_UnitTestCase {
 			$settings[$Setting->get_id()] = $Setting;
 		}
 		return $settings;
+	}
+
+	/**
+	 * Register rest_api_post_type filter hook
+	 */
+	public function _get_post_type( $post_type ) {
+		return array( 'post', 'page', 'my-custom-post' );
 	}
 }
