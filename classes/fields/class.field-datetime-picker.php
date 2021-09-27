@@ -1,6 +1,6 @@
 <?php
 /**
- * @package snow-monkey-blocks
+ * @package smart-custom-fields
  * @license GPL-2.0+
  * @author Toshihiro Kanai <i@miruc.co>
  */

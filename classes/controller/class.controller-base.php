@@ -1,6 +1,6 @@
 <?php
 /**
- * @package snow-monkey-blocks
+ * @package smart-custom-fields
  * @author inc2734
  * @license GPL-2.0+
  */
