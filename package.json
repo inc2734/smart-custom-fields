@@ -27,6 +27,7 @@
     "test:unit:php": "wp-env run phpunit 'phpunit -c /var/www/html/wp-content/plugins/smart-custom-fields/.phpunit.xml.dist --verbose'",
     "test:unit": "run-s test:unit:*",
     "test": "run-s test:*",
+    "clean:zip": "rimraf smart-custom-fields.zip",
     "zip:pack": "rsync -a --exclude='/bin' --exclude='/vendor' --exclude='/node_modules' --exclude='.*' --exclude='*.ruleset.xml' --exclude='*.config.js' --exclude='*.xml.dist' --exclude='/tests' --exclude='package*.json' . smart-custom-fields && cd smart-custom-fields && composer install --no-dev",
     "zip:archive": "zip -9 -qmr smart-custom-fields.zip smart-custom-fields",
     "zip": "npm run clean:zip && npm run zip:pack && npm run zip:archive"
