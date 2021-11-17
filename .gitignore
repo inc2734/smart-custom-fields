@@ -6,3 +6,4 @@ node_modules/
 .wp-env.override.json
 /.export/*
 smart-custom-fields/
+smart-custom-fields.zip

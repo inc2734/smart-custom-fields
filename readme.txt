@@ -4,7 +4,7 @@ Donate link: http://www.amazon.co.jp/registry/wishlist/39ANKRNSTNW40
 Tags: plugin, custom field, custom, field, meta, meta field, repeat, repeatable
 Requires at least: 3.9
 Tested up to: 5.8
-Stable tag: 4.2.0
+Stable tag: 4.2.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -128,6 +128,11 @@ You can translate this plugin into your language by using [GlotPress](https://tr
 2. Post edit page.
 
 == Changelog ==
+
+= 4.2.1 =
+* Fix Worning/Fatal error on PHP7/8.
+* Fix sanitize missing in the textarea field.
+* Add list to the wysiwyg field.
 
 = 4.1.6
 * Some updates by [@kengyu](https://github.com/kengyu)
