@@ -26,9 +26,11 @@ class Smart_Custom_Fields_Controller_Base {
 
 	/**
 	 * Loading resources for edit page.
+	 *
+	 * @param string $hook The current admin page.
 	 */
-	public function admin_enqueue_scripts() {
-		do_action( SCF_Config::PREFIX . 'before-editor-enqueue-scripts' );
+	public function admin_enqueue_scripts( $hook ) {
+		do_action( SCF_Config::PREFIX . 'before-editor-enqueue-scripts', $hook );
 		wp_enqueue_style(
 			SCF_Config::PREFIX . 'editor',
 			plugins_url( SCF_Config::NAME ) . '/css/editor.css'
@@ -49,7 +51,7 @@ class Smart_Custom_Fields_Controller_Base {
 				'file_uploader_title'  => esc_html__( 'File setting', 'smart-custom-fields' ),
 			)
 		);
-		do_action( SCF_Config::PREFIX . 'after-editor-enqueue-scripts' );
+		do_action( SCF_Config::PREFIX . 'after-editor-enqueue-scripts', $hook );
 
 		if ( ! user_can_richedit() ) {
 			wp_enqueue_script(
