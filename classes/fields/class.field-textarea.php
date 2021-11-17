@@ -53,7 +53,7 @@ class Smart_Custom_Fields_Field_Textarea extends Smart_Custom_Fields_Field_Base 
 			esc_attr( $name ),
 			esc_attr( $rows ),
 			disabled( true, $disabled, false ),
-			esc_attr( $value )
+			esc_textarea( $value )
 		);
 	}
 
