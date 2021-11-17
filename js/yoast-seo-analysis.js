@@ -1,19 +1,10 @@
-/**
- * yoast-seo-analysis.js
- * Version    : 1.0.0
- * Author     : robssanches
- * Created    : July 11, 2018
- * Modified   : July 11, 2018
- * License    : GPLv2 or later
- * License URI: http://www.gnu.org/licenses/gpl-2.0.html
- */
 jQuery( function( $ ) {
-	
+
 	$(document).ready(function(e) {
-	
+
 	// if is Page or Post continue...
 	if( $('body').hasClass('post-php') && typeof YoastSEO !== "undefined" && typeof SCFYoastSEOAnalysis == "undefined" ){
-		
+
 		/**
          * Set up the SCF Yoast SEO Analysis plugin
          */
@@ -38,28 +29,28 @@ jQuery( function( $ ) {
 
             // Re-analyse SEO score
             $('.btn-add-repeat-group, .btn-remove-image').on('click', this.bindListeners);
-			if (wp.media) wp.media.view.Modal.prototype.on('close', function() {				
+			if (wp.media) wp.media.view.Modal.prototype.on('close', function() {
 				window.setTimeout( function() { YoastSEO.app.pluginReloaded('SCFYoastSEOAnalysis'); }, 200 );
 			});
-			
+
         };
 
         /**
          * Bind listeners to text fields (input, textarea and wysiwyg)
          */
         SCFYoastSEOAnalysis.prototype.bindListeners = function() {
-			
+
 			console.log('bindListeners');
 
 			SCFYoastSEOAnalysis.analysisTimeout = window.setTimeout( function() { YoastSEO.app.pluginReloaded('SCFYoastSEOAnalysis'); }, 200 );
 
 			$('#post-body, #edittag').find('input[type="text"][name^="smart-custom-fields"], textarea[name^="smart-custom-fields"], .smart-cf-field-type-wysiwyg iframe body#tinymce').on('keyup paste cut blur focus change', function() {
-				
+
 				if ( SCFYoastSEOAnalysis.analysisTimeout ) {
 					window.clearTimeout(SCFYoastSEOAnalysis.analysisTimeout);
 				}
 			});
-			
+
         };
 
 		/**
@@ -69,17 +60,17 @@ jQuery( function( $ ) {
 		 */
         SCFYoastSEOAnalysis.prototype.addScfFieldsToContent = function(data) {
             console.log('addScfFieldsToContent');
-			
+
 			var scf_content = ' ';
 
 			$('#post-body, #edittag').find('input[type="text"][name^="smart-custom-fields"], textarea[name^="smart-custom-fields"]').each(function() {
                 scf_content += ' ' + $(this).val();
             });
-			
+
 			$(".smart-cf-field-type-wysiwyg iframe").contents().find("body#tinymce").each(function() {
                 scf_content += ' ' + $(this).html();
             });
-			
+
 			$('#post-body, #edittag').find('.smart-cf-upload-image img').each(function() {
                 scf_content += '<img src="' + $(this).attr('src') + '" alt="' + $(this).attr('alt') + '" />';
             });
@@ -91,7 +82,7 @@ jQuery( function( $ ) {
 
         new SCFYoastSEOAnalysis();
 	}
-	
+
     });
 
 });

@@ -1,12 +1,3 @@
-/**
- * settings.js
- * Version    : 1.1.0
- * Author     : inc2734
- * Created    : September 23, 2014
- * Modified   : July 14, 2018
- * License    : GPLv2 or later
- * License URI: http://www.gnu.org/licenses/gpl-2.0.html
- */
 jQuery( function( $ ) {
 	$( '.smart-cf-fields-wrapper' ).each( function( i, e ) {
 		var wrapper = $( e );

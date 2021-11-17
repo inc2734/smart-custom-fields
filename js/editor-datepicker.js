@@ -1,12 +1,3 @@
-/**
- * editor-datepicker.js
- * Version    : 1.0.1
- * Author     : inc2734
- * Created    : January 18, 2015
- * Modified   : July 28, 2016
- * License    : GPLv2 or later
- * License URI: http://www.gnu.org/licenses/gpl-2.0.html
- */
 jQuery( function( $ ) {
 	$( '.smart-cf-meta-box-table' ).each( function( i, e ) {
 		$( e ).find( '.smart-cf-datepicker' ).each( function( i, e ) {

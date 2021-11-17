@@ -1,12 +1,3 @@
-/**
- * editor.js
- * Version    : 2.0.0
- * Author     : inc2734
- * Created    : September 23, 2014
- * Modified   : July 11, 2018
- * License    : GPLv2 or later
- * License URI: http://www.gnu.org/licenses/gpl-2.0.html
- */
 jQuery( function( $ ) {
 
 	$( '.smart-cf-meta-box' ).each( function( i, e ) {

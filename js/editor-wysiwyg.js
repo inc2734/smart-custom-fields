@@ -1,12 +1,3 @@
-/**
- * editor-wysiwyg.js
- * Version    : 2.0.0
- * Author     : inc2734
- * Created    : September 28, 2014
- * Modified   : June 4, 2016
- * License    : GPLv2 or later
- * License URI: http://www.gnu.org/licenses/gpl-2.0.html
- */
 jQuery( function( $ ) {
 
 	$( '.smart-cf-meta-box' ).each( function( i, e ) {
@@ -134,7 +125,7 @@ jQuery( function( $ ) {
 			mceinit = {
 				content_css: ['../wp-includes/js/tinymce/skins/wordpress/wp-content.css', '../wp-content/plugins/smart-custom-fields/css/wysiwyg.css'],
 				menubar: false,
-				plugins: "hr,wplink,fullscreen,wordpress,textcolor,paste,charmap",
+				plugins: "hr,wplink,fullscreen,wordpress,textcolor,paste,charmap,lists",
 				toolbar1: "bold,italic,strikethrough,bullist,numlist,blockquote,hr,alignleft,aligncenter,alignright,link,unlink,wp_more,spellchecker,wp_adv,fullscreen",
 				toolbar2: "formatselect,underline,alignjustify,forecolor,pastetext,removeformat,charmap,outdent,indent,undo,redo,wp_help,code",
 				convert_urls: false,

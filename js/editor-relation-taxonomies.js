@@ -1,12 +1,3 @@
-/**
- * editor.js
- * Version    : 1.2.0
- * Author     : inc2734
- * Created    : February 2, 2016
- * Modified   : January 27, 2017
- * License    : GPLv2 or later
- * License URI: http://www.gnu.org/licenses/gpl-2.0.html
- */
 jQuery( function( $ ) {
 
 	var table_class = 'tr';
