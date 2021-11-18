@@ -687,6 +687,10 @@ class SCF {
 	 * @return Smart_Custom_Fields_Field_Base|null
 	 */
 	public static function get_field( $object, $field_name ) {
+		if ( '_locale' === $field_name || '_original_post' === $field_name ) {
+			return null;
+		}
+
 		$settings = self::get_settings( $object );
 		foreach ( $settings as $setting ) {
 			$fields = $setting->get_fields();
