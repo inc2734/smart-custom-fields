@@ -34,7 +34,7 @@ class Smart_Custom_Fields_Rest_API {
 			array(
 				'methods'             => 'GET',
 				'callback'            => array( $this, 'get_all_posts' ),
-				'permission_callback' => function() {
+				'permission_callback' => function () {
 					return current_user_can( 'edit_posts' );
 				},
 			)

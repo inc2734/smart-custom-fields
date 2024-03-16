@@ -49,13 +49,15 @@ class Smart_Custom_Fields_Controller_Editor extends Smart_Custom_Fields_Controll
 		if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
 			return;
 		}
+
 		if ( wp_is_post_autosave( $post_id ) || wp_is_post_revision( $post_id ) ) {
 			return;
 		}
-		if ( ! isset( $_POST[ SCF_Config::NAME ] ) ) {
+
+		if ( ! filter_input( INPUT_POST, SCF_Config::NAME, FILTER_DEFAULT, FILTER_REQUIRE_ARRAY ) ) {
 			return;
 		}
 
-		$this->save( $_POST, get_post( $post_id ) );
+		$this->save( filter_input_array( INPUT_POST ), get_post( $post_id ) );
 	}
 }

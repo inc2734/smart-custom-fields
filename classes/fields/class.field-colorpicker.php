@@ -52,9 +52,9 @@ class Smart_Custom_Fields_Field_Colorpicker extends Smart_Custom_Fields_Field_Ba
 
 		wp_enqueue_script(
 			SCF_Config::PREFIX . 'editor-colorpicker',
-			plugins_url( SCF_Config::NAME ) . '/js/editor-colorpicker.js',
+			SMART_CUSTOM_FIELDS_URL . '/js/editor-colorpicker.js',
 			array( 'jquery', 'wp-color-picker' ),
-			filemtime( plugin_dir_path( dirname( __FILE__ ) . '/../../js/editor-colorpicker.js' ) ),
+			filemtime( SMART_CUSTOM_FIELDS_PATH . '/js/editor-colorpicker.js' ),
 			true
 		);
 	}
@@ -67,9 +67,9 @@ class Smart_Custom_Fields_Field_Colorpicker extends Smart_Custom_Fields_Field_Ba
 
 		wp_enqueue_script(
 			SCF_Config::PREFIX . 'settings-colorpicker',
-			plugins_url( SCF_Config::NAME ) . '/js/settings-colorpicker.js',
+			SMART_CUSTOM_FIELDS_URL . '/js/settings-colorpicker.js',
 			array( 'jquery', 'wp-color-picker' ),
-			filemtime( plugin_dir_path( dirname( __FILE__ ) . '/../../js/settings-colorpicker.js' ) ),
+			filemtime( SMART_CUSTOM_FIELDS_PATH . '/js/settings-colorpicker.js' ),
 			true
 		);
 	}

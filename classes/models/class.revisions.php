@@ -136,12 +136,12 @@ class Smart_Custom_Fields_Revisions {
 	public function edit_form_after_title() {
 		printf(
 			'<input type="hidden" name="%1$s" value="%1$s" />',
-			SCF_Config::PREFIX . 'debug-preview'
+			esc_attr( SCF_Config::PREFIX . 'debug-preview' )
 		);
 	}
 
 	/**
-	 * リビジョン比較画面にメタデータを表示
+	 * Display metadata on revision comparison screen.
 	 *
 	 * @param string  $value  The current revision field to compare to or from.
 	 * @param string  $column The current revision field.
@@ -177,7 +177,7 @@ class Smart_Custom_Fields_Revisions {
 	}
 
 	/**
-	 * false ならリビジョンとして保存される
+	 * If false, it is saved as a revision.
 	 *
 	 * @param bool    $check_for_changes Whether to check for changes before saving a new revision. Default true.
 	 * @param WP_Post $last_revision     The last revision post object.
@@ -194,15 +194,11 @@ class Smart_Custom_Fields_Revisions {
 			}
 		}
 
-		if ( isset( $_POST[ SCF_Config::NAME ] ) ) {
-			$serialized_post_meta = serialize( $post_meta );
-			$serialized_send_data = $_POST[ SCF_Config::NAME ];
-
-			// phpcs:ignore WordPress.PHP.StrictComparisons.LooseComparison
-			if ( $serialized_post_meta != $serialized_send_data ) {
-				return false;
-			}
+		$posted_data = filter_input( INPUT_POST, SCF_Config::NAME, FILTER_DEFAULT, FILTER_REQUIRE_ARRAY );
+		if ( $posted_data && maybe_serialize( $post_meta ) !== maybe_serialize( $posted_data ) ) {
+			return false;
 		}
+
 		return true;
 	}
 }

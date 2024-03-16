@@ -16,7 +16,12 @@ class Smart_Custom_Fields_Controller_Taxonomy extends Smart_Custom_Fields_Contro
 	public function __construct() {
 		parent::__construct();
 
-		add_action( $_REQUEST['taxonomy'] . '_edit_form_fields', array( $this, 'edit_form_fields' ) );
+		$requested_taxonomy = filter_input( INPUT_POST, 'taxonomy' );
+		$requested_taxonomy = $requested_taxonomy ? $requested_taxonomy : filter_input( INPUT_GET, 'taxonomy' );
+		if ( $requested_taxonomy ) {
+			add_action( $requested_taxonomy . '_edit_form_fields', array( $this, 'edit_form_fields' ) );
+		}
+
 		add_action( 'edited_terms', array( $this, 'update' ), 10, 2 );
 		add_action( 'delete_term', array( $this, 'delete' ), 10, 4 );
 	}
@@ -30,7 +35,9 @@ class Smart_Custom_Fields_Controller_Taxonomy extends Smart_Custom_Fields_Contro
 		parent::admin_enqueue_scripts( $hook );
 		wp_enqueue_style(
 			SCF_Config::PREFIX . 'taxonomy',
-			plugins_url( SCF_Config::NAME ) . '/css/taxonomy.css'
+			SMART_CUSTOM_FIELDS_URL . '/css/taxonomy.css',
+			array(),
+			filemtime( SMART_CUSTOM_FIELDS_PATH . '/css/taxonomy.css' )
 		);
 	}
 
@@ -41,7 +48,7 @@ class Smart_Custom_Fields_Controller_Taxonomy extends Smart_Custom_Fields_Contro
 	 */
 	public function edit_form_fields( $term ) {
 		$settings      = SCF::get_settings( $term );
-		$callback_args = [];
+		$callback_args = array();
 		foreach ( $settings as $setting ) {
 			$callback_args['args'] = $setting->get_groups();
 			?>
@@ -65,12 +72,13 @@ class Smart_Custom_Fields_Controller_Taxonomy extends Smart_Custom_Fields_Contro
 		if ( ! current_user_can( 'manage_categories' ) ) {
 			return;
 		}
-		if ( ! isset( $_POST[ SCF_Config::NAME ] ) ) {
+
+		if ( ! filter_input( INPUT_POST, SCF_Config::NAME, FILTER_DEFAULT, FILTER_REQUIRE_ARRAY ) ) {
 			return;
 		}
 
 		$term = get_term( $term_id, $taxonomy );
-		$this->save( $_POST, $term );
+		$this->save( filter_input_array( INPUT_POST ), $term );
 	}
 
 	/**

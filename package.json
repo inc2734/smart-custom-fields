@@ -1,35 +1,42 @@
 {
-  "author": "inc2734",
-  "license": "GPL-2.0+",
-  "devDependencies": {
-    "@wordpress/env": "4.1.3",
-    "npm-run-all": "^4.1.5"
-  },
-  "scripts": {
-    "export:wp-content:themes": "npm run cli 'cp -r wp-content/themes .export/wp-content'",
-    "export:wp-content:uploads": "npm run cli 'cp -r wp-content/uploads .export/wp-content'",
-    "export:wp-content": "npm run cli 'rm -rf .export/wp-content' && mkdir -p .export/wp-content/uploads && run-p export:wp-content:*",
-    "export:db": "mkdir -p .export/sql && npm run wp 'db export .export/sql/local.sql'",
-    "export": "run-p export:*",
-    "import:wp-content:themes": "npm run cli 'cp -r .export/wp-content/themes wp-content'",
-    "import:wp-content:uploads": "npm run cli 'cp -r .export/wp-content/uploads wp-content'",
-    "import:wp-content": "run-p import:wp-content:*",
-    "import:db": "npm run wp 'db import .export/sql/local.sql'",
-    "import": "run-p import:*",
-    "wp-env": "wp-env",
-    "start": "wp-env start && open http://localhost:8888",
-    "stop": "npm run export && wp-env stop",
-    "cli": "wp-env run cli",
-    "wp": "wp-env run cli wp",
-    "pretest": "wp-env start && wp-env run composer 'install --no-interaction'",
-    "test:lint:php": "wp-env run composer run-script lint",
-    "test:lint": "run-s test:lint:*",
-    "test:unit:php": "wp-env run phpunit 'phpunit -c /var/www/html/wp-content/plugins/smart-custom-fields/.phpunit.xml.dist --verbose'",
-    "test:unit": "run-s test:unit:*",
-    "test": "run-s test:*",
-    "clean:zip": "rimraf smart-custom-fields.zip",
-    "zip:pack": "rsync -a --exclude='/bin' --exclude='/vendor' --exclude='/node_modules' --exclude='.*' --exclude='*.ruleset.xml' --exclude='*.config.js' --exclude='*.xml.dist' --exclude='/tests' --exclude='package*.json' . smart-custom-fields && cd smart-custom-fields && composer install --no-dev",
-    "zip:archive": "zip -9 -qmr smart-custom-fields.zip smart-custom-fields",
-    "zip": "npm run clean:zip && npm run zip:pack && npm run zip:archive"
-  }
+	"engines": {
+		"node": ">=20.10.0",
+		"npm": ">=10.2.3"
+	},
+	"volta": {
+		"node": "20.11.1"
+	},
+	"devDependencies": {
+		"@wordpress/env": "9.5.0",
+		"npm-run-all": "^4.1.5",
+		"rimraf": "^5.0.5"
+	},
+	"scripts": {
+		"export:wp-content:themes": "npm run cli cp -- -r wp-content/themes .export/wp-content",
+		"export:wp-content:uploads": "npm run cli cp -- -r wp-content/uploads .export/wp-content",
+		"export:wp-content": "rimraf .export/wp-content && mkdir -p .export/wp-content/uploads && run-p export:wp-content:*",
+		"export:db": "mkdir -p .export/sql && npm run wp db -- export .export/sql/local.sql",
+		"export": "run-p export:*",
+		"import:wp-content:themes": "npm run cli cp -- -r .export/wp-content/themes wp-content",
+		"import:wp-content:uploads": "npm run cli cp -- -r .export/wp-content/uploads wp-content",
+		"import:wp-content": "run-p import:wp-content:*",
+		"import:db": "npm run wp db -- import .export/sql/local.sql",
+		"import": "run-p import:*",
+		"wp-env": "wp-env",
+		"start": "wp-env start && open http://localhost:8888",
+		"stop": "npm run export && wp-env stop",
+		"cli": "wp-env run cli",
+		"wp": "wp-env run --env-cwd=wp-content/plugins/smart-custom-fields cli wp",
+		"composer": "wp-env run --env-cwd=wp-content/plugins/smart-custom-fields cli composer",
+		"pretest": "wp-env start && npm run composer install -- --no-interaction",
+		"test:lint:php": "npm run composer lint",
+		"test:lint": "run-s test:lint:*",
+		"test:unit:php": "wp-env start && wp-env run --env-cwd=\"wp-content/plugins/smart-custom-fields\" tests-wordpress vendor/bin/phpunit -c .phpunit.xml.dist --verbose",
+		"test:unit": "run-s test:unit:*",
+		"test": "run-s test:*",
+		"clean:zip": "rimraf smart-custom-fields.zip",
+		"zip:pack": "rsync -a --exclude='/bin' --exclude='/vendor' --exclude='/node_modules' --exclude='.*' --exclude='*.ruleset.xml' --exclude='*.config.js' --exclude='*.xml.dist' --exclude='/tests' --exclude='package*.json' . smart-custom-fields && cd smart-custom-fields && wp-env start && npm run composer install -- --no-dev -d smart-custom-fields",
+		"zip:archive": "zip -9 -qmr smart-custom-fields.zip smart-custom-fields",
+		"zip": "npm run clean:zip && npm run zip:pack && npm run zip:archive"
+	}
 }

@@ -62,9 +62,9 @@ class Smart_Custom_Fields_Field_Datepicker extends Smart_Custom_Fields_Field_Bas
 		wp_enqueue_script( 'jquery-ui-datepicker' );
 		wp_enqueue_script(
 			SCF_Config::PREFIX . 'editor-datepicker',
-			plugins_url( '../../js/editor-datepicker.js', __FILE__ ),
+			SMART_CUSTOM_FIELDS_URL . '/js/editor-datepicker.js',
 			array( 'jquery', 'jquery-ui-datepicker' ),
-			false,
+			filemtime( SMART_CUSTOM_FIELDS_PATH . '/js/editor-datepicker.js' ),
 			true
 		);
 	}
@@ -87,9 +87,9 @@ class Smart_Custom_Fields_Field_Datepicker extends Smart_Custom_Fields_Field_Bas
 
 		wp_enqueue_script(
 			SCF_Config::PREFIX . 'settings-datepicker',
-			plugins_url( SCF_Config::NAME ) . '/js/settings-datepicker.js',
+			SMART_CUSTOM_FIELDS_URL . '/js/settings-datepicker.js',
 			array( 'jquery', 'jquery-ui-datepicker' ),
-			filemtime( plugin_dir_path( dirname( __FILE__ ) . '/../../js/settings-datepicker.js' ) ),
+			filemtime( SMART_CUSTOM_FIELDS_PATH . '/js/settings-datepicker.js' ),
 			true
 		);
 	}
@@ -133,7 +133,7 @@ class Smart_Custom_Fields_Field_Datepicker extends Smart_Custom_Fields_Field_Bas
 					name="<?php echo esc_attr( $this->get_field_name_in_setting( $group_key, $field_key, 'default' ) ); ?>"
 					class="widefat default-option"
 					value="<?php echo esc_attr( $this->get( 'default' ) ); ?>"
-					data-js='<?php echo $this->get_data_js(); ?>' />
+					data-js='<?php echo $this->get_data_js(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>' />
 			</td>
 		</tr>
 		<tr>
@@ -148,7 +148,8 @@ class Smart_Custom_Fields_Field_Datepicker extends Smart_Custom_Fields_Field_Bas
 					<?php esc_html_e( 'e.g dd/mm/yy', 'smart-custom-fields' ); ?>
 					<?php
 					printf(
-						esc_html( 'Prease see %sdateFormat%s', 'smart-custom-fields' ),
+						// Translators: %1$s: <a>, %2$s: </a>
+						esc_html__( 'Prease see %1$sdateFormat%1$s', 'smart-custom-fields' ),
 						'<a href="http://api.jqueryui.com/datepicker/#option-dateFormat" target="_blank">',
 						'</a>'
 					);
@@ -168,7 +169,8 @@ class Smart_Custom_Fields_Field_Datepicker extends Smart_Custom_Fields_Field_Bas
 					<?php esc_html_e( 'e.g +1m +1w', 'smart-custom-fields' ); ?>
 					<?php
 					printf(
-						esc_html( 'Prease see %smaxData%s', 'smart-custom-fields' ),
+						// Translators: %1$s: <a>, %2$s: </a>
+						esc_html__( 'Prease see %1$smaxData%2$s', 'smart-custom-fields' ),
 						'<a href="http://api.jqueryui.com/datepicker/#option-maxDate" target="_blank">',
 						'</a>'
 					);
@@ -188,7 +190,8 @@ class Smart_Custom_Fields_Field_Datepicker extends Smart_Custom_Fields_Field_Bas
 					<?php esc_html_e( 'e.g +1m +1w', 'smart-custom-fields' ); ?>
 					<?php
 					printf(
-						esc_html( 'Prease see %sminData%s', 'smart-custom-fields' ),
+						// Translators: %1$s: <a>, %2$s: </a>
+						esc_html__( 'Prease see %1$sminData%2$s', 'smart-custom-fields' ),
 						'<a href="http://api.jqueryui.com/datepicker/#option-minDate" target="_blank">',
 						'</a>'
 					);
@@ -306,6 +309,6 @@ class Smart_Custom_Fields_Field_Datepicker extends Smart_Custom_Fields_Field_Bas
 			$js['minDate'] = $this->get( 'min_date' );
 		}
 
-		return json_encode( $js );
+		return wp_json_encode( $js );
 	}
 }

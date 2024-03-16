@@ -52,10 +52,12 @@ class Smart_Custom_Fields_Field_Wysiwyg extends Smart_Custom_Fields_Field_Base {
 	 * Add script for wysiwyg.
 	 */
 	public function after_wp_tiny_mce() {
+		// phpcs:disable WordPress.WP.EnqueuedResources.NonEnqueuedScript
 		printf(
-			'<script type="text/javascript" src="%s"></script>',
-			plugins_url( SCF_Config::NAME ) . '/js/editor-wysiwyg.js'
+			'<script type="text/javascript" src="%1$s"></script>',
+			esc_url( plugins_url( SCF_Config::NAME ) . '/js/editor-wysiwyg.js' )
 		);
+		// phpcs:enable
 	}
 
 	/**
@@ -88,11 +90,8 @@ class Smart_Custom_Fields_Field_Wysiwyg extends Smart_Custom_Fields_Field_Base {
 		$name       = $this->get_field_name_in_editor( $index );
 		$wysiwyg_id = str_replace( array( '[', ']', '-' ), '_', $name );
 		$disabled   = $this->get_disable_attribute( $index );
-		if ( function_exists( 'format_for_editor' ) ) {
-			$value = format_for_editor( $value );
-		} else {
-			$value = wp_richedit_pre( $value );
-		}
+		$value      = format_for_editor( $value );
+
 		return sprintf(
 			'<div class="wp-core-ui wp-editor-wrap tmce-active">
 				<div class="wp-editor-tools hide-if-no-js">

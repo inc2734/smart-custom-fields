@@ -17,26 +17,30 @@ class Smart_Custom_Fields_Revision_Test extends WP_UnitTestCase {
 	protected $revision_id;
 
 	/**
-	 * setUp
+	 * Set up.
 	 */
-	public function setUp() {
-		parent::setUp();
+	public function set_up() {
+		parent::set_up();
 
 		$this->Revision = new Smart_Custom_Fields_Revisions();
 
 		// The post for custom fields
-		$this->post_id = $this->factory->post->create( array(
-			'post_type'   => 'post',
-			'post_status' => 'publish',
-		) );
+		$this->post_id = $this->factory->post->create(
+			array(
+				'post_type'   => 'post',
+				'post_status' => 'publish',
+			)
+		);
 
 		// The revision post for custom fields
-		$this->revision_id = $this->factory->post->create( array(
-			'post_type'   => 'revision',
-			'post_parent' => $this->post_id,
-			'post_status' => 'inherit',
-			'post_name'   => $this->post_id . '-autosave-v1',
-		) );
+		$this->revision_id = $this->factory->post->create(
+			array(
+				'post_type'   => 'revision',
+				'post_parent' => $this->post_id,
+				'post_status' => 'inherit',
+				'post_name'   => $this->post_id . '-autosave-v1',
+			)
+		);
 
 		add_filter( 'smart-cf-register-fields', array( $this, '_register' ), 10, 4 );
 
@@ -45,10 +49,10 @@ class Smart_Custom_Fields_Revision_Test extends WP_UnitTestCase {
 	}
 
 	/**
-	 * tearDown
+	 * Tear down.
 	 */
-	public function tearDown() {
-		parent::tearDown();
+	public function tear_down() {
+		parent::tear_down();
 		$Cache = Smart_Custom_Fields_Cache::get_instance();
 		$Cache->flush();
 	}
@@ -78,7 +82,7 @@ class Smart_Custom_Fields_Revision_Test extends WP_UnitTestCase {
 	 * @group wp_insert_post
 	 */
 	public function test_wp_insert_post() {
-		$_REQUEST[SCF_Config::PREFIX . 'fields-nonce'] = wp_create_nonce( SCF_Config::NAME . '-fields' );
+		$_REQUEST[ SCF_Config::PREFIX . 'fields-nonce' ] = wp_create_nonce( SCF_Config::NAME . '-fields' );
 
 		$_POST = array(
 			SCF_Config::NAME => array(
@@ -103,72 +107,106 @@ class Smart_Custom_Fields_Revision_Test extends WP_UnitTestCase {
 
 		global $wp_query, $post;
 		$wp_query->is_preview = true;
-		$post = get_post( $this->post_id );
-		$meta = $this->Revision->get_post_metadata( 'default-value', $this->post_id, 'text', true );
+		$post                 = get_post( $this->post_id );
+		$meta                 = $this->Revision->get_post_metadata( 'default-value', $this->post_id, 'text', true );
 		$this->assertEquals( 'text', $meta );
 	}
 
 	/**
-	 * Register custom fields using filter hook
+	 * Register custom fields using filter hook.
+	 *
+	 * @param array  $settings  Array of Smart_Custom_Fields_Setting object.
+	 * @param string $type      Post type or Role.
+	 * @param int    $id        Post ID or User ID.
+	 * @param string $meta_type post or user.
+	 * @return array
 	 */
 	public function _register( $settings, $type, $id, $meta_type ) {
-		if ( $type === 'post' && ( $id === $this->post_id || $id === $this->revision_id ) ) {
+		if ( 'post' === $type && ( $id === $this->post_id || $id === $this->revision_id ) ) {
 			$Setting = SCF::add_setting( 'id-1', 'Register Test' );
-			$Setting->add_group( 0, false, array(
+			$Setting->add_group(
+				0,
+				false,
 				array(
-					'name'  => 'text',
-					'label' => 'text',
-					'type'  => 'text',
-				),
-			) );
-			$Setting->add_group( 'text-has-default', false, array(
+					array(
+						'name'  => 'text',
+						'label' => 'text',
+						'type'  => 'text',
+					),
+				)
+			);
+			$Setting->add_group(
+				'text-has-default',
+				false,
 				array(
-					'name'    => 'text-has-default',
-					'label'   => 'text has default',
-					'type'    => 'text',
-					'default' => 'a',
-				),
-			) );
-			$Setting->add_group( 'checkbox', false, array(
+					array(
+						'name'    => 'text-has-default',
+						'label'   => 'text has default',
+						'type'    => 'text',
+						'default' => 'a',
+					),
+				)
+			);
+			$Setting->add_group(
+				'checkbox',
+				false,
 				array(
-					'name'    => 'checkbox',
-					'label'   => 'checkbox field',
-					'type'    => 'check',
-					'choices' => array( 'a', 'b', 'c' ),
-				),
-			) );
-			$Setting->add_group( 'checkbox-has-default', false, array(
+					array(
+						'name'    => 'checkbox',
+						'label'   => 'checkbox field',
+						'type'    => 'check',
+						'choices' => array( 'a', 'b', 'c' ),
+					),
+				)
+			);
+			$Setting->add_group(
+				'checkbox-has-default',
+				false,
 				array(
-					'name'    => 'checkbox-has-default',
-					'label'   => 'checkbox has default',
-					'type'    => 'check',
-					'choices' => array( 'a', 'b', 'c' ),
-					'default' => array( 'a' ),
-				),
-			) );
-			$Setting->add_group( 'checkbox-key-value', false, array(
+					array(
+						'name'    => 'checkbox-has-default',
+						'label'   => 'checkbox has default',
+						'type'    => 'check',
+						'choices' => array( 'a', 'b', 'c' ),
+						'default' => array( 'a' ),
+					),
+				)
+			);
+			$Setting->add_group(
+				'checkbox-key-value',
+				false,
 				array(
-					'name'    => 'checkbox-key-value',
-					'label'   => 'checkbox key value',
-					'type'    => 'check',
-					'choices' => array( 'a' => 'apple', 'b' => 'banana', 'c' => 'carrot' ),
-					'default' => array( 'a' ),
-				),
-			) );
-			$Setting->add_group( 'group', true, array(
+					array(
+						'name'    => 'checkbox-key-value',
+						'label'   => 'checkbox key value',
+						'type'    => 'check',
+						'choices' => array(
+							'a' => 'apple',
+							'b' => 'banana',
+							'c' => 'carrot',
+						),
+						'default' => array( 'a' ),
+					),
+				)
+			);
+			$Setting->add_group(
+				'group',
+				true,
 				array(
-					'name'  => 'repeat-text',
-					'label' => 'repeat text',
-					'type'  => 'text',
-				),
-				array(
-					'name'    => 'repeat-checkbox',
-					'label'   => 'repeat checkbox',
-					'type'    => 'check',
-					'choices' => array( 'a', 'b', 'c' ),
-				),
-			) );
-			$settings[$Setting->get_id()] = $Setting;
+					array(
+						'name'  => 'repeat-text',
+						'label' => 'repeat text',
+						'type'  => 'text',
+					),
+					array(
+						'name'    => 'repeat-checkbox',
+						'label'   => 'repeat checkbox',
+						'type'    => 'check',
+						'choices' => array( 'a', 'b', 'c' ),
+					),
+				)
+			);
+			$settings[ $Setting->get_id() ] = $Setting;
 		}
 		return $settings;
 	}

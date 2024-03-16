@@ -1,33 +1,35 @@
 {
-  "type": "wordpress-plugin",
-  "license": "GPL-2.0-or-later",
-  "authors": [
-    {
-      "name": "Takashi Kitajima",
-      "email": "inc@2inc.org",
-      "homepage": "https://2inc.org"
-    },
-    {
-      "name": "Toshihiro Kanai",
-      "email": "i@miruc.co",
-      "homepage": "https://miruc.co/",
-      "role": "Developer"
-    }
-  ],
-  "require": {
-    "php": ">=5.6"
-  },
-  "require-dev": {
+	"type": "wordpress-plugin",
+	"license": "GPL-2.0-or-later",
+	"authors": [
+		{
+			"name": "Takashi Kitajima",
+			"email": "inc@2inc.org",
+			"homepage": "https://2inc.org"
+		},
+		{
+			"name": "Toshihiro Kanai",
+			"email": "i@miruc.co",
+			"homepage": "https://miruc.co/",
+			"role": "Developer"
+		}
+	],
+	"require": {
+		"php": ">=7.4"
+	},
+	"require-dev": {
+		"wp-coding-standards/wpcs": "^3.0",
 		"dealerdirect/phpcodesniffer-composer-installer": "^0.7",
-		"squizlabs/php_codesniffer": "^3.6",
-		"phpcompatibility/php-compatibility": "^9.3",
-		"wp-coding-standards/wpcs": "^2.3",
-		"sirbrillig/phpcs-variable-analysis": "^2.11",
-    "wp-phpunit/wp-phpunit": "^5.8",
-    "yoast/phpunit-polyfills": "^1.0"
-  },
-  "scripts" :{
+		"yoast/phpunit-polyfills": "^1.0",
+		"phpcompatibility/phpcompatibility-wp": "*"
+	},
+	"scripts" :{
 		"format": "phpcbf --standard=./.phpcs.xml.dist --report-summary --report-source",
 		"lint": "phpcs --standard=./.phpcs.xml.dist"
-  }
+	},
+	"config": {
+		"allow-plugins": {
+			"dealerdirect/phpcodesniffer-composer-installer": true
+		}
+	}
 }

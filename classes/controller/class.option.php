@@ -28,7 +28,9 @@ class Smart_Custom_Fields_Controller_Option extends Smart_Custom_Fields_Controll
 		parent::admin_enqueue_scripts( $hook );
 		wp_enqueue_style(
 			SCF_Config::PREFIX . 'option',
-			plugins_url( SCF_Config::NAME ) . '/css/option.css'
+			SMART_CUSTOM_FIELDS_URL . '/css/option.css',
+			array(),
+			filemtime( SMART_CUSTOM_FIELDS_PATH . '/css/option.css' )
 		);
 	}
 
@@ -43,7 +45,7 @@ class Smart_Custom_Fields_Controller_Option extends Smart_Custom_Fields_Controll
 			return;
 		}
 
-		$callback_args = [];
+		$callback_args = array();
 		?>
 		<form method="post" action="">
 			<?php foreach ( $settings as $setting ) : ?>
@@ -68,10 +70,10 @@ class Smart_Custom_Fields_Controller_Option extends Smart_Custom_Fields_Controll
 	 * @param stdClass $option Option object.
 	 */
 	public function save_option( $option ) {
-		if ( ! isset( $_POST[ SCF_Config::NAME ] ) ) {
+		if ( ! filter_input( INPUT_POST, SCF_Config::NAME, FILTER_DEFAULT, FILTER_REQUIRE_ARRAY ) ) {
 			return;
 		}
 
-		$this->save( $_POST, $option );
+		$this->save( filter_input_array( INPUT_POST ), $option );
 	}
 }

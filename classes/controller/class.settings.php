@@ -91,46 +91,46 @@ class Smart_Custom_Fields_Controller_Settings {
 
 		wp_enqueue_style(
 			SCF_Config::PREFIX . 'settings',
-			plugins_url( SCF_Config::NAME ) . '/css/settings.css',
+			SMART_CUSTOM_FIELDS_URL . '/css/settings.css',
 			array(),
-			filemtime( plugin_dir_path( dirname( __FILE__ ) . '/../../css/settings.css' ) )
+			filemtime( SMART_CUSTOM_FIELDS_PATH . '/css/settings.css' )
 		);
 
 		wp_enqueue_style(
 			SCF_Config::PREFIX . 'selectivity',
-			plugins_url( SCF_Config::NAME ) . '/libs/selectivity-3.1.0/selectivity-jquery.min.css',
+			SMART_CUSTOM_FIELDS_URL . '/libs/selectivity-3.1.0/selectivity-jquery.min.css',
 			array(),
-			filemtime( plugin_dir_path( dirname( __FILE__ ) . '/../../libs/selectivity-3.1.0/selectivity-jquery.min.css' ) )
+			filemtime( SMART_CUSTOM_FIELDS_PATH . '/libs/selectivity-3.1.0/selectivity-jquery.min.css' )
 		);
 
 		wp_enqueue_style(
 			SCF_Config::PREFIX . 'ios-checkbox',
-			plugins_url( SCF_Config::NAME ) . '/libs/iosCheckbox/iosCheckbox.min.css',
+			SMART_CUSTOM_FIELDS_URL . '/libs/iosCheckbox/iosCheckbox.min.css',
 			array(),
-			filemtime( plugin_dir_path( dirname( __FILE__ ) . '/../../libs/iosCheckbox/iosCheckbox.min.css' ) )
+			filemtime( SMART_CUSTOM_FIELDS_PATH . '/libs/iosCheckbox/iosCheckbox.min.css' )
 		);
 
 		wp_enqueue_script(
 			SCF_Config::PREFIX . 'settings',
-			plugins_url( SCF_Config::NAME ) . '/js/settings.js',
+			SMART_CUSTOM_FIELDS_URL . '/js/settings.js',
 			array( 'jquery' ),
-			filemtime( plugin_dir_path( dirname( __FILE__ ) . '/../../js/settings.js' ) ),
+			filemtime( SMART_CUSTOM_FIELDS_PATH . '/js/settings.js' ),
 			true
 		);
 
 		wp_enqueue_script(
 			SCF_Config::PREFIX . 'selectivity',
-			plugins_url( SCF_Config::NAME ) . '/libs/selectivity-3.1.0/selectivity-jquery.min.js',
+			SMART_CUSTOM_FIELDS_URL . '/libs/selectivity-3.1.0/selectivity-jquery.min.js',
 			array(),
-			filemtime( plugin_dir_path( dirname( __FILE__ ) . '/../../libs/selectivity-3.1.0/selectivity-jquery.min.js' ) ),
+			filemtime( SMART_CUSTOM_FIELDS_PATH . '/libs/selectivity-3.1.0/selectivity-jquery.min.js' ),
 			true
 		);
 
 		wp_enqueue_script(
 			SCF_Config::PREFIX . 'ios-checkbox',
-			plugins_url( SCF_Config::NAME ) . '/libs/iosCheckbox/iosCheckbox.min.js',
+			SMART_CUSTOM_FIELDS_URL . '/libs/iosCheckbox/iosCheckbox.min.js',
 			array(),
-			filemtime( plugin_dir_path( dirname( __FILE__ ) . '/../../libs/iosCheckbox/iosCheckbox.min.js' ) ),
+			filemtime( SMART_CUSTOM_FIELDS_PATH . '/libs/iosCheckbox/iosCheckbox.min.js' ),
 			true
 		);
 
@@ -266,8 +266,8 @@ class Smart_Custom_Fields_Controller_Settings {
 												}
 												printf(
 													'<optgroup label="%s">%s</optgroup>',
-													$optgroup_values['label'],
-													implode( '', $optgroup_fields )
+													esc_attr( $optgroup_values['label'] ),
+													implode( '', $optgroup_fields ) // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 												);
 											}
 											?>
@@ -316,9 +316,10 @@ class Smart_Custom_Fields_Controller_Settings {
 			);
 		}
 		printf(
-			'<p><b>%s</b>%s</p>',
+			// Translators: %1$s: Label, %2$s: Post type field
+			'<p><b>%1$s</b>%2$s</p>',
 			esc_html__( 'Post Types', 'smart-custom-fields' ),
-			$post_type_field
+			$post_type_field // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		);
 
 		$condition_post_ids = get_post_meta( get_the_ID(), SCF_Config::PREFIX . 'condition-post-ids', true );
@@ -332,7 +333,7 @@ class Smart_Custom_Fields_Controller_Settings {
 			foreach ( $saved_posts as $k => $post_id ) {
 				if ( '' !== $post_id ) {
 					$saved[ $k ]['id']   = $post_id;
-					$saved[ $k ]['text'] = $post_id; // $post_id . ' - ' . get_the_title($post_id);
+					$saved[ $k ]['text'] = $post_id;
 				}
 			}
 		}
@@ -340,7 +341,7 @@ class Smart_Custom_Fields_Controller_Settings {
 		// create variable js with posting IDs to use in post search results
 		printf(
 			'<script type="text/javascript">smart_cf_saved_posts = %s;</script>',
-			json_encode( array_values( $saved ) )
+			wp_json_encode( array_values( $saved ) )
 		);
 
 		// create div to use with jquery plugin "selectivity"
@@ -353,9 +354,10 @@ class Smart_Custom_Fields_Controller_Settings {
 
 		// create input hidden with the IDS of saved posts
 		printf(
-			'<input type="hidden" name="%s" value="%s"/>',
+			// Translators: %1$s: name, %2$s: value
+			'<input type="hidden" name="%1$s" value="%2$s"/>',
 			esc_attr( SCF_Config::PREFIX . 'condition-post-ids' ),
-			$condition_post_ids
+			esc_attr( $condition_post_ids )
 		);
 	}
 
@@ -378,9 +380,10 @@ class Smart_Custom_Fields_Controller_Settings {
 			);
 		}
 		printf(
-			'<p><b>%s</b>%s</p>',
+			// Translators: %1$s: Label, %2$s: Roles field
+			'<p><b>%1$s</b>%2$s</p>',
 			esc_html__( 'Roles', 'smart-custom-fields' ),
-			$profile_field
+			$profile_field // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		);
 	}
 
@@ -408,9 +411,10 @@ class Smart_Custom_Fields_Controller_Settings {
 			);
 		}
 		printf(
-			'<p><b>%s</b>%s</p>',
+			// Translators: %1$s: Label, %2$s: Taxonomy field
+			'<p><b>%1$s</b>%2$s</p>',
 			esc_html__( 'Taxonomies', 'smart-custom-fields' ),
-			$taxonomy_field
+			$taxonomy_field // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		);
 	}
 
@@ -432,9 +436,10 @@ class Smart_Custom_Fields_Controller_Settings {
 			);
 		}
 		printf(
-			'<p><b>%s</b>%s</p>',
+			// Translators: %1$s: Label, %2$s: Options page field
+			'<p><b>%1$s</b>%2$s</p>',
 			esc_html__( 'Options pages', 'smart-custom-fields' ),
-			$options_page_field
+			$options_page_field // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		);
 	}
 
@@ -447,16 +452,19 @@ class Smart_Custom_Fields_Controller_Settings {
 		if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
 			return;
 		}
-		if ( ! isset( $_POST[ SCF_Config::NAME ] ) ) {
+
+		$posted_data = filter_input( INPUT_POST, SCF_Config::NAME, FILTER_DEFAULT, FILTER_REQUIRE_ARRAY );
+		if ( ! $posted_data ) {
 			return;
 		}
+
 		check_admin_referer(
 			SCF_Config::NAME . '-settings',
 			SCF_Config::PREFIX . 'settings-nonce'
 		);
 
 		$data = array();
-		foreach ( $_POST[ SCF_Config::NAME ] as $group_key => $group_value ) {
+		foreach ( $posted_data as $group_key => $group_value ) {
 			// $group_key = 0 is hidden field so don't save
 			if ( 0 === $group_key ) {
 				continue;
@@ -494,34 +502,39 @@ class Smart_Custom_Fields_Controller_Settings {
 		}
 		update_post_meta( $post_id, SCF_Config::PREFIX . 'setting', $data );
 
-		if ( ! isset( $_POST[ SCF_Config::PREFIX . 'condition' ] ) ) {
+		$poste_condition = filter_input( INPUT_POST, SCF_Config::PREFIX . 'condition', FILTER_DEFAULT, FILTER_REQUIRE_ARRAY );
+		if ( ! $poste_condition ) {
 			delete_post_meta( $post_id, SCF_Config::PREFIX . 'condition' );
 		} else {
-			update_post_meta( $post_id, SCF_Config::PREFIX . 'condition', $_POST[ SCF_Config::PREFIX . 'condition' ] );
+			update_post_meta( $post_id, SCF_Config::PREFIX . 'condition', $poste_condition );
 		}
 
-		if ( ! isset( $_POST[ SCF_Config::PREFIX . 'condition-post-ids' ] ) ) {
+		$poste_condition_post_ids = filter_input( INPUT_POST, SCF_Config::PREFIX . 'condition-post-ids' );
+		if ( ! $poste_condition_post_ids ) {
 			delete_post_meta( $post_id, SCF_Config::PREFIX . 'condition-post-ids' );
 		} else {
-			update_post_meta( $post_id, SCF_Config::PREFIX . 'condition-post-ids', $_POST[ SCF_Config::PREFIX . 'condition-post-ids' ] );
+			update_post_meta( $post_id, SCF_Config::PREFIX . 'condition-post-ids', $poste_condition_post_ids );
 		}
 
-		if ( ! isset( $_POST[ SCF_Config::PREFIX . 'roles' ] ) ) {
+		$poste_roles = filter_input( INPUT_POST, SCF_Config::PREFIX . 'roles', FILTER_DEFAULT, FILTER_REQUIRE_ARRAY );
+		if ( ! $poste_roles ) {
 			delete_post_meta( $post_id, SCF_Config::PREFIX . 'roles' );
 		} else {
-			update_post_meta( $post_id, SCF_Config::PREFIX . 'roles', $_POST[ SCF_Config::PREFIX . 'roles' ] );
+			update_post_meta( $post_id, SCF_Config::PREFIX . 'roles', $poste_roles );
 		}
 
-		if ( ! isset( $_POST[ SCF_Config::PREFIX . 'taxonomies' ] ) ) {
+		$poste_taxonomies = filter_input( INPUT_POST, SCF_Config::PREFIX . 'taxonomies', FILTER_DEFAULT, FILTER_REQUIRE_ARRAY );
+		if ( ! $poste_taxonomies ) {
 			delete_post_meta( $post_id, SCF_Config::PREFIX . 'taxonomies' );
 		} else {
-			update_post_meta( $post_id, SCF_Config::PREFIX . 'taxonomies', $_POST[ SCF_Config::PREFIX . 'taxonomies' ] );
+			update_post_meta( $post_id, SCF_Config::PREFIX . 'taxonomies', $poste_taxonomies );
 		}
 
-		if ( ! isset( $_POST[ SCF_Config::PREFIX . 'options-pages' ] ) ) {
+		$poste_options_pages = filter_input( INPUT_POST, SCF_Config::PREFIX . 'options-pages', FILTER_DEFAULT, FILTER_REQUIRE_ARRAY );
+		if ( ! $poste_options_pages ) {
 			delete_post_meta( $post_id, SCF_Config::PREFIX . 'options-pages' );
 		} else {
-			update_post_meta( $post_id, SCF_Config::PREFIX . 'options-pages', $_POST[ SCF_Config::PREFIX . 'options-pages' ] );
+			update_post_meta( $post_id, SCF_Config::PREFIX . 'options-pages', $poste_options_pages );
 		}
 	}
 }

@@ -143,26 +143,26 @@ class SCF {
 	/**
 	 * Getting any meta data to feel good.
 	 *
-	 * @param WP_Post|WP_User|WP_Term|stdClass $object Object meta object.
-	 * @param string                           $name   Group name or field name.
+	 * @param WP_Post|WP_User|WP_Term|stdClass $wp_object Object meta object.
+	 * @param string                           $name      Group name or field name.
 	 * @return mixed
 	 */
-	protected static function get_meta( $object, $name ) {
+	protected static function get_meta( $wp_object, $name ) {
 		$cache = Smart_Custom_Fields_Cache::get_instance();
-		if ( $cache->get_meta( $object, $name ) ) {
+		if ( $cache->get_meta( $wp_object, $name ) ) {
 			self::debug_cache_message( "use get cache. [name: {$name}]" );
-			return $cache->get_meta( $object, $name );
+			return $cache->get_meta( $wp_object, $name );
 		} else {
 			self::debug_cache_message( "dont use get cache... [name: {$name}]" );
 		}
 
-		$settings = self::get_settings( $object );
+		$settings = self::get_settings( $wp_object );
 		foreach ( $settings as $setting ) {
 			// If $name matches the group name, returns fields in the group as array.
 			$group = $setting->get_group( $name );
 			if ( $group ) {
-				$values_by_group = self::get_values_by_group( $object, $group );
-				$cache->save_meta( $object, $name, $values_by_group );
+				$values_by_group = self::get_values_by_group( $wp_object, $group );
+				$cache->save_meta( $wp_object, $name, $values_by_group );
 				return $values_by_group;
 			}
 
@@ -172,8 +172,8 @@ class SCF {
 				$field = $group->get_field( $name );
 				if ( $field ) {
 					$is_repeatable  = $group->is_repeatable();
-					$value_by_field = self::get_value_by_field( $object, $field, $is_repeatable );
-					$cache->save_meta( $object, $name, $value_by_field );
+					$value_by_field = self::get_value_by_field( $wp_object, $field, $is_repeatable );
+					$cache->save_meta( $wp_object, $name, $value_by_field );
 					return $value_by_field;
 				}
 			}
@@ -183,12 +183,12 @@ class SCF {
 	/**
 	 * Getting all of any meta data to feel good.
 	 *
-	 * @param WP_Post|WP_User|WP_Term|stdClass $object Object meta object.
+	 * @param WP_Post|WP_User|WP_Term|stdClass $wp_object Object meta object.
 	 * @return mixed
 	 */
-	protected static function get_all_meta( $object ) {
+	protected static function get_all_meta( $wp_object ) {
 		$cache     = Smart_Custom_Fields_Cache::get_instance();
-		$settings  = self::get_settings( $object );
+		$settings  = self::get_settings( $wp_object );
 		$post_meta = array();
 		foreach ( $settings as $setting ) {
 			$groups = $setting->get_groups();
@@ -196,15 +196,15 @@ class SCF {
 				$is_repeatable = $group->is_repeatable();
 				$group_name    = $group->get_name();
 				if ( $is_repeatable && $group_name ) {
-					$values_by_group = self::get_values_by_group( $object, $group );
-					$cache->save_meta( $object, $group_name, $values_by_group );
+					$values_by_group = self::get_values_by_group( $wp_object, $group );
+					$cache->save_meta( $wp_object, $group_name, $values_by_group );
 					$post_meta[ $group_name ] = $values_by_group;
 				} else {
 					$fields = $group->get_fields();
 					foreach ( $fields as $field ) {
 						$field_name     = $field->get( 'name' );
-						$value_by_field = self::get_value_by_field( $object, $field, $is_repeatable );
-						$cache->save_meta( $object, $field_name, $value_by_field );
+						$value_by_field = self::get_value_by_field( $wp_object, $field, $is_repeatable );
+						$cache->save_meta( $wp_object, $field_name, $value_by_field );
 						$post_meta[ $field_name ] = $value_by_field;
 					}
 				}
@@ -233,11 +233,11 @@ class SCF {
 	 * Getting the meta data of the group.
 	 * When group, Note the point that returned data are repetition.
 	 *
-	 * @param WP_Post|WP_User|WP_Term|stdClass $object Object meta object.
-	 * @param Smart_Custom_Fields_Group        $group  Group object.
+	 * @param WP_Post|WP_User|WP_Term|stdClass $wp_object Object meta object.
+	 * @param Smart_Custom_Fields_Group        $group     Group object.
 	 * @return mixed
 	 */
-	protected static function get_values_by_group( $object, $group ) {
+	protected static function get_values_by_group( $wp_object, $group ) {
 		$is_repeatable = $group->is_repeatable();
 		$meta          = array();
 		$fields        = $group->get_fields();
@@ -251,7 +251,7 @@ class SCF {
 		}
 		$default_meta = $meta[0];
 		foreach ( $fields as $field ) {
-			$value_by_field = self::get_value_by_field( $object, $field, $is_repeatable );
+			$value_by_field = self::get_value_by_field( $wp_object, $field, $is_repeatable );
 			foreach ( $value_by_field as $i => $value ) {
 				$meta[ $i ][ $field->get( 'name' ) ] = $value;
 			}
@@ -265,22 +265,22 @@ class SCF {
 	/**
 	 * Getting the meta data of the field.
 	 *
-	 * @param WP_Post|WP_User|WP_Term|stdClass $object Object meta object.
-	 * @param Smart_Custom_Fields_Field_Base   $field  Field object.
+	 * @param WP_Post|WP_User|WP_Term|stdClass $wp_object     Object meta object.
+	 * @param Smart_Custom_Fields_Field_Base   $field         Field object.
 	 * @param bool                             $is_repeatable Whether the group that this field belongs is repetition.
 	 * @return mixed $post_meta
 	 */
-	protected static function get_value_by_field( $object, $field, $is_repeatable ) {
+	protected static function get_value_by_field( $wp_object, $field, $is_repeatable ) {
 		$field_name = $field->get( 'name' );
 		if ( ! $field_name ) {
 			return;
 		}
 
-		$meta = new Smart_Custom_Fields_Meta( $object );
+		$meta = new Smart_Custom_Fields_Meta( $wp_object );
 
 		// In the case of multi-value items in the loop
 		$field_type           = $field->get_attribute( 'type' );
-		$repeat_multiple_data = self::get_repeat_multiple_data( $object );
+		$repeat_multiple_data = self::get_repeat_multiple_data( $wp_object );
 		if ( is_array( $repeat_multiple_data ) && isset( $repeat_multiple_data[ $field_name ] ) ) {
 			if ( $meta->is_saved_the_key( $field_name ) ) {
 				$_meta = $meta->get( $field_name );
@@ -288,7 +288,7 @@ class SCF {
 				$_meta = self::get_default_value( $field );
 			}
 			$start      = 0;
-			$meta_value = [];
+			$meta_value = array();
 			foreach ( $repeat_multiple_data[ $field_name ] as $repeat_multiple_key => $repeat_multiple_value ) {
 				if ( 0 === $repeat_multiple_value ) {
 					$value = array();
@@ -372,20 +372,20 @@ class SCF {
 	/**
 	 * Getting enabled custom field settings in the post type or the role or the term.
 	 *
-	 * @param WP_Post|WP_User|WP_Term|stdClass $object Object meta object.
+	 * @param WP_Post|WP_User|WP_Term|stdClass $wp_object Object meta object.
 	 * @return array
 	 */
-	public static function get_settings_posts( $object ) {
+	public static function get_settings_posts( $wp_object ) {
 		$cache          = Smart_Custom_Fields_Cache::get_instance();
 		$settings_posts = array();
-		if ( null !== $cache->get_settings_posts( $object ) ) {
+		if ( null !== $cache->get_settings_posts( $wp_object ) ) {
 			self::debug_cache_message( 'use settings posts cache.' );
-			return $cache->get_settings_posts( $object );
+			return $cache->get_settings_posts( $wp_object );
 		} else {
 			self::debug_cache_message( 'dont use settings posts cache...' );
 		}
 
-		$meta  = new Smart_Custom_Fields_Meta( $object );
+		$meta  = new Smart_Custom_Fields_Meta( $wp_object );
 		$types = $meta->get_types( false );
 
 		switch ( $meta->get_meta_type() ) {
@@ -423,25 +423,25 @@ class SCF {
 				'posts_per_page' => -1,
 				'order'          => 'ASC',
 				'order_by'       => 'menu_order',
-				'meta_query'     => $meta_query,
+				'meta_query'     => $meta_query, // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
 			);
 
 			$settings_posts = get_posts( $args );
 		}
 
 		$cache = Smart_Custom_Fields_Cache::get_instance();
-		$cache->save_settings_posts( $object, $settings_posts );
+		$cache->save_settings_posts( $wp_object, $settings_posts );
 		return $settings_posts;
 	}
 
 	/**
 	 * Getting array of the Setting object.
 	 *
-	 * @param WP_Post|WP_User|WP_Term|Smart_Custom_Fields_Options_Mock $object Object meta object.
+	 * @param WP_Post|WP_User|WP_Term|stdClass $wp_object Object meta object.
 	 * @return array
 	 */
-	public static function get_settings( $object ) {
-		$meta      = new Smart_Custom_Fields_Meta( $object );
+	public static function get_settings( $wp_object ) {
+		$meta      = new Smart_Custom_Fields_Meta( $wp_object );
 		$id        = $meta->get_id();
 		$type      = $meta->get_type( false );
 		$types     = $meta->get_types( false );
@@ -450,22 +450,22 @@ class SCF {
 		// IF the post that has custom field settings according to post ID,
 		// don't display because the post ID would change in preview.
 		// So if in preview, re-getting post ID from original post (parent of the preview).
-		if ( 'post' === $meta_type && 'revision' === $object->post_type ) {
-			$object = get_post( $object->post_parent );
+		if ( 'post' === $meta_type && 'revision' === $wp_object->post_type ) {
+			$wp_object = get_post( $wp_object->post_parent );
 		}
 
 		$settings = array();
 
 		if ( ! empty( $types ) ) {
-			$settings_posts = self::get_settings_posts( $object );
+			$settings_posts = self::get_settings_posts( $wp_object );
 			if ( 'post' === $meta_type ) {
-				$settings = self::get_settings_for_post( $object, $settings_posts );
+				$settings = self::get_settings_for_post( $wp_object, $settings_posts );
 			} elseif ( 'user' === $meta_type ) {
-				$settings = self::get_settings_for_profile( $object, $settings_posts );
+				$settings = self::get_settings_for_profile( $wp_object, $settings_posts );
 			} elseif ( 'term' === $meta_type ) {
-				$settings = self::get_settings_for_term( $object, $settings_posts );
+				$settings = self::get_settings_for_term( $wp_object, $settings_posts );
 			} elseif ( 'option' === $meta_type ) {
-				$settings = self::get_settings_for_option( $object, $settings_posts );
+				$settings = self::get_settings_for_option( $wp_object, $settings_posts );
 			}
 		}
 		$settings = apply_filters(
@@ -485,23 +485,23 @@ class SCF {
 	/**
 	 * Getting the Setting object for post.
 	 *
-	 * @param WP_Term $object         WP_Term object.
+	 * @param WP_Post $wp_object      WP_Post object.
 	 * @param array   $settings_posts Settings.
 	 * @return array
 	 */
-	protected static function get_settings_for_post( $object, $settings_posts ) {
+	protected static function get_settings_for_post( $wp_object, $settings_posts ) {
 		$cache    = Smart_Custom_Fields_Cache::get_instance();
 		$settings = array();
 		foreach ( $settings_posts as $settings_post ) {
 			if ( $cache->get_settings( $settings_post->ID ) !== null ) {
 				self::debug_cache_message( "use settings cache. [id: {$settings_post->ID}]" );
-				$setting = $cache->get_settings( $settings_post->ID, $object );
+				$setting = $cache->get_settings( $settings_post->ID, $wp_object );
 				if ( $setting ) {
 					$settings[ $settings_post->ID ] = $setting;
 				}
 				continue;
 			}
-			self::debug_cache_message( "dont use settings cache... [SCF ID: {$settings_post->ID}] [post_type: {$object->post_type}] [Post ID: {$object->ID}]" );
+			self::debug_cache_message( "dont use settings cache... [SCF ID: {$settings_post->ID}] [post_type: {$wp_object->post_type}] [Post ID: {$wp_object->ID}]" );
 			$condition_post_ids_raw = get_post_meta(
 				$settings_post->ID,
 				SCF_Config::PREFIX . 'condition-post-ids',
@@ -512,7 +512,7 @@ class SCF {
 				foreach ( $condition_post_ids_raw as $condition_post_id ) {
 					$condition_post_id = trim( $condition_post_id );
 					$setting           = self::add_setting( $settings_post->ID, $settings_post->post_title );
-					if ( (int) $object->ID === (int) $condition_post_id ) {
+					if ( (int) $wp_object->ID === (int) $condition_post_id ) {
 						$settings[ $settings_post->ID ] = $setting;
 					}
 					$post = get_post( $condition_post_id );
@@ -533,11 +533,11 @@ class SCF {
 	/**
 	 * Getting the Setting object for user.
 	 *
-	 * @param WP_Term $object         WP_Term object.
-	 * @param array   $settings_posts Settings.
+	 * @param WP_User|WP_Term|stdClass $wp_object      Object meta object.
+	 * @param array                    $settings_posts Settings.
 	 * @return array
 	 */
-	protected static function get_settings_for_profile( $object, $settings_posts ) {
+	protected static function get_settings_for_profile( $wp_object, $settings_posts ) {
 		$cache    = Smart_Custom_Fields_Cache::get_instance();
 		$settings = array();
 		foreach ( $settings_posts as $settings_post ) {
@@ -557,45 +557,45 @@ class SCF {
 	/**
 	 * Getting the Setting object for term.
 	 *
-	 * @param WP_Term $object         WP_Term object.
+	 * @param WP_Term $wp_object      WP_Term object.
 	 * @param array   $settings_posts Settings.
 	 * @return array
 	 */
-	protected static function get_settings_for_term( $object, $settings_posts ) {
-		return self::get_settings_for_profile( $object, $settings_posts );
+	protected static function get_settings_for_term( $wp_object, $settings_posts ) {
+		return self::get_settings_for_profile( $wp_object, $settings_posts );
 	}
 
 	/**
 	 * Getting the Setting object for option.
 	 *
-	 * @param WP_Term $object         WP_Term object.
-	 * @param array   $settings_posts Settings.
+	 * @param stdClass $wp_object      stdClass object.
+	 * @param array    $settings_posts Settings.
 	 * @return array
 	 */
-	protected static function get_settings_for_option( $object, $settings_posts ) {
-		return self::get_settings_for_profile( $object, $settings_posts );
+	protected static function get_settings_for_option( $wp_object, $settings_posts ) {
+		return self::get_settings_for_profile( $wp_object, $settings_posts );
 	}
 
 	/**
 	 * Getting delimited identification data of the repeated multi-value items.
 	 *
-	 * @param WP_Post|WP_User|WP_Term|stdClass $object Object meta object.
+	 * @param WP_Post|WP_User|WP_Term|stdClass $wp_object Object meta object.
 	 * @return array
 	 */
-	public static function get_repeat_multiple_data( $object ) {
+	public static function get_repeat_multiple_data( $wp_object ) {
 		$cache                = Smart_Custom_Fields_Cache::get_instance();
 		$repeat_multiple_data = array();
-		if ( $cache->get_repeat_multiple_data( $object ) ) {
-			return $cache->get_repeat_multiple_data( $object );
+		if ( $cache->get_repeat_multiple_data( $wp_object ) ) {
+			return $cache->get_repeat_multiple_data( $wp_object );
 		}
 
-		$meta                  = new Smart_Custom_Fields_Meta( $object );
+		$meta                  = new Smart_Custom_Fields_Meta( $wp_object );
 		$_repeat_multiple_data = $meta->get( SCF_Config::PREFIX . 'repeat-multiple-data', true );
 		if ( ! empty( $_repeat_multiple_data ) ) {
 			$repeat_multiple_data = $_repeat_multiple_data;
 		}
 
-		$cache->save_repeat_multiple_data( $object, $repeat_multiple_data );
+		$cache->save_repeat_multiple_data( $wp_object, $repeat_multiple_data );
 		return $repeat_multiple_data;
 	}
 
@@ -682,16 +682,16 @@ class SCF {
 	 * Getting custom fields that saved custo field settings page.
 	 * Note that not return only one even define multiple fields with the same name of the field name.
 	 *
-	 * @param WP_Post|WP_User|WP_Term|stdClass $object     Object meta object.
+	 * @param WP_Post|WP_User|WP_Term|stdClass $wp_object  Object meta object.
 	 * @param string                           $field_name Field name.
 	 * @return Smart_Custom_Fields_Field_Base|null
 	 */
-	public static function get_field( $object, $field_name ) {
+	public static function get_field( $wp_object, $field_name ) {
 		if ( '_locale' === $field_name || '_original_post' === $field_name ) {
 			return null;
 		}
 
-		$settings = self::get_settings( $object );
+		$settings = self::get_settings( $wp_object );
 		foreach ( $settings as $setting ) {
 			$fields = $setting->get_fields();
 			if ( ! empty( $fields[ $field_name ] ) ) {
@@ -803,7 +803,7 @@ class SCF {
 	 */
 	protected static function debug_cache_message( $message ) {
 		if ( defined( 'SCF_DEBUG_CACHE' ) && SCF_DEBUG_CACHE === true ) {
-			echo $message . '<br />';
+			echo wp_kses_post( $message ) . '<br />';
 		}
 	}
 }

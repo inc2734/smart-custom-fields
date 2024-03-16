@@ -10,12 +10,12 @@
  */
 class SCF_Config {
 	/**
-	 * name
+	 * The key name of this plugin.
 	 */
 	const NAME = 'smart-custom-fields';
 
 	/**
-	 * prefix
+	 * The prefix of this plugin.
 	 */
 	const PREFIX = 'smart-cf-';
 

@@ -23,9 +23,9 @@ class Smart_Custom_Fields_Yoast_SEO_Analysis {
 	public function admin_enqueue_scripts() {
 		wp_enqueue_script(
 			SCF_Config::PREFIX . 'yoast-seo-analysis',
-			plugins_url( SCF_Config::NAME ) . '/js/yoast-seo-analysis.js',
-			null,
-			filemtime( plugin_dir_path( dirname( __FILE__ ) . '/../../js/yoast-seo-analysis.js' ) ),
+			SMART_CUSTOM_FIELDS_URL . '/js/yoast-seo-analysis.js',
+			array(),
+			filemtime( SMART_CUSTOM_FIELDS_PATH . '/js/yoast-seo-analysis.js' ),
 			false
 		);
 	}

@@ -38,34 +38,42 @@ class Smart_Custom_Fields_Cache_Test extends WP_UnitTestCase {
 	protected $menu_slug;
 
 	/**
-	 * setUp
+	 * Set up.
 	 */
-	public function setUp() {
-		parent::setUp();
+	public function set_up() {
+		parent::set_up();
 
 		// The post id of ettings page
-		$this->settings_post_id = $this->factory->post->create( array(
-			'post_type'   => SCF_Config::NAME,
-			'post_status' => 'publish',
-		) );
+		$this->settings_post_id = $this->factory->post->create(
+			array(
+				'post_type'   => SCF_Config::NAME,
+				'post_status' => 'publish',
+			)
+		);
 
 		// The post for custom fields
-		$this->post_id = $this->factory->post->create( array(
-			'post_type'   => 'post',
-			'post_status' => 'publish',
-		) );
+		$this->post_id = $this->factory->post->create(
+			array(
+				'post_type'   => 'post',
+				'post_status' => 'publish',
+			)
+		);
 
 		// The auto draft post for custom fields
-		$this->new_post_id = $this->factory->post->create( array(
-			'post_type'   => 'post',
-			'post_status' => 'auto-draft',
-		) );
+		$this->new_post_id = $this->factory->post->create(
+			array(
+				'post_type'   => 'post',
+				'post_status' => 'auto-draft',
+			)
+		);
 
 		// The draft post for custom fields
-		$this->draft_post_id = $this->factory->post->create( array(
-			'post_type'   => 'post',
-			'post_status' => 'draft',
-		) );
+		$this->draft_post_id = $this->factory->post->create(
+			array(
+				'post_type'   => 'post',
+				'post_status' => 'draft',
+			)
+		);
 
 		// The user for custom fields
 		$this->user_id = $this->factory->user->create( array( 'role' => 'editor' ) );
@@ -83,10 +91,10 @@ class Smart_Custom_Fields_Cache_Test extends WP_UnitTestCase {
 	}
 
 	/**
-	 * tearDown
+	 * Tear down.
 	 */
-	public function tearDown() {
-		parent::tearDown();
+	public function tear_down() {
+		parent::tear_down();
 		$this->Cache->flush();
 	}
 
@@ -95,7 +103,7 @@ class Smart_Custom_Fields_Cache_Test extends WP_UnitTestCase {
 	 */
 	public function test_save_settings_posts() {
 		$settings_post = get_post( $this->settings_post_id );
-		$object = get_post( $this->post_id );
+		$object        = get_post( $this->post_id );
 		$this->Cache->save_settings_posts( $object, array( $settings_post ) );
 		$this->assertSame( array( $settings_post ), $this->Cache->get_settings_posts( $object ) );
 	}
@@ -136,7 +144,7 @@ class Smart_Custom_Fields_Cache_Test extends WP_UnitTestCase {
 	 */
 	public function test_clear_settings_posts() {
 		$settings_post = get_post( $this->settings_post_id );
-		$object = get_post( $this->post_id );
+		$object        = get_post( $this->post_id );
 		$this->Cache->save_settings_posts( $object, array( $settings_post ) );
 		$this->Cache->clear_settings_posts();
 		$this->assertNull( $this->Cache->get_settings_posts( $object ) );
@@ -148,29 +156,29 @@ class Smart_Custom_Fields_Cache_Test extends WP_UnitTestCase {
 	public function test_save_settings() {
 		// post
 		$settings_post_id = 1;
-		$Setting = new Smart_Custom_Fields_Setting( $settings_post_id, 'dummy' );
-		$object = get_post( $this->post_id );
+		$Setting          = new Smart_Custom_Fields_Setting( $settings_post_id, 'dummy' );
+		$object           = get_post( $this->post_id );
 		$this->Cache->save_settings( $settings_post_id, $Setting, $object );
 		$this->assertEquals( $Setting, $this->Cache->get_settings( $settings_post_id, $object ) );
 
 		// user
 		$settings_post_id = 2;
-		$Setting = new Smart_Custom_Fields_Setting( $settings_post_id, 'dummy' );
-		$object = get_userdata( $this->user_id );
+		$Setting          = new Smart_Custom_Fields_Setting( $settings_post_id, 'dummy' );
+		$object           = get_userdata( $this->user_id );
 		$this->Cache->save_settings( $settings_post_id, $Setting, $object );
 		$this->assertEquals( $Setting, $this->Cache->get_settings( $settings_post_id, $object ) );
 
 		// user
 		$settings_post_id = 3;
-		$Setting = new Smart_Custom_Fields_Setting( $settings_post_id, 'dummy' );
-		$object = get_term( $this->term_id, 'category' );
+		$Setting          = new Smart_Custom_Fields_Setting( $settings_post_id, 'dummy' );
+		$object           = get_term( $this->term_id, 'category' );
 		$this->Cache->save_settings( $settings_post_id, $Setting, $object );
 		$this->assertEquals( $Setting, $this->Cache->get_settings( $settings_post_id, $object ) );
 
 		// options page
 		$settings_post_id = 4;
-		$Setting = new Smart_Custom_Fields_Setting( $settings_post_id, 'dummy' );
-		$object = SCF::generate_option_object( $this->menu_slug );
+		$Setting          = new Smart_Custom_Fields_Setting( $settings_post_id, 'dummy' );
+		$object           = SCF::generate_option_object( $this->menu_slug );
 		$this->Cache->save_settings( $settings_post_id, $Setting, $object );
 		$this->assertEquals( $Setting, $this->Cache->get_settings( $settings_post_id, $object ) );
 	}
@@ -180,7 +188,7 @@ class Smart_Custom_Fields_Cache_Test extends WP_UnitTestCase {
 	 */
 	public function test_get_settings() {
 		$settings_post_id = 1;
-		$Setting = new Smart_Custom_Fields_Setting( $settings_post_id, 'dummy' );
+		$Setting          = new Smart_Custom_Fields_Setting( $settings_post_id, 'dummy' );
 
 		// When isn't existed
 		$this->assertNull( $this->Cache->get_settings( $settings_post_id ) );
@@ -197,8 +205,8 @@ class Smart_Custom_Fields_Cache_Test extends WP_UnitTestCase {
 	 */
 	public function test_clear_settings() {
 		$settings_post_id = 1;
-		$Setting = new Smart_Custom_Fields_Setting( $settings_post_id, 'dummy' );
-		$object = get_post( $this->post_id );
+		$Setting          = new Smart_Custom_Fields_Setting( $settings_post_id, 'dummy' );
+		$object           = get_post( $this->post_id );
 		$this->Cache->save_settings( $settings_post_id, $Setting, $object );
 		$this->Cache->clear_settings();
 		$this->assertNull( $this->Cache->get_settings( $settings_post_id, $object ) );
@@ -208,7 +216,7 @@ class Smart_Custom_Fields_Cache_Test extends WP_UnitTestCase {
 	 * @group save_repeat_multiple_data
 	 */
 	public function test_save_repeat_multiple_data() {
-		$object = get_post( $this->post_id );
+		$object               = get_post( $this->post_id );
 		$repeat_multiple_data = array( 'dummy' );
 		$this->Cache->save_repeat_multiple_data( $object, $repeat_multiple_data );
 		$this->assertSame( array( 'dummy' ), $this->Cache->get_repeat_multiple_data( $object ) );
@@ -221,7 +229,7 @@ class Smart_Custom_Fields_Cache_Test extends WP_UnitTestCase {
 		$object = get_post( null );
 		$this->assertNull( $this->Cache->get_repeat_multiple_data( $object ) );
 
-		$object = get_post( $this->post_id );
+		$object               = get_post( $this->post_id );
 		$repeat_multiple_data = array( 'dummy' );
 		$this->Cache->save_repeat_multiple_data( $object, $repeat_multiple_data );
 		$this->assertSame( array( 'dummy' ), $this->Cache->get_repeat_multiple_data( $object ) );
@@ -231,7 +239,7 @@ class Smart_Custom_Fields_Cache_Test extends WP_UnitTestCase {
 	 * @group clear_repeat_multiple_data
 	 */
 	public function test_clear_repeat_multiple_data() {
-		$object = get_post( $this->post_id );
+		$object               = get_post( $this->post_id );
 		$repeat_multiple_data = array( 'dummy' );
 		$this->Cache->save_repeat_multiple_data( $object, $repeat_multiple_data );
 		$this->Cache->clear_repeat_multiple_data();
@@ -277,25 +285,34 @@ class Smart_Custom_Fields_Cache_Test extends WP_UnitTestCase {
 	}
 
 	/**
-	 * Register custom fields using filter hook
+	 * Register custom fields using filter hook.
+	 *
+	 * @param array  $settings  Array of Smart_Custom_Fields_Setting object.
+	 * @param string $type      Post type or Role.
+	 * @param int    $id        Post ID or User ID.
+	 * @param string $meta_type post or user.
 	 */
 	public function _register( $settings, $type, $id, $meta_type ) {
 		if (
-			( $type === 'post' && $id === $this->post_id ) ||
-			( $type === 'post' && $id === $this->new_post_id ) ||
-			( $type === 'editor' ) ||
-			( $type === 'category' ) ||
-			( $meta_type === 'option' && $id === 'menu-slug' )
+			( 'post' === $type && $id === $this->post_id ) ||
+			( 'post' === $type && $id === $this->new_post_id ) ||
+			( 'editor' === $type ) ||
+			( 'category' === $type ) ||
+			( 'option' === $meta_type && 'menu-slug' === $id )
 		) {
 			$Setting = SCF::add_setting( 'id', 'Register Test' );
-			$Setting->add_group( 0, false, array(
+			$Setting->add_group(
+				0,
+				false,
 				array(
-					'name'  => 'text',
-					'label' => 'text',
-					'type'  => 'text',
-				),
-			) );
-			$settings[$Setting->get_id()] = $Setting;
+					array(
+						'name'  => 'text',
+						'label' => 'text',
+						'type'  => 'text',
+					),
+				)
+			);
+			$settings[ $Setting->get_id() ] = $Setting;
 		}
 		return $settings;
 	}

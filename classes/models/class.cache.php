@@ -79,12 +79,12 @@ class Smart_Custom_Fields_Cache {
 	/**
 	 * Saving to cache.
 	 *
-	 * @param WP_Post|WP_User|WP_Term|stdClass $object Object type object.
-	 * @param string                           $name   Cache name.
-	 * @param mixed                            $data   Cache data.
+	 * @param WP_Post|WP_User|WP_Term|stdClass $wp_object Object type object.
+	 * @param string                           $name      Cache name.
+	 * @param mixed                            $data      Cache data.
 	 */
-	public function save_meta( $object, $name, $data ) {
-		$meta      = new Smart_Custom_Fields_Meta( $object );
+	public function save_meta( $wp_object, $name, $data ) {
+		$meta      = new Smart_Custom_Fields_Meta( $wp_object );
 		$id        = $meta->get_id();
 		$type      = $meta->get_type();
 		$meta_type = $meta->get_meta_type();
@@ -96,12 +96,12 @@ class Smart_Custom_Fields_Cache {
 	/**
 	 * Getting the cache.
 	 *
-	 * @param WP_Post|WP_User|WP_Term|stdClass $object Object type object.
-	 * @param string                           $name   Cache name.
+	 * @param WP_Post|WP_User|WP_Term|stdClass $wp_object Object type object.
+	 * @param string                           $name      Cache name.
 	 * @return mixed
 	 */
-	public function get_meta( $object, $name = null ) {
-		$meta      = new Smart_Custom_Fields_Meta( $object );
+	public function get_meta( $wp_object, $name = null ) {
+		$meta      = new Smart_Custom_Fields_Meta( $wp_object );
 		$id        = $meta->get_id();
 		$type      = $meta->get_type();
 		$meta_type = $meta->get_meta_type();
@@ -110,10 +110,8 @@ class Smart_Custom_Fields_Cache {
 				if ( isset( $this->meta[ $meta_type . '_' . $type . '_' . $id ] ) ) {
 					return $this->meta[ $meta_type . '_' . $type . '_' . $id ];
 				}
-			} else {
-				if ( isset( $this->meta[ $meta_type . '_' . $type . '_' . $id ][ $name ] ) ) {
+			} elseif ( isset( $this->meta[ $meta_type . '_' . $type . '_' . $id ][ $name ] ) ) {
 					return $this->meta[ $meta_type . '_' . $type . '_' . $id ][ $name ];
-				}
 			}
 		}
 	}
@@ -128,11 +126,11 @@ class Smart_Custom_Fields_Cache {
 	/**
 	 * Saving to cache that enabled custom field settings in the post type or the role or the term.
 	 *
-	 * @param WP_Post|WP_User|WP_Term|stdClass $object         Object type object.
+	 * @param WP_Post|WP_User|WP_Term|stdClass $wp_object      Object type object.
 	 * @param array                            $settings_posts Settings.
 	 */
-	public function save_settings_posts( $object, $settings_posts ) {
-		$meta      = new Smart_Custom_Fields_Meta( $object );
+	public function save_settings_posts( $wp_object, $settings_posts ) {
+		$meta      = new Smart_Custom_Fields_Meta( $wp_object );
 		$type      = $meta->get_type( false );
 		$meta_type = $meta->get_meta_type();
 		$this->settings_posts[ $meta_type . '_' . $type ] = $settings_posts;
@@ -141,11 +139,11 @@ class Smart_Custom_Fields_Cache {
 	/**
 	 * Getting cache that enabled custom field settings in the post type or the role or the term.
 	 *
-	 * @param WP_Post|WP_User|WP_Term|stdClass $object Object type object.
+	 * @param WP_Post|WP_User|WP_Term|stdClass $wp_object Object type object.
 	 * @return array|null
 	 */
-	public function get_settings_posts( $object ) {
-		$meta      = new Smart_Custom_Fields_Meta( $object );
+	public function get_settings_posts( $wp_object ) {
+		$meta      = new Smart_Custom_Fields_Meta( $wp_object );
 		$type      = $meta->get_type( false );
 		$meta_type = $meta->get_meta_type();
 		if ( isset( $this->settings_posts[ $meta_type . '_' . $type ] ) ) {
@@ -165,11 +163,11 @@ class Smart_Custom_Fields_Cache {
 	 *
 	 * @param int                              $settings_post_id Settings id.
 	 * @param Smart_Custom_Fields_Setting      $setting          Smart_Custom_Fields_Setting object.
-	 * @param WP_Post|WP_User|WP_Term|stdClass $object           Object type object.
+	 * @param WP_Post|WP_User|WP_Term|stdClass $wp_object        Object type object.
 	 */
-	public function save_settings( $settings_post_id, $setting, $object = null ) {
-		if ( ! is_null( $object ) ) {
-			$meta      = new Smart_Custom_Fields_Meta( $object );
+	public function save_settings( $settings_post_id, $setting, $wp_object = null ) {
+		if ( ! is_null( $wp_object ) ) {
+			$meta      = new Smart_Custom_Fields_Meta( $wp_object );
 			$id        = $meta->get_id();
 			$meta_type = $meta->get_meta_type();
 		}
@@ -190,12 +188,12 @@ class Smart_Custom_Fields_Cache {
 	 *     If there the data for the specified $meta_type + $id ... Smart_Custom_Fields_Setting
 	 *
 	 * @param int                              $settings_post_id Settings id.
-	 * @param WP_Post|WP_User|WP_Term|stdClass $object           Object type object.
+	 * @param WP_Post|WP_User|WP_Term|stdClass $wp_object        Object type object.
 	 * @return Smart_Custom_Fields_Setting|false|null
 	 */
-	public function get_settings( $settings_post_id, $object = null ) {
-		if ( ! is_null( $object ) ) {
-			$meta      = new Smart_Custom_Fields_Meta( $object );
+	public function get_settings( $settings_post_id, $wp_object = null ) {
+		if ( ! is_null( $wp_object ) ) {
+			$meta      = new Smart_Custom_Fields_Meta( $wp_object );
 			$id        = $meta->get_id();
 			$meta_type = $meta->get_meta_type();
 		}
@@ -222,11 +220,11 @@ class Smart_Custom_Fields_Cache {
 	/**
 	 * Saving the delimited identification data of the repeated multi-value items to cache.
 	 *
-	 * @param WP_Post|WP_User|WP_Term|stdClass $object               Object type object.
+	 * @param WP_Post|WP_User|WP_Term|stdClass $wp_object            Object type object.
 	 * @param mixed                            $repeat_multiple_data Repeat multiple data.
 	 */
-	public function save_repeat_multiple_data( $object, $repeat_multiple_data ) {
-		$meta      = new Smart_Custom_Fields_Meta( $object );
+	public function save_repeat_multiple_data( $wp_object, $repeat_multiple_data ) {
+		$meta      = new Smart_Custom_Fields_Meta( $wp_object );
 		$id        = $meta->get_id();
 		$type      = $meta->get_type();
 		$meta_type = $meta->get_meta_type();
@@ -238,11 +236,11 @@ class Smart_Custom_Fields_Cache {
 	/**
 	 * Getting delimited identification data of the repeated multi-value items from cache.
 	 *
-	 * @param WP_Post|WP_User|WP_Term|stdClass $object Object type object.
+	 * @param WP_Post|WP_User|WP_Term|stdClass $wp_object Object type object.
 	 * @return mixed
 	 */
-	public function get_repeat_multiple_data( $object ) {
-		$meta      = new Smart_Custom_Fields_Meta( $object );
+	public function get_repeat_multiple_data( $wp_object ) {
+		$meta      = new Smart_Custom_Fields_Meta( $wp_object );
 		$id        = $meta->get_id();
 		$type      = $meta->get_type();
 		$meta_type = $meta->get_meta_type();

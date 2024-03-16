@@ -47,17 +47,17 @@ class Smart_Custom_Fields_Field_Related_Terms extends Smart_Custom_Fields_Field_
 	public function admin_enqueue_scripts() {
 		wp_enqueue_script(
 			SCF_Config::PREFIX . 'editor-relation-common',
-			plugins_url( SCF_Config::NAME ) . '/js/editor-relation-common.js',
+			SMART_CUSTOM_FIELDS_URL . '/js/editor-relation-common.js',
 			array( 'jquery' ),
-			filemtime( plugin_dir_path( dirname( __FILE__ ) . '/../../js/editor-relation-common.js' ) ),
+			filemtime( SMART_CUSTOM_FIELDS_PATH . '/js/editor-relation-common.js' ),
 			true
 		);
 
 		wp_enqueue_script(
 			SCF_Config::PREFIX . 'editor-relation-taxonomies',
-			plugins_url( SCF_Config::NAME ) . '/js/editor-relation-taxonomies.js',
+			SMART_CUSTOM_FIELDS_URL . '/js/editor-relation-taxonomies.js',
 			array( 'jquery' ),
-			filemtime( plugin_dir_path( dirname( __FILE__ ) . '/../../js/editor-relation-taxonomies.js' ) ),
+			filemtime( SMART_CUSTOM_FIELDS_PATH . '/js/editor-relation-taxonomies.js' ),
 			true
 		);
 
@@ -79,9 +79,12 @@ class Smart_Custom_Fields_Field_Related_Terms extends Smart_Custom_Fields_Field_
 		check_ajax_referer( SCF_Config::NAME . '-relation-taxonomies', 'nonce' );
 		$_terms = array();
 		$args   = array();
-		if ( isset( $_POST['taxonomies'] ) ) {
-			$taxonomies = explode( ',', $_POST['taxonomies'] );
+
+		$taxonomies = filter_input( INPUT_POST, 'taxonomies' );
+		if ( $taxonomies ) {
+			$taxonomies = explode( ',', $taxonomies );
 			$args       = array(
+				'taxonomy'     => $taxonomies,
 				'order'        => 'ASC',
 				'orderby'      => 'ID',
 				'number'       => '',
@@ -89,9 +92,10 @@ class Smart_Custom_Fields_Field_Related_Terms extends Smart_Custom_Fields_Field_
 				'hierarchical' => false,
 			);
 
-			if ( isset( $_POST['click_count'] ) ) {
+			$click_count = filter_input( INPUT_POST, 'click_count' );
+			if ( $click_count ) {
 				$number = get_option( 'posts_per_page' );
-				$offset = $_POST['click_count'] * $number;
+				$offset = $click_count * $number;
 				$args   = array_merge(
 					$args,
 					array(
@@ -101,18 +105,20 @@ class Smart_Custom_Fields_Field_Related_Terms extends Smart_Custom_Fields_Field_
 				);
 			}
 
-			if ( isset( $_POST['search'] ) ) {
+			$search = filter_input( INPUT_POST, 'search' );
+			if ( $search ) {
 				$args = array_merge(
 					$args,
 					array(
-						'search' => $_POST['search'],
+						'search' => $search,
 					)
 				);
 			}
-			$_terms = get_terms( $taxonomies, $args );
+
+			$_terms = get_terms( $args );
 		}
 		header( 'Content-Type: application/json; charset=utf-8' );
-		echo json_encode( $_terms );
+		echo wp_json_encode( $_terms );
 		die();
 	}
 
@@ -138,8 +144,8 @@ class Smart_Custom_Fields_Field_Related_Terms extends Smart_Custom_Fields_Field_
 
 		// choicse
 		$choices_terms = get_terms(
-			$taxonomies,
 			array(
+				'taxonomy'     => $taxonomies,
 				'order'        => 'ASC',
 				'orderby'      => 'ID',
 				'hide_empty'   => false,
@@ -248,14 +254,14 @@ class Smart_Custom_Fields_Field_Related_Terms extends Smart_Custom_Fields_Field_
 				<?php foreach ( $tasonomies as $taxonomy => $taxonomy_object ) : ?>
 					<?php
 					$save_taxonomies = $this->get( 'taxonomy' );
-					$checked         = is_array( $save_taxonomies ) && in_array( $taxonomy, $save_taxonomies, true )
-						? 'checked="checked"'
-						: '';
 					?>
 				<input type="checkbox"
 					name="<?php echo esc_attr( $this->get_field_name_in_setting( $group_key, $field_key, 'taxonomy' ) ); ?>[]"
 					value="<?php echo esc_attr( $taxonomy ); ?>"
-					<?php echo $checked; ?> /><?php echo esc_html( $taxonomy_object->labels->singular_name ); ?>
+					<?php if ( is_array( $save_taxonomies ) && in_array( $taxonomy, $save_taxonomies, true ) ) : ?>
+						checked="checked"
+					<?php endif; ?>
+				/><?php echo esc_html( $taxonomy_object->labels->singular_name ); ?>
 				<?php endforeach; ?>
 			</td>
 		</tr>

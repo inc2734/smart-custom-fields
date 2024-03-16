@@ -57,29 +57,30 @@ class Smart_Custom_Fields_Field_Datetime_Picker extends Smart_Custom_Fields_Fiel
 		wp_enqueue_style(
 			'flatpickr-style',
 			'//cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css',
-			array()
+			array(),
+			1
 		);
 		wp_enqueue_script(
 			'flatpickr-script',
 			'//cdn.jsdelivr.net/npm/flatpickr',
 			array(),
-			true,
+			1,
 			true
 		);
 		wp_enqueue_script(
 			SCF_Config::PREFIX . 'flatpickr-script',
-			plugins_url( '../../js/settings-datetime-picker.js', __FILE__ ),
+			SMART_CUSTOM_FIELDS_URL . '/js/settings-datetime-picker.js',
 			array( 'flatpickr-script' ),
-			false,
+			filemtime( SMART_CUSTOM_FIELDS_PATH . '/js/settings-datetime-picker.js' ),
 			true
 		);
 		$locale = $this->get_locale_name();
 		if ( $locale ) {
 			wp_enqueue_script(
-				"flatpickr-lang-${locale}",
-				"//npmcdn.com/flatpickr/dist/l10n/${locale}.js",
+				"flatpickr-lang-{$locale}",
+				"//npmcdn.com/flatpickr/dist/l10n/{$locale}.js",
 				array(),
-				false,
+				1,
 				true
 			);
 		}
@@ -92,29 +93,30 @@ class Smart_Custom_Fields_Field_Datetime_Picker extends Smart_Custom_Fields_Fiel
 		wp_enqueue_style(
 			'flatpickr-style',
 			'//cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css',
-			array()
+			array(),
+			1
 		);
 		wp_enqueue_script(
 			'flatpickr-script',
 			'//cdn.jsdelivr.net/npm/flatpickr',
 			array(),
-			false,
+			1,
 			true
 		);
 		wp_enqueue_script(
 			SCF_Config::PREFIX . 'flatpickr-script',
-			plugins_url( '../../js/settings-datetime-picker.js', __FILE__ ),
+			SMART_CUSTOM_FIELDS_URL . '/js/settings-datetime-picker.js',
 			array( 'flatpickr-script' ),
-			false,
+			filemtime( SMART_CUSTOM_FIELDS_PATH . '/js/settings-datetime-picker.js' ),
 			true
 		);
 		$locale = $this->get_locale_name();
 		if ( $locale ) {
 			wp_enqueue_script(
-				"flatpickr-lang-${locale}",
-				"//npmcdn.com/flatpickr/dist/l10n/${locale}.js",
+				"flatpickr-lang-{$locale}",
+				"//npmcdn.com/flatpickr/dist/l10n/{$locale}.js",
 				array(),
-				false,
+				1,
 				true
 			);
 		}
@@ -281,7 +283,7 @@ class Smart_Custom_Fields_Field_Datetime_Picker extends Smart_Custom_Fields_Fiel
 
 		$data = apply_filters( SCF_Config::PREFIX . 'datetime_picker_data', $data );
 
-		return json_encode( $data );
+		return wp_json_encode( $data );
 	}
 
 	/**

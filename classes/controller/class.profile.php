@@ -31,7 +31,9 @@ class Smart_Custom_Fields_Controller_Profile extends Smart_Custom_Fields_Control
 
 		wp_enqueue_style(
 			SCF_Config::PREFIX . 'profile',
-			plugins_url( SCF_Config::NAME ) . '/css/profile.css'
+			SMART_CUSTOM_FIELDS_URL . '/css/profile.css',
+			array(),
+			filemtime( SMART_CUSTOM_FIELDS_PATH . '/css/profile.css' )
 		);
 	}
 
@@ -43,7 +45,7 @@ class Smart_Custom_Fields_Controller_Profile extends Smart_Custom_Fields_Control
 	public function user_profile( $user ) {
 		printf( '<h3>%s</h3>', esc_html__( 'Custom Fields', 'smart-custom-fields' ) );
 		$settings      = SCF::get_settings( $user );
-		$callback_args = [];
+		$callback_args = array();
 		foreach ( $settings as $setting ) {
 			$callback_args['args'] = $setting->get_groups();
 			?>
@@ -66,10 +68,11 @@ class Smart_Custom_Fields_Controller_Profile extends Smart_Custom_Fields_Control
 		if ( ! current_user_can( 'edit_user', $user_id ) ) {
 			return;
 		}
-		if ( ! isset( $_POST[ SCF_Config::NAME ] ) ) {
+
+		if ( ! filter_input( INPUT_POST, SCF_Config::NAME, FILTER_DEFAULT, FILTER_REQUIRE_ARRAY ) ) {
 			return;
 		}
 
-		$this->save( $_POST, get_userdata( $user_id ) );
+		$this->save( filter_input_array( INPUT_POST ), get_userdata( $user_id ) );
 	}
 }

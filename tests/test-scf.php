@@ -27,28 +27,34 @@ class SCF_Test extends WP_UnitTestCase {
 	protected $menu_slug;
 
 	/**
-	 * setUp
+	 * Set up.
 	 */
-	public function setUp() {
-		parent::setUp();
+	public function set_up() {
+		parent::set_up();
 
 		// The post for custom fields
-		$this->post_id = $this->factory->post->create( array(
-			'post_type'   => 'post',
-			'post_status' => 'publish',
-		) );
+		$this->post_id = $this->factory->post->create(
+			array(
+				'post_type'   => 'post',
+				'post_status' => 'publish',
+			)
+		);
 
 		// The auto draft post for custom fields
-		$this->new_post_id = $this->factory->post->create( array(
-			'post_type'   => 'post',
-			'post_status' => 'auto-draft',
-		) );
+		$this->new_post_id = $this->factory->post->create(
+			array(
+				'post_type'   => 'post',
+				'post_status' => 'auto-draft',
+			)
+		);
 
 		// The draft post for custom fields
-		$this->draft_post_id = $this->factory->post->create( array(
-			'post_type'   => 'post',
-			'post_status' => 'draft',
-		) );
+		$this->draft_post_id = $this->factory->post->create(
+			array(
+				'post_type'   => 'post',
+				'post_status' => 'draft',
+			)
+		);
 
 		// The user for custom fields
 		$this->user_id = $this->factory->user->create( array( 'role' => 'editor' ) );
@@ -67,10 +73,10 @@ class SCF_Test extends WP_UnitTestCase {
 	}
 
 	/**
-	 * tearDown
+	 * Tear down.
 	 */
-	public function tearDown() {
-		parent::tearDown();
+	public function tear_down() {
+		parent::tear_down();
 		$Cache = Smart_Custom_Fields_Cache::get_instance();
 		$Cache->flush();
 	}
@@ -84,14 +90,14 @@ class SCF_Test extends WP_UnitTestCase {
 
 		// When post isn't saved, return the default value.
 		$this->assertSame( '', SCF::get( 'text', $this->new_post_id ) );
-		$this->assertSame( array(), SCF::get( 'checkbox' , $this->new_post_id ) );
+		$this->assertSame( array(), SCF::get( 'checkbox', $this->new_post_id ) );
 		$this->assertSame( 'a', SCF::get( 'text-has-default', $this->new_post_id ) );
 		$this->assertSame( array( 'a' ), SCF::get( 'checkbox-has-default', $this->new_post_id ) );
 		$this->assertSame( array( 'a' ), SCF::get( 'checkbox-key-value', $this->new_post_id ) );
 
 		// When meta data isn't saved, return the default value.
 		$this->assertSame( '', SCF::get( 'text', $this->post_id ) );
-		$this->assertSame( array(), SCF::get( 'checkbox' , $this->post_id ) );
+		$this->assertSame( array(), SCF::get( 'checkbox', $this->post_id ) );
 		$this->assertSame( 'a', SCF::get( 'text-has-default', $this->post_id ) );
 		$this->assertSame( array( 'a' ), SCF::get( 'checkbox-has-default', $this->post_id ) );
 		$this->assertSame( array( 'a' ), SCF::get( 'checkbox-key-value', $this->post_id ) );
@@ -121,9 +127,13 @@ class SCF_Test extends WP_UnitTestCase {
 		);
 
 		// In repeatable group, multi-value field
-		update_post_meta( $this->post_id, SCF_Config::PREFIX . 'repeat-multiple-data', array(
-			'repeat-checkbox' => array( 1, 2 ),
-		) );
+		update_post_meta(
+			$this->post_id,
+			SCF_Config::PREFIX . 'repeat-multiple-data',
+			array(
+				'repeat-checkbox' => array( 1, 2 ),
+			)
+		);
 		add_post_meta( $this->post_id, 'repeat-checkbox', 'a' );
 		add_post_meta( $this->post_id, 'repeat-checkbox', 'b' );
 		add_post_meta( $this->post_id, 'repeat-checkbox', 'c' );
@@ -144,34 +154,40 @@ class SCF_Test extends WP_UnitTestCase {
 		$this->assertNull( SCF::gets( false ) );
 
 		// When post isn't saved, return the default value.
-		$this->assertSame( array(
-			'text'                 => '',
-			'text-has-default'     => 'a',
-			'checkbox'             => array(),
-			'checkbox-has-default' => array( 'a' ),
-			'checkbox-key-value'   => array( 'a' ),
-			'group'                => array(
-				array(
-					'repeat-text'     => '',
-					'repeat-checkbox' => array(),
+		$this->assertSame(
+			array(
+				'text'                 => '',
+				'text-has-default'     => 'a',
+				'checkbox'             => array(),
+				'checkbox-has-default' => array( 'a' ),
+				'checkbox-key-value'   => array( 'a' ),
+				'group'                => array(
+					array(
+						'repeat-text'     => '',
+						'repeat-checkbox' => array(),
+					),
 				),
 			),
-		), SCF::gets( $this->new_post_id ) );
+			SCF::gets( $this->new_post_id )
+		);
 
 		// When meta data isn't saved, return the default value.
-		$this->assertSame( array(
-			'text'                 => '',
-			'text-has-default'     => 'a',
-			'checkbox'             => array(),
-			'checkbox-has-default' => array( 'a' ),
-			'checkbox-key-value'   => array( 'a' ),
-			'group'                => array(
-				array(
-					'repeat-text'     => '',
-					'repeat-checkbox' => array(),
+		$this->assertSame(
+			array(
+				'text'                 => '',
+				'text-has-default'     => 'a',
+				'checkbox'             => array(),
+				'checkbox-has-default' => array( 'a' ),
+				'checkbox-key-value'   => array( 'a' ),
+				'group'                => array(
+					array(
+						'repeat-text'     => '',
+						'repeat-checkbox' => array(),
+					),
 				),
 			),
-		), SCF::gets( $this->post_id ) );
+			SCF::gets( $this->post_id )
+		);
 	}
 
 	/**
@@ -182,30 +198,37 @@ class SCF_Test extends WP_UnitTestCase {
 		update_post_meta( $this->post_id, 'checkbox', 'not-exist-key' );
 		add_post_meta( $this->post_id, 'repeat-text', 'a' );
 		add_post_meta( $this->post_id, 'repeat-text', 'b' );
-		update_post_meta( $this->post_id, SCF_Config::PREFIX . 'repeat-multiple-data', array(
-			'repeat-checkbox' => array( 1, 2 ),
-		) );
+		update_post_meta(
+			$this->post_id,
+			SCF_Config::PREFIX . 'repeat-multiple-data',
+			array(
+				'repeat-checkbox' => array( 1, 2 ),
+			)
+		);
 		add_post_meta( $this->post_id, 'repeat-checkbox', 'a' );
 		add_post_meta( $this->post_id, 'repeat-checkbox', 'b' );
 		add_post_meta( $this->post_id, 'repeat-checkbox', 'c' );
 
-		$this->assertSame( array(
-			'text'                 => 'text',
-			'text-has-default'     => 'a',
-			'checkbox'             => array( 'not-exist-key' ),
-			'checkbox-has-default' => array( 'a' ),
-			'checkbox-key-value'   => array( 'a' ),
-			'group'                => array(
-				array(
-					'repeat-text'     => 'a',
-					'repeat-checkbox' => array( 'a' ),
-				),
-				array(
-					'repeat-text'     => 'b',
-					'repeat-checkbox' => array( 'b', 'c' ),
+		$this->assertSame(
+			array(
+				'text'                 => 'text',
+				'text-has-default'     => 'a',
+				'checkbox'             => array( 'not-exist-key' ),
+				'checkbox-has-default' => array( 'a' ),
+				'checkbox-key-value'   => array( 'a' ),
+				'group'                => array(
+					array(
+						'repeat-text'     => 'a',
+						'repeat-checkbox' => array( 'a' ),
+					),
+					array(
+						'repeat-text'     => 'b',
+						'repeat-checkbox' => array( 'b', 'c' ),
+					),
 				),
 			),
-		), SCF::gets( $this->post_id ) );
+			SCF::gets( $this->post_id )
+		);
 	}
 
 	/**
@@ -222,19 +245,22 @@ class SCF_Test extends WP_UnitTestCase {
 		$this->assertSame( 'a', SCF::get_user_meta( $this->user_id, 'text-has-default' ) );
 		$this->assertSame( array( 'a' ), SCF::get_user_meta( $this->user_id, 'checkbox-has-default' ) );
 		$this->assertSame( array( 'a' ), SCF::get_user_meta( $this->user_id, 'checkbox-key-value' ) );
-		$this->assertSame( array(
-			'text'                 => '',
-			'text-has-default'     => 'a',
-			'checkbox'             => array(),
-			'checkbox-has-default' => array( 'a' ),
-			'checkbox-key-value'   => array( 'a' ),
-			'group'                => array(
-				array(
-					'repeat-text'     => '',
-					'repeat-checkbox' => array(),
+		$this->assertSame(
+			array(
+				'text'                 => '',
+				'text-has-default'     => 'a',
+				'checkbox'             => array(),
+				'checkbox-has-default' => array( 'a' ),
+				'checkbox-key-value'   => array( 'a' ),
+				'group'                => array(
+					array(
+						'repeat-text'     => '',
+						'repeat-checkbox' => array(),
+					),
 				),
 			),
-		), SCF::get_user_meta( $this->user_id ) );
+			SCF::get_user_meta( $this->user_id )
+		);
 
 		// When non exist fields
 		$this->assertNull( SCF::get_user_meta( $this->user_id, 'not-exist' ) );
@@ -261,9 +287,13 @@ class SCF_Test extends WP_UnitTestCase {
 		);
 
 		// In repeatable group, multi-value field
-		update_user_meta( $this->user_id, SCF_Config::PREFIX . 'repeat-multiple-data', array(
-			'repeat-checkbox' => array( 1, 2 ),
-		) );
+		update_user_meta(
+			$this->user_id,
+			SCF_Config::PREFIX . 'repeat-multiple-data',
+			array(
+				'repeat-checkbox' => array( 1, 2 ),
+			)
+		);
 		add_user_meta( $this->user_id, 'repeat-checkbox', 'a' );
 		add_user_meta( $this->user_id, 'repeat-checkbox', 'b' );
 		add_user_meta( $this->user_id, 'repeat-checkbox', 'c' );
@@ -275,23 +305,26 @@ class SCF_Test extends WP_UnitTestCase {
 			SCF::get_user_meta( $this->user_id, 'repeat-checkbox' )
 		);
 
-		$this->assertSame( array(
-			'text'                 => 'text',
-			'text-has-default'     => 'a',
-			'checkbox'             => array( 'not-exist-key' ),
-			'checkbox-has-default' => array( 'a' ),
-			'checkbox-key-value'   => array( 'a' ),
-			'group'                => array(
-				array(
-					'repeat-text'     => 'a',
-					'repeat-checkbox' => array( 'a' ),
-				),
-				array(
-					'repeat-text'     => 'b',
-					'repeat-checkbox' => array( 'b', 'c' ),
+		$this->assertSame(
+			array(
+				'text'                 => 'text',
+				'text-has-default'     => 'a',
+				'checkbox'             => array( 'not-exist-key' ),
+				'checkbox-has-default' => array( 'a' ),
+				'checkbox-key-value'   => array( 'a' ),
+				'group'                => array(
+					array(
+						'repeat-text'     => 'a',
+						'repeat-checkbox' => array( 'a' ),
+					),
+					array(
+						'repeat-text'     => 'b',
+						'repeat-checkbox' => array( 'b', 'c' ),
+					),
 				),
 			),
-		), SCF::get_user_meta( $this->user_id ) );
+			SCF::get_user_meta( $this->user_id )
+		);
 	}
 
 	/**
@@ -312,19 +345,22 @@ class SCF_Test extends WP_UnitTestCase {
 		$this->assertSame( 'a', SCF::get_term_meta( $this->term_id, 'category', 'text-has-default' ) );
 		$this->assertSame( array( 'a' ), SCF::get_term_meta( $this->term_id, 'category', 'checkbox-has-default' ) );
 		$this->assertSame( array( 'a' ), SCF::get_term_meta( $this->term_id, 'category', 'checkbox-key-value' ) );
-		$this->assertSame( array(
-			'text'                 => '',
-			'text-has-default'     => 'a',
-			'checkbox'             => array(),
-			'checkbox-has-default' => array( 'a' ),
-			'checkbox-key-value'   => array( 'a' ),
-			'group'                => array(
-				array(
-					'repeat-text'     => '',
-					'repeat-checkbox' => array(),
+		$this->assertSame(
+			array(
+				'text'                 => '',
+				'text-has-default'     => 'a',
+				'checkbox'             => array(),
+				'checkbox-has-default' => array( 'a' ),
+				'checkbox-key-value'   => array( 'a' ),
+				'group'                => array(
+					array(
+						'repeat-text'     => '',
+						'repeat-checkbox' => array(),
+					),
 				),
 			),
-		), SCF::get_term_meta( $this->term_id, 'category' ) );
+			SCF::get_term_meta( $this->term_id, 'category' )
+		);
 
 		// When non exist fields
 		$this->assertNull( SCF::get_term_meta( $this->term_id, 'category', 'not-exist' ) );
@@ -353,9 +389,12 @@ class SCF_Test extends WP_UnitTestCase {
 		);
 
 		// In repeatable group, multi-value field
-		$Meta->update( SCF_Config::PREFIX . 'repeat-multiple-data', array(
-			'repeat-checkbox' => array( 1, 2 ),
-		) );
+		$Meta->update(
+			SCF_Config::PREFIX . 'repeat-multiple-data',
+			array(
+				'repeat-checkbox' => array( 1, 2 ),
+			)
+		);
 		$Meta->add( 'repeat-checkbox', 'a' );
 		$Meta->add( 'repeat-checkbox', 'b' );
 		$Meta->add( 'repeat-checkbox', 'c' );
@@ -367,23 +406,26 @@ class SCF_Test extends WP_UnitTestCase {
 			SCF::get_term_meta( $this->term_id, 'category', 'repeat-checkbox' )
 		);
 
-		$this->assertSame( array(
-			'text'                 => 'text',
-			'text-has-default'     => 'a',
-			'checkbox'             => array( 'not-exist-key' ),
-			'checkbox-has-default' => array( 'a' ),
-			'checkbox-key-value'   => array( 'a' ),
-			'group'                => array(
-				array(
-					'repeat-text'     => 'a',
-					'repeat-checkbox' => array( 'a' ),
-				),
-				array(
-					'repeat-text'     => 'b',
-					'repeat-checkbox' => array( 'b', 'c' ),
+		$this->assertSame(
+			array(
+				'text'                 => 'text',
+				'text-has-default'     => 'a',
+				'checkbox'             => array( 'not-exist-key' ),
+				'checkbox-has-default' => array( 'a' ),
+				'checkbox-key-value'   => array( 'a' ),
+				'group'                => array(
+					array(
+						'repeat-text'     => 'a',
+						'repeat-checkbox' => array( 'a' ),
+					),
+					array(
+						'repeat-text'     => 'b',
+						'repeat-checkbox' => array( 'b', 'c' ),
+					),
 				),
 			),
-		), SCF::get_term_meta( $this->term_id, 'category' ) );
+			SCF::get_term_meta( $this->term_id, 'category' )
+		);
 	}
 
 	/**
@@ -400,19 +442,22 @@ class SCF_Test extends WP_UnitTestCase {
 		$this->assertSame( 'a', SCF::get_option_meta( $this->menu_slug, 'text-has-default' ) );
 		$this->assertSame( array( 'a' ), SCF::get_option_meta( $this->menu_slug, 'checkbox-has-default' ) );
 		$this->assertSame( array( 'a' ), SCF::get_option_meta( $this->menu_slug, 'checkbox-key-value' ) );
-		$this->assertSame( array(
-			'text'                 => '',
-			'text-has-default'     => 'a',
-			'checkbox'             => array(),
-			'checkbox-has-default' => array( 'a' ),
-			'checkbox-key-value'   => array( 'a' ),
-			'group'                => array(
-				array(
-					'repeat-text'     => '',
-					'repeat-checkbox' => array(),
+		$this->assertSame(
+			array(
+				'text'                 => '',
+				'text-has-default'     => 'a',
+				'checkbox'             => array(),
+				'checkbox-has-default' => array( 'a' ),
+				'checkbox-key-value'   => array( 'a' ),
+				'group'                => array(
+					array(
+						'repeat-text'     => '',
+						'repeat-checkbox' => array(),
+					),
 				),
 			),
-		), SCF::get_option_meta( $this->menu_slug ) );
+			SCF::get_option_meta( $this->menu_slug )
+		);
 
 		// When non exist fields
 		$this->assertNull( SCF::get_option_meta( $this->menu_slug, 'not-exist' ) );
@@ -454,23 +499,26 @@ class SCF_Test extends WP_UnitTestCase {
 			SCF::get_option_meta( $this->menu_slug, 'repeat-checkbox' )
 		);
 
-		$this->assertSame( array(
-			'text'                 => 'text',
-			'text-has-default'     => 'a',
-			'checkbox'             => array( 'not-exist-key' ),
-			'checkbox-has-default' => array( 'a' ),
-			'checkbox-key-value'   => array( 'a' ),
-			'group'                => array(
-				array(
-					'repeat-text'     => 'a',
-					'repeat-checkbox' => array( 'a' ),
-				),
-				array(
-					'repeat-text'     => 'b',
-					'repeat-checkbox' => array( 'b', 'c' ),
+		$this->assertSame(
+			array(
+				'text'                 => 'text',
+				'text-has-default'     => 'a',
+				'checkbox'             => array( 'not-exist-key' ),
+				'checkbox-has-default' => array( 'a' ),
+				'checkbox-key-value'   => array( 'a' ),
+				'group'                => array(
+					array(
+						'repeat-text'     => 'a',
+						'repeat-checkbox' => array( 'a' ),
+					),
+					array(
+						'repeat-text'     => 'b',
+						'repeat-checkbox' => array( 'b', 'c' ),
+					),
 				),
 			),
-		), SCF::get_option_meta( $this->menu_slug ) );
+			SCF::get_option_meta( $this->menu_slug )
+		);
 	}
 
 	/**
@@ -491,16 +539,18 @@ class SCF_Test extends WP_UnitTestCase {
 	 * @group add_settings
 	 */
 	public function test_add_settings() {
-		$post_id = $this->factory->post->create( array(
-			'post_type'  => SCF_Config::NAME,
-			'post_title' => 'test_settings',
-		) );
+		$post_id = $this->factory->post->create(
+			array(
+				'post_type'  => SCF_Config::NAME,
+				'post_title' => 'test_settings',
+			)
+		);
 		update_post_meta( $post_id, SCF_Config::PREFIX . 'condition', array( 'post' ) );
 
 		$settings = SCF::get_settings( get_post( $this->post_id ) );
 		$this->assertCount( 2, $settings );
 		foreach ( $settings as $Setting ) {
-			$this->assertTrue( in_array( $Setting->get_title(), array( 'test_settings', 'Register Test' ) ) );
+			$this->assertTrue( in_array( $Setting->get_title(), array( 'test_settings', 'Register Test' ), true ) );
 		}
 	}
 
@@ -516,10 +566,12 @@ class SCF_Test extends WP_UnitTestCase {
 	 * @group get_settings_posts
 	 */
 	public function test_get_settings_posts__saved() {
-		$post_id = $this->factory->post->create( array(
-			'post_type'  => SCF_Config::NAME,
-			'post_title' => 'test_settings_post',
-		) );
+		$post_id = $this->factory->post->create(
+			array(
+				'post_type'  => SCF_Config::NAME,
+				'post_title' => 'test_settings_post',
+			)
+		);
 		update_post_meta( $post_id, SCF_Config::PREFIX . 'condition', array( 'post' ) );
 		$settings_posts = SCF::get_settings_posts( get_post( $this->post_id ) );
 		$this->assertCount( 1, $settings_posts );
@@ -533,10 +585,12 @@ class SCF_Test extends WP_UnitTestCase {
 	 */
 	public function test_get_settings() {
 		// Match the post
-		$post_id = $this->factory->post->create( array(
-			'post_type'   => 'post',
-			'post_status' => 'publish',
-		) );
+		$post_id  = $this->factory->post->create(
+			array(
+				'post_type'   => 'post',
+				'post_status' => 'publish',
+			)
+		);
 		$settings = SCF::get_settings( get_post( $post_id ) );
 		foreach ( $settings as $Setting ) {
 			$this->assertTrue( is_a( $Setting, 'Smart_Custom_Fields_Setting' ) );
@@ -547,11 +601,11 @@ class SCF_Test extends WP_UnitTestCase {
 		$this->assertSame( array(), $settings );
 
 		// Match the role
-		$user_id = $this->factory->user->create( array( 'role' => 'editor' ) );
+		$user_id  = $this->factory->user->create( array( 'role' => 'editor' ) );
 		$settings = SCF::get_settings( get_userdata( $user_id ) );
 		$this->assertTrue( is_a( current( $settings ), 'Smart_Custom_Fields_Setting' ) );
 
-		$user_id = $this->factory->user->create( array( 'role' => 'subscriber' ) );
+		$user_id  = $this->factory->user->create( array( 'role' => 'subscriber' ) );
 		$settings = SCF::get_settings( get_userdata( $user_id ) );
 		$this->assertTrue( is_a( current( $settings ), 'Smart_Custom_Fields_Setting' ) );
 
@@ -560,7 +614,7 @@ class SCF_Test extends WP_UnitTestCase {
 		$this->assertSame( array(), $settings );
 
 		// Match the term
-		$term_id = $this->factory->term->create( array( 'taxonomy' => 'category' ) );
+		$term_id  = $this->factory->term->create( array( 'taxonomy' => 'category' ) );
 		$settings = SCF::get_settings( get_term( $term_id, 'category' ) );
 		$this->assertTrue( is_a( current( $settings ), 'Smart_Custom_Fields_Setting' ) );
 
@@ -577,7 +631,9 @@ class SCF_Test extends WP_UnitTestCase {
 		$this->assertSame( array(), SCF::get_repeat_multiple_data( get_post( $this->post_id ) ) );
 
 		// When existed
-		update_post_meta( $this->post_id, SCF_Config::PREFIX . 'repeat-multiple-data',
+		update_post_meta(
+			$this->post_id,
+			SCF_Config::PREFIX . 'repeat-multiple-data',
 			array(
 				'repeat-checkbox' => array( 1, 2 ),
 			)
@@ -676,7 +732,7 @@ class SCF_Test extends WP_UnitTestCase {
 		$this->create_revision( $this->draft_post_id );
 
 		// Set preview state
-		$backup_wp_query = clone $wp_query;
+		$backup_wp_query      = clone $wp_query;
 		$wp_query->is_preview = true;
 
 		$post = get_post( $this->post_id );
@@ -739,10 +795,39 @@ class SCF_Test extends WP_UnitTestCase {
 		$this->assertSame( array( 'A', 'B', 'C' ), SCF::choices_eol_to_array( "A\r\nB\r\nC" ) );
 		$this->assertSame( array( 'A', 'B', 'C' ), SCF::choices_eol_to_array( "A\rB\rC" ) );
 		$this->assertSame( array( 'A', 'B', 'C' ), SCF::choices_eol_to_array( "A\nB\nC" ) );
-		$this->assertSame( array( 'a' => 'AAA', 'b' => 'BBB' ), SCF::choices_eol_to_array( array( 'a' => 'AAA', 'b' => 'BBB' ) ) );
-		$this->assertSame( array( 'a' => 'AAA', 'b' => 'BBB' ), SCF::choices_eol_to_array( "a => AAA\nb => BBB" ) );
-		$this->assertSame( array( 'a' => 'AAA', 0 => 'BBB' ), SCF::choices_eol_to_array( "a => AAA\nBBB" ) );
-		$this->assertSame( array( '0' => 'AAA', '1' => 'BBB' ), SCF::choices_eol_to_array( "0 => AAA\n1 => BBB" ) );
+		$this->assertSame(
+			array(
+				'a' => 'AAA',
+				'b' => 'BBB',
+			),
+			SCF::choices_eol_to_array(
+				array(
+					'a' => 'AAA',
+					'b' => 'BBB',
+				)
+			)
+		);
+		$this->assertSame(
+			array(
+				'a' => 'AAA',
+				'b' => 'BBB',
+			),
+			SCF::choices_eol_to_array( "a => AAA\nb => BBB" )
+		);
+		$this->assertSame(
+			array(
+				'a' => 'AAA',
+				0   => 'BBB',
+			),
+			SCF::choices_eol_to_array( "a => AAA\nBBB" )
+		);
+		$this->assertSame(
+			array(
+				'0' => 'AAA',
+				'1' => 'BBB',
+			),
+			SCF::choices_eol_to_array( "0 => AAA\n1 => BBB" )
+		);
 	}
 
 	/**
@@ -756,91 +841,134 @@ class SCF_Test extends WP_UnitTestCase {
 		remove_filter( SCF_Config::PREFIX . 'rest_api_post_type', array( $this, '_get_post_type' ) );
 	}
 
+	/**
+	 * Create revision.
+	 *
+	 * @param int $post_id Post ID.
+	 * @return WP_Post
+	 */
 	protected function create_revision( $post_id ) {
-		return $this->factory->post->create( array(
-			'post_type'   => 'revision',
-			'post_parent' => $post_id,
-			'post_status' => 'inherit',
-			'post_name'   => $post_id . '-autosave',
-		) );
+		return $this->factory->post->create(
+			array(
+				'post_type'   => 'revision',
+				'post_parent' => $post_id,
+				'post_status' => 'inherit',
+				'post_name'   => $post_id . '-autosave',
+			)
+		);
 	}
 
 	/**
-	 * Register custom fields using filter hook
+	 * Register custom fields using filter hook.
+	 *
+	 * @param array  $settings  Array of Smart_Custom_Fields_Setting object.
+	 * @param string $type      Post type or Role.
+	 * @param int    $id        Post ID or User ID.
+	 * @param string $meta_type post or user.
 	 */
 	public function _register( $settings, $type, $id, $meta_type ) {
 		if (
-			( $type === 'post' && $id === $this->post_id ) ||
-			( $type === 'post' && $id === $this->new_post_id ) ||
-			( $type === 'editor' ) ||
-			( $type === 'subscriber' ) ||
-			( $type === 'category' ) ||
-			( $meta_type === 'option' && $id === 'menu-slug' )
+			( 'post' === $type && $id === $this->post_id ) ||
+			( 'post' === $type && $id === $this->new_post_id ) ||
+			( 'editor' === $type ) ||
+			( 'subscriber' === $type ) ||
+			( 'category' === $type ) ||
+			( 'option' === $meta_type && 'menu-slug' === $id )
 		) {
 			$Setting = SCF::add_setting( 'id-1', 'Register Test' );
-			$Setting->add_group( 0, false, array(
+			$Setting->add_group(
+				0,
+				false,
 				array(
-					'name'  => 'text',
-					'label' => 'text',
-					'type'  => 'text',
-				),
-			) );
-			$Setting->add_group( 'text-has-default', false, array(
+					array(
+						'name'  => 'text',
+						'label' => 'text',
+						'type'  => 'text',
+					),
+				)
+			);
+			$Setting->add_group(
+				'text-has-default',
+				false,
 				array(
-					'name'    => 'text-has-default',
-					'label'   => 'text has default',
-					'type'    => 'text',
-					'default' => 'a',
-				),
-			) );
-			$Setting->add_group( 'checkbox', false, array(
+					array(
+						'name'    => 'text-has-default',
+						'label'   => 'text has default',
+						'type'    => 'text',
+						'default' => 'a',
+					),
+				)
+			);
+			$Setting->add_group(
+				'checkbox',
+				false,
 				array(
-					'name'    => 'checkbox',
-					'label'   => 'checkbox field',
-					'type'    => 'check',
-					'choices' => array( 'a', 'b', 'c' ),
-				),
-			) );
-			$Setting->add_group( 'checkbox-has-default', false, array(
+					array(
+						'name'    => 'checkbox',
+						'label'   => 'checkbox field',
+						'type'    => 'check',
+						'choices' => array( 'a', 'b', 'c' ),
+					),
+				)
+			);
+			$Setting->add_group(
+				'checkbox-has-default',
+				false,
 				array(
-					'name'    => 'checkbox-has-default',
-					'label'   => 'checkbox has default',
-					'type'    => 'check',
-					'choices' => array( 'a', 'b', 'c' ),
-					'default' => array( 'a' ),
-				),
-			) );
-			$Setting->add_group( 'checkbox-key-value', false, array(
+					array(
+						'name'    => 'checkbox-has-default',
+						'label'   => 'checkbox has default',
+						'type'    => 'check',
+						'choices' => array( 'a', 'b', 'c' ),
+						'default' => array( 'a' ),
+					),
+				)
+			);
+			$Setting->add_group(
+				'checkbox-key-value',
+				false,
 				array(
-					'name'    => 'checkbox-key-value',
-					'label'   => 'checkbox key value',
-					'type'    => 'check',
-					'choices' => array( 'a' => 'apple', 'b' => 'banana', 'c' => 'carrot' ),
-					'default' => array( 'a' ),
-				),
-			) );
-			$Setting->add_group( 'group', true, array(
+					array(
+						'name'    => 'checkbox-key-value',
+						'label'   => 'checkbox key value',
+						'type'    => 'check',
+						'choices' => array(
+							'a' => 'apple',
+							'b' => 'banana',
+							'c' => 'carrot',
+						),
+						'default' => array( 'a' ),
+					),
+				)
+			);
+			$Setting->add_group(
+				'group',
+				true,
 				array(
-					'name'  => 'repeat-text',
-					'label' => 'repeat text',
-					'type'  => 'text',
-				),
-				array(
-					'name'    => 'repeat-checkbox',
-					'label'   => 'repeat checkbox',
-					'type'    => 'check',
-					'choices' => array( 'a', 'b', 'c' ),
-				),
-			) );
-			$settings[$Setting->get_id()] = $Setting;
+					array(
+						'name'  => 'repeat-text',
+						'label' => 'repeat text',
+						'type'  => 'text',
+					),
+					array(
+						'name'    => 'repeat-checkbox',
+						'label'   => 'repeat checkbox',
+						'type'    => 'check',
+						'choices' => array( 'a', 'b', 'c' ),
+					),
+				)
+			);
+			$settings[ $Setting->get_id() ] = $Setting;
 		}
 		return $settings;
 	}
 
 	/**
-	 * Register rest_api_post_type filter hook
+	 * Register rest_api_post_type filter hook.
+	 *
+	 * @return array
 	 */
-	public function _get_post_type( $post_type ) {
+	public function _get_post_type() {
 		return array( 'post', 'page', 'my-custom-post' );
 	}
 }

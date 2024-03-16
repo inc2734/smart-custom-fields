@@ -47,17 +47,17 @@ class Smart_Custom_Fields_Field_Related_Posts extends Smart_Custom_Fields_Field_
 	public function admin_enqueue_scripts() {
 		wp_enqueue_script(
 			SCF_Config::PREFIX . 'editor-relation-common',
-			plugins_url( SCF_Config::NAME ) . '/js/editor-relation-common.js',
+			SMART_CUSTOM_FIELDS_URL . '/js/editor-relation-common.js',
 			array( 'jquery' ),
-			filemtime( plugin_dir_path( dirname( __FILE__ ) . '/../../js/editor-relation-common.js' ) ),
+			filemtime( SMART_CUSTOM_FIELDS_PATH . '/js/editor-relation-common.js' ),
 			true
 		);
 
 		wp_enqueue_script(
 			SCF_Config::PREFIX . 'editor-relation-post-types',
-			plugins_url( SCF_Config::NAME ) . '/js/editor-relation-post-types.js',
+			SMART_CUSTOM_FIELDS_URL . '/js/editor-relation-post-types.js',
 			array( 'jquery' ),
-			filemtime( plugin_dir_path( dirname( __FILE__ ) . '/../../js/editor-relation-post-types.js' ) ),
+			filemtime( SMART_CUSTOM_FIELDS_PATH . '/js/editor-relation-post-types.js' ),
 			true
 		);
 
@@ -78,8 +78,10 @@ class Smart_Custom_Fields_Field_Related_Posts extends Smart_Custom_Fields_Field_
 	public function relational_posts_search() {
 		check_ajax_referer( SCF_Config::NAME . '-relation-post-types', 'nonce' );
 		$_posts = array();
-		if ( isset( $_POST['post_types'] ) ) {
-			$post_type = explode( ',', $_POST['post_types'] );
+
+		$post_types = filter_input( INPUT_POST, 'post_types' );
+		if ( $post_types ) {
+			$post_type = explode( ',', $post_types );
 			$args      = array(
 				'post_type'      => $post_type,
 				'order'          => 'ASC',
@@ -88,9 +90,10 @@ class Smart_Custom_Fields_Field_Related_Posts extends Smart_Custom_Fields_Field_
 				'post_status'    => 'any',
 			);
 
-			if ( isset( $_POST['click_count'] ) ) {
+			$click_count = filter_input( INPUT_POST, 'click_count' );
+			if ( $click_count ) {
 				$posts_per_page = get_option( 'posts_per_page' );
-				$offset         = $_POST['click_count'] * $posts_per_page;
+				$offset         = $click_count * $posts_per_page;
 				$args           = array_merge(
 					$args,
 					array(
@@ -100,16 +103,18 @@ class Smart_Custom_Fields_Field_Related_Posts extends Smart_Custom_Fields_Field_
 				);
 			}
 
-			if ( isset( $_POST['s'] ) ) {
+			$s = filter_input( INPUT_POST, 's' );
+			if ( $s ) {
 				$args = array_merge(
 					$args,
 					array(
-						's' => $_POST['s'],
+						's' => $s,
 					)
 				);
 			}
 
-			$field_name = sanitize_text_field( $_POST['field_name'] );
+			$field_name = sanitize_text_field( filter_input( INPUT_POST, 'field_name' ) );
+
 			/**
 			 * This filter will be always applied when it queries posts in related posts field.
 			 */
@@ -123,7 +128,7 @@ class Smart_Custom_Fields_Field_Related_Posts extends Smart_Custom_Fields_Field_
 			$_posts = get_posts( $args );
 		}
 		header( 'Content-Type: application/json; charset=utf-8' );
-		echo json_encode( $_posts );
+		echo wp_json_encode( $_posts );
 		die();
 	}
 
@@ -274,14 +279,14 @@ class Smart_Custom_Fields_Field_Related_Posts extends Smart_Custom_Fields_Field_
 				<?php foreach ( $post_types as $post_type => $post_type_object ) : ?>
 					<?php
 					$save_post_types = $this->get( 'post-type' );
-					$checked         = is_array( $save_post_types ) && in_array( $post_type, $save_post_types, true )
-						? 'checked="checked"'
-						: '';
 					?>
 				<input type="checkbox"
 					name="<?php echo esc_attr( $this->get_field_name_in_setting( $group_key, $field_key, 'post-type' ) ); ?>[]"
 					value="<?php echo esc_attr( $post_type ); ?>"
-					<?php echo $checked; ?> /><?php echo esc_html( $post_type_object->labels->singular_name ); ?>
+					<?php if ( is_array( $save_post_types ) && in_array( $post_type, $save_post_types, true ) ) : ?>
+						checked="checked"
+					<?php endif; ?>
+				/><?php echo esc_html( $post_type_object->labels->singular_name ); ?>
 				<?php endforeach; ?>
 			</td>
 		</tr>

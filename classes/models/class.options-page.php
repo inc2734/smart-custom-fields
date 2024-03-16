@@ -93,7 +93,7 @@ class Smart_Custom_Fields_Options_Page {
 	 * Display option.
 	 */
 	public function display() {
-		$option = SCF::generate_option_object( $_GET['page'] );
+		$option = SCF::generate_option_object( filter_input( INPUT_GET, 'page' ) );
 		if ( ! $option ) {
 			return;
 		}

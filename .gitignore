@@ -7,3 +7,4 @@ node_modules/
 /.export/*
 smart-custom-fields/
 smart-custom-fields.zip
+.phpunit.result.cache

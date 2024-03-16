@@ -45,41 +45,41 @@ class Smart_Custom_Fields_Meta {
 	protected $types = array();
 
 	/**
-	 * __construct
+	 * Constructor.
 	 *
-	 * @param WP_Post|WP_User|WP_Term|stdClass $object Meta object type object.
+	 * @param WP_Post|WP_User|WP_Term|stdClass $wp_object Meta object type object.
 	 *
 	 * @throws \Exception If object type not found.
 	 */
-	public function __construct( $object ) {
-		$this->object = $object;
-		if ( is_a( $object, 'WP_Post' ) ) {
-			$this->id        = $object->ID;
-			$this->type      = $object->post_type;
-			$this->types     = array( $object->post_type );
+	public function __construct( $wp_object ) {
+		$this->object = $wp_object;
+		if ( is_a( $wp_object, 'WP_Post' ) ) {
+			$this->id        = $wp_object->ID;
+			$this->type      = $wp_object->post_type;
+			$this->types     = array( $wp_object->post_type );
 			$this->meta_type = 'post';
-		} elseif ( is_a( $object, 'WP_User' ) ) {
-			$this->id        = $object->ID;
-			$this->type      = $object->roles[0];
-			$this->types     = array_unique( array_merge( $object->roles, array_keys( $object->caps ) ) );
+		} elseif ( is_a( $wp_object, 'WP_User' ) ) {
+			$this->id        = $wp_object->ID;
+			$this->type      = $wp_object->roles[0];
+			$this->types     = array_unique( array_merge( $wp_object->roles, array_keys( $wp_object->caps ) ) );
 			$this->meta_type = 'user';
-		} elseif ( isset( $object->term_id ) ) {
-			$this->id        = $object->term_id;
-			$this->type      = $object->taxonomy;
-			$this->types     = array( $object->taxonomy );
+		} elseif ( isset( $wp_object->term_id ) ) {
+			$this->id        = $wp_object->term_id;
+			$this->type      = $wp_object->taxonomy;
+			$this->types     = array( $wp_object->taxonomy );
 			$this->meta_type = 'term';
-		} elseif ( isset( $object->menu_slug ) ) {
-			$this->id        = $object->menu_slug;
-			$this->type      = $object->menu_slug;
-			$this->types     = array( $object->menu_slug );
+		} elseif ( isset( $wp_object->menu_slug ) ) {
+			$this->id        = $wp_object->menu_slug;
+			$this->type      = $wp_object->menu_slug;
+			$this->types     = array( $wp_object->menu_slug );
 			$this->meta_type = 'option';
-		} elseif ( empty( $object ) || is_wp_error( $object ) ) {
+		} elseif ( empty( $wp_object ) || is_wp_error( $wp_object ) ) {
 			$this->id        = null;
 			$this->type      = null;
 			$this->types     = null;
 			$this->meta_type = null;
 		} else {
-			throw new Exception( sprintf( 'Invalid $object type error. $object is "%s".', get_class( $object ) ) );
+			throw new Exception( sprintf( 'Invalid $wp_object type error. $wp_object is "%s".', esc_html( get_class( $wp_object ) ) ) );
 		}
 	}
 
@@ -232,15 +232,13 @@ class Smart_Custom_Fields_Meta {
 					return $meta;
 				}
 			}
-		} else {
-			if ( is_array( $meta ) ) {
-				$metas = [];
-				foreach ( $settings as $setting ) {
-					$fields = $setting->get_fields();
-					foreach ( $meta as $meta_key => $meta_value ) {
-						if ( isset( $fields[ $meta_key ] ) ) {
-							$metas[ $meta_key ] = $meta[ $meta_key ];
-						}
+		} elseif ( is_array( $meta ) ) {
+				$metas = array();
+			foreach ( $settings as $setting ) {
+				$fields = $setting->get_fields();
+				foreach ( $meta as $meta_key => $meta_value ) {
+					if ( isset( $fields[ $meta_key ] ) ) {
+						$metas[ $meta_key ] = $meta[ $meta_key ];
 					}
 				}
 			}
@@ -392,10 +390,8 @@ class Smart_Custom_Fields_Meta {
 			if ( $key ) {
 				return delete_metadata( $this->meta_type, $this->id, $key, $value );
 			}
-		} else {
-			if ( $key ) {
+		} elseif ( $key ) {
 				return $this->delete_option_metadata( $key, $value );
-			}
 		}
 		return false;
 	}

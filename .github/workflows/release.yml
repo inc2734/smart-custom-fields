@@ -12,10 +12,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
 
     - name: Cache node modules
-      uses: actions/cache@v2
+      uses: actions/cache@v4
       env:
         cache-name: cache-node-modules
       with:
@@ -27,20 +27,20 @@ jobs:
           ${{ runner.os }}-build-
           ${{ runner.os }}-
 
-    - name: Use Node.js 12.x
-      uses: actions/setup-node@v1
+    - name: Use Node.js
+      uses: actions/setup-node@v4
       with:
-        node-version: 12.x
+        node-version-file: 'package.json'
 
     - name: Npm install
-      run: npm install
+      run: npm ci
 
     - name: Get Composer Cache Directory
       id: composer-cache
-      run: echo "::set-output name=dir::$(composer config cache-files-dir)"
+      run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
 
     - name: Cache vendor
-      uses: actions/cache@v2
+      uses: actions/cache@v4
       with:
         path: ${{ steps.composer-cache.outputs.dir }}
         key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
@@ -63,7 +63,7 @@ jobs:
       with:
         tag_name: ${{ github.ref }}
         release_name: ${{ github.ref }}
-        draft: false
+        draft: true
         prerelease: false
 
     - name: Upload Release Asset
@@ -76,3 +76,10 @@ jobs:
         asset_path: ./smart-custom-fields.zip
         asset_name: smart-custom-fields.zip
         asset_content_type: application/zip
+
+    - name: Upload to github release
+      uses: eregon/publish-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        release_id: ${{ steps.create_release.outputs.id }}
