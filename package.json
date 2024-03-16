@@ -37,6 +37,6 @@
 		"clean:zip": "rimraf smart-custom-fields.zip",
 		"zip:pack": "rsync -a --exclude='/bin' --exclude='/vendor' --exclude='/node_modules' --exclude='.*' --exclude='*.ruleset.xml' --exclude='*.config.js' --exclude='*.xml.dist' --exclude='/tests' --exclude='package*.json' --exclude='/smart-custom-fields.zip' ./ smart-custom-fields",
 		"zip:archive": "zip -9 -qmr smart-custom-fields.zip smart-custom-fields",
-		"zip": "npm run clean:zip && npm run zip:pack && npm run zip:archive"
+		"zip": "npm run clean:zip && npm run zip:pack && wp-env start && npm run composer install -- --no-dev -d smart-custom-fields && npm run zip:archive"
 	}
 }
