@@ -77,56 +77,70 @@ class Smart_Custom_Fields_Field_Related_Posts extends Smart_Custom_Fields_Field_
 	 */
 	public function relational_posts_search() {
 		check_ajax_referer( SCF_Config::NAME . '-relation-post-types', 'nonce' );
+
 		$_posts = array();
 
 		$post_types = filter_input( INPUT_POST, 'post_types' );
 		if ( $post_types ) {
-			$post_type = explode( ',', $post_types );
-			$args      = array(
-				'post_type'      => $post_type,
-				'order'          => 'ASC',
-				'orderby'        => 'ID',
-				'posts_per_page' => -1,
-				'post_status'    => 'any',
-			);
+			$post_type              = explode( ',', $post_types );
+			$retrievable_post_types = array();
 
-			$click_count = filter_input( INPUT_POST, 'click_count' );
-			if ( $click_count ) {
-				$posts_per_page = get_option( 'posts_per_page' );
-				$offset         = $click_count * $posts_per_page;
-				$args           = array_merge(
-					$args,
-					array(
-						'offset'         => $offset,
-						'posts_per_page' => $posts_per_page,
-					)
-				);
+			foreach ( $post_type as $_post_type ) {
+				$post_type_object = get_post_type_object( $_post_type );
+
+				if ( current_user_can( $post_type_object->cap->edit_posts ) ) {
+					$retrievable_post_types[] = $_post_type;
+				}
 			}
 
-			$s = filter_input( INPUT_POST, 's' );
-			if ( $s ) {
-				$args = array_merge(
-					$args,
-					array(
-						's' => $s,
-					)
+			if ( $retrievable_post_types ) {
+				$args = array(
+					'post_type'      => $retrievable_post_types,
+					'order'          => 'ASC',
+					'orderby'        => 'ID',
+					'posts_per_page' => -1,
+					'post_status'    => 'any',
 				);
+
+				$click_count = filter_input( INPUT_POST, 'click_count' );
+				if ( $click_count ) {
+					$posts_per_page = get_option( 'posts_per_page' );
+					$offset         = $click_count * $posts_per_page;
+					$args           = array_merge(
+						$args,
+						array(
+							'offset'         => $offset,
+							'posts_per_page' => $posts_per_page,
+						)
+					);
+				}
+
+				$s = filter_input( INPUT_POST, 's' );
+				if ( $s ) {
+					$args = array_merge(
+						$args,
+						array(
+							's' => $s,
+						)
+					);
+				}
+
+				$field_name = sanitize_text_field( filter_input( INPUT_POST, 'field_name' ) );
+
+				/**
+				* This filter will be always applied when it queries posts in related posts field.
+				*/
+				$args = apply_filters( SCF_Config::PREFIX . 'custom_related_posts_args', $args, $field_name, $post_type );
+
+				/**
+				* This filter will only be applied when getting posts via ajax call, therefore it won't be applied for the first load.
+				*/
+				$args = apply_filters( SCF_Config::PREFIX . 'custom_related_posts_args_ajax_call', $args, $field_name, $post_type );
+
+				$_posts = get_posts( $args );
 			}
-
-			$field_name = sanitize_text_field( filter_input( INPUT_POST, 'field_name' ) );
-
-			/**
-			 * This filter will be always applied when it queries posts in related posts field.
-			 */
-			$args = apply_filters( SCF_Config::PREFIX . 'custom_related_posts_args', $args, $field_name, $post_type );
-
-			/**
-			 * This filter will only be applied when getting posts via ajax call, therefore it won't be applied for the first load.
-			 */
-			$args = apply_filters( SCF_Config::PREFIX . 'custom_related_posts_args_ajax_call', $args, $field_name, $post_type );
-
-			$_posts = get_posts( $args );
 		}
+
 		header( 'Content-Type: application/json; charset=utf-8' );
 		echo wp_json_encode( $_posts );
 		die();
@@ -144,33 +158,48 @@ class Smart_Custom_Fields_Field_Related_Posts extends Smart_Custom_Fields_Field_
 		$disabled  = $this->get_disable_attribute( $index );
 		$post_type = $this->get( 'post-type' );
 		$limit     = $this->get( 'limit' );
-		if ( ! $post_type ) {
-			$post_type = array( 'post' );
-		}
-		if ( ! preg_match( '/^\d+$/', $limit ) ) {
-			$limit = '';
-		}
+
+		$choices_posts  = array();
 		$posts_per_page = get_option( 'posts_per_page' );
 
-		$args = array(
-			'post_type'      => $post_type,
-			'order'          => 'ASC',
-			'orderby'        => 'ID',
-			'posts_per_page' => $posts_per_page,
-			'post_status'    => 'any',
-		);
+		if ( $post_type ) {
+			$retrievable_post_types = array();
 
-		/**
-		 * This filter will be always applied when it queries posts in related posts field.
-		 */
-		$args = apply_filters( SCF_Config::PREFIX . 'custom_related_posts_args', $args, $name, $post_type );
-		/**
-		 * This filter will only be applied in the first load, therefore it won't be applied when getting posts via ajax call.
-		 */
-		$args = apply_filters( SCF_Config::PREFIX . 'custom_related_posts_args_first_load', $args, $name, $post_type );
+			foreach ( $post_type as $_post_type ) {
+				$post_type_object = get_post_type_object( $_post_type );
 
-		// Get posts to show in the first load.
-		$choices_posts = get_posts( $args );
+				if ( current_user_can( $post_type_object->cap->edit_posts ) ) {
+					$retrievable_post_types[] = $_post_type;
+				}
+			}
+
+			if ( $retrievable_post_types ) {
+				if ( ! preg_match( '/^\d+$/', $limit ) ) {
+					$limit = '';
+				}
+
+				$args = array(
+					'post_type'      => $retrievable_post_types,
+					'order'          => 'ASC',
+					'orderby'        => 'ID',
+					'posts_per_page' => $posts_per_page,
+					'post_status'    => 'any',
+				);
+
+				/**
+				* This filter will be always applied when it queries posts in related posts field.
+				*/
+				$args = apply_filters( SCF_Config::PREFIX . 'custom_related_posts_args', $args, $name, $post_type );
+
+				/**
+				* This filter will only be applied in the first load, therefore it won't be applied when getting posts via ajax call.
+				*/
+				$args = apply_filters( SCF_Config::PREFIX . 'custom_related_posts_args_first_load', $args, $name, $post_type );
+
+				// Get posts to show in the first load.
+				$choices_posts = get_posts( $args );
+			}
+		}
 
 		$choices_li = array();
 		foreach ( $choices_posts as $_post ) {

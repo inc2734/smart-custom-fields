@@ -77,46 +77,59 @@ class Smart_Custom_Fields_Field_Related_Terms extends Smart_Custom_Fields_Field_
 	 */
 	public function relational_terms_search() {
 		check_ajax_referer( SCF_Config::NAME . '-relation-taxonomies', 'nonce' );
+
 		$_terms = array();
-		$args   = array();
 
 		$taxonomies = filter_input( INPUT_POST, 'taxonomies' );
 		if ( $taxonomies ) {
-			$taxonomies = explode( ',', $taxonomies );
-			$args       = array(
-				'taxonomy'     => $taxonomies,
-				'order'        => 'ASC',
-				'orderby'      => 'ID',
-				'number'       => '',
-				'hide_empty'   => false,
-				'hierarchical' => false,
-			);
+			$taxonomies             = explode( ',', $taxonomies );
+			$retrievable_taxonomies = array();
 
-			$click_count = filter_input( INPUT_POST, 'click_count' );
-			if ( $click_count ) {
-				$number = get_option( 'posts_per_page' );
-				$offset = $click_count * $number;
-				$args   = array_merge(
-					$args,
-					array(
-						'offset' => $offset,
-						'number' => $number,
-					)
-				);
+			foreach ( $taxonomies as $_taxonomy ) {
+				$tax = get_taxonomy( $_taxonomy );
+
+				if ( current_user_can( $tax->cap->manage_terms ) ) {
+					$retrievable_taxonomies[] = $_taxonomy;
+				}
 			}
 
-			$search = filter_input( INPUT_POST, 'search' );
-			if ( $search ) {
-				$args = array_merge(
-					$args,
-					array(
-						'search' => $search,
-					)
+			if ( $retrievable_taxonomies ) {
+				$args = array(
+					'taxonomy'     => $retrievable_taxonomies,
+					'order'        => 'ASC',
+					'orderby'      => 'ID',
+					'number'       => '',
+					'hide_empty'   => false,
+					'hierarchical' => false,
 				);
-			}
 
-			$_terms = get_terms( $args );
+				$click_count = filter_input( INPUT_POST, 'click_count' );
+				if ( $click_count ) {
+					$number = get_option( 'posts_per_page' );
+					$offset = $click_count * $number;
+					$args   = array_merge(
+						$args,
+						array(
+							'offset' => $offset,
+							'number' => $number,
+						)
+					);
+				}
+
+				$search = filter_input( INPUT_POST, 'search' );
+				if ( $search ) {
+					$args = array_merge(
+						$args,
+						array(
+							'search' => $search,
+						)
+					);
+				}
+
+				$_terms = get_terms( $args );
+			}
 		}
+
 		header( 'Content-Type: application/json; charset=utf-8' );
 		echo wp_json_encode( $_terms );
 		die();
@@ -134,26 +147,41 @@ class Smart_Custom_Fields_Field_Related_Terms extends Smart_Custom_Fields_Field_
 		$disabled   = $this->get_disable_attribute( $index );
 		$taxonomies = $this->get( 'taxonomy' );
 		$limit      = $this->get( 'limit' );
-		if ( ! $taxonomies ) {
-			$taxonomies = array( 'category' );
-		}
-		if ( ! preg_match( '/^\d+$/', $limit ) ) {
-			$limit = '';
-		}
-		$number = get_option( 'posts_per_page' );
 
-		// choicse
-		$choices_terms = get_terms(
-			array(
-				'taxonomy'     => $taxonomies,
-				'order'        => 'ASC',
-				'orderby'      => 'ID',
-				'hide_empty'   => false,
-				'hierarchical' => false,
-				'number'       => $number,
-			)
-		);
-		$choices_li    = array();
+		$choices_terms = array();
+		$number        = get_option( 'posts_per_page' );
+
+		if ( $taxonomies ) {
+			$retrievable_taxonomies = array();
+
+			foreach ( $taxonomies as $_taxonomy ) {
+				$tax = get_taxonomy( $_taxonomy );
+
+				if ( current_user_can( $tax->cap->manage_terms ) ) {
+					$retrievable_taxonomies[] = $_taxonomy;
+				}
+			}
+
+			if ( $retrievable_taxonomies ) {
+				if ( ! preg_match( '/^\d+$/', $limit ) ) {
+					$limit = '';
+				}
+
+				// choicse
+				$choices_terms = get_terms(
+					array(
+						'taxonomy'     => $taxonomies,
+						'order'        => 'ASC',
+						'orderby'      => 'ID',
+						'hide_empty'   => false,
+						'hierarchical' => false,
+						'number'       => $number,
+					)
+				);
+			}
+		}
+
+		$choices_li = array();
 		foreach ( $choices_terms as $_term ) {
 			$term_name = $_term->name;
 			if ( empty( $term_name ) ) {
