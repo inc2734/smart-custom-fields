@@ -5,7 +5,7 @@ Tags: plugin, custom field, custom, field, meta, meta field, repeat, repeatable
 Requires at least: 6.4
 Requires PHP: 7.4
 Tested up to: 6.4
-Stable tag: 4.2.2
+Stable tag: 5.0.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -129,6 +129,11 @@ You can translate this plugin into your language by using [GlotPress](https://tr
 2. Post edit page.
 
 == Changelog ==
+
+= 5.0.0 =
+* WordPress 6.4 or higher is now required.
+* PHP 7.4 or higher is now required.
+* Security fix.
 
 = 4.2.2 =
 * Fix fatal error that occurred when using with bogo.
