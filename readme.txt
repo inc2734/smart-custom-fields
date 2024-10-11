@@ -43,6 +43,10 @@ https://www.youtube.com/watch?v=WxPZurn0yvI
 
 = How to get meta data ? =
 
+**The return value of each of the following methods is not sanitized. Please sanitize them if necessary. **
+
+https://developer.wordpress.org/apis/security/escaping/
+
 **Post meta data**
 
 This method can get any meta data.
