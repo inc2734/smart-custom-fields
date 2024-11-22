@@ -67,22 +67,29 @@ class Smart_Custom_Fields {
 			new Smart_Custom_Fields_Yoast_SEO_Analysis();
 		}
 
-		foreach ( glob( plugin_dir_path( __FILE__ ) . 'classes/fields/*.php' ) as $form_item ) {
-			include_once $form_item;
-			$basename  = basename( $form_item, '.php' );
-			$classname = preg_replace( '/^class\.field\-(.+)$/', 'Smart_Custom_Fields_Field_$1', $basename );
-			$classname = str_replace( '-', '_', $classname );
-			if ( class_exists( $classname ) ) {
-				new $classname();
-			}
-		}
-
+		add_action( 'init', array( $this, 'load_field_classes' ) );
 		add_action( 'after_setup_theme', array( $this, 'after_setup_theme' ) );
 		add_action( 'init', array( $this, 'register_post_type' ) );
 		add_action( 'init', array( $this, 'ajax_request' ) );
 		add_action( 'admin_menu', array( $this, 'admin_menu' ) );
 		add_action( 'current_screen', array( $this, 'current_screen' ) );
 	}
+
+	/**
+     * Initialize field classes.
+     * Load field classes after WordPress init to ensure proper translation loading.
+     */
+    public function load_field_classes() {
+        foreach ( glob( plugin_dir_path( __FILE__ ) . 'classes/fields/*.php' ) as $form_item ) {
+            include_once $form_item;
+            $basename  = basename( $form_item, '.php' );
+            $classname = preg_replace( '/^class\.field\-(.+)$/', 'Smart_Custom_Fields_Field_$1', $basename );
+            $classname = str_replace( '-', '_', $classname );
+            if ( class_exists( $classname ) ) {
+                new $classname();
+            }
+        }
+    }
 
 	/**
 	 * The action hook provides in after_setup_themeto be able to add fields
