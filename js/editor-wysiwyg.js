@@ -156,33 +156,5 @@ jQuery( function( $ ) {
 		}
 		return qtinit;
 	}
-
-	$( document ).on( 'smart-cf-after-add-group', function( e, data ) {
-		const button = data.button;
-		const clone  = data.clone;
-	
-		setTimeout(function () {
-			clone.find( '.smart-cf-wp-editor' ).each( function( i, e ) {
-				// 既存の初期化処理をここにそのまま
-				$( e ).attr( 'id', $( e ).attr( 'name' ).replace( /(\[|\]|\-)/ig, '_' ) );
-				var editor_id = $( e ).attr( 'id' );
-				var wrap = $( e ).parents( '.wp-editor-wrap' );
-				initialize_editor( wrap, editor_id );
-	
-				var mceinit = scf_generate_mceinit( editor_id );
-				tinyMCEPreInit.mceInit[editor_id] = mceinit;
-				if ( typeof tinymce !== 'undefined' ) {
-					tinymce.init( mceinit );
-				}
-	
-				var qtinit = scf_generate_qtinit( editor_id );
-				tinyMCEPreInit.qtInit[editor_id] = qtinit;
-				if ( typeof quicktags !== 'undefined' ) {
-					quicktags( qtinit );
-					QTags._buttonsInit();
-				}
-			} );
-		}, 100); // ← 100ms程度ディレイさせる
-	});
 	
 } );
