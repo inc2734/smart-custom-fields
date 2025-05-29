@@ -422,7 +422,7 @@ class SCF {
 				'post_type'      => SCF_Config::NAME,
 				'posts_per_page' => -1,
 				'order'          => 'ASC',
-				'order_by'       => 'menu_order',
+				'orderby'        => 'menu_order',
 				'meta_query'     => $meta_query, // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
 			);
 
