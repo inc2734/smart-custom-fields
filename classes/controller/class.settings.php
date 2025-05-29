@@ -501,8 +501,6 @@ class Smart_Custom_Fields_Controller_Settings {
 			}
 		}
 		update_post_meta( $post_id, SCF_Config::PREFIX . 'setting', $data );
-		echo '<pre>';
-		var_dump($data);exit;
 
 		$poste_condition = filter_input( INPUT_POST, SCF_Config::PREFIX . 'condition', FILTER_DEFAULT, FILTER_REQUIRE_ARRAY );
 		if ( ! $poste_condition ) {

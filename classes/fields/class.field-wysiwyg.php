@@ -110,7 +110,7 @@ class Smart_Custom_Fields_Field_Wysiwyg extends Smart_Custom_Fields_Field_Base {
 			esc_attr( $wysiwyg_id ),
 			esc_attr( $name ),
 			disabled( true, $disabled, false ),
-			esc_textarea( $value ),
+			wp_kses_post( $value ),
 			esc_html__( 'Visual', 'smart-custom-fields' ),
 			esc_html__( 'Text', 'smart-custom-fields' )
 		);
