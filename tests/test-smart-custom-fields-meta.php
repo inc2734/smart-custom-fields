@@ -295,10 +295,10 @@ class Smart_Custom_Fields_Meta_Test extends WP_UnitTestCase {
 	/**
 	 * @group get
 	 */
-       public function test_get__invalid_wp_object() {
+	public function test_get__invalid_wp_object() {
 		$Meta = new Smart_Custom_Fields_Meta( null );
 		$this->assertSame( '', $Meta->get( 'not-exist', true ) );
-       }
+	}
 
 	/**
 	 * @group get
