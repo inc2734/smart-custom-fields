@@ -52,9 +52,11 @@ class Smart_Custom_Fields_Field_Image extends Smart_Custom_Fields_Field_Base {
 			esc_html__( 'Delete', 'smart-custom-fields' )
 		);
 
-		$hide_class = 'hide';
-		$image      = $btn_remove;
-		if ( $value ) {
+                $hide_class = 'hide';
+                $image      = $btn_remove;
+                $image_src  = null;
+                $image_alt  = '';
+                if ( $value ) {
 			// Usually, $value is attachment ID.
 			// If a customized, for example, $value is not an ID,
 			// Regarded the $value is file URL.
