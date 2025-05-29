@@ -53,6 +53,8 @@ class Smart_Custom_Fields_Field_File extends Smart_Custom_Fields_Field_Base {
 
 		$hide_class = 'hide';
 		$image      = $btn_remove;
+		$image_src  = null;
+		$image_alt  = '';
 		if ( $value ) {
 			// Usually, $value is attachment ID.
 			// If a customized, for example, $value is not an ID,
