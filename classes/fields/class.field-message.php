@@ -47,12 +47,12 @@ class Smart_Custom_Fields_Field_Message extends Smart_Custom_Fields_Field_Base {
 	public function get_field( $index, $value ) {
 		$name     = $this->get_field_name_in_editor( $index );
 		$disabled = $this->get_disable_attribute( $index );
-		return sprintf(
-			'<div id="%s" class="widefat" %s>%s</div>',
-			esc_attr( $name ),
-			disabled( true, $disabled, false ),
-			$value
-		);
+               return sprintf(
+                       '<div id="%s" class="widefat" %s>%s</div>',
+                       esc_attr( $name ),
+                       disabled( true, $disabled, false ),
+                       wp_kses_post( $value )
+               );
 	}
 
 	/**
