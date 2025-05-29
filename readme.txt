@@ -134,6 +134,12 @@ You can translate this plugin into your language by using [GlotPress](https://tr
 
 == Changelog ==
 
+= 5.0.1 =
+* Fixed a Notice error regarding translation.
+* Fixed xss vulnerability.
+* Fixed an issue where WYSIWYG fields were not working properly in the block editor.
+* Fixed an issue where sorting would not work properly when multiple field groups were set on the same options page and Post Attributes > Order was specified.
+
 = 5.0.0 =
 * WordPress 6.4 or higher is now required.
 * PHP 7.4 or higher is now required.
