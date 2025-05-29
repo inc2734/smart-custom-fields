@@ -225,6 +225,7 @@ class Smart_Custom_Fields_Meta {
 		}
 
 		$settings = SCF::get_settings( $this->object );
+		$metas    = array();
 		if ( $key ) {
 			foreach ( $settings as $setting ) {
 				$fields = $setting->get_fields();
