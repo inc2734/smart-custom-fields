@@ -275,7 +275,7 @@ class Smart_Custom_Fields_Meta_Test extends WP_UnitTestCase {
 	/**
 	 * @group get
 	 */
-	public function test_get__option() {
+        public function test_get__option() {
 		$this->assertSame( array(), $this->Meta_option->get( 'text' ) );
 		$this->assertSame( '', $this->Meta_option->get( 'text', true ) );
 		$this->assertSame( array(), $this->Meta_option->get( 'not-exist' ) );
@@ -289,8 +289,16 @@ class Smart_Custom_Fields_Meta_Test extends WP_UnitTestCase {
 		$this->assertSame( array(), $this->Meta_option->get( 'text-has-default' ) );
 		$this->assertSame( '', $this->Meta_option->get( 'text-has-default', true ) );
 		$this->assertSame( array(), $this->Meta_option->get( 'checkbox-has-default' ) );
-		$this->assertSame( '', $this->Meta_option->get( 'checkbox-has-default', true ) );
-	}
+                $this->assertSame( '', $this->Meta_option->get( 'checkbox-has-default', true ) );
+        }
+
+       /**
+        * @group get
+        */
+       public function test_get__invalid_wp_object() {
+               $Meta = new Smart_Custom_Fields_Meta( null );
+               $this->assertSame( '', $Meta->get( 'not-exist', true ) );
+       }
 
 	/**
 	 * @group get
