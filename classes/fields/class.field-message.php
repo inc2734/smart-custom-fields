@@ -51,7 +51,7 @@ class Smart_Custom_Fields_Field_Message extends Smart_Custom_Fields_Field_Base {
 			'<div id="%s" class="widefat" %s>%s</div>',
 			esc_attr( $name ),
 			disabled( true, $disabled, false ),
-			wp_kses_post( $value )
+			esc_textarea( $value )
 		);
 	}
 

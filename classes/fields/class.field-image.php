@@ -95,7 +95,7 @@ class Smart_Custom_Fields_Field_Image extends Smart_Custom_Fields_Field_Base {
 			esc_attr( SCF_Config::PREFIX . 'upload-image' ),
 			esc_attr( $hide_class ),
 			esc_attr( $this->get( 'size' ) ),
-			$image,
+			wp_kses_post( $image ),
 			esc_attr( $name ),
 			esc_attr( $value ),
 			disabled( true, $disabled, false )

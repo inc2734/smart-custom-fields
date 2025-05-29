@@ -96,7 +96,7 @@ class Smart_Custom_Fields_Field_File extends Smart_Custom_Fields_Field_Base {
 			esc_html__( 'File Select', 'smart-custom-fields' ),
 			esc_attr( SCF_Config::PREFIX . 'upload-file' ),
 			esc_attr( $hide_class ),
-			$image,
+			wp_kses_post( $image ),
 			esc_attr( $name ),
 			esc_attr( $value ),
 			disabled( true, $disabled, false )

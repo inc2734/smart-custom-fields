@@ -56,7 +56,7 @@ class Smart_Custom_Fields_Field_Boolean extends Smart_Custom_Fields_Field_Base {
 			esc_attr( $name ),
 			checked( 1, $value, false ),
 			disabled( true, $disabled, false ),
-			$this->get( 'true_label' )
+			wp_kses_post( $this->get( 'true_label' ) )
 		);
 
 		$false = sprintf(
@@ -64,7 +64,7 @@ class Smart_Custom_Fields_Field_Boolean extends Smart_Custom_Fields_Field_Base {
 			esc_attr( $name ),
 			checked( 0, $value, false ),
 			disabled( true, $disabled, false ),
-			$this->get( 'false_label' )
+			wp_kses_post( $this->get( 'false_label' ) )
 		);
 
 		return $true . $false;

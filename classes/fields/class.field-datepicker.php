@@ -112,7 +112,7 @@ class Smart_Custom_Fields_Field_Datepicker extends Smart_Custom_Fields_Field_Bas
 			esc_attr( $value ),
 			esc_attr( SCF_Config::PREFIX . 'datepicker' ),
 			disabled( true, $disabled, false ),
-			$data_js
+			esc_attr( $data_js )
 		);
 	}
 
@@ -133,7 +133,7 @@ class Smart_Custom_Fields_Field_Datepicker extends Smart_Custom_Fields_Field_Bas
 					name="<?php echo esc_attr( $this->get_field_name_in_setting( $group_key, $field_key, 'default' ) ); ?>"
 					class="widefat default-option"
 					value="<?php echo esc_attr( $this->get( 'default' ) ); ?>"
-					data-js='<?php echo $this->get_data_js(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>' />
+					data-js='<?php echo esc_attr( $this->get_data_js() ); ?>' />
 			</td>
 		</tr>
 		<tr>

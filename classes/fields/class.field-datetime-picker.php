@@ -139,7 +139,7 @@ class Smart_Custom_Fields_Field_Datetime_Picker extends Smart_Custom_Fields_Fiel
 				name="' . esc_attr( $name ) . '"
 				value="' . esc_attr( $value ) . '"
 				class="' . esc_attr( SCF_Config::PREFIX . 'datetime_picker' ) . '"
-				data-js=\'' . $data_js . '\'
+				data-js=\'' . esc_attr( $data_js ) . '\'
 				' . disabled( true, $disabled, false ) . '/>';
 	}
 
