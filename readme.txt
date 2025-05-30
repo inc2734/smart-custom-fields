@@ -4,8 +4,8 @@ Donate link: http://www.amazon.co.jp/registry/wishlist/39ANKRNSTNW40
 Tags: plugin, custom field, custom, field, meta, meta field, repeat, repeatable
 Requires at least: 6.4
 Requires PHP: 7.4
-Tested up to: 6.4
-Stable tag: 5.0.0
+Tested up to: 6.5
+Stable tag: 5.0.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -134,7 +134,7 @@ You can translate this plugin into your language by using [GlotPress](https://tr
 
 == Changelog ==
 
-= 5.0.1 =
+= 5.0.2 =
 * Fixed a Notice error regarding translation.
 * Fixed xss vulnerability.
 * Fixed an issue where WYSIWYG fields were not working properly in the block editor.
