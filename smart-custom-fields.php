@@ -53,6 +53,15 @@ class Smart_Custom_Fields {
 	public function plugins_loaded() {
 		do_action( SCF_Config::PREFIX . 'load' );
 
+		require_once plugin_dir_path( __FILE__ ) . 'classes/class.scf.php';
+		require_once plugin_dir_path( __FILE__ ) . 'classes/models/class.abstract-field-base.php';
+		require_once plugin_dir_path( __FILE__ ) . 'classes/models/class.ajax.php';
+		require_once plugin_dir_path( __FILE__ ) . 'classes/models/class.cache.php';
+		require_once plugin_dir_path( __FILE__ ) . 'classes/models/class.group.php';
+		require_once plugin_dir_path( __FILE__ ) . 'classes/models/class.meta.php';
+		require_once plugin_dir_path( __FILE__ ) . 'classes/models/class.options-page.php';
+		require_once plugin_dir_path( __FILE__ ) . 'classes/models/class.setting.php';
+
 		add_action( 'init', array( $this, '_init' ) );
 		add_action( 'init', array( $this, 'register_post_type' ) );
 		add_action( 'init', array( $this, 'ajax_request' ) );
@@ -64,15 +73,7 @@ class Smart_Custom_Fields {
 	 * Initialize.
 	 */
 	public function _init() {
-		require_once plugin_dir_path( __FILE__ ) . 'classes/models/class.meta.php';
-		require_once plugin_dir_path( __FILE__ ) . 'classes/models/class.setting.php';
-		require_once plugin_dir_path( __FILE__ ) . 'classes/models/class.group.php';
-		require_once plugin_dir_path( __FILE__ ) . 'classes/models/class.abstract-field-base.php';
 		require_once plugin_dir_path( __FILE__ ) . 'classes/models/class.revisions.php';
-		require_once plugin_dir_path( __FILE__ ) . 'classes/models/class.ajax.php';
-		require_once plugin_dir_path( __FILE__ ) . 'classes/models/class.options-page.php';
-		require_once plugin_dir_path( __FILE__ ) . 'classes/models/class.cache.php';
-		require_once plugin_dir_path( __FILE__ ) . 'classes/class.scf.php';
 		new Smart_Custom_Fields_Revisions();
 
 		if ( function_exists( 'wpseo_init' ) ) {
