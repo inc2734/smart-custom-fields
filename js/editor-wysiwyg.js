@@ -133,9 +133,7 @@ jQuery(function ($) {
 			if (mceinit) {
 				tinyMCEPreInit.mceInit[editor_id] = mceinit;
 
-				var editor_delay = isFirefox() ?
-					(isNewGroup ? TIMING.FIREFOX_EDITOR_DELAY : TIMING.FIREFOX_EDITOR_DELAY) :
-					TIMING.DEFAULT_EDITOR_DELAY;
+				var editor_delay = isFirefox() ? TIMING.FIREFOX_EDITOR_DELAY : TIMING.DEFAULT_EDITOR_DELAY;
 
 				setTimeout(function () {
 					if (isTinyMCEReady()) {
@@ -154,7 +152,7 @@ jQuery(function ($) {
 				tinyMCEPreInit.qtInit[editor_id] = qtinit;
 
 				var quicktags_delay = isFirefox() ?
-					(isNewGroup ? TIMING.FIREFOX_QUICKTAGS_DELAY : TIMING.FIREFOX_QUICKTAGS_DELAY) :
+					TIMING.FIREFOX_QUICKTAGS_DELAY :
 					(TIMING.DEFAULT_QUICKTAGS_DELAY + TIMING.QUICKTAGS_OFFSET);
 
 				setTimeout(function () {
