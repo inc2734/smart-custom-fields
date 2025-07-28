@@ -1,4 +1,21 @@
 jQuery(function ($) {
+	// タイミング設定定数
+	var TIMING = {
+		FIREFOX_INIT_DELAY: 800,
+		FIREFOX_EDITOR_DELAY: 300,
+		FIREFOX_QUICKTAGS_DELAY: 350,
+		FIREFOX_DROP_DELAY: 200,
+		FIREFOX_GROUP_DELAY: 200,
+		DEFAULT_INIT_DELAY: 100,
+		DEFAULT_EDITOR_DELAY: 100,
+		DEFAULT_QUICKTAGS_DELAY: 150,
+		DEFAULT_DROP_DELAY: 100,
+		DEFAULT_GROUP_DELAY: 50,
+		MAX_RETRIES: 50,
+		RETRY_INTERVAL: 100,
+		QUICKTAGS_OFFSET: 50
+	};
+
 	// Firefox判定
 	function isFirefox() {
 		return navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
@@ -48,7 +65,7 @@ jQuery(function ($) {
 		if (!isTinyMCEReady()) {
 			setTimeout(function () {
 				safelyInitializeEditors(maxRetries - 1);
-			}, 100);
+			}, TIMING.RETRY_INTERVAL);
 			return;
 		}
 
@@ -95,59 +112,80 @@ jQuery(function ($) {
 					}
 				}
 
-				// エディタの初期化
-				try {
-					initialize_editor(wrap, editor_id);
-
-					var mceinit = scf_generate_mceinit(editor_id);
-					if (mceinit) {
-						tinyMCEPreInit.mceInit[editor_id] = mceinit;
-
-						// Firefoxの場合は追加の遅延
-						var init_delay = isFirefox() ? 200 : 0;
-
-						setTimeout(function () {
-							try {
-								tinymce.init(mceinit);
-							} catch (tinymce_error) {
-								console.error('Smart Custom Fields: TinyMCE init failed for ' + editor_id, tinymce_error);
-							}
-						}, init_delay);
-					}
-
-					var qtinit = scf_generate_qtinit(editor_id);
-					if (qtinit) {
-						tinyMCEPreInit.qtInit[editor_id] = qtinit;
-
-						setTimeout(function () {
-							try {
-								quicktags(qtinit);
-								if (QTags && QTags._buttonsInit) {
-									QTags._buttonsInit();
-								}
-							} catch (qt_error) {
-								console.error('Smart Custom Fields: Quicktags init failed for ' + editor_id, qt_error);
-							}
-						}, init_delay + 50);
-					}
-
-				} catch (init_error) {
-					console.error('Smart Custom Fields: Editor initialization failed for ' + editor_id, init_error);
-				}
+				// 共通エディタ初期化を使用
+				initializeEditorWithTiming(wrap, editor_id, false);
 			});
 		});
+	}
+
+	// エディタ初期化の共通関数（タイミング制御付き）
+	function initializeEditorWithTiming(wrap, editor_id, isNewGroup) {
+		if (!wrap || !wrap.length || !editor_id) {
+			return false;
+		}
+
+		try {
+			// DOM要素の初期化
+			initialize_editor(wrap, editor_id);
+
+			// TinyMCE初期化
+			var mceinit = scf_generate_mceinit(editor_id);
+			if (mceinit) {
+				tinyMCEPreInit.mceInit[editor_id] = mceinit;
+
+				var editor_delay = isFirefox() ?
+					(isNewGroup ? TIMING.FIREFOX_EDITOR_DELAY : TIMING.FIREFOX_EDITOR_DELAY) :
+					TIMING.DEFAULT_EDITOR_DELAY;
+
+				setTimeout(function () {
+					if (isTinyMCEReady()) {
+						try {
+							tinymce.init(mceinit);
+						} catch (error) {
+							console.error('Smart Custom Fields: TinyMCE init failed for ' + editor_id, error);
+						}
+					}
+				}, editor_delay);
+			}
+
+			// Quicktags初期化
+			var qtinit = scf_generate_qtinit(editor_id);
+			if (qtinit) {
+				tinyMCEPreInit.qtInit[editor_id] = qtinit;
+
+				var quicktags_delay = isFirefox() ?
+					(isNewGroup ? TIMING.FIREFOX_QUICKTAGS_DELAY : TIMING.FIREFOX_QUICKTAGS_DELAY) :
+					(TIMING.DEFAULT_QUICKTAGS_DELAY + TIMING.QUICKTAGS_OFFSET);
+
+				setTimeout(function () {
+					try {
+						quicktags(qtinit);
+						if (QTags && QTags._buttonsInit) {
+							QTags._buttonsInit();
+						}
+					} catch (error) {
+						console.error('Smart Custom Fields: Quicktags init failed for ' + editor_id, error);
+					}
+				}, quicktags_delay);
+			}
+
+			return true;
+		} catch (error) {
+			console.error('Smart Custom Fields: Editor initialization failed for ' + editor_id, error);
+			return false;
+		}
 	}
 
 	// 初期化のトリガー（ブラウザ別）
 	if (isFirefox()) {
 		// Firefoxの場合：DOMContentLoaded + 長めの遅延
 		$(document).ready(function () {
-			setTimeout(safelyInitializeEditors, 800);
+			setTimeout(safelyInitializeEditors, TIMING.FIREFOX_INIT_DELAY);
 		});
 	} else {
 		// その他のブラウザ：window.load
 		$(window).on('load', function () {
-			setTimeout(safelyInitializeEditors, 100);
+			setTimeout(safelyInitializeEditors, TIMING.DEFAULT_INIT_DELAY);
 		});
 	}
 
@@ -159,6 +197,8 @@ jQuery(function ($) {
 		var clone = data.clone;
 
 		// 少し遅延してから処理（DOM更新の完了を待つ）
+		var group_delay = isFirefox() ? TIMING.FIREFOX_GROUP_DELAY : TIMING.DEFAULT_GROUP_DELAY;
+
 		setTimeout(function () {
 			clone.find('.smart-cf-wp-editor').each(function (i, e) {
 				var $textarea = $(e);
@@ -182,45 +222,10 @@ jQuery(function ($) {
 					return true;
 				}
 
-				try {
-					initialize_editor(wrap, editor_id);
-
-					var mceinit = scf_generate_mceinit(editor_id);
-					if (mceinit) {
-						tinyMCEPreInit.mceInit[editor_id] = mceinit;
-
-						setTimeout(function () {
-							if (isTinyMCEReady()) {
-								try {
-									tinymce.init(mceinit);
-								} catch (error) {
-									console.error('Smart Custom Fields: TinyMCE init failed for new group editor ' + editor_id, error);
-								}
-							}
-						}, isFirefox() ? 300 : 100);
-					}
-
-					var qtinit = scf_generate_qtinit(editor_id);
-					if (qtinit) {
-						tinyMCEPreInit.qtInit[editor_id] = qtinit;
-
-						setTimeout(function () {
-							try {
-								quicktags(qtinit);
-								if (QTags && QTags._buttonsInit) {
-									QTags._buttonsInit();
-								}
-							} catch (error) {
-								console.error('Smart Custom Fields: Quicktags init failed for new group editor ' + editor_id, error);
-							}
-						}, isFirefox() ? 350 : 150);
-					}
-
-				} catch (error) {
-					console.error('Smart Custom Fields: New group editor initialization failed for ' + editor_id, error);
-				}
+				// 共通エディタ初期化を使用（新規グループフラグを立てる）
+				initializeEditorWithTiming(wrap, editor_id, true);
 			});
-		}, isFirefox() ? 200 : 50);
+		}, group_delay);
 	});
 
 	/**
@@ -268,6 +273,8 @@ jQuery(function ($) {
 	 */
 	$(document).on('smart-cf-repeat-table-sortable-stop', function (e, ui) {
 		// DOM更新の完了を待つ
+		var drop_delay = isFirefox() ? TIMING.FIREFOX_DROP_DELAY : TIMING.DEFAULT_DROP_DELAY;
+
 		setTimeout(function () {
 			$(ui).find('.smart-cf-wp-editor').each(function (i, e) {
 				var editor_id = $(this).attr('id');
@@ -281,6 +288,8 @@ jQuery(function ($) {
 					if (mceinit) {
 						tinyMCEPreInit.mceInit[editor_id] = mceinit;
 
+						var editor_delay = isFirefox() ? TIMING.FIREFOX_EDITOR_DELAY : TIMING.DEFAULT_EDITOR_DELAY;
+
 						setTimeout(function () {
 							if (isTinyMCEReady()) {
 								try {
@@ -289,12 +298,14 @@ jQuery(function ($) {
 									console.error('Smart Custom Fields: TinyMCE reinit failed after drop for ' + editor_id, error);
 								}
 							}
-						}, isFirefox() ? 300 : 100);
+						}, editor_delay);
 					}
 
 					var qtinit = scf_generate_qtinit(editor_id);
 					if (qtinit) {
 						tinyMCEPreInit.qtInit[editor_id] = qtinit;
+
+						var quicktags_delay = isFirefox() ? TIMING.FIREFOX_QUICKTAGS_DELAY : TIMING.DEFAULT_QUICKTAGS_DELAY;
 
 						setTimeout(function () {
 							try {
@@ -305,14 +316,14 @@ jQuery(function ($) {
 							} catch (error) {
 								console.error('Smart Custom Fields: Quicktags reinit failed after drop for ' + editor_id, error);
 							}
-						}, isFirefox() ? 350 : 150);
+						}, quicktags_delay);
 					}
 
 				} catch (error) {
 					console.error('Smart Custom Fields: Editor reinitialization failed after drop for ' + editor_id, error);
 				}
 			});
-		}, isFirefox() ? 200 : 100);
+		}, drop_delay);
 	});
 
 	function initialize_editor(wrap, editor_id) {
