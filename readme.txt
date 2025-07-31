@@ -1,11 +1,11 @@
 === Smart Custom Fields ===
-Contributors: inc2734, toro_unit, mimosafa, hideokamoto, hisako-isaka, kurudrive, hanamura, justinticktock, designhehe, mayukojpn, hogetan, robssanches, mirucon, sysbird, kengyu-nakamura, fuyuan9
+Contributors: inc2734, toro_unit, mimosafa, hideokamoto, hisako-isaka, kurudrive, hanamura, justinticktock, designhehe, mayukojpn, hogetan, robssanches, mirucon, sysbird, kengyu-nakamura, fuyuan9, rocketmartue, mypacecreator
 Donate link: http://www.amazon.co.jp/registry/wishlist/39ANKRNSTNW40
 Tags: plugin, custom field, custom, field, meta, meta field, repeat, repeatable
 Requires at least: 6.4
 Requires PHP: 7.4
 Tested up to: 6.8
-Stable tag: 5.0.3
+Stable tag: 5.0.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -133,6 +133,9 @@ You can translate this plugin into your language by using [GlotPress](https://tr
 2. Post edit page.
 
 == Changelog ==
+
+= 5.0.4 =
+* Fixed a bug in v5.0.1 and later where JavaScript related to the TinyMCE editor did not work properly in Firefox.
 
 = 5.0.3 =
 * Fixed a bug that caused a fatal error when using `SCF::add_options_page()`.
