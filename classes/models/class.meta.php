@@ -176,10 +176,6 @@ class Smart_Custom_Fields_Meta {
 	 * @return bool
 	 */
 	public function is_saved_the_key( $key ) {
-		if ( 'post' === $this->meta_type && 'auto-draft' === get_post_status( $this->get_id() ) ) {
-			return false;
-		}
-
 		if ( _get_meta_table( $this->meta_type ) && ! $this->maybe_4_3_term_meta() ) {
 			return metadata_exists( $this->meta_type, $this->id, $key );
 		}
