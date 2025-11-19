@@ -265,7 +265,7 @@ class Smart_Custom_Fields_Field_Related_Posts extends Smart_Custom_Fields_Field_
 			<div class="%s"><ul>%s</ul></div>
 			<div class="clear"></div>',
 			SCF_Config::PREFIX . 'relation-left',
-			implode( ',', $post_type ),
+			implode( ',', $post_type ?? array( 'post' ) ),
 			esc_attr( $limit ),
 			SCF_Config::PREFIX . 'search',
 			esc_attr__( 'Search...', 'smart-custom-fields' ),
