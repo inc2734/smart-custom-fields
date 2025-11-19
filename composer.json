@@ -18,10 +18,10 @@
 		"php": ">=7.4"
 	},
 	"require-dev": {
-		"wp-coding-standards/wpcs": "^3.0",
-		"dealerdirect/phpcodesniffer-composer-installer": "^0.7",
-		"yoast/phpunit-polyfills": "^1.0",
-		"phpcompatibility/phpcompatibility-wp": "*"
+		"wp-coding-standards/wpcs": "^3.1",
+		"dealerdirect/phpcodesniffer-composer-installer": "^1.0",
+		"phpcompatibility/phpcompatibility-wp": "*",
+		"yoast/phpunit-polyfills": "^1.1"
 	},
 	"scripts" :{
 		"format": "phpcbf --standard=./.phpcs.xml.dist --report-summary --report-source",

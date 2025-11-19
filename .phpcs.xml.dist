@@ -36,18 +36,15 @@
 	<config name="text_domain" value="smart-custom-fields"/>
 
 	<rule ref="WordPress"/>
-	<rule ref="WordPress.NamingConventions.PrefixAllGlobals">
-		<properties>
-			<!-- Value: replace the function, class, and variable prefixes used. Separate multiple prefixes with a comma. -->
-			<property name="prefixes" type="array" value="usmart-custom-fields"/>
-		</properties>
-	</rule>
+
 	<rule ref="WordPress.WP.I18n">
 		<properties>
-			<!-- Value: replace the text domain used. -->
-			<property name="text_domain" type="array" value="smart-custom-fields"/>
+			<property name="text_domain" type="array">
+				<element value="smart-custom-fields"/>
+			</property>
 		</properties>
 	</rule>
+
 	<rule ref="WordPress.WhiteSpace.ControlStructureSpacing">
 		<properties>
 			<property name="blank_line_check" value="true"/>

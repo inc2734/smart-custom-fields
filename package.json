@@ -7,9 +7,9 @@
 		"node": "20.11.1"
 	},
 	"devDependencies": {
-		"@wordpress/env": "9.5.0",
+		"@wordpress/env": "10.35.0",
 		"npm-run-all": "^4.1.5",
-		"rimraf": "^5.0.5"
+		"rimraf": "^6.1.0"
 	},
 	"scripts": {
 		"export:wp-content:themes": "npm run cli cp -- -r wp-content/themes .export/wp-content",

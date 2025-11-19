@@ -70,12 +70,12 @@ class Smart_Custom_Fields_Revision_Test extends WP_UnitTestCase {
 		add_metadata( 'post', $this->revision_id, 'checkbox', 2 );
 
 		$this->assertEquals( 'text', get_post_meta( $this->post_id, 'text', true ) );
-		$this->assertEquals( array( 1 ), get_post_meta( $this->post_id, 'checkbox' ) );
+		$this->assertEquals( 1, get_post_meta( $this->post_id, 'checkbox', true ) );
 
 		$this->Revision->wp_restore_post_revision( $this->post_id, $this->revision_id );
 
 		$this->assertEquals( 'text-revision', get_post_meta( $this->post_id, 'text', true ) );
-		$this->assertEquals( array( 2 ), get_post_meta( $this->post_id, 'checkbox' ) );
+		$this->assertEquals( 2, get_post_meta( $this->post_id, 'checkbox', true ) );
 	}
 
 	/**

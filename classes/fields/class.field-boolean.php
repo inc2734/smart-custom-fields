@@ -156,10 +156,10 @@ class Smart_Custom_Fields_Field_Boolean extends Smart_Custom_Fields_Field_Base {
 		if ( $field_type === $this->get_attribute( 'type' ) ) {
 			if ( is_array( $value ) ) {
 				foreach ( $value as $key => $val ) {
-					$value[ $key ] = ! ! $val;
+					$value[ $key ] = (bool) $val;
 				}
 			} else {
-				$value = ! ! $value;
+				$value = (bool) $value;
 			}
 		}
 		return $value;
