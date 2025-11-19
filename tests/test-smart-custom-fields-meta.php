@@ -181,7 +181,7 @@ class Smart_Custom_Fields_Meta_Test extends WP_UnitTestCase {
 
 		$this->assertFalse( $this->Meta_new_post->is_saved_the_key( 'text' ) );
 		$this->Meta_new_post->update( 'text', 'text' );
-		$this->assertFalse( $this->Meta_new_post->is_saved_the_key( 'text' ) );
+		$this->assertTrue( $this->Meta_new_post->is_saved_the_key( 'text' ) );
 
 		$this->assertFalse( $this->Meta_term->is_saved_the_key( 'text' ) );
 		$this->Meta_term->update( 'text', 'text' );
