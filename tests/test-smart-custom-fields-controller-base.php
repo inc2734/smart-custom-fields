@@ -146,6 +146,221 @@ class Smart_Custom_Fields_Controller_Base_Test extends WP_UnitTestCase {
 	}
 
 	/**
+	 * @group get_field
+	 * @group issue-110
+	 * Test for issue #110: Fatal error when post-type is not specified for related posts field
+	 */
+	public function test_get_field__related_posts_without_post_type() {
+		// Register a related posts field without post-type specified
+		add_filter( 'smart-cf-register-fields', array( $this, '_register_related_posts_without_post_type' ), 10, 4 );
+
+		$Cache = Smart_Custom_Fields_Cache::get_instance();
+		$Cache->flush();
+
+		$object = get_post( $this->post_id );
+		$Field  = SCF::get_field( $object, 'relation-without-post-type' );
+
+		// This should not cause a Fatal error
+		// If post-type is not specified, it should default to 'post' or handle empty string properly
+		$this->assertNotNull( $Field );
+		$result = $Field->get_field( 0, array() );
+		$this->assertIsString( $result );
+	}
+
+	/**
+	 * @group get_field
+	 * @group issue-110
+	 * Test for issue #110: Related posts field with post-type as array (should pass)
+	 */
+	public function test_get_field__related_posts_with_post_type_array() {
+		// Register a related posts field with post-type as array
+		add_filter( 'smart-cf-register-fields', array( $this, '_register_related_posts_with_post_type_array' ), 10, 4 );
+
+		$Cache = Smart_Custom_Fields_Cache::get_instance();
+		$Cache->flush();
+
+		$object = get_post( $this->post_id );
+		$Field  = SCF::get_field( $object, 'relation-with-post-type-array' );
+
+		// This should pass at 5.0.5
+		$this->assertNotNull( $Field );
+		$result = $Field->get_field( 0, array() );
+		$this->assertIsString( $result );
+	}
+
+	/**
+	 * @group get_field
+	 * @group issue-110
+	 * Test for issue #110: Fatal error when post-type is string for related posts field
+	 */
+	public function test_get_field__related_posts_with_post_type_string() {
+		// Register a related posts field with post-type as string
+		add_filter( 'smart-cf-register-fields', array( $this, '_register_related_posts_with_post_type_string' ), 10, 4 );
+
+		$Cache = Smart_Custom_Fields_Cache::get_instance();
+		$Cache->flush();
+
+		$object = get_post( $this->post_id );
+		$Field  = SCF::get_field( $object, 'relation-with-post-type-string' );
+
+		// This should not cause a Fatal error
+		// post-type as string should be handled properly
+		$this->assertNotNull( $Field );
+		$result = $Field->get_field( 0, array() );
+		$this->assertIsString( $result );
+	}
+
+	/**
+	 * @group get_field
+	 * @group issue-110
+	 * Test for issue #110: Fatal error when post-type is empty string for related posts field
+	 */
+	public function test_get_field__related_posts_with_post_type_empty_string() {
+		// Register a related posts field with post-type as empty string
+		add_filter( 'smart-cf-register-fields', array( $this, '_register_related_posts_with_post_type_empty_string' ), 10, 4 );
+
+		$Cache = Smart_Custom_Fields_Cache::get_instance();
+		$Cache->flush();
+
+		$object = get_post( $this->post_id );
+		$Field  = SCF::get_field( $object, 'relation-with-post-type-empty-string' );
+
+		// This should not cause a Fatal error
+		// Empty string should be handled properly
+		$this->assertNotNull( $Field );
+		$result = $Field->get_field( 0, array() );
+		$this->assertIsString( $result );
+	}
+
+	/**
+	 * Register custom fields with related posts field without post-type for issue #110 test
+	 *
+	 * @param array  $settings  Array of Smart_Custom_Fields_Setting object.
+	 * @param string $type      Post type or Role.
+	 * @param int    $id        Post ID or User ID.
+	 * @param string $meta_type post or user.
+	 */
+	public function _register_related_posts_without_post_type( $settings, $type, $id, $meta_type ) {
+		if (
+			( 'post' === $type && $id === $this->post_id ) ||
+			( 'post' === $type && $id === $this->new_post_id )
+		) {
+			$Setting = SCF::add_setting( 'id-relation-without-post-type', 'Related Posts Without Post Type Test' );
+			$Setting->add_group(
+				'relation-without-post-type',
+				false,
+				array(
+					array(
+						'name'    => 'relation-without-post-type',
+						'label'   => 'Related Posts Without Post Type',
+						'type'    => 'relation',
+						'default' => 'a',
+						// Intentionally omitting 'post-type' to reproduce issue #110
+					),
+				)
+			);
+			$settings[ $Setting->get_id() ] = $Setting;
+		}
+		return $settings;
+	}
+
+	/**
+	 * Register custom fields with related posts field with post-type as array for issue #110 test
+	 *
+	 * @param array  $settings  Array of Smart_Custom_Fields_Setting object.
+	 * @param string $type      Post type or Role.
+	 * @param int    $id        Post ID or User ID.
+	 * @param string $meta_type post or user.
+	 */
+	public function _register_related_posts_with_post_type_array( $settings, $type, $id, $meta_type ) {
+		if (
+			( 'post' === $type && $id === $this->post_id ) ||
+			( 'post' === $type && $id === $this->new_post_id )
+		) {
+			$Setting = SCF::add_setting( 'id-relation-with-post-type-array', 'Related Posts With Post Type Array Test' );
+			$Setting->add_group(
+				'relation-with-post-type-array',
+				false,
+				array(
+					array(
+						'name'      => 'relation-with-post-type-array',
+						'label'     => 'Related Posts With Post Type Array',
+						'type'      => 'relation',
+						'default'   => 'a',
+						'post-type' => array( 'post' ), // Pass at 5.0.5
+					),
+				)
+			);
+			$settings[ $Setting->get_id() ] = $Setting;
+		}
+		return $settings;
+	}
+
+	/**
+	 * Register custom fields with related posts field with post-type as string for issue #110 test
+	 *
+	 * @param array  $settings  Array of Smart_Custom_Fields_Setting object.
+	 * @param string $type      Post type or Role.
+	 * @param int    $id        Post ID or User ID.
+	 * @param string $meta_type post or user.
+	 */
+	public function _register_related_posts_with_post_type_string( $settings, $type, $id, $meta_type ) {
+		if (
+			( 'post' === $type && $id === $this->post_id ) ||
+			( 'post' === $type && $id === $this->new_post_id )
+		) {
+			$Setting = SCF::add_setting( 'id-relation-with-post-type-string', 'Related Posts With Post Type String Test' );
+			$Setting->add_group(
+				'relation-with-post-type-string',
+				false,
+				array(
+					array(
+						'name'      => 'relation-with-post-type-string',
+						'label'     => 'Related Posts With Post Type String',
+						'type'      => 'relation',
+						'default'   => 'a',
+						'post-type' => 'post', // Fail at 5.0.5
+					),
+				)
+			);
+			$settings[ $Setting->get_id() ] = $Setting;
+		}
+		return $settings;
+	}
+
+	/**
+	 * Register custom fields with related posts field with post-type as empty string for issue #110 test
+	 *
+	 * @param array  $settings  Array of Smart_Custom_Fields_Setting object.
+	 * @param string $type      Post type or Role.
+	 * @param int    $id        Post ID or User ID.
+	 * @param string $meta_type post or user.
+	 */
+	public function _register_related_posts_with_post_type_empty_string( $settings, $type, $id, $meta_type ) {
+		if (
+			( 'post' === $type && $id === $this->post_id ) ||
+			( 'post' === $type && $id === $this->new_post_id )
+		) {
+			$Setting = SCF::add_setting( 'id-relation-with-post-type-empty-string', 'Related Posts With Post Type Empty String Test' );
+			$Setting->add_group(
+				'relation-with-post-type-empty-string',
+				false,
+				array(
+					array(
+						'name'      => 'relation-with-post-type-empty-string',
+						'label'     => 'Related Posts With Post Type Empty String',
+						'type'      => 'relation',
+						'default'   => 'a',
+						'post-type' => '', // Fail at 5.0.5
+					),
+				)
+			);
+			$settings[ $Setting->get_id() ] = $Setting;
+		}
+		return $settings;
+	}
+
+	/**
 	 * Register custom fields using filter hook
 	 *
 	 * @param array  $settings  Array of Smart_Custom_Fields_Setting object.
