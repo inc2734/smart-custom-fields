@@ -34,7 +34,7 @@ class Smart_Custom_Fields_Field_Related_Posts extends Smart_Custom_Fields_Field_
 	 */
 	protected function options() {
 		return array(
-			'post-type'   => '',
+			'post-type'   => array(),
 			'limit'       => 0,
 			'instruction' => '',
 			'notes'       => '',
@@ -159,6 +159,17 @@ class Smart_Custom_Fields_Field_Related_Posts extends Smart_Custom_Fields_Field_
 		$post_type = $this->get( 'post-type' );
 		$limit     = $this->get( 'limit' );
 
+		// Normalize post-type to array format for backward compatibility.
+		if ( ! is_array( $post_type ) ) {
+			if ( empty( $post_type ) ) {
+				// If post-type is not specified, default to 'post' (backward compatibility with 4.2.2).
+				$post_type = array( 'post' );
+			} else {
+				// If post-type is a string, convert to array.
+				$post_type = array( $post_type );
+			}
+		}
+
 		$choices_posts  = array();
 		$posts_per_page = get_option( 'posts_per_page' );
 
@@ -265,7 +276,7 @@ class Smart_Custom_Fields_Field_Related_Posts extends Smart_Custom_Fields_Field_
 			<div class="%s"><ul>%s</ul></div>
 			<div class="clear"></div>',
 			SCF_Config::PREFIX . 'relation-left',
-			implode( ',', $post_type ?? array( 'post' ) ),
+			implode( ',', $post_type ),
 			esc_attr( $limit ),
 			SCF_Config::PREFIX . 'search',
 			esc_attr__( 'Search...', 'smart-custom-fields' ),

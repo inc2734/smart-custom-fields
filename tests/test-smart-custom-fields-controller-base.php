@@ -12,6 +12,16 @@ class Smart_Custom_Fields_Controller_Base_Test extends WP_UnitTestCase {
 	protected $post_id;
 
 	/**
+	 * @var string
+	 */
+	protected $related_posts_test_field_name;
+
+	/**
+	 * @var array|string|null
+	 */
+	protected $related_posts_test_post_type;
+
+	/**
 	 * Set up.
 	 */
 	public function set_up() {
@@ -143,6 +153,124 @@ class Smart_Custom_Fields_Controller_Base_Test extends WP_UnitTestCase {
 		$Meta->add( 'text', 'c' );
 		$this->assertSame( 'b', $this->Controller->get_single_data_field_value( $object, $Field, 0 ) );
 		$this->assertSame( 'c', $this->Controller->get_single_data_field_value( $object, $Field, 1 ) );
+	}
+
+	/**
+	 * @group get_field
+	 * @group issue-110
+	 * Test for issue #110: Fatal error when post-type is not specified for related posts field
+	 */
+	public function test_get_field__related_posts_without_post_type() {
+		add_filter( 'smart-cf-register-fields', array( $this, '_register_related_posts_for_issue_110' ), 10, 4 );
+		$this->related_posts_test_field_name = 'relation-without-post-type';
+		$this->related_posts_test_post_type  = null;
+
+		$Cache = Smart_Custom_Fields_Cache::get_instance();
+		$Cache->flush();
+
+		$object = get_post( $this->post_id );
+		$Field  = SCF::get_field( $object, 'relation-without-post-type' );
+
+		$this->assertNotNull( $Field );
+		$result = $Field->get_field( 0, array() );
+		$this->assertIsString( $result );
+	}
+
+	/**
+	 * @group get_field
+	 * @group issue-110
+	 * Test for issue #110: Related posts field with post-type as array (should pass)
+	 */
+	public function test_get_field__related_posts_with_post_type_array() {
+		add_filter( 'smart-cf-register-fields', array( $this, '_register_related_posts_for_issue_110' ), 10, 4 );
+		$this->related_posts_test_field_name = 'relation-with-post-type-array';
+		$this->related_posts_test_post_type  = array( 'post' );
+
+		$Cache = Smart_Custom_Fields_Cache::get_instance();
+		$Cache->flush();
+
+		$object = get_post( $this->post_id );
+		$Field  = SCF::get_field( $object, 'relation-with-post-type-array' );
+
+		$this->assertNotNull( $Field );
+		$result = $Field->get_field( 0, array() );
+		$this->assertIsString( $result );
+	}
+
+	/**
+	 * @group get_field
+	 * @group issue-110
+	 * Test for issue #110: Fatal error when post-type is string for related posts field
+	 */
+	public function test_get_field__related_posts_with_post_type_string() {
+		add_filter( 'smart-cf-register-fields', array( $this, '_register_related_posts_for_issue_110' ), 10, 4 );
+		$this->related_posts_test_field_name = 'relation-with-post-type-string';
+		$this->related_posts_test_post_type  = 'post';
+
+		$Cache = Smart_Custom_Fields_Cache::get_instance();
+		$Cache->flush();
+
+		$object = get_post( $this->post_id );
+		$Field  = SCF::get_field( $object, 'relation-with-post-type-string' );
+
+		$this->assertNotNull( $Field );
+		$result = $Field->get_field( 0, array() );
+		$this->assertIsString( $result );
+	}
+
+	/**
+	 * @group get_field
+	 * @group issue-110
+	 * Test for issue #110: Fatal error when post-type is empty string for related posts field
+	 */
+	public function test_get_field__related_posts_with_post_type_empty_string() {
+		add_filter( 'smart-cf-register-fields', array( $this, '_register_related_posts_for_issue_110' ), 10, 4 );
+		$this->related_posts_test_field_name = 'relation-with-post-type-empty-string';
+		$this->related_posts_test_post_type  = '';
+
+		$Cache = Smart_Custom_Fields_Cache::get_instance();
+		$Cache->flush();
+
+		$object = get_post( $this->post_id );
+		$Field  = SCF::get_field( $object, 'relation-with-post-type-empty-string' );
+
+		$this->assertNotNull( $Field );
+		$result = $Field->get_field( 0, array() );
+		$this->assertIsString( $result );
+	}
+
+	/**
+	 * Register custom fields with related posts field for issue #110 test
+	 *
+	 * @param array  $settings  Array of Smart_Custom_Fields_Setting object.
+	 * @param string $type      Post type or Role.
+	 * @param int    $id        Post ID or User ID.
+	 * @param string $meta_type post or user.
+	 */
+	public function _register_related_posts_for_issue_110( $settings, $type, $id, $meta_type ) {
+		if (
+			( 'post' === $type && $id === $this->post_id ) ||
+			( 'post' === $type && $id === $this->new_post_id )
+		) {
+			$field_name = $this->related_posts_test_field_name;
+			$post_type  = $this->related_posts_test_post_type;
+
+			$Setting      = SCF::add_setting( 'id-' . $field_name, 'Related Posts Test for Issue #110' );
+			$field_config = array(
+				'name'    => $field_name,
+				'label'   => 'Related Posts Test',
+				'type'    => 'relation',
+				'default' => 'a',
+			);
+
+			if ( null !== $post_type ) {
+				$field_config['post-type'] = $post_type;
+			}
+
+			$Setting->add_group( $field_name, false, array( $field_config ) );
+			$settings[ $Setting->get_id() ] = $Setting;
+		}
+		return $settings;
 	}
 
 	/**
