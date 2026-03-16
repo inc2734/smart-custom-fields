@@ -83,15 +83,7 @@ class Smart_Custom_Fields_Field_Related_Posts extends Smart_Custom_Fields_Field_
 		$post_types = filter_input( INPUT_POST, 'post_types' );
 		if ( $post_types ) {
 			$post_type              = explode( ',', $post_types );
-			$retrievable_post_types = array();
-
-			foreach ( $post_type as $_post_type ) {
-				$post_type_object = get_post_type_object( $_post_type );
-
-				if ( current_user_can( $post_type_object->cap->edit_posts ) ) {
-					$retrievable_post_types[] = $_post_type;
-				}
-			}
+			$retrievable_post_types = $this->get_retrievable_post_types( $post_type );
 
 			if ( $retrievable_post_types ) {
 				$args = array(
@@ -137,7 +129,8 @@ class Smart_Custom_Fields_Field_Related_Posts extends Smart_Custom_Fields_Field_
 				*/
 				$args = apply_filters( SCF_Config::PREFIX . 'custom_related_posts_args_ajax_call', $args, $field_name, $post_type );
 
-				$_posts = get_posts( $args );
+				$_posts = $this->filter_readable_posts_for_current_user( get_posts( $args ) );
+				$_posts = $this->prepare_posts_for_response( $_posts );
 			}
 		}
 
@@ -174,15 +167,7 @@ class Smart_Custom_Fields_Field_Related_Posts extends Smart_Custom_Fields_Field_
 		$posts_per_page = get_option( 'posts_per_page' );
 
 		if ( $post_type ) {
-			$retrievable_post_types = array();
-
-			foreach ( $post_type as $_post_type ) {
-				$post_type_object = get_post_type_object( $_post_type );
-
-				if ( current_user_can( $post_type_object->cap->edit_posts ) ) {
-					$retrievable_post_types[] = $_post_type;
-				}
-			}
+			$retrievable_post_types = $this->get_retrievable_post_types( $post_type );
 
 			if ( $retrievable_post_types ) {
 				if ( ! preg_match( '/^\d+$/', $limit ) ) {
@@ -208,7 +193,7 @@ class Smart_Custom_Fields_Field_Related_Posts extends Smart_Custom_Fields_Field_
 				$args = apply_filters( SCF_Config::PREFIX . 'custom_related_posts_args_first_load', $args, $name, $post_type );
 
 				// Get posts to show in the first load.
-				$choices_posts = get_posts( $args );
+				$choices_posts = $this->filter_readable_posts_for_current_user( get_posts( $args ) );
 			}
 		}
 
@@ -289,6 +274,66 @@ class Smart_Custom_Fields_Field_Related_Posts extends Smart_Custom_Fields_Field_
 			implode( '', $hidden ),
 			SCF_Config::PREFIX . 'relation-right',
 			implode( '', $selected_li )
+		);
+	}
+
+	/**
+	 * Returns post types that the current user can edit.
+	 *
+	 * @param array $post_types Post type slugs.
+	 * @return array
+	 */
+	protected function get_retrievable_post_types( $post_types ) {
+		$retrievable_post_types = array();
+
+		foreach ( $post_types as $_post_type ) {
+			$post_type_object = get_post_type_object( $_post_type );
+
+			if ( ! $post_type_object ) {
+				continue;
+			}
+
+			if ( current_user_can( $post_type_object->cap->edit_posts ) ) {
+				$retrievable_post_types[] = $_post_type;
+			}
+		}
+
+		return $retrievable_post_types;
+	}
+
+	/**
+	 * Returns only posts readable by the current user.
+	 *
+	 * @param array $posts Posts.
+	 * @return array
+	 */
+	protected function filter_readable_posts_for_current_user( $posts ) {
+		$posts = array_filter(
+			$posts,
+			function( $post ) {
+				return current_user_can( 'read_post', $post->ID );
+			}
+		);
+
+		return array_values( $posts );
+	}
+
+	/**
+	 * Returns only fields needed by the related posts UI.
+	 *
+	 * @param array $posts Posts.
+	 * @return array
+	 */
+	protected function prepare_posts_for_response( $posts ) {
+		return array_map(
+			function( $post ) {
+				return (object) array(
+					'ID'          => $post->ID,
+					'post_title'  => get_the_title( $post->ID ),
+					'post_status' => $post->post_status,
+				);
+			},
+			$posts
 		);
 	}
 
