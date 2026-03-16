@@ -310,7 +310,7 @@ class Smart_Custom_Fields_Field_Related_Posts extends Smart_Custom_Fields_Field_
 	protected function filter_readable_posts_for_current_user( $posts ) {
 		$posts = array_filter(
 			$posts,
-			function( $post ) {
+			function ( $post ) {
 				return current_user_can( 'read_post', $post->ID );
 			}
 		);
@@ -326,7 +326,7 @@ class Smart_Custom_Fields_Field_Related_Posts extends Smart_Custom_Fields_Field_
 	 */
 	protected function prepare_posts_for_response( $posts ) {
 		return array_map(
-			function( $post ) {
+			function ( $post ) {
 				return (object) array(
 					'ID'          => $post->ID,
 					'post_title'  => get_the_title( $post->ID ),

@@ -50,7 +50,7 @@ class Smart_Custom_Fields_Related_Posts_Test extends WP_UnitTestCase {
 	 * @group related_posts
 	 */
 	public function test_filter_readable_posts_for_current_user() {
-		$admin_id = $this->factory->user->create(
+		$admin_id       = $this->factory->user->create(
 			array(
 				'role' => 'administrator',
 			)
