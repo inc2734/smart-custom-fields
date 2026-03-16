@@ -83,7 +83,7 @@ class Smart_Custom_Fields_Field_File extends Smart_Custom_Fields_Field_Base {
 					'<a href="%s" target="_blank"><img src="%s" alt="%s" />%s</a>%s',
 					wp_get_attachment_url( $value ),
 					esc_url( $image_src ),
-					$image_alt,
+					esc_attr( $image_alt ),
 					esc_attr( $filename ),
 					$btn_remove
 				);

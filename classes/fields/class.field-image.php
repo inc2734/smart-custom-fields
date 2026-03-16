@@ -82,7 +82,7 @@ class Smart_Custom_Fields_Field_Image extends Smart_Custom_Fields_Field_Base {
 				$image      = sprintf(
 					'<img src="%s" alt="%s" />%s',
 					esc_url( $image_src ),
-					$image_alt,
+					esc_attr( $image_alt ),
 					$btn_remove
 				);
 				$hide_class = '';
