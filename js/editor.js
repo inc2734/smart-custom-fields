@@ -92,17 +92,21 @@ jQuery( function( $ ) {
 			custom_uploader_image.on( 'select', function() {
 				var images = custom_uploader_image.state().get( 'selection' );
 				images.each( function( file ){
+					var attachment = file.toJSON();
 					var sizes = file.get('sizes');
 					var image_area = upload_button.parent().find( '.smart-cf-upload-image' );
 					var sizename = image_area.data('size');
 					var img = sizes[ sizename ] || sizes.full;
-					var alt_attr = file.get('title');
+					var alt_attr = attachment.title || '';
 					image_area.find( 'img' ).remove();
 					image_area.prepend(
-						'<img src="' + img.url + '" alt="' + alt_attr + '" />'
+						$( '<img>' ).attr( {
+							src: img.url,
+							alt: alt_attr
+						} )
 					);
 					image_area.removeClass( 'hide' );
-					upload_button.parent().find( 'input[type="hidden"]' ).val( file.toJSON().id );
+					upload_button.parent().find( 'input[type="hidden"]' ).val( attachment.id );
 				} );
 			} );
 
@@ -149,14 +153,29 @@ jQuery( function( $ ) {
 			custom_uploader_file.on( 'select', function() {
 				var images = custom_uploader_file.state().get( 'selection' );
 				images.each( function( file ){
+					var attachment = file.toJSON();
 					var image_area = upload_button.parent().find( '.smart-cf-upload-file' );
-					var alt_attr = file.get('title');
+					var alt_attr = attachment.title || '';
 					image_area.find( 'a' ).remove();
 					image_area.prepend(
-						'<a href="' + file.toJSON().url + '" target="_blank"><img src="' + file.toJSON().icon + '" alt="' + alt_attr + '" /><span>' + file.toJSON().filename + '</span></a>'
+						$( '<a>' )
+							.attr( {
+								href: attachment.url,
+								target: '_blank',
+								rel: 'noopener noreferrer'
+							} )
+							.append(
+								$( '<img>' ).attr( {
+									src: attachment.icon,
+									alt: alt_attr
+								} )
+							)
+							.append(
+								$( '<span>' ).text( attachment.filename )
+							)
 					);
 					image_area.removeClass( 'hide' );
-					upload_button.parent().find( 'input[type="hidden"]' ).val( file.toJSON().id );
+					upload_button.parent().find( 'input[type="hidden"]' ).val( attachment.id );
 				} );
 			} );
 

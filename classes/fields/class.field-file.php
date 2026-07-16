@@ -80,11 +80,11 @@ class Smart_Custom_Fields_Field_File extends Smart_Custom_Fields_Field_Base {
 			if ( $image_src && ! is_array( $image_src ) ) {
 				$filename   = wp_basename( get_attached_file( $value ) );
 				$image      = sprintf(
-					'<a href="%s" target="_blank"><img src="%s" alt="%s" />%s</a>%s',
-					wp_get_attachment_url( $value ),
+					'<a href="%s" target="_blank" rel="noopener noreferrer"><img src="%s" alt="%s" />%s</a>%s',
+					esc_url( wp_get_attachment_url( $value ) ),
 					esc_url( $image_src ),
 					esc_attr( $image_alt ),
-					esc_attr( $filename ),
+					esc_html( $filename ),
 					$btn_remove
 				);
 				$hide_class = '';
